@@ -20,6 +20,37 @@ header-includes:
   - \floatplacement{figure}{H}
   - \usepackage[shortlabels]{enumitem}
   - \usepackage{mathtools}
+output:
+  bookdown::gitbook:
+    toc_depth: 2
+    split_by: section
+    number_sections: true
+    split_bib: true
+    config:
+      toc:
+        scroll_highlight: yes
+        collapse: section
+        before: |
+          <li><a href="./"><strong>Hands-On Data Visualization</strong><br>by Jack Dougherty & Ilya Ilyankou</a></li>
+        after: |
+          <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+          <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+          <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+      view: https://github.com/handsondataviz/book/blob/master/%s
+      search: yes
+      sharing:
+        twitter: yes
+        facebook: no
+        github: yes
+        all: no
+
+  bookdown::pdf_book:
+    toc_depth: 2
+    number_sections: true
+    citation_package: default
+
+  bookdown::markdown_document2:
+    default
 ---
 
 ```{r include=FALSE}
@@ -35,35 +66,8 @@ library(knitr)
 
 # Welcome {#welcome}
 
-hi
-
-It's possible to create beautiful books for free using [RStudio's R Markdown](http://rmarkdown.rstudio.com/) and Yihui Xie's [bookdown](https://bookdown.org/yihui/bookdown/) and hosting them on [Github](http://github.com). This is pretty new and incredibly cool. It is a really powerful way to communicate science using the same reproducible workflow you use for your analyses and collaborations.
-
-This tutorial borrows heavily from a lot of great tutorials and resources you should check out too -- there are links throughout. It also parallels a previous tutorial [Making free websites with RStudio’s R Markdown](https://jules32.github.io/rmarkdown-website-tutorial/).
-
-The best way to learn is to follow along with your own laptop, but all are welcome. We'll spend half the time with the tutorial and half the time for you to work on your own website and get help. If you bring your laptop please do this beforehand: 
-
-1. install [RStudio](https://www.rstudio.com/products/rstudio/download/)
-1. create a [GitHub]((http://github.com)) account ([advice](http://happygitwithr.com/github-acct.html))
-1. set up your computer to talk to GitHub
-    - have RStudio linked directly (highly recommended) ([instructions sections 8-14](http://happygitwithr.com/hello-git.html))
-    - or install the [Desktop App](https://desktop.github.com/)
-    - or be familiar with git commands for the command line ([tutorial](https://try.github.io/levels/1/challenges/1))
-
-----
-
-
-**Examples:**
-
-We have been using bookdown for the Ocean Health Index:  [**ohi-science.org/data-science-training**](http://ohi-science.org/data-science-training) and Openscapes: [**openscapes.org/series**](https://openscapes.org/series).  
-And R Markdown is much more than books and websites -- here's a [**one-minute video about R Markdown**](http://rmarkdown.rstudio.com/lesson-1.html) to get you excited. 
-
-----
-
-## Learn all about Bookdown
-
-The best way to learn more about bookdown is from Yihui Xie himself. You can read his book [bookdown: Authoring Books and Technical Documents with R Markdown](https://bookdown.org/yihui/bookdown/) or watch his webinar [introducing bookdown](https://www.rstudio.com/resources/webinars/introducing-bookdown/).
-
+# Creating this from Bookdown to Github
+I stumbled on how to do this by going to this [website](https://jules32.github.io/bookdown-tutorial/) and built this out from here.  I am glad that I will be able to work on this.
 
 
 ```{r include=FALSE}

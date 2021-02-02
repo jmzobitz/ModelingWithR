@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Models of rates with data | Exploring modeling with data and differential equations using R</title>
+  <title>3.4 Simulating a differential equation | Exploring modeling with data and differential equations using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  <meta property="og:title" content="3.4 Simulating a differential equation | Exploring modeling with data and differential equations using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  <meta name="twitter:title" content="3.4 Simulating a differential equation | Exploring modeling with data and differential equations using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="creating-this-from-bookdown-to-github.html"/>
-<link rel="next" href="what-is-the-book-about.html"/>
+<link rel="prev" href="the-qualitative-nature-of-solution-curves.html"/>
+<link rel="next" href="which-model-is-best.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -104,16 +104,31 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="models-of-rates-with-data" class="section level1">
-<h1><span class="header-section-number">Chapter 3</span> Models of rates with data</h1>
+<div id="simulating-a-differential-equation" class="section level2">
+<h2><span class="header-section-number">3.4</span> Simulating a differential equation</h2>
+<p>Let’s talk solutions. One thing to note is that usually a differential equation also has a starting, or an initial value that actualizes the solution. When we state a differential equation with a starting value we have an <strong>initial value problem</strong>. For our case here we will assume that <span class="math inline">\(I(0)=I_{0}\)</span>, where this is also another parameter at our disposal.</p>
+<p>With that assumption, we can (and will solve later!) the following solutions for these models:</p>
+<p><span class="math display">\[\begin{align*}
+\mbox{ Model 1 (Exponential): } &amp; I(t) = I_{0}e^{kt} \\
+\mbox{Model 2 (Saturating): } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Model 3 (Logistic): } &amp; I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}}
+\end{align*}\]</span></p>
+<pre><code>## Warning: Removed 63 row(s) containing missing values (geom_path).</code></pre>
+<div class="figure"><span id="fig:threeSoln"></span>
+<img src="ModelingWithR_files/figure-html/threeSoln-1.png" alt="Three models compared" width="384" />
+<p class="caption">
+Figure 3.3: Three models compared
+</p>
+</div>
+<p>In Figure <a href="simulating-a-differential-equation.html#fig:threeSoln">3.3</a>, I plot these solutions over the course of several days, using <span class="math inline">\(k=0.03\)</span> and <span class="math inline">\(N=4000\)</span> and <span class="math inline">\(I_{0}=5\)</span>. Notice how Model 1 increases quickly - it actually grows without bound off the chart! Model 2 and Model 3 have saturating behavior, but it looks like Model 3 might be the one that actually captures the trend of the data. Models 2 and 3 are more commonly known as the <strong>saturating</strong> and <strong>logistic</strong> models respectively.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="creating-this-from-bookdown-to-github.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="what-is-the-book-about.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="the-qualitative-nature-of-solution-curves.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="which-model-is-best.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
