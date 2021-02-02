@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-02-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="write.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Mini Bookdown Tutorial</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learn-all-about-bookdown"><i class="fa fa-check"></i><b>1.1</b> Learn all about Bookdown</a></li>
+</ul></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="2" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html"><i class="fa fa-check"></i><b>2</b> Models of rates with data</a><ul>
+<li class="chapter" data-level="2.1" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#what-is-the-book-about"><i class="fa fa-check"></i><b>2.1</b> What is the book about?</a></li>
+<li class="chapter" data-level="2.2" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>2.2</b> Modeling in context: the spread of a disease</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#model-1-infection-rate-proportional-to-number-infected."><i class="fa fa-check"></i><b>2.2.1</b> Model 1: Infection rate proportional to number infected.</a></li>
+<li class="chapter" data-level="2.2.2" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#model-2-infection-rate-proportional-to-number-not-infected."><i class="fa fa-check"></i><b>2.2.2</b> Model 2: Infection rate proportional to number NOT infected.</a></li>
+<li class="chapter" data-level="2.2.3" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#model-3-infection-rate-proportional-to-infected-meeting-not-infected."><i class="fa fa-check"></i><b>2.2.3</b> Model 3: Infection rate proportional to infected meeting not infected.</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#the-qualitative-nature-of-solution-curves"><i class="fa fa-check"></i><b>2.3</b> The qualitative nature of solution curves</a></li>
+<li class="chapter" data-level="2.4" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#simulating-a-differential-equation"><i class="fa fa-check"></i><b>2.4</b> Simulating a differential equation</a></li>
+<li class="chapter" data-level="2.5" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html#which-model-is-best"><i class="fa fa-check"></i><b>2.5</b> Which model is best?</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="write.html"><a href="write.html"><i class="fa fa-check"></i><b>3</b> Writing in Bookdown</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="models-of-rates-with-data" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Models of rates with data</h1>
+<div id="what-is-the-book-about" class="section level2">
+<h2><span class="header-section-number">2.1</span> What is the book about?</h2>
+<p>The focus of this textbook is understanding <em>rates of change</em> and how you can apply them to model real-world phenomena. In addition this textbook focuses on <em>using</em> equations with data, building both your competence and confidence to construct a mathematical model from data and a context.</p>
+<p>I can imagine that your first sustained encounter of rates of change was in your calculus course, perhaps answering the following types of questions:</p>
+<ul>
+<li>If <span class="math inline">\(y = xe^{-x}\)</span>, determine the derivative function <span class="math inline">\(f&#39;(x)\)</span>.</li>
+<li>Where is the graph of <span class="math inline">\(\sin(x)\)</span> increasing at an increasing rate?</li>
+<li>If you release a ball from the top of a skyscraper 500 meters above the ground, what is its speed when it impacts the ground?</li>
+</ul>
+<p>Some of these mathematical questions derive from models from physical phenomena, such as the ball falling off a skyscraper which assumes that acceleration of the ball is constant. This assumption is typically a starting point to build a mathematical model. Using acceleration, the velocity (or the antiderivative of acceleration) can be found, from which the position function can be calculated through antidifferentiation.</p>
+<p>However many times we observe data and <em>then</em> construct a mathematical model to corroborate our observations. Some of the these models come from well-understood physical phenomena (such as the case of the falling ball).</p>
+</div>
+<div id="modeling-in-context-the-spread-of-a-disease" class="section level2">
+<h2><span class="header-section-number">2.2</span> Modeling in context: the spread of a disease</h2>
+<p>To see what the first steps would be, consider the data in Figure <a href="models-of-rates-with-data.html#fig:sierra-leone">2.1</a>, which come from an <a href="https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/index.html">Ebola outbreak</a> in Sierra Leone in 2014.</p>
+<div class="figure"><span id="fig:sierra-leone"></span>
+<img src="series_files/figure-html/sierra-leone-1.png" alt="An Ebola outbreak in Sierra Leone" width="384" />
+<p class="caption">
+Figure 2.1: An Ebola outbreak in Sierra Leone
+</p>
+</div>
+<p>These data represent the deaths due to Ebola in Sierra Leone. Constructing a model from disease dynamics is part of the field of <a href="https://en.wikipedia.org/wiki/Mathematical_modelling_of_infectious_disease">mathematical epidemiology</a>. How we construct a mathematical model of the spread of this outbreak largely depends on the assumptions underlying the dynamics of the disease, such as considering the rate of spread of Ebola. This model also depends on the spatial scale studied as well - how a model is constructed depends if we wish to examine the spread of the disease in an individual immune response, or understand general principles for the spread through a population.</p>
+<p>Basic questions that one can ask is if the rate of deaths due to Ebola proportional to:</p>
+<ul>
+<li>The number of people infected?</li>
+<li>The number of people not infected?</li>
+<li>The number of infected people coming into contact with those not infected?</li>
+</ul>
+<p>Let’s see what each of these mathematical models would look like if we wrote down an equation. Since we are discussing <em>rates</em> of infection, this means we will need a <em>rate of change</em> or derivative. Let’s use the letter <span class="math inline">\(I\)</span> to represent the number of people that are infected.</p>
+<div id="model-1-infection-rate-proportional-to-number-infected." class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Model 1: Infection rate proportional to number infected.</h3>
+<p>In the first case (the rate of infection proportional to the number of people infected), to translate that statement into an equation would be the following:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dI}{dt} = kI
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(k\)</span> can be thought of as a proportionality constant, with units of time<span class="math inline">\(^{-1}\)</span> for consistency. This is an example of a <em>differential equation</em>, which is just a mathematical equation with rates of change.</p>
+<p>Differential equations may look different because what we are solving for is the function <span class="math inline">\(I(t)\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Later on we will examine how to ``solve’’ a differential equation (which means we determine the family of functions consistent with our rate equation).</p>
+<p>Notice the proportionality constant <span class="math inline">\(k\)</span> - we call this a <em>parameter</em>. We can always try to solve an equation without specifying the parameter - and then if we wanted to plot a solution the parameter would also be specified. In some situations we may not be as concerned with the particular <em>value</em> of the parameter but rather its influence on the long-term behavior of the system (this is one aspect of <a href="https://en.wikipedia.org/wiki/Bifurcation_theory">bifurcation theory</a>). Otherwise we can use the collected data shown above with the given model to determine the value for <span class="math inline">\(k\)</span>. This combination of a mathematical model with data is called <em>data assimilation</em> or <em>model-data fusion</em>. How exciting!</p>
+<p>Before we think about possible solutions let’s try to reason out if the first model would be plausible. This model states that the rate of change (the amount of increase) gets larger the more people that are sick. That does seem reasonable as a model, but perhaps unreasonable in real life. In the case of Ebola or any other infection disease, stringent public health measures would be put in place before large numbers of people die. We would expect that the rate of infection would decrease and the number of deaths to slow. So perhaps the second model might be a little more plausible. At some point the number of people who are <em>not</em> sick will reach zero, making the rate of infection be zero (or no increase).</p>
+</div>
+<div id="model-2-infection-rate-proportional-to-number-not-infected." class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Model 2: Infection rate proportional to number NOT infected.</h3>
+<p>In this description notice how we are talking about people who are sick (which we have denoted as <span class="math inline">\(I\)</span>) and people who are <em>not</em> sick. This looks like we might need to introduce another variable for the ``not sick’’ people, which we will call <span class="math inline">\(S\)</span>, or susceptible. So the differential equation we would write down would be:</p>
+<p><span class="math display" id="eq:01notinfected">\[\begin{equation} 
+\frac{dI}{dt} = kS  \tag{2.1}
+\end{equation}\]</span></p>
+<p>We are still using the parameter <span class="math inline">\(k\)</span> as with the previous model. Also note we introduced the second variable <span class="math inline">\(S\)</span> is in Equation <a href="models-of-rates-with-data.html#eq:01notinfected">(2.1)</a>. Because we have introduced another variable <span class="math inline">\(S\)</span> we should also include a differential equation for how <span class="math inline">\(S\)</span> changes as well. One way that we can do this is by considering our entire population as consisting of two groups of people: <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span>. Infection brings someone over from <span class="math inline">\(S\)</span> to <span class="math inline">\(I\)</span>, which we have in this diagram:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>There are three reasons why I like to use diagrams like these: (1) they help organize my thinking about a mathematical model (2) any assumed parameters are listed, and (3) they help me to see that rates can be conserved. In other words, if I enter into the box for <span class="math inline">\(I\)</span>, then someone is leaving <span class="math inline">\(S\)</span>. In other words, <span class="math inline">\(\displaystyle \frac{dS}{dt} = -kS\)</span>. So the two equations together can be represented as:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{dS}{dt} &amp;= -kS \\
+\frac{dI}{dt} &amp;= kS
+\end{align*}\]</span></p>
+<p>This differential equation is what we would call a <em>coupled differential equation</em>. In order to ``solve’’ the system we need to determine functions for <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span>. This coupled set of equations looks a little clunky, but we do notice something cool. Algebriacally we have:</p>
+<p><span class="math display">\[\begin{equation} 
+\frac{dS}{dt} +  \frac{dI}{dt} = \frac{d(S+I)}{dt} = 0
+\end{equation}\]</span></p>
+<p>Recall from calculus that if a rate of change equals zero then the function is constant. In this case, the variable <span class="math inline">\(S+I\)</span> is constant, or we can also call <span class="math inline">\(S+I=N\)</span>, the number of people in the population. This means that <span class="math inline">\(S=N-I\)</span>, so we can re-write our differential equation in one equation:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dI}{dt} = k(N-I)
+\end{equation}\]</span></p>
+<p>This second model does have some limiting behavior to this model as well. As the number of infected people reaches <span class="math inline">\(N\)</span> (the total population size), the values of <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> approaches zero, meaning <span class="math inline">\(I\)</span> doesn’t change. There is one caveat to this - if there are no infected people around (<span class="math inline">\(I=0\)</span>) <em>the disease can still be transmitted</em>, which might make not good biological sense.</p>
+</div>
+<div id="model-3-infection-rate-proportional-to-infected-meeting-not-infected." class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Model 3: Infection rate proportional to infected meeting not infected.</h3>
+<p>The third model rectifies some of the shortcomings of the second model (which rectified the shortcomings of the first model). This model states that the rate of infection is due to those who are sick, actually infecting those who are not sick. This would sort of scenario would also make some sense, as it focused on that <em>transmission</em> of the disease are between susceptibles and infected people. So if nobody is sick (<span class="math inline">\(I=0\)</span>) then the disease is not spread. Likewise if there are no susceptibles (<span class="math inline">\(S=0\)</span>), the disease is not spread as well.</p>
+<p>In this case the diagram outlining this approach looks something like this:</p>
+<p><img src="series_files/figure-html/logistic-1.png" width="672" /></p>
+<p>The differential equations that describe this scenario are the following:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{dS}{dt} &amp;= -kSI \\
+\frac{dI}{dt} &amp;= kSI
+\end{align*}\]</span></p>
+<p>Just like before for Model 2 we can combine the two equations to yield a single differential equation:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dI}{dt} = k\cdot I \cdot (N-I)
+\end{equation}\]</span>
+Look’s pretty similar to model 2, doesn’t it? In this case notice the variable <span class="math inline">\(I\)</span> outside the expression. Notice this seems to be appropriate - if <span class="math inline">\(I=0\)</span>, then there is no increase in infection. If <span class="math inline">\(I=N\)</span> (the total population size) then there is no increase in the infection.</p>
+</div>
+</div>
+<div id="the-qualitative-nature-of-solution-curves" class="section level2">
+<h2><span class="header-section-number">2.3</span> The qualitative nature of solution curves</h2>
+<p>So far we have primarily been focused on the qualitative understanding of the different models. One way we can look at how these different models work together is by plotting <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> versus <span class="math inline">\(I\)</span>. I know we have the parameters <span class="math inline">\(k\)</span> and <span class="math inline">\(N\)</span> to specify, but let’s just set them to be <span class="math inline">\(k=1\)</span> and <span class="math inline">\(N=10\)</span> respectively. Plots of these functions are shown in Figure <a href="models-of-rates-with-data.html#fig:threeRates">2.2</a>.</p>
+<div class="figure"><span id="fig:threeRates"></span>
+<img src="series_files/figure-html/threeRates-1.png" alt="Comparing rates of change for three models" width="384" />
+<p class="caption">
+Figure 2.2: Comparing rates of change for three models
+</p>
+</div>
+<p>There is a lot that we can tell from this figure. Notice how the sign of <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> is always positive for Model 1, indicating that the solution (<span class="math inline">\(I\)</span>) is always increasing. For Models 2 and 3, <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> equals zero when <span class="math inline">\(I=10\)</span>, which also is the value for <span class="math inline">\(N\)</span> After that case, <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> turns negative, meaning that <span class="math inline">\(I\)</span> is decreasing.</p>
+<p>In summary, we can tell a lot about the <em>qualitative behavior</em> of a solution to a differential equation even without the solution.</p>
+</div>
+<div id="simulating-a-differential-equation" class="section level2">
+<h2><span class="header-section-number">2.4</span> Simulating a differential equation</h2>
+<p>Let’s talk solutions. One thing to note is that usually a differential equation also has a starting, or an initial value that actualizes the solution. When we state a differential equation with a starting value we have an <strong>initial value problem</strong>. For our case here we will assume that <span class="math inline">\(I(0)=I_{0}\)</span>, where this is also another parameter at our disposal.</p>
+<p>With that assumption, we can (and will solve later!) the following solutions for these models:</p>
+<p><span class="math display">\[\begin{align*}
+\mbox{ Model 1 (Exponential): } &amp; I(t) = I_{0}e^{kt} \\
+\mbox{Model 2 (Saturating): } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Model 3 (Logistic): } &amp; I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}}
+\end{align*}\]</span></p>
+<pre><code>## Warning: Removed 63 row(s) containing missing values (geom_path).</code></pre>
+<div class="figure"><span id="fig:threeSoln"></span>
+<img src="series_files/figure-html/threeSoln-1.png" alt="Three models compared" width="384" />
+<p class="caption">
+Figure 2.3: Three models compared
+</p>
+</div>
+<p>In Figure <a href="models-of-rates-with-data.html#fig:threeSoln">2.3</a>, I plot these solutions over the course of several days, using <span class="math inline">\(k=0.03\)</span> and <span class="math inline">\(N=4000\)</span> and <span class="math inline">\(I_{0}=5\)</span>. Notice how Model 1 increases quickly - it actually grows without bound off the chart! Model 2 and Model 3 have saturating behavior, but it looks like Model 3 might be the one that actually captures the trend of the data. Models 2 and 3 are more commonly known as the <strong>saturating</strong> and <strong>logistic</strong> models respectively.</p>
+</div>
+<div id="which-model-is-best" class="section level2">
+<h2><span class="header-section-number">2.5</span> Which model is best?</h2>
+<p>All three of these scenarios describe different modeling scenarios. While we haven’t solved these differential equations, we do have some intuitive sense of what could occur. With the saturating and logistic models (Models 2 and 3) we have some limiting behavior the possibility that the the rate of infecion slows. There are several possible models that on the surface seem plausible, but which one is the <em>best</em> one? We will also address that question later on in this textbook when we discuss <em>model selection</em>.</p>
+<p>Model selection is one key part of the modeling hypothesis - where we investigate the implications of a particular model analyzed. If we don’t do this, we don’t have an opportunity to test out what is plausible and what is believeable in our models.</p>
+<div style="page-break-after: always;"></div>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-4" class="exercise"><strong>Exercise 2.1  </strong></span>Solutions to an outbreak model of the flu are the following:
+<span class="math display">\[\begin{align*}
+\mbox{Saturating model: } &amp; I(t) = 3000-(2990)e^{-.1t} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{30000 }{10+(2990)e^{-.15t}},
+\end{align*}\]</span></p>
+where <span class="math inline">\(t\)</span> is in days. Make a plot of both of these models for <span class="math inline">\(0 \leq t \leq 100\)</span>. How would you describe the growth of the outbreak as <span class="math inline">\(t\)</span> increases? How many people will be infected overall? Finally,evaluate <span class="math inline">\(\lim_{t \rightarrow \infty} I(t)\)</span>. How do these results compare to values found on your graph?
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-5" class="exercise"><strong>Exercise 2.2  </strong></span>The general solution for the saturating and the logistic models are:
+<span class="math display">\[\begin{align*}
+\mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
+\end{align*}\]</span>
+where <span class="math inline">\(I_{0}\)</span> is the initial number of people infected and <span class="math inline">\(N\)</span> is the overall population size. Using the functions from the previous exercise, for both models, what are <span class="math inline">\(N\)</span> and <span class="math inline">\(I_{0}\)</span>?
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-6" class="exercise"><strong>Exercise 2.3  </strong></span>The general solution for the saturating and the logistic models are:
+<span class="math display">\[\begin{align*}
+\mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
+\end{align*}\]</span>
+where <span class="math inline">\(I_{0}\)</span> is the initial number of people infected and <span class="math inline">\(N\)</span> is the overall population size. For both models carefully evaluate the limits to show <span class="math inline">\(\lim_{t \rightarrow \infty} I(t)=N\)</span>. How do these compare to the steady-state values you found for Models 2 and 3 of the outbreak data?
+</div>
+
+<p> </p>
+<div class="figure"><span id="fig:liberia"></span>
+<img src="series_files/figure-html/liberia-1.png" alt="An Ebola outbreak in Liberia in 2014" width="384" />
+<p class="caption">
+Figure 2.4: An Ebola outbreak in Liberia in 2014
+</p>
+</div>
+ 
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-7" class="exercise"><strong>Exercise 2.4  </strong></span>Figure <a href="models-of-rates-with-data.html#fig:liberia">2.4</a> shows the Ebola outbreak for the country of Liberia in 2014.
+If we were to apply the logistic model based on this graphic what would be your estimate for <span class="math inline">\(N\)</span>?
+</div>
+
+ 
+<!-- Sethi model for advertising -->
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-8" class="exercise"><strong>Exercise 2.5  </strong></span>A model that describes the growth of sales of a product in response to advertising is the following:
+<span class="math display">\[\frac{dS}{dt} = .55\sqrt{1-S}-S, \]</span>
+where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1). Make a plot of the function <span class="math inline">\(f(S)=.55\sqrt{1-S}-S\)</span>. for <span class="math inline">\(0 \leq S \leq 1\)</span>. Interpret your plot to predict when the market share will be increasing and decreasing. At what value is <span class="math inline">\(\frac{dS}{dt}=0\)</span>? (This is called the <strong>steady-state</strong> value.).</p>
+<p>A second campaign is has the following differential equation:
+<span class="math display">\[\frac{dS}{dt} = .2\sqrt{1-S}-S \]</span></p>
+What is the steady-state value and how does it compare to the previous one?
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-9" class="exercise"><strong>Exercise 2.6  </strong></span>A more general form of the advertising model is the following:
+<span class="math display">\[\frac{dS}{dt} = r\sqrt{1-S}-S, \]</span>
+where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1). The parameter <span class="math inline">\(r\)</span> is related to the effectiveness of the advertising (between 0 and 1). Solve this equation for the steady state value (where <span class="math inline">\(\frac{dS}{dt}=0\)</span>). Make a plot of the steady state value as a function of <span class="math inline">\(r\)</span>, where <span class="math inline">\(0 \leq r \leq 1\)</span>. What can you conclude about the steady state value as the effectiveness of the advertising increases?
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-10" class="exercise"><strong>Exercise 2.7  </strong></span>A common saying is ``You are what you eat.’’ This saying is mostly true and can be related in a mathematical model! An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by:
+<span class="math display">\[\begin{equation}
+ y = c x^{1/\theta},
+\end{equation}\]</span>
+where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c\)</span> are both constants is a constant. Units on <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are expressed as a proportion of a given nutrient (such as nitrogen or carbon).</p>
+<p>Let’s start with an example: <span class="math inline">\(y=x\)</span>. In this case the point <span class="math inline">\((0.05,0.05)\)</span> would say that if an animal ate food that was 5% nitrogen, their body composition would be 5% as well.</p>
+Let’s just assume that <span class="math inline">\(c=1\)</span>. How does the nutrient content of the consumer compare to the food when <span class="math inline">\(\theta=2\)</span>? <span class="math inline">\(\theta = 5\)</span>? <span class="math inline">\(\theta \rightarrow \infty\)</span>? Draw some sample curves to help illustrate your findings.
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-11" class="exercise"><strong>Exercise 2.8  </strong></span>A model for the outbreak of a cold virus assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in the logistic model 3. However people who are infected can also recover and become susceptible again with rate <span class="math inline">\(\alpha\)</span>. Construct a diagram similar Model 3 for this scenario and also write down the system of differential equations.
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-12" class="exercise"><strong>Exercise 2.9  </strong></span>A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3. However people also account for recovering from the flu, denoted with the variable <span class="math inline">\(R\)</span>. Assume that the rate of recovery is proportional to the number of infected people with parameter <span class="math inline">\(\beta\)</span>. Construct a diagram like Model 3 for this scenario, and also write down the system of differential equations.
+</div>
+
+ 
+<!-- Van den Berg page 19 -->
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-13" class="exercise"><strong>Exercise 2.10  </strong></span>Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
+<p><span class="math display">\[\frac{dS}{dt} = I + p \cdot (W - S), \]</span></p>
+where the parameter <span class="math inline">\(I\)</span> represents the active uptake of salt, <span class="math inline">\(p\)</span> is the permeability of the skin, and <span class="math inline">\(W\)</span> is the salinity in the water. What is that value of <span class="math inline">\(S\)</span> at <em>steady state</em>, or when <span class="math inline">\(\displaystyle \frac{dS}{dt} = 0\)</span>?
+</div>
+
+ 
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-14" class="exercise"><strong>Exercise 2.11  </strong></span>Use your steady state solution from the last exercise to determine what parameters (<span class="math inline">\(I\)</span>, <span class="math inline">\(p\)</span>, or <span class="math inline">\(W\)</span>) cause the steady state value <span class="math inline">\(S\)</span> to increase?
+</div>
+
+<p> </p>
+<!-- From LW -->
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-15" class="exercise"><strong>Exercise 2.12  </strong></span>The immigration rate of bird species (species per time) from a mainland to an offshore island is <span class="math inline">\(I_{m} \cdot (1-S/P)\)</span>, where <span class="math inline">\(I_{m}\)</span> is the maximum immigration rate, <span class="math inline">\(P\)</span> is the size of the source pool of species on the mainland, and <span class="math inline">\(S\)</span> is the number of species already occupying the island. Further, the extinction rate is <span class="math inline">\(E \cdot S / P\)</span>, where <span class="math inline">\(E\)</span> is the maximum extinction rate. The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
+</div>
+
+<p> </p>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-16" class="exercise"><strong>Exercise 2.13  </strong></span>This problem relates to animal size and volume. Assume that an animal assimilates nutrients at a rate <span class="math inline">\(R\)</span> proportional to its surface area. Also assume that it uses nutrients at a rate proportional to its volume. You may assume that the size of the animal is implicitly a function of the nutrient intake and usage. Determine the size of the animal if its intake and use rates were in balance (meaning <span class="math inline">\(R\)</span> is set to zero), assuming the animal is the following shapes:</p>
+For both of these problems your goal is to determine a numeric value of <span class="math inline">\(r\)</span> and <span class="math inline">\(l\)</span>.
+</div>
+
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>You may be used to working with <em>algebraic equations</em> (e.g. solve <span class="math inline">\(x^{2}-4=0\)</span> for <span class="math inline">\(x\)</span>). In that case the solution can be points (for our example, <span class="math inline">\(x=\pm2\)</span>).<a href="models-of-rates-with-data.html#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="write.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/01-intro.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
