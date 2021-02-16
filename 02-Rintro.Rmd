@@ -1,0 +1,352 @@
+# Introduction to R
+The primary tool we have to analyze models will be `R` and `RStudio`, which are commonly used for scientific and statistical computations.  This is an exciting program and powerful program to learn!  Admittedly learning a software requires a learning curve, however I think it is worth it.  With `R` you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models.
+
+## R and RStudio
+We will use a lot with RStudio, which is an Integrated Development Environment for R.
+These are two separate downloads and files, which can be found here:
+
+- R: [https://cran.r-project.org/mirrors.html](Link to download mirror) (you need to select a location to download from; choose any one that is geographically close to you.)
+- RStudio: [https://www.rstudio.com/products/rstudio/download/](Choose RStudio desktop - the free version).
+
+### Why do we have two programs?
+Think of R as your basic program - this is the engine that does the computation.  RStudio was developed as an Integrated Development Environment - meaning a place where you can see everything you are working on in one place.  Here is an example of an RStudio pane that I have:
+
+```{r, echo=FALSE,out.width = "5in"}
+knitr::include_graphics("figures/02-intro/rStudio-pane.png")
+```
+
+
+
+There are 4 key panels that I work with, clockwise from the top:
+
+* The **source** window is in the upper left - notice how those have different tabs associated with them.  You can have multiple source files that you can toggle between.  For the moment think of these as commands that you will want to send to R.
+* The **environment** and **history** pane - these tables allow you to see what variables are stored locally in your environment, or the history of commands.
+* The **files** and **plots** command (a simple plot I was working on is shown currently), but you can toggle between the tabs.  The files tab shows the files in the current Rstudio project directory.
+* Finally, the **console** pane is the place where R works and runs commands.  You can type in there directly, otherwise we will also just ``send'' commands from the source down to the console.
+
+
+## Working with RStudio.
+
+### First steps with RStudio: how does this all work?
+Let's get started!  Open up RStudio.  Task one will be to create a project.  A project is a central place to organize your materials for this course.  You may do this already, but R can be picky about its working directory - and navigating to it.  I found creating a project file is an easy way to avoid some of that fussiness.  Let me describe steps in how to do this.
+
+1. In RStudio select "File" then  "New Project"
+2. Next select the first option "New Directory" in the window - this will create a new folder on your computer.
+3. At the next window choose New Directory or Existing Directory - it depends on where you want to place this project.
+4. Name the project as you like.
+5. Click the "Create Project" button.
+
+
+### "Working" with R
+Our next step: where do we get R to do something? For exmaple if we wanted to know the result of `4+9` (yeah, it is 13, but this is an illustrative example), we could type this command in the R console (lower right) window.  This works well if you have one or two things to quickly evaluate, but for multi-line code (or code we want to save) working with a script file is better.
+
+
+What we are going to do is work with a source file, or the upper left hand corner of the window.  You may not have anything there when you start working on a project, so let's create one.
+
+1. In `RStudio` select "File" then "New File"
+2. Next select the first option "New Script"
+3. A new window called "UntitledX" should appear, where X is a number.  You are set to go!
+
+I like to use this window as a file to type stuff in and then evaluate it, which we will do next.
+
+**Pro tip:** There are shortcuts to creating a new file: Ctrl+Shift+N (Windows and Linux) or	Command+Shift+N (Mac)
+
+### Sending commands down to console.
+Now we want to type and evaluate a command for R to do something.  Click anywhere in the source file that you created and type the following:
+
+```{r}
+4+9
+```
+
+You have several options:
+
+1. Copying and pasting the command to the window.  Shortcuts are Ctrl+C / Command+C for copying and Ctrl+V / Command+C for Windows / Mac.
+2. Run the line.  This means that your cursor is at the line in your source file, then clicking the 'Run' button in the upper right hand side of the source window.  Shortcuts are Ctrl+Enter / Command+Enter.
+
+```{r, echo=FALSE,out.width = "5in"}
+knitr::include_graphics("figures/02-intro/rStudio-pane-source.png")
+```
+
+
+ 
+3. You can also source the whole file, which means runs all the lines from top to bottom. You do this by clicking the source button, or with shortcuts Ctrl+Shift+Enter / Cmd+Shift+Enter (Windows / Mac).
+
+### Defining variables
+The next thing we will want to do is to define variables that are stored locally.  This is pretty easy to do:
+
+```{r}
+x <- 5
+```
+
+The symbol `<-` is assignment (you can use equals, but it is good coding practice to use the arrow for assignment).
+
+
+### Saving your work
+The neat part about a source file is that it allows you to save the file (Ctrl+S / Cmd+S).  The first time you do this you may need to give this a name.  The location where this file will be saved is in the same directory as your `.Rproj` project file.  Now you have a file that you can come back to!
+
+&nbsp;
+
+```{example}
+Define a sequence, spaced from 0 to 5 with spacing of 0.05.  Store this in a variable called `my_sequence`
+```
+
+To do this we use the `seq` command and requires the starting value, ending value, and step size:
+```{r eval=FALSE}
+my_seq <- seq(0,5,0.05)
+```
+
+
+The format is `seq(start,end,step_size)`.  The `seq` command is a pretty flexible - there are alternative ways you can generate a sequence by specifying the starting and the end values along with the number of points. If you want to know more about `seq` you can always use `?` followed by the command - that will bring up the help values:
+
+```{r eval=FALSE}
+?seq
+```
+  
+## Data frames
+A key structure in `R` is that of a data frame, which allows different types of data to be collected together. The basic example to think of is like a spreadsheet where each column is a value and each row a value (much like you would find in a spreadsheet):
+
+```{r echo = FALSE, message=FALSE,results='asis'}
+kable(mtcars[1:5,c(1,3)],caption = 'A data frame')
+```
+
+This data table shows the miles per gallon in one column (the variable `mpg` and the engine size (the variable `disp`) for different types of cars.  The row names (`Mazda RX4`) just tell you the type of the car.  Sometimes row names are not shown.
+
+Another data frame may list solutions to a differential equation, like we did with our three infection models in Chapter 1:
+
+```{r echo = FALSE, message=FALSE, results='asis'}
+time <- seq(0,600,length.out=100)
+n <- 4000
+k <- 0.03
+i0 <- 5
+
+model_out <- data.frame(time,model_1=i0*exp(k*x),model_2=n-(n-i0)*exp(-k*x),model_3=n*i0/(i0 + (n-i0)*exp(-k*x)))
+kable(model_out[1:5,],caption = 'Model Solutions')
+```
+
+
+
+
+## Third steps with RStudio: packages
+One awesome versatility with R is the ability to add packages - these packages extend the functionality of R with contributed, specialized code. These are similar to apps on your phone.  You can get packages from a few different places:
+
+- [CRAN](https://cran.r-project.org/), which stands for Comprehensive R Archive Network.  This is the clearing house for many contributed packages - and allows for easy cross platform functonality.
+
+One key package is [`tidyverse`](https://www.tidyverse.org/), which is actually a collection of packages.  If you take an introductory data science course you will most likely be learning more about this package, but to install this at the command line you type the following:
+
+```{r eval=FALSE}
+install.packages('tidyverse')
+```
+
+Typing this line will connect to the CRAN download mirrors and install this set of packages locally to your computer.  It make take some time, but be patient.
+
+Another package you should install is `devtools`:
+
+```{r eval=FALSE}
+install.packages('devtools')
+```
+
+Sometimes when you are installing packages you may be prompted to install additional packages.  In this case just say yes.
+
+- Github.  This is another place where people can share code and packages.  The code here has not been vetted through CRAN for compatability, but if you trust the person sharing the code, it should work.  In order to do this we will need to first load up the `devtools` library:
+
+```{r eval=FALSE}
+library(devtools)
+install_github("jmzobitz/MAT369Code",build_vignettes= TRUE)
+```
+
+What this command will do is pull in the package structure from my github page and install it locally.
+
+Here is the good news: you only need to install a package once before using it!  To load the package up into your workspace you use the command `library`:
+
+```{r eval=FALSE}
+library(tidyverse)
+library(MAT369Code)
+```
+
+You only need to do this once each time you restart your R session.
+
+
+## Fourth steps with RStudio: working with functions
+Now we are ready to begin working with datasets and functions.  One dataset we have is the mass of a dog over time, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  We have two variables here: $D=$ the age of the dog in days and $W=$ the weight of the dog in pounds.  I have the data loaded into the `MAT369Code` package, which you can investigate by typing the following at the command line (I display it below as well):
+
+```{r eval=FALSE}
+wilson
+```
+
+```{r echo = FALSE, message=FALSE,results='asis'}
+kable(wilson,caption = 'Weight of a dog over time') 
+```
+
+To make a scatter plot of these data we can use the function `plotData`:
+```{r,fig.width=4,fig.height=3}
+plotData(wilson,x_label='Days since birth',y_label = 'Weight in pounds')
+```
+
+Notice the format of this function's inputs:
+
+- the data frame `wilson`
+- The label for the x axis
+- The label for the y axis.
+
+Later on we will study that the function $\displaystyle W =f(D)= \frac{70}{1+e^{2.46-0.017D}}$. represents these data.  In order to make a plot of this function we can use `plotFunction`, which has a data frame as inputs:
+
+```{r,fig.width=4,fig.height=3}
+days <- seq(0,1500,by=1)
+mass <-  70/(1+exp(2.46-0.017*days))
+
+plotFunction(days,mass,x_label='Days since birth',y_label = 'Weight in pounds')
+```
+Finally you perhaps want to compare the function to the data, the command \texttt{plotFunction\_Data} will do that for you:
+
+```{r,fig.width=4,fig.height=3}
+days <- seq(0,1500,by=1)
+mass <-  70/(1+exp(2.46-0.017*days))
+
+plotFunction_Data(days,mass,wilson,x_label='Days since birth',y_label = 'Weight in pounds')
+```
+
+We will study lots of other built-in functions for this course, but you may also be wondering how you define your own function (let's say $y=x^{3}$).  We need the following construct:
+
+```{r eval=FALSE}
+
+function_name <- function(inputs) {
+  
+  # Code
+  
+  return(outputs)
+}
+```
+
+Here `function_name` serves as what you call the function, inputs are what you need in order to run the function, and outputs are what gets returned.  So if we are doing $y=x^{3}$ then we will call that function `cubic`:
+
+```{r}
+cubic <- function(x) {
+  y=x^3
+  return(y)
+}
+```
+
+So now if we want to evaluate $y(2)=2^{3}$ we type `cubic(2)`.  Neat!
+
+## Reading in datasets
+R has a lot of built in datasets!  In fact to see all the datasets, type `data()` at the console.  This will popup a new window in RStudio with the names.  Cool!
+
+If you want to see the datasets for a specific package (such as `MAT369Code`) you type `data(package = "MAT369Code")` at the console.
+
+Perhaps what is most important is being able to read in datasets provided to you.  Data come in several different types of formats, but one of the more versatile ones are csv (**c**omma **s**eparated **v**alues).  What you need to do is the following:
+
+- Where you have your .Rproj file located, create a folder called `data` or `datasets`
+- Save the file locally on your computer. Take note where you have it saved on your computer, and drag the file to your `data` folder.
+- To read in the file you will use the command `read_csv`, which has the following structure:
+
+```{r eval=FALSE}
+in_data <- read_csv(FILENAME)
+```
+
+The data gets assigned to the variable `in_data` (You can call this variable what you want.)  For example I have the following csv file of ebola data, which I read in via the following:
+
+```{r eval=FALSE}
+ebola <- read_csv("data/ebola.csv")
+```
+
+Notice the quotes around the FILENAME.  **Pro tip:** If you have the data files in the data folder, in RStudio you can type "data" and it may start to autocomplete - this is hand (you can also use tab.)
+
+
+## Concluding thoughts
+This is not meant to be a self-contained chapter in `R` but rather one to get you  - those miles have been trod by others, and here are few of my favorites that I turn to:
+
+
+* [The Pirates Guide to R](https://bookdown.org/ndphillips/YaRrr/).  This book promises to build your R knowledge from the ground up.
+* [R for Reproducible Scientific Analysis](http://swcarpentry.github.io/r-novice-gapminder/).  This set of guided tutorials can help you build your programming skills in R.
+* [R for Data Science](https://r4ds.had.co.nz/) this is a useful book to take your R knowledge to the next level.
+
+The best piece of advice: DON'T PANIC!  Patience and persistence are your friend. Reach out for help, and recognize that like with any new endeavor, practice makes progress.
+
+\newpage
+
+## Exercises
+
+```{exercise}
+For this exercise you will do some plotting:
+\begin{enumerate}
+\item Define a sequence (call this sequence $x$) that ranges between -12 to 12 with spacing of .05.
+\item Also define the variable $y$ such that $y=\sin(x)$.
+\item Use \texttt{plotFunction} to graph $y=\sin(x)$.  Label the x-axis with your favorite book title. Label the y-axis with your favorite food to eat.
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+For this exercise you will import in data to make a scatterplot.
+\begin{enumerate}
+\item Download the file \texttt{hw1Data.csv} found on the \emph{moodle} website.
+\item Load in the csv file to the R workspace.
+\item Use `plotData` to make a scatter plot of the data.  Label the x and y axes correctly.
+\item A function that describes these data is $C= 0.0002y^{2} + 0.006y + 13.864$.  Use \texttt{plotFunction\_Data} to make a graphic of the data with the function.
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+For this exercise you will investigate some built-in functions.  Remember you can learn more about a function by typing `?FUNCTION`, where `FUNCTION` is the name.
+\begin{enumerate}
+\item Explain (using your own words) what the function \texttt{runif(1,100,1000)} does.
+\item Explain (using your own words) what the function \texttt{ceiling()} does, showing an example of its use.
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+For this exercise you will investigate some built-in functions.  Remember you can learn more about a function by typing `?FUNCTION`, where `FUNCTION` is the name.
+\begin{enumerate}
+\item Create a new source file and save it as \texttt{myFunction.R}.
+\item Type this code the file you created: `myInteger = ceiling(runif(1, 100, 1000))` (This will declare a variable `myInteger` that you will work with in the following steps.)
+\item Determine a function in R that will \textbf{compute a cumulative sum} from 1 to the value of `myInteger`.  Modify your file so that it also computes the cumulative sum and then source your file.
+\item Copy and paste your function into your homework document for evaluation.
+\end{enumerate}
+```
+
+&nbsp;
+```{exercise}
+An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c$ are both constants is a constant.  Let's just assume that $c=1$. Use the code `plotFunction` to make a plot of the curve for different values of $\theta>1$, appropriately labeling all axes. Scale both axes to range between 0 to 1.
+```
+&nbsp;
+```{exercise}
+Researchers measured the phosphorous content of *Daphnia* and its primary food source algae.  They believe that *Daphnia* has strict homeostatic regulation of the phosphorous in algae, and as such want to determine the value of $\theta$ in the equation $y= \displaystyle y = c x^{1/\theta}$.  They have determined that the value of $c=1.737$.
+
+\begin{enumerate}
+\item With the dataset `phosphorous` and the function \texttt{plotData} make a scatter plot of the data.
+\item Make an initial guess for $\theta$ that would be consistent with the data.
+\item Use the function \texttt{plotFunction\_Data} to determine how well your guess for $\theta$ matches the data.
+\item Use guess and check to refine the value of $\theta$ that seems to work best.
+\item When you have the correct value, enter in the value of $\theta$ by clicking on [here](https://tinyurl.com/day2theta).
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+The Ebola outbreak in Africa in 2014 severely affected the country of Sierra Leone.  A model for the number of deaths $D$ due to ebola is given by the following equation:
+$$ D(t) = \frac{K \cdot N_{0} }{N_{0} + (K-N_{0})  \exp(-rt)}, $$
+where $K = 3980$, $N_{0}=5$ and $r = 0.0234$.  The variable $t$ is in days. Use `plotFunction` to visualize this curve from $0 \leq t \leq 700$.
+```
+&nbsp;
+```{exercise}
+Consider the following piecewise function:
+\begin{equation}
+y =
+\begin{cases}
+x^2 & \text{ for } 0 \leq x < 1,\\
+2-x &\text{ for } 1 \leq x < 2 \\
+\end{cases}
+\end{equation}
+Use `plotFunction` generate a graph of $y(x)$ over the interval $0 \leq x \leq 2$.
+```
+&nbsp;
+```{exercise}
+An insect's development rate $r$ depends on temperature $T$ (degrees Celsius) according to the following equation:
+\begin{equation}
+r =
+\begin{cases}
+0.1 & \text{ for } 17 \leq T < 27,\\
+0 &\text{ otherwise.}
+\end{cases}
+\end{equation}
+Use `plotFunction` to generate a graph of $r$ over the interval $0 \leq T \leq 30$. Include the code that you used to generate your function.
+```
+
