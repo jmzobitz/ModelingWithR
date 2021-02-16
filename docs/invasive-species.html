@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R</title>
+  <title>3.3 Invasive species | Exploring modeling with data and differential equations using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  <meta property="og:title" content="3.3 Invasive species | Exploring modeling with data and differential equations using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Models of rates with data | Exploring modeling with data and differential equations using R" />
+  <meta name="twitter:title" content="3.3 Invasive species | Exploring modeling with data and differential equations using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="what-is-the-book-about.html"/>
+<link rel="prev" href="the-law-of-mass-action.html"/>
+<link rel="next" href="other-types-of-functional-responses.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -111,16 +111,33 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="models-of-rates-with-data" class="section level1">
-<h1><span class="header-section-number">Chapter 2</span> Models of rates with data</h1>
+<div id="invasive-species" class="section level2">
+<h2><span class="header-section-number">3.3</span> Invasive species</h2>
+<p>Let’s look at another example where we will determine a differential equation model from a context:</p>
+<blockquote>
+<p>An invasive species enters new territory at a rate proportional to the difference between the current number of native individuals and the number of invasive individuals established in the territory. Assume that the number of native individuals is constant.
+<!-- LW pg 5 --></p>
+</blockquote>
+<p>For this problem we will start by naming our variables. Let <span class="math inline">\(I\)</span> represent number of invasive individuals and <span class="math inline">\(N\)</span> the number of native individuals. We will break this down accordingly:</p>
+<ul>
+<li><em>An invasive species enters new territory at a rate proportional</em> means <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span>.</li>
+<li><em>proportional to the difference between the current number of native individuals and the number of invasive individuals established in the territory</em> means <span class="math inline">\(\displaystyle k \cdot (N-I)\)</span>, where <span class="math inline">\(k\)</span> is the proportionality constant. Including this parameter helps to avoid assuming we have a 1:1 correspondence between the growth rate of the invasive individuals and the population difference.</li>
+<li><em>Assume that the number of native individuals is constant.</em> This means that <span class="math inline">\(N=C\)</span>, or equivalently <span class="math inline">\(\displaystyle \frac{dN}{dt} = 0\)</span> (a constant function has zero rate of change).</li>
+</ul>
+<p>So in summary we have the following model:
+<span class="math display">\[\begin{equation}
+\frac{dI}{dt} = k(N-I)
+\end{equation}\]</span></p>
+<p>Does this equation seem familiar to you? It is similar to the second model in Chapter 1 for the spread of Ebola! While this may seem surprising, it is often the case that similar equations appear in different contexts. It is far more advantageous to learn how to analyze models qualitatively rather than memorize several different types of models and not see the connections between them.</p>
+<!-- LW pg 73 has some good examples, derived in handlingh patches. -->
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="what-is-the-book-about.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="the-law-of-mass-action.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="other-types-of-functional-responses.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -151,7 +168,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/jules32/bookdown-tutorial/edit/master/01-intro.Rmd",
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/03-modelingWithRates.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -159,7 +176,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://jmzobitz.github.io/ModelingWithR/01-intro.Rmd",
+"link": "https://jmzobitz.github.io/ModelingWithR/03-modelingWithRates.Rmd",
 "text": null
 },
 "download": ["series.pdf"],

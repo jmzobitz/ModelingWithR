@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.1 Lynx and Hares | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.1 Lynx and Hares | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.1 Lynx and Hares | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-02-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modeling-with-rates-of-change.html"/>
+<link rel="next" href="the-law-of-mass-action.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Hands-On Data Visualization</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="2" data-path="models-of-rates-with-data.html"><a href="models-of-rates-with-data.html"><i class="fa fa-check"></i><b>2</b> Models of rates with data</a><ul>
+<li class="chapter" data-level="2.1" data-path="what-is-the-book-about.html"><a href="what-is-the-book-about.html"><i class="fa fa-check"></i><b>2.1</b> What is the book about?</a></li>
+<li class="chapter" data-level="2.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>2.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="2.3" data-path="the-qualitative-nature-of-solution-curves.html"><a href="the-qualitative-nature-of-solution-curves.html"><i class="fa fa-check"></i><b>2.3</b> The qualitative nature of solution curves</a></li>
+<li class="chapter" data-level="2.4" data-path="simulating-a-differential-equation.html"><a href="simulating-a-differential-equation.html"><i class="fa fa-check"></i><b>2.4</b> Simulating a differential equation</a></li>
+<li class="chapter" data-level="2.5" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>2.5</b> Which model is best?</a></li>
+<li class="chapter" data-level="2.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modeling-with-rates-of-change.html"><a href="modeling-with-rates-of-change.html"><i class="fa fa-check"></i><b>3</b> Modeling with rates of change</a><ul>
+<li class="chapter" data-level="3.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>3.1</b> Lynx and Hares</a></li>
+<li class="chapter" data-level="3.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="invasive-species.html"><a href="invasive-species.html"><i class="fa fa-check"></i><b>3.3</b> Invasive species</a></li>
+<li class="chapter" data-level="3.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>3.4</b> Other types of functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lynx-and-hares" class="section level2">
+<h2><span class="header-section-number">3.1</span> Lynx and Hares</h2>
+<p>Our first example is a <em>system of differential equations</em>. The context is between the snowshoe hare and the Canadian lynx. Here is a picture of them below from <a href="https://www.cbc.ca/news/canada/north/canseq150-genome-sequencing-lynx-hare-1.4676308">link</a></p>
+<p><img src="figures/03-systems/lynx-hare.png" width="5in" /></p>
+<p>This has been a well studied system (REFERENCES), and a timeseries of their population is shown with this figure from REFERENCE.</p>
+<p><img src="figures/03-systems/lynx-hare-timeseries.png" width="5in" /></p>
+<p>Notice how in this figure both populations seem to fluctuate periodically. One plausible reason is that the lynx prey on the snowshoe hares, which causes the population to initially decline. Once the snowshoe hare population declines, then there is less food for the lynx to survive, so their population declines. The decline in the lynx population causes the hare population to increase, and so on it goes …</p>
+<p>In summary it is safe to say that the two populations are <em>coupled</em> to one another. But in order to understand how they are coupled together, first let’s consider the two populations <em>separately</em>.</p>
+<p>The hares grow much more quickly than then lynx - in fact some hares have been known to reproduce several times a year, so a reasonable assumption (assuming the hare population is much larger) is that rate of change of the hares is proportional to the hare population. Based on this assumption we have the following differential equation, with <span class="math inline">\(H\)</span> is the population of the hares:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dH}{dt} = r H
+\end{equation}\]</span></p>
+<p>In this case we know that the growth rate <span class="math inline">\(r\)</span> is positive, so then the rate of change (<span class="math inline">\(H&#39;\)</span>) will be positive as well, and <span class="math inline">\(H\)</span> will be increasing. Typical values given for <span class="math inline">\(r\)</span> in REFERENCE are between 1.8 - 2.0 year<span class="math inline">\(^{-1}\)</span>. One way to think about <span class="math inline">\(b\)</span> is - to take its inverse (about 0.5 - 0.55 years), which represents the amount of time that passes before the hare population decreases by one (pretty short!)</p>
+<p>Let’s consider the lynx now. A approach is to assume their population declines exponentially, or changes at the rate proportional to the current population. Let’s consider <span class="math inline">\(L\)</span> to be the lynx population, so we have the following equation for them:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dL}{dt} = -dL
+\end{equation}\]</span></p>
+<p>As you can see in this case, the death rate <span class="math inline">\(d\)</span> is positive, leading to a negative rate of change for the Lynx population (and a decreasing value for <span class="math inline">\(L\)</span>). Typical values of <span class="math inline">\(d\)</span> are 0.9 - 2.4 year<span class="math inline">\(^{-1}\)</span>. One way to think about <span class="math inline">\(d\)</span> is - like <span class="math inline">\(b\)</span> - to take its inverse (about 0.4 - 1.1 years), which represents the amount of time that passes before the lynx population decreases by one.</p>
+<p>The next part to consider is how they interact. Since the hares are prey for the lynx, when the lynx hunt, the hare population. We can represent this with the following adjustment to our hare equation:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dH}{dt} = r H - b HL
+\end{equation}\]</span></p>
+<p>So the parameter <span class="math inline">\(b\)</span> represents the hunting rate. Notice how we have the term <span class="math inline">\(HL\)</span> for this interaction. This term injects a sense of realism: if the lynx are not present (<span class="math inline">\(L=0\)</span>), then the hare population can’t decrease due to hunting. We say that the <em>interaction</em> between the hares and the lynx with multiplication. Typical values for <span class="math inline">\(b\)</span> are 480 - 870 hares <span class="math inline">\(\cdot\)</span> lynx<span class="math inline">\(^{-1}\)</span> year<span class="math inline">\(^{-1}\)</span>. It is okay if that unit seems a little odd to you - it should be! Here is one way to think about it. The quantity <span class="math inline">\(\displaystyle \frac{dH}{dt}\)</span> represents the <em>rate of change</em> of the hares, so it should have units of hares per year. Since the term <span class="math inline">\(bHL\)</span> has both lynx and hare, the units for <span class="math inline">\(b\)</span> need to account for this.</p>
+<p>How does hunting affect the lynx population? One possibility is that it increases the lynx population:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dL}{dt} =bHL -dL
+\end{equation}\]</span></p>
+<p>Notice the symmetry between the rate of change for the hares and the lynx equations. In many cases this makes sense - if you subtract a rate from one population, then that rate should be added to the receiving population. You could also argue that there is some efficiency loss in converting the hares to lynx - not all of the hare is converted int the lynx biomass. In this situation we sometimes like to adjust the lynx equation with another parameter <span class="math inline">\(e\)</span>, representing the efficiency that hares are converted into lynx:</p>
+<p><span class="math display">\[\begin{equation}
+\frac{dL}{dt} =e\cdot bHL -dL
+\end{equation}\]</span></p>
+<p>(sometimes people just make a new parameter <span class="math inline">\(c=e \cdot b\)</span>, but for now we will just leave it as is). So now we have the following coupled system of differential equations:</p>
+<p><span class="math display">\[\begin{align}
+\frac{dH}{dt} &amp;= r H - b HL \\
+\frac{dL}{dt} &amp;=ebHL -dL
+\end{align}\]</span></p>
+<p>The schematic diagram representing these interactions is the following:</p>
+<p><img src="series_files/figure-html/lynxhare-1.png" width="672" /></p>
+<p>This differential equation is a classical model in mathematical biology and differential equations - it is called the <em>predator prey</em> model, also known as the <a href="https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations">Lotka-Volterra equations</a>. There is a lot of interesting mathematics from this system of equations that we will study later in this textbook. The next steps of the analysis that we will be working on is determining solutions to these differential equations numerically or directly.</p>
+<p>Stenseth paper - this is a lot more complicated than we think!</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modeling-with-rates-of-change.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="the-law-of-mass-action.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/03-modelingWithRates.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/03-modelingWithRates.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
