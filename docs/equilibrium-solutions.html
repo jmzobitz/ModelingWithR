@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="phase-space-and-equilibrium-solutions.html"/>
-
+<link rel="next" href="stability-of-equilibrium-solutions.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -84,6 +84,8 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="phase-space-and-equilibrium-solutions.html"><a href="phase-space-and-equilibrium-solutions.html"><i class="fa fa-check"></i><b>3</b> Phase space and equilibrium solutions</a><ul>
 <li class="chapter" data-level="3.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>3.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="3.2" data-path="stability-of-equilibrium-solutions.html"><a href="stability-of-equilibrium-solutions.html"><i class="fa fa-check"></i><b>3.2</b> Stability of equilibrium solutions</a></li>
+<li class="chapter" data-level="3.3" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>3.3</b> Exercises</a></li>
 </ul></li>
 <li class="divider"></li>
 <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
@@ -110,239 +112,33 @@
 <div id="equilibrium-solutions" class="section level2">
 <h2><span class="header-section-number">3.1</span> Equilibrium solutions</h2>
 <p>One key thing about the qualitative analysis is we are interested in the <em>motion</em> and the general tendency and the flow of the solution. Because there could be several possibilities about the flow, one very easy place is to examine where the is <em>no</em> flow - meaning the solution is stationary. Borrowing ideas from calculus, this occurs when the rate of change is zero.</p>
-<!-- ```{example} -->
-<!-- What are the equilibrium solutions to $\displaystyle \frac{dy}{dt}=- y$? -->
-<!-- ``` -->
-<!-- For this example we know that when the rate of change is zero, this means that $\displaystyle \frac{dy}{dt} = 0$, or when $0 = -y$. So $y=0$ is the equilibrium solution. This example does have a general solution is when $y(t)=Ce^{-t}$, where $C$ is an arbitrary constant.  Figure \@ref(fig:exponential) plots different solution curves, with the equilibrium solution shown as a horizontal line: -->
-<!-- ```{r exponential, echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'} -->
-<!--  t<- seq(0,5,length.out = 50) -->
-<!-- data.frame(time=t,s1=exp(-t),s2=2*exp(-t),s3=-1*exp(-t),s4=-2*exp(-t)) %>% -->
-<!--   gather(key=constant,value=soln,-time) %>% -->
-<!--   ggplot() + -->
-<!--   geom_line(aes(x=time,y=soln,color=constant),size=2) + -->
-<!--   labs(x = "t",y = "y") + -->
-<!--    geom_hline(aes(yintercept=0),linetype='dashed') + -->
-<!--   scale_color_discrete(labels=c("C = 1", "C = 2","C = -1","C = -2"), -->
-<!--                       name="Solution curves") -->
-<!-- ``` -->
-<!-- Notice how all solutions tend to $y=0$ as $t$ increases, no matter if the initial condition is positive or negative.  -->
-<!-- ```{example} -->
-<!-- What are the equilibrium solutions to $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$? -->
-<!-- ``` -->
-<!-- In this case the equilibrium solutions occur when $N \cdot(1-N) = 0$, or when $N=0$ or $N=1$.  -->
-<!-- &nbsp; -->
-<!-- Given that the generic solution to this differential equation is $$ \displaystyle N(t)= \frac{N_0}{N_0 +(1-N_0) e^{-t}}.$$ Figure \@ref(fig:logistic_soln) displays several different solution curves. -->
-<!-- ```{r logistic_soln, echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'} -->
-<!--  t<- seq(0,5,length.out = 50) -->
-<!-- data.frame(time=t,s1=2/(2+(1-2)*exp(-t)),s2=1.5/(1.5+(1-1.5)*exp(-t)),s3=0.5/(0.5+(1-0.5)*exp(-t)),s4=0.25/(0.25+(1-0.25)*exp(-t)),s5=0.1/(0.1+(1-0.1)*exp(-t))) %>% -->
-<!--   gather(key=constant,value=soln,-time) %>% -->
-<!--   ggplot() + -->
-<!--   geom_line(aes(x=time,y=soln,color=constant),size=2) + -->
-<!--   labs(x = "t",y = "N") + -->
-<!--   geom_hline(aes(yintercept=0),linetype='dashed')+ -->
-<!--   geom_hline(aes(yintercept=1),linetype='dashed') + -->
-<!--   scale_color_discrete(labels=c("C = 2", "C = 1.5","C = 0.5","C = 0.25","C = 0.1"), -->
-<!--                       name="Solution curves") -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- As with the previous figure, notice how all the solutions tend towards $N=1$, but even solutions that start close to $N=0$ seem to move away from this equilibrium solution.  This brings us to understanding classifying the *stability* of the equilibrium solutions. -->
-<!-- ## Stability of equilibrium solutions -->
-<!-- While it is one thing to determine where the equilibrium solutions are, we are also interested in classifying the **stability** of the equilibrium solutions.  To do this investigate the behavior of the differential around the equilibrium solutions, using facts from calculus: -->
-<!-- - If $\displaystyle \frac{dy}{dt}<0$, the function is decreasing. -->
-<!-- - If $\displaystyle \frac{dy}{dt}>0$, the function is increasing. -->
-<!-- We say that the solution $y=0$ is a _stable_ equilibrium solution in this case. -->
-<!-- Let's apply this logic to our differential equation $\displaystyle \frac{dy}{dt}=- y$.  We know that if $y=3$, $\displaystyle \frac{dy}{dt}=- 3 <0$, so we say the function is *decreasing* to $y=0$.  If  $y=-2$, $\displaystyle \frac{dy}{dt}=- (-2) = 2 >0$, so we say the function is *increasing* to $y=0$.  This can be represented neatly in the following figure, which is a phase line diagram: -->
-<!-- ```{r,echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'} -->
-<!-- eq_soln<-data.frame(x=c(0),y=c(0),label="y = 0") -->
-<!-- data.frame(point=c(-2,3),label=c("y' > 0","y' < 0"),tendency=c("y increasing","y decreasing")) %>% -->
-<!-- ggplot() + -->
-<!--     geom_text(aes(point,0.5, label = label)) + -->
-<!--    geom_text(aes(point,-.5, label = tendency)) + -->
-<!--   geom_text(data=eq_soln,aes(x=x,y=-1.2,label=label)) + -->
-<!--     geom_hline(yintercept = 0) + -->
-<!--     geom_segment(data=eq_soln,aes(x=x,xend=x,y=-1,yend=1)) + -->
-<!--   geom_point(data=eq_soln,aes(x=x,y=0),size=3,color='red') + -->
-<!--     coord_cartesian(xlim = c(-5, 5),ylim=c(-4,4)) + -->
-<!--     labs(x = NULL, -->
-<!--          y = NULL) + -->
-<!--   theme_void()  -->
-<!--   # theme(axis.line.x = element_blank(), -->
-<!--   #        axis.ticks = element_blank(), -->
-<!--   #        axis.text = element_blank()) -->
-<!-- ``` -->
-<!-- Because the solution is *increasing* to $y=0$ when $y <0$, and *decreasing* to $y=0$ when $y >0$, we say that the equilibrium solution is **stable**, which is also confirmed by the solutions we plotted above. -->
-<!-- ```{example} -->
-<!-- Classify the stability of the equilibrium solutions to $\displaystyle \frac{dy}{dt} = k \cdot y$, where $k$ is a parameter. -->
-<!-- ``` -->
-<!-- In this case the equilibrium solution is still $y=0$.  We will need to consider two different cases for the stability depending on the value of $k$ ($k>0$, $k<0$, and $k=0$): -->
-<!-- - When $k>0$, the phase line will be similar to the one above. -->
-<!-- - When $k=0$ the phase line will be: -->
-<!-- ```{r,echo=FALSE,fig.width=4,fig.height=3} -->
-<!-- eq_soln<-data.frame(x=c(0),y=c(0),label="y = 0") -->
-<!-- data.frame(point=c(-2,3),label=c("y' < 0","y' > 0"),tendency=c("y decreasing","y increasing")) %>% -->
-<!-- ggplot() + -->
-<!--     geom_text(aes(point,0.5, label = label)) + -->
-<!--    geom_text(aes(point,-.5, label = tendency)) + -->
-<!--   geom_text(data=eq_soln,aes(x=x,y=-1.2,label=label)) + -->
-<!--     geom_hline(yintercept = 0) + -->
-<!--     geom_segment(data=eq_soln,aes(x=x,xend=x,y=-1,yend=1)) + -->
-<!--   geom_point(data=eq_soln,aes(x=x,y=0),size=3,color='red') + -->
-<!--     coord_cartesian(xlim = c(-5, 5),ylim=c(-4,4)) + -->
-<!--     labs(x = NULL, -->
-<!--          y = NULL) + -->
-<!--   theme_void()  -->
-<!--   # theme(axis.line.x = element_blank(), -->
-<!--   #        axis.ticks = element_blank(), -->
-<!--   #        axis.text = element_blank()) -->
-<!-- ``` -->
-<!-- So in this scenario, the equilibrium solution is *unstable*, as all solutions flow away from the equilibrium. -->
-<!-- ```{r, echo=FALSE,fig.width=4,fig.height=3} -->
-<!--  t<- seq(0,2,length.out = 50) -->
-<!-- data.frame(time=t,s1=exp(t),s2=2*exp(t),s3=-1*exp(t),s4=-2*exp(t)) %>% -->
-<!--   gather(key=constant,value=soln,-time) %>% -->
-<!--   ggplot() + -->
-<!--   geom_line(aes(x=time,y=soln,color=constant),size=2) + -->
-<!--   labs(x = "t",y = "y") + -->
-<!--    geom_hline(aes(yintercept=0),linetype='dashed') + -->
-<!--   scale_color_discrete(labels=c("C = 1", "C = 2","C = -1","C = -2"), -->
-<!--                       name="Solution curves") -->
-<!-- ``` -->
-<!-- - Finally when $k=0$ we have the differential equation $\displaystyle \frac{dy}{dt}=0$, which has $y=C$ as a general solution.  For this special case the equilibrium solution is neither stable or unstable.  (By all intents and purposes this is a different differential equation than $\displaystyle \frac{dy}{dt}=k\cdot y$; something peculiar is going on here - which we come back to when discuss bifurcations.) -->
-<!-- &nbsp; -->
-<!-- Let's investigate our other differential equation $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$.  This differential equation has equilbrium solutions when $N(1-N)=0$, or $N=0$ or $N=1$.  We evaluate the stability of the solutions in the following table: -->
-<!-- **Test point** | **Sign of $N'$**  | **Tendency of solution** -->
-<!-- -------------| ------------- | ------------- -->
-<!--     $N=-1$ | Negative | Decreasing -->
-<!--     $N=0$ |  Zero | Equilibrium solution  -->
-<!--     $N=0.5$ | Positive | Increasing -->
-<!--     $N=1$ |  Zero | Equilibrium solution -->
-<!--     $N=2$ |  Negative | Decreasing -->
-<!-- Notice how the points that were selected in the first column are either the the _left_ or the _right_ of the equilbrium solution.  We can also represent the information in the table using a phase line diagram, but in this case we need to include _two_ equilibrium solutions: -->
-<!-- ```{r,echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'} -->
-<!-- eq_soln<-data.frame(x=c(0,1),y=c(0,1),label=c("N = 0","N = 1")) -->
-<!-- data.frame(point=c(-0.5,0.5,1.5),label=c("N' < 0","N' > 0","N' < 0"),tendency=c("N decreasing","N increasing","N decreasing")) %>% -->
-<!-- ggplot() + -->
-<!--     geom_text(aes(point,0.5, label = label)) + -->
-<!--    geom_text(aes(point,-.5, label = tendency)) + -->
-<!--   geom_text(data=eq_soln,aes(x=x,y=-1.2,label=label)) + -->
-<!--     geom_hline(yintercept = 0) + -->
-<!--     geom_segment(data=eq_soln,aes(x=x,xend=x,y=-1,yend=1)) + -->
-<!--   geom_point(data=eq_soln,aes(x=x,y=0),size=3,color='red') + -->
-<!--     coord_cartesian(xlim = c(-1.5, 2),ylim=c(-4,4)) + -->
-<!--     labs(x = NULL, -->
-<!--          y = NULL) + -->
-<!--   theme_void()  -->
-<!--   # theme(axis.line.x = element_blank(), -->
-<!--   #        axis.ticks = element_blank(), -->
-<!--   #        axis.text = element_blank()) -->
-<!-- ``` -->
-<!-- Notice how the table and the phase line diagram confirms that $N$ is moving _away_ from $N=0$ (either decreasing when $ N$ is less than 0 and increasing when $N$ is greater than 0) and moving _towards_ $N=1$ (either increasing when $N$ is between 0 and 1 and decreasing when $N$ is greater than one. -->
-<!-- &nbsp; -->
-<!-- These results suggest that equilibrium solution at $N=0$ to be *unstable* and at $N=1$ to be *stable*. -->
-<!-- Other than writing the words in the phase line diagram, we also use arrows to signify increasing or decreasing in the solutions. -->
-<!-- ### Connection to local linearization. -->
-<!-- Notice how when constructing the phase line diagram we relied on the behavior of solutions *around* the equilibrium solution to classify the stability.  As an alternative we can also use the equilibrium solution itself. -->
-<!-- To do this we are going to consider the general differential equation $\displaystyle \frac{dy}{dt}=f(y)$.  We are going to assume that we have an equilibrium solution at $y=y_{*}$.   -->
-<!-- We are going to borrow local linearization (which we say when working on Euler's method) and construct a locally linear approximation to $L(y)$ to $f(y)$ at $y=y_{*}$: -->
-<!-- $$L(y) = f(y_{*}) + f'(y_{*}) \cdot (y-y_{*})  $$ -->
-<!-- We will use $L(y)$ as an approximation to $f(y)$. There are two key things here. First, because we have an equilibrium solution, $f(y_{*}) =0$.  The other key thing is that if we define the variable $P = y-y_{*}$, then the differential equation translates to -->
-<!-- $$ \frac{dP}{dt} = f'(y_{*}) \cdot P $$ -->
-<!-- Does this differential equation look familiar - it should!  This is similar to the example where we classified the stability of $\displaystyle \frac{dy}{dt} = k \cdot y$ -- cool!  So let's use what we learned above to classify the stability: -->
-<!-- - If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be _unstable_. -->
-<!-- - If $f'(y_{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be _stable_. -->
-<!-- - If $f'(y_{*}) = 0$, we cannot conclude anything about the stability of $y=y_{*}$. -->
-<!-- ```{example} -->
-<!-- Apply local linearization to classify the stability of the equilibrium solutions of $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$ -->
-<!-- ``` -->
-<!-- ```{solution} -->
-<!-- The locally linear approximation is $L(N) = 1-2N$.  We have $L(0)=1>0$, so $N=0$ is unstable.  Similarly $L(1)=-1$, so $N=1$ is stable. -->
-<!-- ``` -->
-<!-- \newpage -->
-<!-- ## Exercises -->
-<!-- ```{exercise} -->
-<!-- What are the equilibrium solutions to the following differential equations? -->
-<!-- \begin{enumerate} -->
-<!-- \item $\displaystyle \frac{dS}{dt} = 0.3 \cdot(10-S)$ -->
-<!-- \item $\displaystyle \frac{dP}{dt} = P \cdot(P-1)(P-2)$ -->
-<!-- \end{enumerate} -->
-<!-- After identifying the equilibrium solutions construct a phase line for each of the differential equations and classify the stability of the equilibrium solutions using the derivative stability test. -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- ```{exercise}  -->
-<!-- Can a solution curve cross an equilibrium solution of a differential equation? -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- <!-- Thornley and Johnson -->
-<p>–&gt;
-<!-- ```{exercise} -->
-<!-- The Chanter equation of growth is the following: -->
-<!--   \begin{equation} -->
-<!-- \frac{dW}{dt} = \mu \cdot W(B-W)e^{-Dt}, -->
-<!-- \end{equation} --></p>
-<!-- with $\mu$, $B$, and $D$ are variables.  What are the equilibrium solutions to this model?  What happens to the rate of growth ($W'$) as $t$ grows large?  Why would this be a more realistic model of growth than the saturating model ($\displaystyle  \frac{dW}{dt} = \mu \cdot W(B-W)$)? -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- ```{exercise} -->
-<!-- Red blood cells are formed from stem cells in the bone marrow.  The red blood cell density $r$ satisfies an equation of the form -->
-<!-- \begin{equation} -->
-<!-- \frac{dr}{dt} = \frac{br}{1+r^{n}} - c r, -->
-<!-- \end{equation} -->
-<!-- where $n>1$ and $b>1$ and $c>0$.  Find all the equilibrium solutions to this differential equation. -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- For all of the following problems: -->
-<!-- \begin{enumerate} -->
-<!-- \item Determine the equilibrium solutions for this differential equation. -->
-<!-- \item Construct a phase line for this differential equation and classify the stability of the equilibrium solutions using the derivative stability test. -->
-<!-- \end{enumerate} -->
-<!-- &nbsp; -->
-<!-- <!-- LW exercise 5, pg 36 -->
-<p>–&gt;</p>
-<!-- ```{exercise} -->
-<!-- The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island.  Further, the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate.  The growth rate of the number of species on the island is the immigration rate minus the extinction rate, given by the following differential equation: -->
-<!-- $$ \frac{dS}{dt} = I_{m} \left(1-\frac{S}{P} \right) - \frac{ES}{P}. $$ -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- ```{exercise} -->
-<!-- A colony of bacteria growing in a nutrient-rich medium deplete the nutrient as they grow. As a result, the nutrient concentration $x(t)$ is steadily decreasing.  The equation describing this decrease is the following: -->
-<!-- $$ \displaystyle \frac{dx}{dt} = - \mu \frac{x (\xi- x)}{\kappa + x}, $$ -->
-<!-- where $\mu$, $\kappa$, and $\xi$ are all parameters greater than zero. -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!--  <!-- Van den Berg page 19 -->
-<p>–&gt;
-<!-- ```{exercise} -->
-<!-- Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream.  An equation that represents the level of $S$ in the blood is the following: --></p>
-<!-- $$ \frac{dS}{dt} = I + p \cdot (W - S) $$ -->
-<!-- Where the parameter $I$ represents the active uptake of salt, $p$ is the permeability of the skin, and $W$ is the salinity in the water. -->
-<!-- ``` -->
-<!-- &nbsp; -->
-<!-- <!-- Based off LW pg 4 -->
-<p>–&gt;
-<!-- ```{exercise} -->
-<!-- A cell with radius $r$ assimilates nutrients at a rate proportional to its surface area, but uses nutrients proportional to its volume, according to the following differentiatl equation: -->
-<!--   $$ \frac{dr}{dt} = k_{1} 4 \pi r^{2} - k_{2} \frac{4}{3} \pi r^{3}. $$  -->
-<!-- ``` -->
-<!-- &nbsp; --></p>
-<!-- ```{exercise} -->
-<!-- A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{aP}{1+abP} - dP$, where $a$, $b$ and $d$ are parameters. -->
-<!-- ``` -->
 
+<div class="example">
+<span id="exm:unnamed-chunk-17" class="example"><strong>Example 3.1  </strong></span>What are the equilibrium solutions to <span class="math inline">\(\displaystyle \frac{dy}{dt}=- y\)</span>?
 </div>
-<!-- </div> -->
 
+<p>For this example we know that when the rate of change is zero, this means that <span class="math inline">\(\displaystyle \frac{dy}{dt} = 0\)</span>, or when <span class="math inline">\(0 = -y\)</span>. So <span class="math inline">\(y=0\)</span> is the equilibrium solution. This example does have a general solution is when <span class="math inline">\(y(t)=Ce^{-t}\)</span>, where <span class="math inline">\(C\)</span> is an arbitrary constant. Figure <a href="#fig:exponential"><strong>??</strong></a> plots different solution curves, with the equilibrium solution shown as a horizontal line:</p>
+<p><img src="series_files/figure-html/exponential-1.png" width="384" /></p>
+<p>Notice how all solutions tend to <span class="math inline">\(y=0\)</span> as <span class="math inline">\(t\)</span> increases, no matter if the initial condition is positive or negative.</p>
 
+<div class="example">
+<span id="exm:unnamed-chunk-18" class="example"><strong>Example 3.2  </strong></span>What are the equilibrium solutions to <span class="math inline">\(\displaystyle \frac{dN}{dt} = N \cdot(1-N)\)</span>?
+</div>
 
-
-
-
+<p>In this case the equilibrium solutions occur when <span class="math inline">\(N \cdot(1-N) = 0\)</span>, or when <span class="math inline">\(N=0\)</span> or <span class="math inline">\(N=1\)</span>.
+ </p>
+<p>Given that the generic solution to this differential equation is <span class="math display">\[ \displaystyle N(t)= \frac{N_0}{N_0 +(1-N_0) e^{-t}}.\]</span> Figure @ref(fig:logistic_soln) displays several different solution curves.</p>
+<p><img src="series_files/figure-html/logistic_soln-1.png" width="384" /></p>
+<p> </p>
+<p>As with the previous figure, notice how all the solutions tend towards <span class="math inline">\(N=1\)</span>, but even solutions that start close to <span class="math inline">\(N=0\)</span> seem to move away from this equilibrium solution. This brings us to understanding classifying the <em>stability</em> of the equilibrium solutions.</p>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="phase-space-and-equilibrium-solutions.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="phase-space-and-equilibrium-solutions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stability-of-equilibrium-solutions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
