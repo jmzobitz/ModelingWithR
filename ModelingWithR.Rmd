@@ -1,0 +1,84 @@
+--- 
+title: "Exploring modeling with data and differential equations using R"
+author: "John M. Zobitz"
+date: "`r Sys.Date()`"
+description: "A textbook used for MAT 369 at Augsburg University."
+geometry: "left=0.5in,right=0.5in,top=0.75in,bottom=0.5in"
+site: bookdown::bookdown_site
+# output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: openscapes/series
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{pgfplots}
+  - \usepackage{amsmath}
+  - \usetikzlibrary{calc}
+  - \usetikzlibrary{arrows,matrix,positioning}
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
+  - \usepackage[shortlabels]{enumitem}
+  - \usepackage{mathtools}
+output:
+  bookdown::gitbook:
+    toc_depth: 2
+    split_by: section
+    number_sections: true
+    split_bib: true
+    config:
+      toc:
+        scroll_highlight: yes
+        collapse: section
+        before: |
+          <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+        after: |
+          <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+          <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+          <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+      view: https://jmzobitz.github.io/ModelingWithR/%s
+      search: yes
+      sharing:
+        twitter: yes
+        facebook: no
+        github: yes
+        all: no
+
+  bookdown::pdf_book:
+    toc_depth: 2
+    number_sections: true
+    citation_package: default
+
+  bookdown::markdown_document2:
+    default
+---
+
+```{r include=FALSE}
+# Define the packages that we need to load up:
+library(tidyverse)
+#library(MAT369Code)
+library(lubridate)
+library(bookdown)
+library(knitr)
+```
+
+
+# Welcome  Creating this from Bookdown to Github {#welcome}
+I stumbled on how to do this by going to this [website](https://jules32.github.io/bookdown-tutorial/) and built this out from here.  I am glad that I will be able to work on this.
+
+Who to thank
+Tidyverse
+Augsburg
+students
+sources
+waterparks
+family
+kids
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
