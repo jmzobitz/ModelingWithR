@@ -24,7 +24,7 @@
 <meta name="author" content="John M. Zobitz" />
 
 
-<meta name="date" content="2021-02-16" />
+<meta name="date" content="2021-03-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="which-model-is-best.html"/>
-<link rel="next" href="modeling-with-rates-of-change.html"/>
+<link rel="next" href="phase-space-and-equilibrium-solutions.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -69,7 +69,7 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><strong>Hands-On Data Visualization</strong><br>by John Zobitz</a></li>
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
@@ -82,12 +82,8 @@
 <li class="chapter" data-level="2.5" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>2.5</b> Which model is best?</a></li>
 <li class="chapter" data-level="2.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-with-rates-of-change.html"><a href="modeling-with-rates-of-change.html"><i class="fa fa-check"></i><b>3</b> Modeling with rates of change</a><ul>
-<li class="chapter" data-level="3.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>3.1</b> Lynx and Hares</a></li>
-<li class="chapter" data-level="3.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
-<li class="chapter" data-level="3.3" data-path="invasive-species.html"><a href="invasive-species.html"><i class="fa fa-check"></i><b>3.3</b> Invasive species</a></li>
-<li class="chapter" data-level="3.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>3.4</b> Other types of functional responses</a></li>
-<li class="chapter" data-level="3.5" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
+<li class="chapter" data-level="3" data-path="phase-space-and-equilibrium-solutions.html"><a href="phase-space-and-equilibrium-solutions.html"><i class="fa fa-check"></i><b>3</b> Phase space and equilibrium solutions</a><ul>
+<li class="chapter" data-level="3.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>3.1</b> Equilibrium solutions</a></li>
 </ul></li>
 <li class="divider"></li>
 <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
@@ -115,7 +111,7 @@
 <h2><span class="header-section-number">2.6</span> Exercises</h2>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-4" class="exercise"><strong>Exercise 2.1  </strong></span>Solutions to an outbreak model of the flu are the following:
+<p><span id="exr:unnamed-chunk-17" class="exercise"><strong>Exercise 2.1  </strong></span>Solutions to an outbreak model of the flu are the following:
 <span class="math display">\[\begin{align*}
 \mbox{Saturating model: } &amp; I(t) = 3000-(2990)e^{-.1t} \\
 \mbox{Logistic model: } &amp;  I(t) = \frac{30000 }{10+(2990)e^{-.15t}},
@@ -126,7 +122,7 @@ where <span class="math inline">\(t\)</span> is in days. Make a plot of both of 
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-5" class="exercise"><strong>Exercise 2.2  </strong></span>The general solution for the saturating and the logistic models are:
+<span id="exr:unnamed-chunk-18" class="exercise"><strong>Exercise 2.2  </strong></span>The general solution for the saturating and the logistic models are:
 <span class="math display">\[\begin{align*}
 \mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
 \mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
@@ -137,7 +133,7 @@ where <span class="math inline">\(I_{0}\)</span> is the initial number of people
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-6" class="exercise"><strong>Exercise 2.3  </strong></span>The general solution for the saturating and the logistic models are:
+<span id="exr:unnamed-chunk-19" class="exercise"><strong>Exercise 2.3  </strong></span>The general solution for the saturating and the logistic models are:
 <span class="math display">\[\begin{align*}
 \mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
 \mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
@@ -155,7 +151,7 @@ Figure 2.4: An Ebola outbreak in Liberia in 2014
  
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-7" class="exercise"><strong>Exercise 2.4  </strong></span>Figure <a href="exercises.html#fig:liberia">2.4</a> shows the Ebola outbreak for the country of Liberia in 2014.
+<span id="exr:unnamed-chunk-20" class="exercise"><strong>Exercise 2.4  </strong></span>Figure <a href="exercises.html#fig:liberia">2.4</a> shows the Ebola outbreak for the country of Liberia in 2014.
 If we were to apply the logistic model based on this graphic what would be your estimate for <span class="math inline">\(N\)</span>?
 </div>
 
@@ -163,7 +159,7 @@ If we were to apply the logistic model based on this graphic what would be your 
 <!-- Sethi model for advertising -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-8" class="exercise"><strong>Exercise 2.5  </strong></span>A model that describes the growth of sales of a product in response to advertising is the following:
+<p><span id="exr:unnamed-chunk-21" class="exercise"><strong>Exercise 2.5  </strong></span>A model that describes the growth of sales of a product in response to advertising is the following:
 <span class="math display">\[\frac{dS}{dt} = .55\sqrt{1-S}-S, \]</span>
 where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1). Make a plot of the function <span class="math inline">\(f(S)=.55\sqrt{1-S}-S\)</span>. for <span class="math inline">\(0 \leq S \leq 1\)</span>. Interpret your plot to predict when the market share will be increasing and decreasing. At what value is <span class="math inline">\(\frac{dS}{dt}=0\)</span>? (This is called the <strong>steady-state</strong> value.).</p>
 <p>A second campaign is has the following differential equation:
@@ -174,7 +170,7 @@ What is the steady-state value and how does it compare to the previous one?
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-9" class="exercise"><strong>Exercise 2.6  </strong></span>A more general form of the advertising model is the following:
+<span id="exr:unnamed-chunk-22" class="exercise"><strong>Exercise 2.6  </strong></span>A more general form of the advertising model is the following:
 <span class="math display">\[\frac{dS}{dt} = r\sqrt{1-S}-S, \]</span>
 where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1). The parameter <span class="math inline">\(r\)</span> is related to the effectiveness of the advertising (between 0 and 1). Solve this equation for the steady state value (where <span class="math inline">\(\frac{dS}{dt}=0\)</span>). Make a plot of the steady state value as a function of <span class="math inline">\(r\)</span>, where <span class="math inline">\(0 \leq r \leq 1\)</span>. What can you conclude about the steady state value as the effectiveness of the advertising increases?
 </div>
@@ -182,7 +178,7 @@ where <span class="math inline">\(S\)</span> is the product’s share of the mar
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-10" class="exercise"><strong>Exercise 2.7  </strong></span>A common saying is ``You are what you eat.’’ This saying is mostly true and can be related in a mathematical model! An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by:
+<p><span id="exr:unnamed-chunk-23" class="exercise"><strong>Exercise 2.7  </strong></span>A common saying is ``You are what you eat.’’ This saying is mostly true and can be related in a mathematical model! An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by:
 <span class="math display">\[\begin{equation}
  y = c x^{1/\theta},
 \end{equation}\]</span>
@@ -194,20 +190,20 @@ Let’s just assume that <span class="math inline">\(c=1\)</span>. How does the 
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-11" class="exercise"><strong>Exercise 2.8  </strong></span>A model for the outbreak of a cold virus assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in the logistic model 3. However people who are infected can also recover and become susceptible again with rate <span class="math inline">\(\alpha\)</span>. Construct a diagram similar Model 3 for this scenario and also write down the system of differential equations.
+<span id="exr:unnamed-chunk-24" class="exercise"><strong>Exercise 2.8  </strong></span>A model for the outbreak of a cold virus assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in the logistic model 3. However people who are infected can also recover and become susceptible again with rate <span class="math inline">\(\alpha\)</span>. Construct a diagram similar Model 3 for this scenario and also write down the system of differential equations.
 </div>
 
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-12" class="exercise"><strong>Exercise 2.9  </strong></span>A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3. However people also account for recovering from the flu, denoted with the variable <span class="math inline">\(R\)</span>. Assume that the rate of recovery is proportional to the number of infected people with parameter <span class="math inline">\(\beta\)</span>. Construct a diagram like Model 3 for this scenario, and also write down the system of differential equations.
+<span id="exr:unnamed-chunk-25" class="exercise"><strong>Exercise 2.9  </strong></span>A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3. However people also account for recovering from the flu, denoted with the variable <span class="math inline">\(R\)</span>. Assume that the rate of recovery is proportional to the number of infected people with parameter <span class="math inline">\(\beta\)</span>. Construct a diagram like Model 3 for this scenario, and also write down the system of differential equations.
 </div>
 
  
 <!-- Van den Berg page 19 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-13" class="exercise"><strong>Exercise 2.10  </strong></span>Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
+<p><span id="exr:unnamed-chunk-26" class="exercise"><strong>Exercise 2.10  </strong></span>Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
 <p><span class="math display">\[\frac{dS}{dt} = I + p \cdot (W - S), \]</span></p>
 where the parameter <span class="math inline">\(I\)</span> represents the active uptake of salt, <span class="math inline">\(p\)</span> is the permeability of the skin, and <span class="math inline">\(W\)</span> is the salinity in the water. What is that value of <span class="math inline">\(S\)</span> at <em>steady state</em>, or when <span class="math inline">\(\displaystyle \frac{dS}{dt} = 0\)</span>?
 </div>
@@ -215,20 +211,20 @@ where the parameter <span class="math inline">\(I\)</span> represents the active
  
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-14" class="exercise"><strong>Exercise 2.11  </strong></span>Use your steady state solution from the last exercise to determine what parameters (<span class="math inline">\(I\)</span>, <span class="math inline">\(p\)</span>, or <span class="math inline">\(W\)</span>) cause the steady state value <span class="math inline">\(S\)</span> to increase?
+<span id="exr:unnamed-chunk-27" class="exercise"><strong>Exercise 2.11  </strong></span>Use your steady state solution from the last exercise to determine what parameters (<span class="math inline">\(I\)</span>, <span class="math inline">\(p\)</span>, or <span class="math inline">\(W\)</span>) cause the steady state value <span class="math inline">\(S\)</span> to increase?
 </div>
 
 <p> </p>
 <!-- From LW -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-15" class="exercise"><strong>Exercise 2.12  </strong></span>The immigration rate of bird species (species per time) from a mainland to an offshore island is <span class="math inline">\(I_{m} \cdot (1-S/P)\)</span>, where <span class="math inline">\(I_{m}\)</span> is the maximum immigration rate, <span class="math inline">\(P\)</span> is the size of the source pool of species on the mainland, and <span class="math inline">\(S\)</span> is the number of species already occupying the island. Further, the extinction rate is <span class="math inline">\(E \cdot S / P\)</span>, where <span class="math inline">\(E\)</span> is the maximum extinction rate. The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
+<span id="exr:unnamed-chunk-28" class="exercise"><strong>Exercise 2.12  </strong></span>The immigration rate of bird species (species per time) from a mainland to an offshore island is <span class="math inline">\(I_{m} \cdot (1-S/P)\)</span>, where <span class="math inline">\(I_{m}\)</span> is the maximum immigration rate, <span class="math inline">\(P\)</span> is the size of the source pool of species on the mainland, and <span class="math inline">\(S\)</span> is the number of species already occupying the island. Further, the extinction rate is <span class="math inline">\(E \cdot S / P\)</span>, where <span class="math inline">\(E\)</span> is the maximum extinction rate. The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
 </div>
 
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-16" class="exercise"><strong>Exercise 2.13  </strong></span>This problem relates to animal size and volume. Assume that an animal assimilates nutrients at a rate <span class="math inline">\(R\)</span> proportional to its surface area. Also assume that it uses nutrients at a rate proportional to its volume. You may assume that the size of the animal is implicitly a function of the nutrient intake and usage. Determine the size of the animal if its intake and use rates were in balance (meaning <span class="math inline">\(R\)</span> is set to zero), assuming the animal is the following shapes:</p>
+<p><span id="exr:unnamed-chunk-29" class="exercise"><strong>Exercise 2.13  </strong></span>This problem relates to animal size and volume. Assume that an animal assimilates nutrients at a rate <span class="math inline">\(R\)</span> proportional to its surface area. Also assume that it uses nutrients at a rate proportional to its volume. You may assume that the size of the animal is implicitly a function of the nutrient intake and usage. Determine the size of the animal if its intake and use rates were in balance (meaning <span class="math inline">\(R\)</span> is set to zero), assuming the animal is the following shapes:</p>
 For both of these problems your goal is to determine a numeric value of <span class="math inline">\(r\)</span> and <span class="math inline">\(l\)</span>.
 </div>
 
@@ -241,7 +237,7 @@ For both of these problems your goal is to determine a numeric value of <span cl
         </div>
       </div>
 <a href="which-model-is-best.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modeling-with-rates-of-change.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="phase-space-and-equilibrium-solutions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
