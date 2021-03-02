@@ -1,0 +1,289 @@
+# Local Linearization and the Jacobian
+
+In the last section we examined linear systems and typical examples of what types of behaviors we should expect when analyzing the stability of the equilibrium solution.  In this section we will extend that concept to nonlinear systems of equations.  We will analyze stability of a nonlinear system through the concept of *local linearization*.
+
+
+## The lynx hare revisited
+For example, let's consider the following nonlinear system of equations from the Lynx-Hare model:
+
+\begin{align}
+\frac{dH}{dt} &= r H - b HL \\
+\frac{dL}{dt} &=ebHL -dL
+\end{align}
+
+We know that the steady states of this system are $(H,L)=(0,0)$ and $\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)$ in this model. To extend the notion of a linear approximation, we apply the **tangent plane approximation**  at the point $x=a$, $y=b$:
+
+\begin{equation}
+L(x,y) = f(a,b) + f_{x}(a,b) \cdot (x-a) + f_{y}(a,b) \cdot (y-b),
+\end{equation}
+
+where $f_{x}$ is the partial derivative of $f(x,y)$ with respect to $x$ and $f_{y}$ is the partial derivative of $f(x,y)$ with respect to $y$.  Let's work with the equilibrium solution at $(0,0)$. If we say that $f(H,L)=r H - b HL$, we know $f(0,0)=0$.  Furthermore the locally linear approximation is:
+
+\begin{align}
+f_{H} = r - bL & \rightarrow f_{H}(0,0)=r \\
+f_{L} = -bH & \rightarrow f_{P}(0,0)=0
+\end{align}
+
+With this information we are able to take this and then write down the locally linear approximation for $f(H,L)$:
+\begin{equation}
+f(H,L) \approx 0 + r \cdot (H-0) + 0 \cdot (L-0) = rH.
+\end{equation}
+
+Likewise if we consider $g(H,L)= ebHL -dL$, then we have:
+
+\begin{align}
+g_{H} = ebL & \rightarrow g_{H}(0,0)=0 \\
+g_{L} = ebH-d & \rightarrow f_{L}(0,0)=-d
+\end{align}
+
+
+So our locally linear approximation for $g(H,L)$ is:
+
+\begin{equation}
+g(H,L) \approx 0 + 0 \cdot (H-0) -d \cdot (L-0) = -dL.
+\end{equation}
+
+So, at the equilibrium solution, the system behaves like the following system of equations:
+
+\begin{align}
+\frac{dH}{dt} &= rH\\
+\frac{dL}{dt} &= - dL
+\end{align}
+
+
+Notice how this the system is entirely decoupled linear system of equations, so we have for an initial condition $(H_{0},L_{0})$ that $H(t)=H_{0}e^{rt}$ and $L(t)=L_{0}e^{-dt}$.
+
+## The Jacobian matrix
+If we look at the last example before the solution we can write our system in matrix form:
+
+\begin{equation}
+\begin{pmatrix} H' \\ L' \end{pmatrix} =\begin{pmatrix} r & 0 \\ 0 &  -d \end{pmatrix} \begin{pmatrix} H \\ L \end{pmatrix}
+\end{equation}
+
+We define the matrix $\displaystyle J= \begin{pmatrix} r & 0 \\ 0 &  -d \end{pmatrix}$ as the Jacobian matrix.  This is a key matrix we will use to investigate stability of nonlinear systems.  While in the Lynx-Hare example we could easily solve the uncoupled system of equations, it may not be this case all the time. In that case we will need to understand a little bit more about analyzing them - which we will revisit the idea of straight line solutions and eigenvalues.
+
+## Predator prey with logistic growth
+One modification to the lynx-hare model is to assume the hare have a logistic growth rate:
+
+\begin{align}
+\frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
+\frac{dL}{dt} &=ebHL -dL
+\end{align}
+
+Through a rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
+
+\begin{align}
+\frac{dx}{d T} &= x(1-x) - xy \\
+\frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
+\end{align}
+
+In order to analyze the Jacobian matrix we will need to compute several partial derivatives:
+
+\begin{align}
+\frac{\partial}{\partial x} \left( f(x,y) \right) &= \frac{\partial}{\partial x} \left( x(1-x) - xy \right) = 1-2x-y \\
+\frac{\partial}{\partial y} \left( f(x,y) \right) &= \frac{\partial}{\partial y} \left( x(1-x) - xy \right) = -x \\
+\frac{\partial}{\partial x} \left( g(x,y) \right) &= \frac{\partial}{\partial x} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}y  \\
+\frac{\partial}{\partial y} \left( g(x,y) \right) &= \frac{\partial}{\partial y} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}x -\frac{d}{r}
+\end{align}
+
+So we can construct the Jacobian matrix, ready for evaluation at any $(x,y)$ equilibrium solution:
+
+\begin{equation}
+J_{(x,y)} = \begin{pmatrix} 1-2x-y & -x \\ \frac{ebK}{r}y & \frac{ebK}{r}x -\frac{d}{r} \end{pmatrix}
+\end{equation}
+
+Sometimes computing the Jacobian matrix is a good first step so then you are ready to compute the equilibrium solutions.
+
+## Concluding thoughts
+To summarize, let's say we have the following system of equations
+
+\begin{align}
+\frac{dx}{dt} &= f(x,y) \\
+\frac{dy}{dt} &= g(x,y)
+\end{align}
+
+Assuming we have an equibrium solution at $(x,y)=(a,b)$, the Jacobian matrix at that solution is:
+
+\begin{equation}
+J =\begin{pmatrix} f_{x}(a,b) & f_{y}(a,b) \\ g_{x}(a,b) &  g_{y}(a,b) \end{pmatrix}
+\end{equation}
+
+The Jacobian matrix also extends to higher order systems as well.
+
+\newpage
+
+## Exercises
+
+```{exercise}
+Construct the Jacobian matrix for the lynx-hare system at the point $\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)$.  Choose values of $d$, $e$, $b$, and $r$ to visualize a phase plane and classify the stability of this equilibrium solution.
+```
+
+&nbsp;
+
+```{exercise}
+This problem revisits the modified lynx-hare system:
+  \begin{align}
+\frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
+\frac{dL}{dt} &=ebHL -dL
+\end{align}
+
+\begin{enumerate}
+\item Verify that by rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
+
+\begin{align}
+\frac{dx}{d T} &= x(1-x) - xy \\
+\frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
+\end{align}
+
+\item Determine the three equilibrium solutions of this rescaled system.
+\item Evaluate the Jacobian at each of the equilibrium solutions.
+\item Select reasonable values of the parameters to generate a phaseplane diagram and classify the stability of each equilibrium solution.
+\item How does this revised system compare to the stability of the regular lynx-hare model?
+  \end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+Consider the following nonlinear system:
+
+\begin{align}
+\frac{dx}{dt} &= x-y \\
+\frac{dy}{dt} &=-y + \frac{5x^2}{4+x^{2}},
+\end{align}
+
+\begin{enumerate}
+\item Verify that the point $(x,y)=(1,1)$ is an equilibrium solution.
+\item Construct the Jacobian matrix at this equilibrium solution.
+\item Visualize a phaseplane at that equilbrium solution to determine stability.
+\end{enumerate}
+
+```
+&nbsp;
+```{exercise}
+Consider the nonlinear system
+
+\begin{align}
+\frac{dx}{dt} &= 2x+3y+xy \\
+\frac{dy}{dt} &= -x + y - 2xy^{3},
+\end{align}
+
+\begin{enumerate}
+\item Verify that the point (0,0) is an equilibrium solution.
+\item Determine the Jacobian matrix at this equilbrium solution.
+\item Visualize a phaseplane at that equilbrium solution to determine stability.
+\end{enumerate}
+```
+&nbsp;
+
+```{exercise}
+Consider the following system:
+
+\begin{align}
+\frac{dx}{dt} &= y^{2} \\
+\frac{dy}{dt} &= -\frac{2}{3} x,
+\end{align}
+
+\begin{enumerate}
+\item Determine the equilibrium solution.
+\item Construct the Jacobian at the equilibrium solution.
+\item Visualize a phaseplane at that equilbrium solution to determine stability.
+\item Use the fact that that $\displaystyle \frac{dy}{dx} / \frac{dy}{dt} = \frac{dy}{dx}$, which should yield a separable differential equation that will allow you to solve $y(x)$.  How does that solved differential equation compare to what you found by analyzing the Jacobian matrix?
+\end{enumerate}
+```
+
+&nbsp;
+
+<!-- Adapted from LW pg 121 -->
+```{exercise}
+A model for the spread of a disease where people recover is given by the following differential equation:
+
+  \begin{align}
+\frac{dS}{dt} &= -\alpha SI \\
+\frac{dI}{dt} &= \alpha SI - \gamma I \\
+\frac{dR}{dt} &= \gamma I,
+\end{align}
+
+\begin{enumerate}
+\item Determine the equilibrium solutions for this system of equations.
+\item Construct the Jacobian for each of the equilibrium solutions.
+\item Let $\alpha=0.001$ and $\gamma = 0.2$. Generate the phase plane (using the equations for $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ only) for all of the equilibrium solutions and classify their stability.
+\end{enumerate}
+
+```
+
+&nbsp;
+
+<!-- LW pg 157 158 #3 -->
+```{exercise}
+A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish.  As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource.  However fish do have natural predators, which may also be harvested at the same time.  A model that describes this interaction is
+
+\begin{align}
+\frac{dN}{dt} &= rN - cNP - \rho E N \\
+\frac{dP}{dt} &= bcNP - mP - \sigma EP,
+\end{align}
+
+where $E$ is the fishing effort and $\rho$ and $\sigma$ are the catchability coefficients for the prey and predator.
+
+\begin{enumerate}
+\item Determine all the equilibrium solutions for this model.
+\item Construct the Jacobian matrix for each of the the equilibrium solutions.
+\item Select different parameter values.  Construct a phase plane diagram for each of the equilibrium solutions.
+\item In the absence of fishing $E=0$.  How do these equilibrium solutions compare to the ones from the previous part?
+\end{enumerate}
+```
+&nbsp;
+
+```{r glucose,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Glucose transporter reaction schemes."}
+
+\begin{center}
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black,node distance = 3 cm]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
+
+%% keener pg 65 - need to adapt somewhat with se
+\node [vspecies] (A) {$C_{e}$} ;
+\node [vspecies, right of = A] (B) {$P_{e}$} ;
+\node [vspecies, below of = A] (C) {$C_{i}$} ;
+\node [vspecies, below of = B] (D) {$P_{i}$} ;
+\node [right of = D,node distance = 1.5cm] (model) {inside};
+\node [right of = B,node distance = 1.5cm] (model2) {outside};
+
+\draw [->] ([yshift=3pt]A.east) --  node[above] {\small{$k_+ S_{e}$}} ([yshift=3pt]B.west) ;
+\draw [->] ([yshift=-3pt]B.west) --  node[below] {\small{$k_-$}} ([yshift=-3pt]A.east) ;
+
+\draw [->] ([yshift=3pt]C.east) --  node[above] {\small{$k_+ S_{i}$}} ([yshift=3pt]D.west) ;
+\draw [->] ([yshift=-3pt]D.west) --  node[below] {\small{$k_-$}} ([yshift=-3pt]C.east) ;
+
+\draw [->] ([xshift=-3pt]A.south) --  node[left] {\small{$k$}} ([xshift=-3pt]C.north) ;
+\draw [->] ([xshift=3pt]C.north) --  node[right] {\small{$k$}} ([xshift=3pt]A.south) ;
+
+\draw [->] ([xshift=-3pt]B.south) --  node[left] {\small{$k$}} ([xshift=-3pt]D.north) ;
+\draw [->] ([xshift=3pt]D.north) --  node[right] {\small{$k$}} ([xshift=3pt]B.south) ;
+
+
+
+\end{tikzpicture}
+\end{center}
+
+```
+
+&nbsp;
+
+<!-- Problem adapted from Keener pg 64 and 65 2.4.1 glucose transport -->
+```{exercise}
+The chemical glucose is transported across the cell membrane using a carrier proteins.  These proteins can have different states (open or closed) that can be bound to a glucose substrate.  The schematic for this reaction is shown in Figure \@ref(fig:glucose).  The system of differential equations describing this reaction is:
+  
+  \begin{align*}
+\frac{dp_{i}}{dt} &= k p_{e} - k p_{i} + k_{+} s_{i}c_{i}-k_{i}p_{i} \\
+\frac{dp_{e}}{dt} &= k p_{i} - k p_{e} + k_{+} s_{e}c_{e}-k_{-}p_{e} \\
+\frac{dc_{i}}{dt} &= k c_{e} - k c_{i} + k_{-} p_{i}-k_{+}s_{i}c_{i} \\
+\frac{dc_{e}}{dt} &= k c_{i} - k c_{e} + k_{-} p_{e}-k_{+}s_{e}c_{e}
+\end{align*}
+
+\begin{enumerate}
+\item We can reduce this to a system of three equations.  First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$.  Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
+\item Determine the equilibrium solutions for this new system of three equations.
+\item Construct the Jacobian matrix for each of these equilibrium solutions.
+\end{enumerate}
+```

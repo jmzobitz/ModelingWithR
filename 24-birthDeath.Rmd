@@ -1,0 +1,298 @@
+# Simulating Stochastic Dynamics
+
+In the last section we examined how we built up a stochastic differential equation from adding in stochasticity (noise) to the parameter values and identifying deterministic and stochastic parts.  In this section we will investigate what happens when the variables are stochastic themselves.
+
+
+## The stochastic logistic model redux
+Let’s go back to the logistic population model but re-written in a specific way:
+
+\begin{equation}
+\frac{dx}{dt} = r x \left( 1 - \frac{x}{K} \right) = r x - \frac{rx^{2}}{K}
+\end{equation}
+
+From our differential equation a change in the variable $x$ (denoted as $\Delta x$) over $\Delta t$ units will arise from re-writing the differential equation in differential form $\displaystyle \Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t$.
+
+One way to think about stochastic differential equations is through small (unit) changes in the variables, which we can organize via the following table:
+
+Outcome | Probability | 
+------------- | ------------- | 
+$\Delta x = 1$ (population change by 1) | $r x \; \Delta t$ |
+$\Delta x = -1$ (population change by -1) | $\displaystyle \frac{rx^{2}}{K} \; \Delta t$ |
+$\Delta x = 0$ (no population change) | $\displaystyle 1 - rx \; \Delta t - \frac{rx^{2}}{K} \; \Delta t$ |
+
+
+I know that it is odd to think of the different outcomes as probabilities, but for the moment let's roll with it. Part of the reason why it is useful is that we can apply concepts from probability theory to this problem.  In particular if we have a discrete random variable $Y$ with outcomes Let $Y$ be a random variable with a finite number of finite outcomes $\displaystyle y_{1},y_{2},\ldots ,y_{k}$ with probabilities $\displaystyle p_{1},p_{2},\ldots ,p_{k}$,  respectively, then the expected value $\mu$ of $Y$ is:
+
+\begin{equation*}
+\mu = E[Y] = \sum_{i=1}^{k} y_{i}\,p_{i}=y_{1}p_{1}+y_{2}p_{2}+\cdots +y_{k}p_{k}.
+\end{equation*}
+
+If we apply this definition to the random variable $\Delta x$ we have:
+
+\begin{align*}
+\mu = E[\Delta x] &= (1) \cdot \mbox{Pr}(\Delta x = 1) + (- 1) \cdot \mbox{Pr}(\Delta x = -1)  + (0) \cdot \mbox{Pr}(\Delta x = 0) \\
+&= (1) \cdot \left( r x \; \Delta t \right) + (-1)  \frac{rx^{2}}{K} \; \Delta t \\
+&= r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t
+\end{align*}
+
+Note how $\mu$ the formula for $\mu$ is the same as the right hand side of the original differential equation!
+
+Next let's also calculate the variance of $\Delta x$, defined for a discrete random variable as $\displaystyle \sigma^{2} = E[(Y - \mu)^{2}]$, or equivalently $\sigma^{2}= E[Y^{2}] - (E[Y] )^{2}$.
+
+
+\begin{align*}
+\sigma^{2} = E[(\Delta x)^{2}] - (E[\Delta x] )^{2} &= (1)^{2} \cdot \mbox{Pr}(\Delta x = 1) + (- 1)^{2} \cdot Pr(\Delta x = -1)  + (0)^{2} \cdot \mbox{Pr}(\Delta x = 0) - (E[\Delta x] )^{2} \\
+%&= (1) \cdot \left( r x \; \Delta t \right) + (1)  \frac{rx^{2}}{K} \; \Delta t  - \left( r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t \right)^{2}
+\end{align*}
+
+Here come's a key assumption.  We are going to compute the variance to first order in $\Delta t$.  Because of that, we are going to assume that any terms involving $(\Delta t)^{2}$ are small, or in effect neglibile.  This is a huge simplifying assumption for the variance, but it is useful!
+
+So we have that $\displaystyle \sigma^{2} = \left( r x \; \Delta t \right) +  \frac{rx^{2}}{K} \; \Delta t$.
+
+The reason why we are computing the mean and variance is that they will help characterize the solution based on some of the random walk properties, which we know how to simulate.
+
+
+- To first order we assume that $\Delta x$ follows a probability distribution that is normal with mean $\mu$ and variance $\sigma^{2}$.
+- Since $\Delta x$ is the sum of many smaller changes we can apply the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) to characterize $\Delta x$ as a normal random variable.
+- The distribution for $ as $\Delta x = \mu + \sigma Z$, where Z is random variable from a unit normal distribution (so in `R` we would use `rnorm(1)`).
+- In this way we can simulate $\Delta x$ as a Wiener process.
+- Since $\Delta x = x_{n+1}-x_{n}$, then we have $x_{n+1} = x_{n} + \mu + \sigma Z$.
+
+The last step provides a way to generate a solution trajectory to our differential equation.  Cool!
+
+Let's implement this in `R`.  I have code that can simulate this process once you identify the key parameters and elements of the code.
+
+```{r,fig.width=3,fig.height=4,fig.align='center'}
+nSimulations = 100
+sigma = 1
+deltaT <- 0.05    # timestep length
+timeSteps <- 200   # must be a number greater than 1
+parameters <- c(r=0.8, K = 100)   # parameters: a named vector
+initialCondition <- c(x=3)  # Be sure you have enough conditions as you do variables.
+
+
+
+birth <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = r*x # <-- You may edit this line.
+    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+death <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = r*x*x/K # <-- You may edit this line.
+    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+birthDeathStochastic(deltaT,timeSteps,initialCondition,birth,death,parameters,nSimulations,sigma)
+
+```
+
+Notice that as before the spaghetti and ensemble average plots are generated.
+
+Another way to think about this stochastic differential equation:
+
+\begin{align*}
+\alpha(x) &= r x \; \Delta t \mbox{ (birth) }  = \alpha(x) \\
+\delta(x) &=  \frac{rx^{2}}{K} \; \Delta t \mbox{ (death) }
+ = \delta(x)
+ \end{align*}
+
+In this way we think of $\alpha(x)$ as a "birth process" and $\delta(x)$ as a "death process". When we computed the mean $\mu$ and variance $\sigma^{2}$ we had $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2}=\alpha(x)+\delta(x)$.  This relationship holds up for *any* differential equation where we have identified a birth or death process.  It turns out that this particular splitting is not unique, and we can obtain different dynamics depending on the split.
+
+
+
+## A stochastic system of equations
+We can also apply this to a stochastic system of equations.  Here we will return to the lynx-hare model:
+
+\begin{align}
+\frac{dH}{dt} &= r H - b HL \\
+\frac{dL}{dt} &=ebHL -dL
+\end{align}
+
+In this case we still split *each equation* into the birth ($\alpha$) and death ($\delta$) parts:
+\begin{align*}
+\alpha & =
+\begin{cases}
+\frac{dH}{dt}: & r H \\
+\frac{dL}{dt}: & ebHL\\
+\end{cases} \\
+\delta & =
+\begin{cases}
+\frac{dH}{dt}: & bHL \\
+\frac{dL}{dt}: & dL\\
+\end{cases} 
+\end{align*}
+
+
+To simulate this stochastic process the setup of the code is similar to previous ways we solved systems of differential equations.  Since we have a system of equations to compute the expected value and variance requires additional knowledge of matrix algebra.  As a result the function that simulates the stochastic process is `birthDeathStochasticSystems`:
+
+```{r,fig.width=4,fig.height=5}
+### Example with a system of equations
+deltaT <- 0.05    # timestep length
+timeSteps <- 200   # must be a number greater than 1
+parameters <- c(r = 2, b = 0.5, e = 0.1, d = 1)   # parameters: a named vector
+initialCondition <- c(H=1, L=3)  # Be sure you have enough conditions as you do variables.
+nSimulations <- 100
+sigma <- .1
+
+
+birth <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dH = r*H   # <-- You may edit this line
+    dL = e*b*H*L  # <-- You may edit this line.
+    return(list(c(dH, dL)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+death <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dH = b*H*L  # <-- You may edit this line
+    dL = d*L # <-- You may edit this line.
+    return(list(c(dH, dL)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+birthDeathStochasticSystems(deltaT,timeSteps,initialCondition,birth,death,parameters,nSimulations,sigma)
+
+```
+
+## Generalizing the approach.
+Another way to think about the logistic differential equation as what as known as a "birth-death process"
+Let’s call the part of the differential equation that contributes to a positive rate as a "birth process" and parts that contribute to a negative rate as a "death process".  If we have the differential equation
+
+\begin{equation*}
+\frac{dx}{dt} = \alpha(x)-\delta(x)
+\end{equation*}
+
+Then we would simulate the birth death process with $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2} = \alpha(x)+\delta(x)$.
+
+For a multivariable system of equations the process is the same, however because we have a system of equations the calculations for the expected value and variance require more knowledge of matrix algebra which is beyond the scope here.  The provided code does take this into account.
+
+
+
+
+\newpage
+
+## Exercises
+
+<!-- pg 342 LW -->
+```{exercise}
+For the logistic differential equation consider the following splitting of $\alpha(x)$ and $\delta(x)$:
+
+\begin{align*}
+\alpha(x) &= rx + \frac{rx^{2}}{2K} \\
+\delta(x) &=  \frac{rx^{2}}{2K}
+\end{align*}
+
+Simulate this SDE using the same values of parameters for the logistic example and compare your results.
+
+```
+
+&nbsp;
+
+
+<!-- LW pg 346 #3 -->
+```{exercise}
+Let $R(t)$ denote the rainfall at a location at time $t$, which is a random process.  Assume that probability of the change in rainfall from day $t$ to day $t+\Delta t$ is the following:
+
+\begin{tabular}
+{ c c}
+change & probability \\ \hline \hline
+$\Delta R = \rho$ & $\lambda \Delta t$ \\
+$\Delta R = 0$ & $1- \lambda \Delta t$ \\ \hline
+\end {tabular}
+
+
+\begin{enumerate}
+\item With this information, compute E[$\Delta R$] and variance of $\Delta R$.
+\item Simulate this stochastic process.  Use $R(0)=0$ and run 500 simulations of this stochastic process.  Set $\lambda \rho = 18$ and $\sqrt{ \lambda \rho^{2}}=16$.
+\end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+ Consider the model for zombie population dynamics:
+
+\begin{align*}
+\frac{dS}{dt} &=-\beta S Z - \delta S  \\
+\frac{dZ}{dt} &= \beta S Z + \xi R - \alpha SZ \\
+\frac{dR}{dt} &= \delta S+ \alpha SZ  - \xi R
+\end{align*}
+
+\begin{enumerate}
+\item Determine the birth and death terms for the zombie model so that you could encode this as a birth/death process:
+
+
+\begin{itemize}
+\item  Birth part for $\displaystyle \frac{dS}{dt}$: \hskip 2in Death part for $\displaystyle \frac{dS}{dt}$: \hfill
+\item[]
+\item Birth part for $\displaystyle \frac{dZ}{dt}$: \hskip 2in Death part for $ \displaystyle\frac{dZ}{dt}$: \hfill
+\item[]
+\item Birth part for $\displaystyle \frac{dR}{dt}$: \hskip 2in Death part for $\displaystyle \frac{dR}{dt}$: \hfill
+\end{itemize}
+
+\item Use `birthDeathStochasticSystems` to perform 500 simulations of this stochastic differential equation. Please assume the following values of the parameters and stochastic method:
+
+\begin{itemize}
+\item $\sigma = 0.004$
+\item $\Delta t= 0.5$.
+\item Timesteps: 200.
+\item $\beta = 0.0095$, $\delta = 0.0001$ ,$\xi =  0.1$, $\alpha = 0.005$.
+\item Initial condition: $S(0)=499$, $Z(0)=1$, $R(0)=0$.
+\end{itemize}
+
+\end{enumerate}
+```
+
+&nbsp;
+
+```{r sis-bd,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
+
+\begin{center}
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
+
+\node [vspecies] (S) {$S$} ;
+\node [vspecies, right of = S] (I) {$I$} ;
+\draw [->] ([yshift=3pt]S.east) --  node[above] {\small{$b$}} ([yshift=3pt]I.west) ;
+\draw [<-] ([yshift=-3pt]S.east) --  node[below] {\small{$r$}} ([yshift=-3pt]I.west) ;
+\end{tikzpicture}
+\end{center}
+
+
+```
+
+&nbsp;
+
+<!-- Adapted from LW pg 346 #4 -->
+```{exercise}
+An $SIS$ model is one where susceptibles $S$ become infected $I$, and then after recovering from an illness, become susceptible again.  The schematic representing this is shown in Figure \@ref(fig:sis-bd).  While you can write this as a system of differential equations, assuming the population size is constant $N$ we have the following differential equation:
+
+  \begin{equation}
+\frac{dI}{dt} = b(N-I) I - r I
+\end{equation}
+
+\begin{enumerate}
+\item Identify $\alpha(I)$ and $\delta(I)$ for this model.
+\item Assuming $N=1000$, $r=0.01$, and $b=0.005$, $I(0)=1$, simulate this differential equation over two weeks with $\Delta t = 0.1$.  Show the plot of your result.
+\end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+Consider the equation
+\begin{equation*}
+\Delta x = \alpha(x) \; \Delta t - \beta(x) \; \Delta t
+\end{equation*}
+
+If we consider $\Delta x$ to be a random variable, show that the expected value $\mu$ equals $\alpha(x) \; \Delta t - \delta(x) \; \Delta t$ and the variance $\sigma^{2}$, to first order, equals $\alpha(x) \; \Delta t + \delta(x) \; \Delta t$.
+```
+
+

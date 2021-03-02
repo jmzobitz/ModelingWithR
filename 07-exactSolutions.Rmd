@@ -1,0 +1,284 @@
+# Exact Solutions to Differential Equations
+
+We have already discussed some tools that can analyze differential equations qualitatively.  By interpreting values of the rate of change for different values of the dependent variable (i.e. $\displaystyle \frac{dS}{dt}$ versus $S$), we can determine that qualitative behaviors of the solution in a phase line.  The phase plane allowed us to examine equilibrium solutions and their stability  Beyond this graphical approach, it is also helpful to know the exact solution to an equation using some of the tools you may have learned from Calculus.  
+
+## Separable Differential Equations
+One technique to solve differential equations is the method of *separation of variables*. Let's look at an example:
+
+What is the general solution to $\displaystyle \frac{dy}{dx} = yx^{2}$?  To solve this expression we collect the variables involving $x$ and one side of the equation, and the variables involving $y$ on the other:
+
+$$ \frac{1}{y} dy = x^{2} dx $$.
+
+Now the next step is to determine the antiderivative of both sides of expression:
+
+$$\int  \frac{1}{y} dy = \ln(y) + C$$.
+$$ \int x^{2} dx  = \frac{1}{3} x^{3} + C$$.
+
+Finally since both sides are equal we can solve for the dependent variable $y$.  One thing to note: usually for antiderivatives we always include a $+C$.  For solving differential equations it is okay just to keep only one $+C$, which usually is best on the side of the independent variable:
+
+$$\ln(y) =\frac{1}{3} x^{3} + C \rightarrow e^{\ln(y)} = e^{\frac{1}{3} x^{3} + C} $$.
+$$y = Ce^{\frac{1}{3} x^{3}} $$.
+
+
+
+
+We are in business!  So here is a general technique approach to solving a differential equation via separation of variables:
+
+1. **Separate** the variables on one side of the equation.
+2. **Integrate** both sides individually.
+3. **Solve** for the dependent variable.
+
+
+
+
+If we solve this equation using separation of variables we havUsing your work above as a guide, solve this differential equation to determine a solution $y(x)$.
+
+
+## Guess and Check
+Say for example we have the following equation that describes the rate of change above:  The first approach if a function is a solution to a differential equation is the guess and check method, or by direct substitution.
+
+\[ \frac{dS}{dt} = 0.7 S \]
+
+Now let's try to see if the function $\tilde{S}(t) = 5 e^{0.7t}$ is a solution in order to do that, we need to differentiate $\tilde{S}(t)$, which using our knowledge of calculus is $0.7 \cdot 5 e^{-0.7t}$.  If we note that $\displaystyle \frac{d\tilde{S}}{dt} = 0.7 \tilde{S} = 0.7 e^{0.7t}$ than the function $\tilde{S}$ does solve the differential equation.
+
+**Your turn!**  You try the following equations:
+$\tilde{R}(t) = 10e^{0.7t}$, $\tilde{P} = e^{0.7t}$, $\tilde{Q} = 5e^{0.7t}$, $\tilde{F}=3$, $\tilde{G}=0$, $\tilde{Q}(t)+\tilde{R}(t)$ where $C$ signifies a constant value.
+
+Hopefully you were able to verify that $\tilde{R}$ and $\tilde{Q}$ and $\tilde{G}$ all were solutions to the differential equation, and that $\tilde{R} + \tilde{Q}$ was a solution as well. The most general solution to this differential equation is $S(t)=Ce^{0.7t}$, where the initial condition would determine the value of $C$.  What this example illustrates is the principle that if you have two solutions to a differential equation, they can be added together and produce a new solution.  This is an example of a *linear combinations* of solutions, and we can state this more formally:
+
+> If $x(t)$ and $y(t)$ are solutions to the differential equation $z' = f(t,z)$, then $c(t) = a \cdot x(t) + b \cdot y(t)$ are also solutions, where $a$ and $b$ are constants.
+
+
+## Applying guess and check more broadly
+As noted earlier, the guess and check method may seem to be trivial - if you have a differential equation, and solution, why verify it?  Well, this method helps to introduce a useful solution technique to a differential equation, and one that we can build up through directverification.
+
+We are going to revisit the lynx hare model, but simplified a little bit.  Here we are going to assume that lynx and hares both decline at a rate proportional to the population size, but the lynx population increases according to the rate of hare decline:
+
+\begin{align}
+\frac{dH}{dt} &= -b H  \\
+\frac{dL}{dt} & = b H  - d L
+\end{align}
+
+
+Based on these simplified assumptions a good approach is to assume a solution that is exponential for both $H$ and $L$:
+
+
+\begin{align}
+\tilde{H}(t) &= C_{1} e^{\lambda t} \\
+\tilde{L}(t) &= C_{2} e^{\lambda t}
+\end{align} 
+
+The form of this solution has three unknowns: $C_{1}$, $C_{2}$, and $\lambda$. If you have had Linear Algebra, you may recognize that we are assuming the solution is a vector of the form $\vec{v} = \vec{C} e^{\lambda t}$ . Let's apply Guess and Check to solve these equations.  By differentiation, we have the following:
+
+
+\begin{align}
+\frac{d\tilde{H}}{dt} &= \lambda C_{1} e^{\lambda t} \\
+\frac{d\tilde{L}}{dt}  &= \lambda C_{2} e^{\lambda t}.
+\end{align} 
+
+
+Comparing to our differential equation we can show that
+
+\begin{align}
+\lambda C_{1} e^{\lambda t} &= - b C_{1} e^{\lambda t} \rightarrow  (\lambda +\delta) C_{1} e^{\lambda t} = 0\\
+ \lambda C_{2} e^{\lambda t} &= b  C_{1} e^{\lambda t} - d C_{2} e^{\lambda t}
+\end{align} 
+
+Let's rearrange this expression a little bit:
+
+\begin{align}
+ (\lambda + b) C_{1} e^{\lambda t} &= 0\\
+ (\lambda + d) C_{2} e^{\lambda t} &=b  C_{1} e^{\lambda t}
+\end{align} 
+
+Notice that for the second equation we can solve for $C_{1} e^{\lambda t}$, or $\displaystyle C_{1} e^{\lambda t} =  \frac{(\lambda + d)}{b} C_{2} e^{\lambda t}$.
+
+This allows for something neat to happen.  We can substitute this expression for $C_{1} e^{\lambda t}$ into the first equation:
+
+\begin{equation}
+ (\lambda + b) \frac{(\lambda + d)}{b} C_{2} e^{\lambda t} = 0
+\end{equation}
+
+If we assume that $b \neq 0$, then we have the following simplified expression:
+
+\begin{equation}
+(\lambda +b) (\lambda +d) C_{2} e^{\lambda t}  = 0
+\end{equation}
+
+
+Because the exponential function never equals zero, with this new equation, the only possibility is that $(\lambda + b)(\lambda + d)=0$, or that $\lambda = -b$ or $\lambda = -d$.Remember: if expressions multiply to zero, then the only possibility is that at least one of them is zero. This process finds the *eigenvalues* and *eigenvectors* of a system of equations.  We will study this later in the course.
+
+We now need to determine values of $C_{1}$ and $C_{2}$.  We can do this by going back to the equation $(\lambda + d) C_{2} e^{\lambda t} =b  C_{1} e^{\lambda t}$, or $(\lambda + d) C_{2} e^{\lambda t} -b  C_{1} e^{\lambda t}=0$ rearranged.
+
+
+
+Let's analyze this equation for each of the values of $\lambda$:
+
+### Case $\lambda = -d$  
+For this situation, we have 
+
+$$(-d +d) C_{2} e^{-d t} - b  C_{1} e^{-d t} =0 \rightarrow   -b  C_{1} e^{-d t} =0.$$
+
+The only way for this equation to be consistent and remain zero is if $C_{1}=0$.  We don't have any restrictions on $C_{2}$, so the general solution will be 
+
+\begin{align}
+\tilde{H}(t) &=0 \\
+\tilde{L}(t) &= C_{2} e^{-d t}.
+\end{align} 
+
+
+### Case $\lambda = -d$
+For this situation, we have $(-d +b) C_{2} e^{-d t} - d  C_{1} e^{-d t} =0$ which leads to the following equation: 
+\begin{equation}
+\left( (-d +b) C_{2} - d  C_{1} \right) e^{-d t} =0
+\end{equation}
+
+
+The only way for this equation to be consistent and remain zero is if $\left( (-d +b) C_{2} - d  C_{1} \right)=0$, or if $\displaystyle C_{2} = \left( \frac{d}{-d + b} \right) C_{1}$.  In this case, the general solution will be 
+
+
+\begin{align}
+\tilde{H}(t) &=  C_{1} e^{-d t} \\
+\tilde{L}(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t},
+\end{align} 
+
+The parameter $C_{2}$ can be determined by the initial condition.  Notice that we need to have $d \neq b$ or our solution will be undefined.
+
+Now we can write down a general solution to the system by combining our two solutions together.  Here we can you the fact that two solutions can be added together (superposition) to generate a solution.
+
+
+\begin{align}
+H(t) &=  C_{1} e^{-d t} \\
+L(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t} + C_{2} e^{-b t}
+\end{align} 
+
+
+This method only works on *linear* differential equations (i.e. it wouldn't work if there was a term such as $kHL$ in our dynamics.  Later on in the course we will look a more systematic method to determine solutions to nonlinear systems of equations.
+
+
+
+\newpage
+## Exercises
+
+```{exercise}
+Which of the following differential equations be solved via separation of variables?
+\begin{enumerate}
+\item $\displaystyle \frac{dy}{dx} = x \cdot (y^{2}+2)$
+\item $\displaystyle \frac{dy}{dx} = x^{2} + xy$
+\item $\displaystyle \frac{dy}{dx} = e^{x+y}$
+\item $\displaystyle \frac{dy}{dx} = y \cdot \cos(2+x)$
+\item $\displaystyle \frac{dy}{dx} = \ln x + \ln y$
+\end{enumerate}
+
+Once you have identified which ones can be solved via separation of variables, apply that technique to solve each differential equation.
+```
+
+&nbsp;
+
+ <!-- Taken from Schaums outlines -->
+ 
+```{exercise}
+Solve the following differential equations by separation of variables:
+\begin{enumerate}
+\item $\displaystyle \frac{dy}{dx} = \frac{y^{3}}{x}$
+\item $\displaystyle \frac{dy}{dx} = 1+y^{2}$
+\item $\displaystyle \frac{dy}{dx} = 8-y$
+\end{enumerate}
+```
+
+
+&nbsp;
+
+```{exercise}
+What is the general solution to the differential equation $\frac{dP}{dt} = - \delta P$, $P(0)=P_{0}$, where $\delta$ is a constant parameter?
+```
+
+&nbsp;
+
+```{exercise}
+Here we return to the problem of how animals consume food. A differential equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: 
+
+\begin{equation}
+\frac{dy}{dx} = \frac{1}{\theta} \frac{y}{x},
+\end{equation}
+
+where $\theta \geq 1$ is a constant. Apply separation of variables to determine the general solution to this differential equation.
+```
+
+&nbsp;
+
+```{exercise}
+Apply separation of variables to determine general solutions to the following systems of differential equations:
+\begin{align} \frac{dx}{dt} &= x \\ 
+\frac{dy}{dt} &= y \end{align}
+(This system is an example of an *uncoupled* system of equations.)
+```
+
+&nbsp;
+
+<!-- %Thornley pg 80 -->
+```{exercise}
+A plant grows propritional to its current length $L$.  Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value.  The system of equations that models this plant growth is the following:
+\begin{align}  
+\frac{dL}{dt}  = \mu L \\ 
+\frac{d\mu}{dt}  = -k \mu \\
+ \mbox{($k$ is a constant parameter)}
+\end{align}
+
+Apply separation of variables to determine the general solutions to this system of equations.
+
+```
+
+&nbsp;
+
+```{exercise}
+Use the method developed in this section determine the general solution to the following system of differential equations:
+\begin{align}
+\frac{dx}{dt} &= x-y   \\
+\frac{dy}{dt} & = 2y
+\end{align}
+
+```
+
+&nbsp;
+
+```{exercise}
+For each of the following differential equations:
+\begin{itemize}
+\item Determine equilibrium solutions for the differential equation.
+\item Apply separation of variables to determine general solutions to the following differential equations:
+\item Choose reasonable values of any parameters and use the function \texttt{plotFunction} to generate a solution curve for an initial condition that you select.
+\end{itemize}
+
+\begin{enumerate}
+\item $\displaystyle \frac{dy}{dx} = -\frac{x}{y} $
+\item $\displaystyle \frac{dy}{dx} = 8-y $
+\item $\displaystyle \frac{dW}{dt} = k (N-W)  \mbox{ ($k$ and $N$ are constant parameters) } $
+\item $\displaystyle \frac{dR}{dt} =-aR \ln \frac{R}{K}  \mbox{ ($a$ and $K$ are constant parameters) } $
+\end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+Consider the following differential equation, where $M$ represents a population of mayflies and $t$ is time (given in months), and $\delta$ is a mortality rate (units % mayflies / month):
+\begin{equation}
+\frac{dM}{dt} = - \delta M
+\end{equation}
+Determine the general solution to this differential equation and plot a few different solution curves with different values of $\delta$. Assume that $M(0) = 10,000$. Also identify the equilibrium solution to the differential equation and classify the stability of the equilibrium solution based on your solution curves.
+```
+
+&nbsp;
+```{exercise}
+An alternative model of mayfly mortality is the following:
+\begin{equation}
+\displaystyle \frac{dM}{dt} = - \delta(t) M,
+\end{equation}
+where $\delta(t)$ is a time dependent mortality function. Determine a solution and plot a solution curve (assuming $M(0)=10,000$ and over the interval from $0 \leq t \leq 1$) for this differential equation when $\delta(t)$ has the following forms:
+\begin{enumerate}
+\item $\delta(t) = t^{2}$
+\item $\delta(t) = 1-t^{2}$
+\end{enumerate}
+Provide a reasonable biological explanation justifying the use of this alternative mayfly model. 
+```
+

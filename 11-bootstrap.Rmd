@@ -1,0 +1,162 @@
+# The bootstrap method
+
+With parameter estimation we want to optimize a likeilhood or cost function.  Sometimes cost functions are nonlinear and multi-dimensional (with respect to the parameters) so direct optimization of the cost function using techniques learned in calculus are not computationally feasible.  
+
+An alternative approach uses the idea of random number generation and *sampling*, which can efficiently determine the the minimum through direct evaluation.  To understand the idea of sampling we will study an approach called *bootstrapping*.
+
+## Statistical theory: sample solution versus true distributions
+Going back to our likelihood and cost functions, we assume that there is a probability density function for the parameters.  For many types of nonlinear cost functions the probability density function is not an easily known function. However by *sampling* the distribution we can characterize the distribution.  For example, let's say we have 50 samples of the normal distribution:
+
+```{r,fig.width=4,fig.height=3}
+
+  plotHistogram(data.frame(rnorm(50)),bins=10) 
+
+
+```
+
+
+This histogram *looks* like a normal distribution, but since we only have 50 samples that may not be enough data to adequately justify that conclusion, especially in a statistical sense. Returning back to Now let's see what happens if we increase the number of samples by factors of 10:
+
+```{r,echo=FALSE}
+x_bar <- list()
+x <- list()
+for (i in 1:5) {
+  x[[i]] <- data.frame(i_val=i,x_val=rnorm(10^i))
+  x_bar[[i]] <- data.frame(i_val=i,i_bar=mean(x[[i]]$x_val))
+}
+
+x <- bind_rows(x)
+x_bar <- bind_rows(x_bar)
+
+
+
+x  %>% mutate(N=10^i_val) %>%
+  ggplot(aes(x=x_val)) +
+geom_area(data=data.frame(x_val=seq(-5,5,length=200),y_val=dnorm(seq(-5,5,length=200))),
+          aes(x=x_val,y=y_val),alpha=.2, fill="#FF6666") + geom_histogram(aes(y=..density..),bins=100,alpha=0.4) + facet_wrap(.~N,scales='free_y',labeller = label_both) +
+  xlab('x') + ylab('count')
+
+
+```
+
+The following plot also shows the true distribution shaded in red - clearly as the number of data points increases the more the random sample approaches the true distribution. This is the concept underlying statistical inference: process of drawing conclusions about the entire population based on a sample.
+
+
+
+With measurements of data, we also assume the measurements follow an unknown distribution.  The set of samples is called an *empirical distribution*.  To examine data, we will use weather and precipitation today, which is collected in a cooperative [network of local observers](https://www.cocorahs.org/ViewData/ListDailyPrecipReports.aspx). These stations come from the Twin Cities of Minneapolis and St. Paul and surrounding suburbs:
+
+
+```{r,echo=FALSE}
+kable(precipitation[1:10,])
+
+```
+
+While it is great to have only one value is reported for precipitation amounts, so the question is:
+*What could be a representative number for the average amount of rainfall received for this storm?*
+
+Let $R$ be the distribution of rainfall in the Twin Cities.  The measurements are *samples* of this distribution.  One way to say is that the average of the precipitation data (`r  mean(precipitation$precip,na.rm=TRUE)` inches) is good enough, but what we don't know is how well that average value approximates the expected value of the distribution for $R$.
+
+As an exploratory data analysis approach, one way we can do this is by a histogram of the precipitation measurements:
+
+```{r,fig.width=4,fig.height=3}
+my_precip <- data.frame(precipitation$precip)
+plotHistogram(my_precip,bins=10,'Precipitation')
+
+```
+
+
+The precipitation measurement illustrates the difference between a population (the true distribution of measurements) and a sample (what people observe). The histogram shown is called the *empirical distribution* of these data. For the purposes we get here, we are after what is called the *sample statistic*, which is usually the mean or standard deviation. 
+
+This distribution looks bimodal with a lot of variability.  How could we account for the representative value of the distribution $R$? Each of the entries in the `precipitation` data frame represents a measurement made by a particular observer. To get the true distribution we would need to add more observers (such as when we sampled the normal distribution), but that isn't realistic as the event has already passed.
+
+The way around this is a bootstrap sample, which is a sample of the original dataset with replacement.  Sampling with replacement is the process of remaking a dataset, but you get to reselect *from the entire dataset at the same time*.  For example, let's say we have the sample 5 measurements:
+
+```{r}
+p_new <- precipitation %>% sample_n(5)
+```
+We have 5 precipitation measurements (`r p_new %>% pull(precip)`). A sample with replacement means that we draw 5 times from the precipitation measurement, but once we draw it, then it we get to draw it again.  So this sample would be: `r p_new %>% pull(precip) %>% sample(replace = TRUE)`.  If we did another sample it would be `r p_new %>% pull(precip) %>% sample(replace = TRUE)`.
+
+Clearly this screams that the sampling process can be automated!  We can keep track of the sample statistics (such as the mean or the standard deviation) for all of the resamples we undertake.  Once we have sampled as much we want, *then* investigate the distribution of the computed sample statistics (we call this the *sampling distribution*).  It turns out that sample statistics from the sampling distribution (such as the mean or the standard deviation) will in the long run - approximate the true distribution statistic (such as the mean or standard deviation). This is an example of a non-parametric bootstrap - meaning we are not trying to force a priori a distribution onto the data.
+
+Here is how we can do this in with the command `bootstrap_samples`
+```{r,fig.width=4,fig.height=3}
+bootstrap_samples(my_precip,n=100,'Precipitation')
+```
+
+This code works through the bootstrap for 100 samples and reports out the confidence intervals for the mean and standard deviation.  A confidence interval is related to percentiles.  Let's take a look at the mean confidence interval, which at the 2.5 percentile is approximately 2.7 inches.  This means 2.5% of the distribution is at 2.7 inches or less.  The median (50th percentile) is 2.9, so half of the distribution for is 2.9 inches or less.  If we take the difference between 2.5% and 97.5% that is 95%, so 95% of the distribution is contained between 2.7 and 3.1 inches.  If we are using the bootstrap mean, we would report that the median rainfall is 2.9 with a 95% confidence interval of 2.7 to 3.1. The confidence interval to give some indication of the uncertainty in the measurements.
+
+So with just 100 bootstrap samples we have the true mean population to be 2.9.  Talk about the confidence interval - notice the difference between doing $n=100$ versus $n=1000$ for the confidence intervals.
+
+
+
+## Why bootstrap?
+Hopefully you can see how much more useful the bootstrap is in terms calculating sample statistics and expands the provenance of the data. A key goal is to get at the population level parameters, rather than the data level parameters.  Can we use this as a modeling tool? - YES!
+
+In this case, the “population” represent possibilities of parameters.  A set of measurements is a *sample* of these parameters.   What we can do is a bootstrap sample for the temperature data, fit a quadratic function to each of the new datasets, and then look at the distribution in parameter values.
+
+
+We are going to return to our example of the global temperature dataset. 
+```{r,fig.width=4,fig.height=3,fig.show='asis'}
+#### global temperature
+
+regression_formula <- globalTemp ~ 1 + yearSince1880 + I(yearSince1880^2)
+
+bootstrap_model(global_temperature,regression_formula,n=100,"Year Since 1880","Temperature")
+
+
+```
+
+
+Notice that with the bootstrap we can get information about the distribution of the estimated parameters, which includes the median and the 95% confidence interval.  This is super useful in reporting results from parameter estimates.
+
+The idea of sampling with replacement, generating a parameter estimate, and then repeating over several iterations is at the heart of many computational parameter estimation methods.  Such an approach helps make non-linear problems more tractable.
+
+While we did a bootstrap parameter estimate on a quadratic function, this also works for a log transformation of a dataset, as with the `phosphorous` dataset of algae and daphnia we have studied previously.  You will investigate this in one of the homework exercises.
+
+\newpage 
+## Exercises
+```{exercise}
+Repeat the bootstrap sample for the precipitation dataset where the number of bootstrap samples is 1000 and 10000.  Report the median and confidence intervals for the mean and the standard deviation of $R$.  What do you notice as the number of bootstrap samples increases?
+```
+&nbsp;
+```{exercise}
+The dataset `snowfall` lists the snowfall data from a snowstorm that came through the Twin Cities on April 14, 2018.
+
+\begin{enumerate}
+\item Use the function `plotHistogram` to make a histogram of the measured snowfall values.
+\item Use the function \texttt{bootstrap\_samples} with $N=1000$ to determine the average value and 95% confidence interval for both the mean (first moment) and standard deviation (second moment) for the amount of snow that fell.  Include the histograms for both of these bootstrap estimates.  Comment on your results, and the expected value for the amount of snowfall with its variability.
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+This question tackles the dataset \texttt{global\_temperature} to determine plausible models for a relationship between time and average global temperature.  For this exercise we are going to look the variability in bootstrap estimates for models up to fourth degree.
+
+Using the function \texttt{bootstrap\_model}, generate a bootstrap sample of $n=1000$ for each of the following functions.
+\begin{itemize}
+     \item Linear: $T=a+bY$
+     \item Quadratic:  $T=a+bY+cY^{2}$
+     \item Cubic: $T=a+bY+cY^{2}+dY^{3}$
+     \item Quartic: $T=a+bY+cY^{2}+dY^{3}+eY^{4}$
+\end{itemize}
+
+Include in your write up the graph of the data with the bootstrap predictions and the prediction from the linear regression model.  How does the variability in the parameters change ($a,b,c,d,e$) as more terms in the model are added? How does the variability in the bootstrap predictions change as more terms in the model are added?
+
+```
+&nbsp;
+```{exercise}
+Similar to the problems we have worked with before, the equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $$  \displaystyle y = c x^{1/\theta},$$ where $\theta \geq 1$ and $c$ are both constants is a constant.
+
+\begin{enumerate}
+\item Write down your log-transformed equation of this dataset.
+\item Using the function \texttt{bootstrap\_model}, generate a bootstrap sample of $n=1000$ for the linear (log transformed) equation.
+\item Report the confidence intervals from your bootstrap estimates. Include a rough sketch for the histograms for the bootstrap of the mean and standard deviation.
+\item Translate these bootstrap confidence intervals of your fitted slope and intercept back into the values of $c$ and $\theta$.
+\item These confidence intervals seem pretty large.  What would be some strategies we could employ to narrow these confidence intervals?
+\vfill
+\end{enumerate}
+```
+
+
+
+
+

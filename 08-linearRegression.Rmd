@@ -1,0 +1,180 @@
+# (PART) Parameterizing Models with Data {-} 
+
+# Linear Regression & Curve Fitting {#linearRegression}
+
+
+## The basic problem
+The problem we will be addressing in this next part of the course _parameter estimation_, which can be generally stated as the following:
+
+
+> Determine the set of parameters $\vec{\alpha}$ that minimize the difference between data $\vec{y}$ and the output of the function $f(\vec{x}, \vec{\alpha})$ and measured error $\vec{\sigma}$.
+
+
+The beauty of this problem the set of parameters $\vec{\alpha}$ can be addressed from several different mathematical areas: _calculus_  (optimization), _statistics_ (likelihood functions), and _linear algebra_ (systems of linear equations).
+
+For our purposes here we will be examine functions $f(\vec{x},\vec{\alpha})$ that are linear in $\vec{\alpha}$ - for example the equation $y=ax+b$.  In this example, the independent variable $x$, dependent variable $y$ are measured quantities, and $a$ and $b$ are unknown parameters we wish to estimate from the data.
+
+In this section I will show you how `R` determines the unknown parameters and we will interpret the results. Later on we will explore *how* this is done using likelihood and cost functions.
+
+To fit functions to data with a model in R it can be quite easy and customizable.  In the `MAT369Code` package there is a dataset of average global temperature over time:
+
+```{r echo=FALSE, results= 'asis'}
+library(tidyverse)
+library(MAT369Code)
+
+kable(global_temperature[1:20,], caption = 'Global Temperature from 1880')
+
+```
+
+First let's visualize the data, with time on the horizontal axis and temperature on the vertical axis:
+
+```{r,fig.width=4,fig.height=3}
+
+plotData(global_temperature,x="Year Since 1880",y="Temperature (Celsius)")
+
+```
+
+
+We will be working with these data to fit a function to data and parameters.  The function from the `MAT369Code` library that we will be using is called `plotRegression_Data` that for a given regression formula, generates the data with its statistical fit.  Here are the essential plots of the elements of a regression:
+
+- We need **data** for the formula to interpret. This needs to be a two column data table, such as `global_temperature`.
+- The **regression formula** we will use for the fit is given in the text `regressionFormula <- y~ 1 + x`.  We adopt the convention that $y$ signifies the "dependent variable" and $x$ signifies the "independent variable".   What this formula represents is "do a linear regression where the factors are a constant term and proportional to the independent variable." 
+
+
+That's it!  So if we need to do a linear regression of global temperature against year since 1880 the code to do this is the following:
+
+```{r,fig.width=5,fig.height=4}
+regression_formula <-  globalTemp ~ 1 + yearSince1880 
+plotRegression_Data(global_temperature,regression_formula,'Time','Temperature')
+# Notice you can specify the labels on the axes with the last two inputs to the function.
+```
+
+What is printed on the console is the summary of the fit results. This summary contains a of interesting things that you would study in advanced courses in statistics, but here is what we will focus on:
+
+- The estimated *coefficients* of the linear regression.  The column `Estimate` lists the constants in front of our regression formula $y=a+bx$. What follows is the error on that estimate by formulas from statistics.  The other additional things are statistical tests that show significance of the estimate.
+- One helpful thing to look at is the **Residual standard error**, which represents the overall, total effect of the differences between the model predicted values of $\vec{y}$ and the measured values of $\vec{y}$.  The goal of linear regression is to minimize this model-data difference.
+
+
+What also is shown is a graph of the data along with the fitted regression line.  
+
+
+## Moving beyond linear models
+We can also fit additional polynomial models such as the equation
+$y = a + bx + cx^{2} + dx^{3} ...$  (estimated parameters $a$, $b$, $c$, $d$, ...). There is a key distinction here: the equation is *nonlinear* in the variable $x$, but *linear* with respect to the parameters. How we do that in R is pretty simple, it just depends on how we enter in the regression formula.  Here are few templates:
+
+
+**Equation** | **Regression Formula**
+-------------| -------------
+    $y=a+bx$ | `y ~ 1 + x`
+    $y=a$ |  `y ~ 1` 
+    $y=bx$ | ` y ~ -1+x ` 
+    $y=a+bx+cx^{2}$ |  ` y ~ 1 + x + I(x^2) `
+    $y=a+bx+cx^{2}+dx^{3}$ |  `y~ 1 + x + I(x^2) + I(x^3) `
+
+
+Note: the structure `I(..)` is needed for `R` to signify a factor of the form $x^{n}$.
+
+
+We can also plot nonlinear models, or models that can be made linear.  While the equation $y=ae^{bx}$ non linear with respect to the parameters, it can be made linear by a *logarithmic transformation*  of the data:
+\begin{equation}
+\ln(y) = \ln(ae^{bx}) = \ln(a) + \ln (e^{bx}) = \ln(a) + bx
+\end{equation}
+
+The advantage to this approach is that the growth rate parameter is easily identifiable from the data, and the value of $a$ is found by exponentiation of the fitted intercept value.  The disadvantage is that you need to interpret the do a log transform of the $y$ variable first before doing any fits.
+
+\newpage 
+## Exercises
+
+```{exercise}
+Determine if the following equations are linear with respect to the parameters.  For the purposes of this problem we assume that $y$ is a function of $x$.
+
+  a. $y=a + bx+cx^{2}+dx^{3}$
+  b. $y=a \sin (x) + b \cos (x)$
+  c. $y = a \sin(bx) + c \cos(dx)$
+  d. $y = a + bx + a\cdot b x^{2}$
+  e. $y = a e^{-x} + b e^{x}$
+  f. $y = a e^{-bx} + c e^{-dx}$
+  
+
+```
+&nbsp;
+<!-- Idea taken from https://stattrek.com/regression/linear-transformation.aspx -->
+```{exercise}
+Each of the following equations can be written as linear with respect to the parameters, through applying some elementary transformations to the data.  Write each equation as a linear function with respect to the parameters.
+
+  a. $y=ae^{-bx}$
+  b. $y=(a+bx)^{2}$
+  c. $\displaystyle y =  \frac{1}{a+bx}$
+  d. $y = c x^{n}$
+
+```
+
+&nbsp;
+ <!-- From van den Berg, pg 59, exercise 3.13 -->
+
+```{exercise}
+Using the dataset `global_temperature` and the function `plotRegression_Data` to answer the following questions:
+
+
+a. Complete the following table, which represents various regression fits to global temperature $T$ (in degrees Celsius) and years since 1880 (denoted by $Y$). In the table **Coeffiicients** represent the values of the parameters $a$, $b$, $c$, etc from your fitted equation; **P** =  number of parameters; **RSE** = Residual standard error (this is reported in the R output from `regressionPlot`).
+
+**Equation** | **Coefficients** | **P** | **RSE**
+-------------| ------------- | ------------- | -------------
+     $T=a+bY$ || |
+    $T=a+bY+cY^{2}$ || |
+     $T=a+bY+cY^{2}+dY^{3}$ || |
+     $T=a+bY+cY^{2}+dY^{3}+eY^{4}$ || |
+   $T=a+bY+cY^{2}+dY^{3}+eY^{4}+fY^{5}$ || | 
+      $T=a+bY+cY^{2}+dY^{3}+eY^{4}+fY^{5}+gY^{6}$ || |
+ 
+b. After making this table, choose the polynomial of the function that you believe fits the data best.  Provide reasoning and explanation why you chose the polynomial that you did.
+c. Finally show the plot of your selected polynomial with the data.
+
+  
+
+
+```
+
+&nbsp;
+```{exercise}
+An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta},$ where $\theta \geq 1$ and $c$ are both constants is a constant.
+
+a. Show that you can write this equation as linear equation by applying a logarithm to both sides and simplifying.
+b. Use the dataset `phosphorous` and the function `plotRegression_Data` to fit your new linear equation.
+c. Determine the value of $c$ and $\theta$ in the original equation with the parameters from the linear fit.
+d. Now use the function `plotFunction_Data` to determine how well your guesses for $c$ and $\theta$ matches the original (not log-transformed) data. Comment on your results.
+
+
+```
+&nbsp;
+ <!-- Keener vol1 pg 44 and pg 11 -->
+```{exercise}
+A common equation in enzyme kinetics is the *Michaelis-Menten* law, which states that the rate of the uptake of a substrate $V$ is given by the equation:
+  
+  \begin{equation}
+V = \frac{V_{max} s}{s+K_{m}},
+\end{equation}
+
+where $s$ is the amount of substrate, $K_{m}$ is half-saturation constant, and $V_{max}$ the maximum reaction rate.  (Typically $V$ is used to signify the "velocity" of the reaction.)
+
+Say you have the following data:
+  
+*s* (mM) | *V* (mM / s)
+-------------| -------------
+    0.1 | 0.04
+    0.2 |  0.08 
+    0.5 | 0.17 
+    1.0 |  0.24
+    2.0 |  0.32
+    3.5 |  0.39
+    5.0 |  0.42
+    
+    
+\begin{enumerate}
+\item Using algebra, show that this equation can be written as $\displaystyle \frac{1}{V} = \frac{1}{V_{max}} + \frac{K_{m}}{V_{max}} \cdot \frac{1}{s}$
+\item  Notice that this equation is linear with variables $\displaystyle \frac{1}{V}$ and $\displaystyle \frac{1}{s}$.  Use $\texttt{plotRegression\_Data}$ to determine a linear fit for the transformed data.
+\item With your regression coefficients and the equation, determine values of $K_{m}$ and $V_{max}$.
+\item Use $\texttt{plotFunction\_Data}$ to compare the actual data to the curve you found.
+\end{enumerate}
+    
+*Note:* The process outlined here is a *Lineweaver-Burk* plot.

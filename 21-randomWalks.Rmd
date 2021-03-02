@@ -1,0 +1,176 @@
+# Random Walks
+
+In the last section we saw how to introduce stochasticity into a discrete dynamical system and the differences in the results.  In this section we will begin to develop some tools about how to understand stochastics by studying a problem called a random walk.
+
+
+The conceptual idea of a random begins on a number line.  If we start at $x=0$, we can move either to the left or the right, with equal probability $p$, as illustrated in this diagram:
+
+```{r,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE}
+\begin{center}
+\begin{tikzpicture}
+    \draw (-3,0) -- (3,0);
+    \foreach \i in {-3,-2,...,3} % numbers on line
+      \draw (\i,0.1) -- + (0,-0.2) node[below] (\i) {$\i$};
+   % \foreach \i in {0.5, 0.7, 0.9}% points on line
+    \fill[red] (0,0) circle (1 mm);
+   \node[align=center] at (-1,0.5) {$0 \leq p < 0.5$};
+    \draw [->,red,thick] (0,0.15) to [out=150,in=30] (-1,0.15);
+    \node[align=center] at (1,0.5) {$0.5 \leq p \leq 1$};
+    \draw [->,red,thick] (0,0.15) to [out=30,in=150] (1,0.15);
+  \end{tikzpicture}
+\end{center}
+```
+
+
+For each iteration of this process we will draw a random number using `runif(1)`.  We can code this process using a loop:
+
+```{r,fig.width=4,fig.height=3}
+number_steps <- 100;  	### Number of times we run our simulation
+
+### Set up vector of results
+x <- array(0,dim=number_steps);
+
+for (i in 2:number_steps) {
+  if (runif(1)< 0.5) {x[i]=x[i-1]-1}   # Move right
+    else {x[i] <- x[i-1]+1}   # Move left
+  }
+
+# Let's take a peek at our result:
+
+plot(x,type='l')
+
+print(mean(x))  # Where our average position was over the time interval
+print(sd(x))  # Where our standard deviation was over the time interval
+```
+
+
+Run this code again.  Do you get the same result?  I hope you didn't - because this process is random!  It is interesting to run it several times because there can be a wide variance in our results - for some realizations of the sample path, we end up being strictly positive, other times we go negative, and other times we just hover around the middle.
+
+One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations.  The code `randomWalk` can help us do that:
+
+```{r,fig.width=4,fig.height=3}
+number_steps <- 200
+number_realizations <- 20
+
+randomWalk(number_steps,number_realizations)
+```
+You will notice two plots get produced: (1) A **spaghetti plot** that plots all the different sample paths for this realization, and (2) a **ensemble plot** that takes the median and 95% confidence interval of the results.
+
+Something interesting looks like it is going on here.  The ensemble plot looks like a sideways parabola, but let's check to make sure that is the case.  Perhaps rerun `randomWalk` but set `number_realizations` to be 100:
+
+```{r,fig.width=4,fig.height=3}
+number_steps <- 200
+number_realizations <- 100
+
+randomWalk(number_steps,number_realizations)
+```
+
+As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on *average* you go nowhere, but as the number of steps increase, you are very likely to be *somewhere*.
+
+This requires some more systematic investigation into the random walk.
+
+Let's investigate this a little more mathematically.
+
+Call $x^{i}$ the position $x$ at step $i$ in a random walk. While we have set this up to be a unit walk, more generally $x^{i}=x^{i-1}+r(p) \Delta x$, with $\Delta x$ being the jump size (in this case $\Delta x=1$) and $r(p)$ being a random variable:
+
+\begin{equation} 
+r(p)=\begin{cases} -1 & 0 \leq p < 0.5 \\
+1 & 0.5 \leq p < 1 \end{cases}
+\end{equation}
+
+Note that in the above equation $p$ is drawn from a uniform distribution).
+
+The equation $x^{i}=x^{i-1}+r(p) \Delta x$ is sometimes referred to as the *evolution equation*. f we have multiple simulations then $x_{j}^{i}$ is the position at step $i$ for simulation $j$. 
+
+Let's introduce some terminology.  $\displaystyle \big \langle x^{i} \big \rangle = \frac{1}{n} \sum_{j=1}^{n} x_{j}^{i}$ is the *expected value* of our position at step $i$, summed over all of the simulations at that timestep.
+
+You will learn in a probability theory class that the expected value is a linear operator.  Because of this, we can compute the expected value of our evolution equation:
+
+\begin{equation}
+\big \langle x^{i} \big \rangle = \big \langle x^{i-1}+r(p) \;\Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r(p) \;  \Delta x \big \rangle = \big \langle r(p)  \big \rangle  \Delta x
+\end{equation}
+
+Let's focus in particular on the second term of this expression: $\big \langle r(p) \big \rangle$.  Because $r(p)$ is a discrete random variable we can also compute its expected value as well:
+
+\begin{equation}
+\big \langle r(p) \big \rangle = 1 \cdot \frac{1}{2} - 1 \cdot \frac{1}{2} = 0
+\end{equation}
+
+So, the expected value of the evolution equation is $\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle$. This may not seem helpful, but let's start thinking of this value from the beginning.  We assume for all of the simulations begin at $x=0$, so $\big \langle x^{0} \big \rangle = 0$.  Therefore if $\big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle$, then $\big \langle x^{1} \big \rangle = 0$ as well. This pattern continues so that $\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle=0$. So on average, this *random walk goes nowhere*!
+
+Now that we have characterized the expected value or the average displacement let's do the variance of this random walk.  We calculate this by computing the mean square displacement, or $\langle (x^{i})^{2} \rangle$.  First we compute the square displacement:
+
+\begin{equation}
+(x^{i})^{2} = (x^{o-1} + r(p) \Delta x)^2 = (x^{i-1})^{2} + 2 x^{i-1} r(p) \Delta x + r(p)^{2} \Delta x^{2} ).
+\end{equation}
+
+We will analyze the expression $\langle (x^{i})^{2} \rangle$ term by term.  As we computed before for the expected value, the expectation of the middle term $\langle  2 x^{i-1} r(p) \rangle =0$. Also since $r(p)$ is either positive or negative 1 depending on $p$, it must be the case that $r(p)^{2}=1$ for any value of $p$.  So the end result for the variance is:
+
+\begin{equation}
+\big \langle (x^{i})^{2} \big \rangle = \big \langle (x^{i-1})^{2}) \big \rangle +( \Delta x)^{2}
+\end{equation}
+
+In order to understand this let's write out the first few terms of this recursive relationship:
+
+\begin{align}
+\big \langle (x^{0})^{2} \big \rangle &=0 \\
+\langle (x^{1})^{2} \big \rangle &= \big \langle (x^{0})^{2}) \big \rangle + (\Delta x)^{2} = (\Delta x)^{2} \\
+\big \langle (x^{2})^{2} \big \rangle &= \big \langle (x^{1})^{2}) \big \rangle + (\Delta x)^{2} = 2  (\Delta x)^{2} \\
+\big \langle (x^{3})^{2} \big \rangle &= \big \langle (x^{2})^{2}) \big \rangle + (\Delta x)^{2} = 3  (\Delta x)^{2}
+\end{align}
+
+
+There is a pattern here, in fact $\langle (x^{i})^{2} \rangle = i ( \Delta x)^{2}$.  So the variance, or the mean square displacement grows, proportional to the step size.  Another way to state this is that the standard deviation (the square root of the variance) is equal to $\pm \sqrt{n} \; \Delta x$, where $n$ is the current step. This matches up with our graphs from earlier since $\Delta x =1$!  Informally this tells us that on *average* you go nowhere, but *eventually* you travel everywhere - how cool!
+
+One final thought can be made here.  We are taking discrete steps but we can transform our results to a continuous time analog.  Let $t= n \Delta t$ be the approximation from discrete time to continuous time. Equivalently $\displaystyle n = \frac{t}{\Delta t}$.  With this information we can rearrange the square displacement equation to the following:
+
+\begin{equation}
+\big \langle (x^{n})^{2} \big \rangle = \frac{t}{\Delta t} ( \Delta x)^{2}.
+\end{equation}
+
+The quantity $\displaystyle D = \frac{( \Delta x)^{2}}{2 \Delta t}$ is known as the *diffusion coefficent*.  So then the mean square displacement can be arranged as $\langle (x^{n})^{2} \rangle  = 2Dt$, confirming again that the variance grows proportional to $t$.
+
+To connect this back to our discussion of stochastics, understanding a random walk helps us to understand how demographic and environmental stochasticity affect a dynamical system and the types of behaviors in the solution this random walk introduces to the system.  In the following sections we will investigate the ways in which the random walk connects to stochastic differential equations.
+
+\newpage
+
+## Exercises
+
+```{exercise}
+In class we found that the diffusion coefficient is equal to $\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}$.   
+
+\begin{enumerate}
+\item Solve the expression for $D$ in terms of $\Delta t$.
+\item The diffusion coefficient for oxygen in water is approximately $10^{-5}$ cm$^{2}$ sec$^{-1}$.  Use that value to complete the following table: 
+
+\begin{tabular}
+{| l | c | c | c | c | c | } \hline
+& & &  &&  \\
+Distance ($\Delta x$) & \hspace{5 pt} 1 $\mu$m = 10$^{-6}$ m \hspace{5 pt}  & \hspace{5 pt} 10 $\mu$m \hspace{5 pt} & \hspace{5 pt} 1 mm \hspace{5 pt} & \hspace{5 pt} 1 cm \hspace{5 pt}  & \hspace{5 pt} 1 m \hspace{5 pt}   \\ 
+ & & &  &&    \\ \hline
+  & & & & &  \\ 
+Diffusion time ($\Delta t$) & \underbar{\hskip 20pt} sec & \underbar{\hskip 20pt} sec & \underbar{\hskip 20pt} min & \underbar{\hskip 20pt} hours & \underbar{\hskip 20pt} years  \\ 
+ & & & & &    \\ \hline
+\end {tabular}
+
+\item Navigate to the following website, which lists sizes of different cells: \url{https://en.wikibooks.org/wiki/Cell_Biology/Introduction/Cell_size}.  For what cells would diffusion be a reasonable process to transport materials?
+\end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+Consider the following random variable:
+\begin{equation}
+r=
+\begin{cases}
+-1 & p < 1/3 \\
+0 & 1/3 \leq p < 2/3\\
+1 & 2/3 \leq p
+\end{cases}
+\end{equation}
+
+Compute $\displaystyle \langle r \rangle = \int_{0}^{1} r \; dp$ and $\displaystyle \langle r^{2} \rangle = \int_{0}^{1} r^{2} \; dp$.  Explain how this random variable introduces a different random walk than what we studied in class, and how this would change our calculations for the mean and the variance of the ensemble averages.
+```
+
+

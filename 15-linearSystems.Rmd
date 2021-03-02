@@ -1,0 +1,206 @@
+# (PART) Stability Analysis for Differential Equations {-} 
+
+# Systems of linear equations
+
+So far we have looked at understanding differential equations qualiatively and how we can use data to estimate unknown parameters of a model.  In this part of the course we are going to delve into a deeper understanding of long term stability and equilibrium solutions.  As a first step we will work to understand *linear* systems of differential equations.
+
+For example consider this following system of equations:
+
+\begin{align}
+\frac{dx}{dt} &= 2x \\ 
+\frac{dy}{dt} &= x+y
+\end{align}
+
+This set of differential equations is linear because it does not have any nonlinear (squared, power terms) or transendental functions (sine, cosine, exponential) of the variables $x$ and $y$.  This system is an example of a *coupled* system of equations, mainly in function $x+y$ for the rate $\displaystyle \frac{dy}{dt}$.
+
+
+One way to write this is with matrix notation, where we use the prime notation ($x'$ or $y'$) to signify  $displaystyle \frac{dx}{dt}$ or $displaystyle \frac{dy}{dt}$:
+
+\begin{align}
+\begin{pmatrix} x' \\ y' \end{pmatrix} &=  \begin{pmatrix} 2x \\ x+y \end{pmatrix} \\
+&=\begin{pmatrix} 2 & 0 \\ 1 &  1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\end{align}
+
+
+We can also represent this in a compact vector notation: $\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}$.  There are some interesting properties of linear equations, especially if you take a course in linear algebra.
+
+In general if we have a system of linear equations
+
+\begin{align}
+\frac{dx}{dt} &= ax+by \\ 
+\frac{dy}{dt} &= cx+dy,
+\end{align}
+
+you can write it in the following manner:
+\begin{equation}
+\begin{pmatrix} \frac{dx}{dt} \\ \frac{dy}{dt} \end{pmatrix} =  \begin{pmatrix} ax+by \\ cx+dy \end{pmatrix} =  \begin{pmatrix} a & b \\ c &  d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\end{equation}
+
+## Equilibrium solutions
+Now that we have our systems of linear equations, let's understand the dynamics.  A first question is to examine the equilibrium solutions, $\displaystyle \frac{dx}{dt}=0 \mbox{ and } \frac{dy}{dt}=0$.  It turns out that the *only* equilibrium solution occurs at $x=0$ and $y=0$ or the origin.  In fact, **any linear system has the origin as an equilibrium solution.**  So while equilibrium solutions are not terribly interesting question at the moment, the stability of solutions are, which we will investigate next.
+
+## The phase plane
+The phase plane is helpful here to understand the nature of the equilibrium solution.  Remember that the phase plane shows the motion of solutions, visualized as a vector.  For the system we examined earlier let’s take a look at the phase plane:
+
+```{r,fig.width=5,fig.height=4}
+# For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
+
+dx <- function(x,y) {
+  return(2*x)
+}
+
+dy <- function(x,y) {
+  return(x+y)
+}
+
+phaseplane(10,c(-4,4),c(-4,4),"x","y",dx,dy)
+```
+
+Notice how the arrows seems to spin out from the origin.  In looking at the phase plane we might expect the stablity of the origin to be unstable.  
+
+Because we have already identified the equilibrium solution, the focus is to understand if the equilibrium solution is stable or unstable.  There are two other solutions to this system:
+
+- **Solution 1:** $x=0$ and $y =e^{t}$
+- **Solution 2:** $x=e^{2t}$ and $y=e^{2t}$  
+
+
+We can make a table of the solution for different values of $t$:
+
+```{r, echo=FALSE}
+n <- 10
+t<- seq(0,1,length.out=n)
+x1 <- 0*t
+y1 <- exp(t)
+
+x2 <- exp(2*t)
+y2 <- exp(2*t)
+model_out <- data.frame(t,x1,y1,x2,y2)
+kable(model_out,caption = 'Solution values')
+
+
+```
+In looking at this equation, perhaps let's make a plot of the solution in the x-y plane, combined with our phase plane:
+
+```{r,echo=FALSE,warning=FALSE,fig.width=5,fig.height=4}
+
+
+phaseplane(10,c(-4,4),c(-4,4),"x","y",dx,dy) +
+  geom_point(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
+  geom_line(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
+  geom_point(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
+  geom_line(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
+  xlim(c(-4,4)) + ylim(c(-4,4)) +
+  geom_point(aes(x=0,y=0),size=3)
+
+```
+
+Do you notice the motion in the $xy$ plane of the two solutions?  They are straight lines!  It turns out that these straight lines solutions are quite useful - we will study them in a later section.  But for the moment we will apply the idea of linear combinations to plot another solution, where $\vec{z}(t)=\vec{x}_{1}(t) -0.1 \vec{x}_{2}(t)$:
+
+```{r,echo=FALSE,warning=FALSE,fig.width=5,fig.height=4}
+
+new_data <- model_out %>% mutate(x3 = x1+2*x2,y3=y1+2*y2)
+
+phaseplane(10,c(-4,4),c(-4,4),"x","y",dx,dy) +
+  geom_point(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
+  geom_line(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
+  geom_point(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
+  geom_line(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
+  geom_line(data=model_out,aes(x=x1-0.1*x2,y=y1-0.1*y2),inherit.aes = FALSE,color='purple') +
+  geom_point(data=model_out,aes(x=x1-0.1*x2,y=y1-0.1*y2),inherit.aes = FALSE,color='purple') +
+  xlim(c(-4,4)) + ylim(c(-4,4)) +
+  geom_point(aes(x=0,y=0),size=3)
+
+```
+
+
+The phase plane suggests that the equilibrium solution at the origin is unstable.  We can also investigate stability algebraically for each solution.  We will organize our solutions in vector format, factoring out the exponential functions in each of the expressions:
+
+Let’s look at this more systematically:
+
+- Solution 1: $\displaystyle  \vec{s}_{1}(t) = \begin{pmatrix} 0 \\ e^{t} \end{pmatrix}= \begin{pmatrix} 0 \\ e^{t} \end{pmatrix} =e^{t}  \begin{pmatrix} 0 \\ 1  \end{pmatrix}$.
+- Solution 2:  $\displaystyle \vec{s}_{2}(t) = \begin{pmatrix} e^{2t} \\ e^{2t} \end{pmatrix}= \begin{pmatrix} e^{2t} \\ e^{2t} \end{pmatrix} = e^{2t}  \begin{pmatrix} 1 \\ 1\end{pmatrix}$. 
+
+By factoring out the exponential functions we can see the straight line solutions!  The vectors $\displaystyle  \begin{pmatrix} 0 \\ 1\end{pmatrix}$ and $\displaystyle  \begin{pmatrix} 1 \\ 1\end{pmatrix}$ are the lines $x=0$ and $y=x$, as shown in our phase plane diagrams.
+
+To investigate stability we investigate the long term behavior of the exponential functions. Notice that $\displaystyle \lim_{t \rightarrow \infty}   e^{t}$ and $\displaystyle \lim_{t \rightarrow \infty}   e^{2t}$ *both* do not exist, so the equilibrium solution is “unstable”
+
+So to recap the following about straight line solutions to linear systems:
+
+- Straight line solutions have the form $\displaystyle \vec{s}(t) = e^{\lambda t} \vec{v}$. Methods to determine $\lambda$ and $\vec{v}$ will be studied in later sections.
+- For a 2 dimensional linear system, you have generally will two straight line solutions $\vec{s}_{1}$ and $\vec{s}_{2}$.  The general "solution" to the system of differential equations is the linear sum of the two:
+$\vec{x}(t) = c_{1} \vec{s}_{1}(t) + c_{2} \vec{s}_{2}(t)$.
+- Geometrically these straight line solutions are lines that passing through the origin in the $xy$ plane.
+- If both values of $\lambda$ are *greater* than 0, equilibrium solution is *unstable*.
+- If both values of $\lambda$ are *less* than 0, equilibrium solution is *stable*.
+
+In the exercises you will look at additional examples to understand the behavior of linear systems.
+
+\newpage
+
+## Exercises
+
+```{exercise}
+Verify that $x=0$ and $y =e^{t}$ and  $x=e^{2t}$ and $y=e^{2t}$ are solutions for the differential equation 
+\begin{align}
+\frac{dx}{dt} &= 2x \\ 
+\frac{dy}{dt} &= x+y
+\end{align}
+```
+
+&nbsp;
+
+<!-- Adapted from LW pg 164 -->
+<!-- tr = -2a det = a^2-1 -->
+```{exercise}
+Consider the following differential equation:
+  
+\begin{align}
+\frac{dx}{dt} &= -ax-y \\ 
+\frac{dy}{dt} &= x-ay
+\end{align}
+
+\begin{enumerate}
+\item Write this system in the form $\displaystyle \frac{d\vec{x}}{dt}=A \vec{x}$.
+\item Let $a= -2, \; -1, \; -0.5, \; 0, \; 0.5, \; 1, \; 2$.  Generate a phase plane for each of these values of $a$ and characterize the behavior of the equilibrium solution.
+\end{enumerate}
+```
+
+&nbsp;
+<!-- %\marginnote{Exercises a-c,e Based on Example 4.9 page 166 in \lw. d on 1c, pg 163 in lw}  -->
+```{exercise}
+Generate a phaseplane for the following differential equations and using your result, classify if the equilibrium solution is stable or unstable.
+
+\begin{enumerate}
+\item $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -2y$
+\item $\displaystyle \frac{dx}{dt} = 3x+y, \;  \frac{dy}{dt} = 2x+4y$
+\item $\displaystyle \frac{dx}{dt} = 8x-11y, \;  \frac{dy}{dt} = 6x-9y$
+\item $\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y$
+\item $\displaystyle \frac{dx}{dt} = -2x-3y, \;  \frac{dy}{dt} = 3x-2y$
+\end{enumerate}
+
+```
+
+&nbsp;
+
+```{exercise}
+Consider the following differential equation:
+
+  \begin{align}
+  \frac{dx}{dt} &= -y \\ 
+  \frac{dy}{dt} &= x
+  \end{align}
+
+
+\begin{enumerate}
+\item Generate a phase plane diagram of this system.  What do you notice?
+\item Verify that $x(t)=A \cos(t)$ and $y(t)=A \sin(t)$ is a solution to this differential equation.
+\item An equation of a circle of radius $R$ is $x^{2}+y^{2}=R^{2}$. Use implicit differentiation to differentiate this equation.  Remember you are differentiating with respect to $t$, and $x$ and $y$ are functions of time $t$.
+\item Substitute the differential equation into your implicit derivative to verify $x^{2}+y^{2}=R^{2}$ is a solution to the differential equation.
+\item Verify that $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=A \sin(t)-B \cos(t)$ are also solutions.
+\item Make a plot of $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=-A \sin(t)-B \cos(t)$ for $A=1$, $B=1$.
+\end{enumerate}
+
+```
+
+&nbsp;
+

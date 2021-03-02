@@ -1,0 +1,329 @@
+# Markov Chain Monte Carlo Parameter Estimation {#mcmc}
+
+This sections extends our understanding of the Metropolis Algorithm to Markov Chain Monte Carlo (MCMC) parameter estimation.  MCMC methods can be exhaustively studied and can be highly computational.  Fortunately you have the skills in place already to understand how the MCMC method works - we will rely on functions from `MAT369Code` to do the heavy lifting.
+
+The MCMC approach is a systematic exploration to determine the minimum value of the log likelihood function using the data and parameters for a model.  In order to make this solver work method work, you will need four things:
+
+- _Model_: A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$), or an empirical equation $\vec{y}=f(\vec{x},\vec{\alpha})$.
+- _Data_: A spreadsheet file of the data you wish to use (or built in data).
+- _Parameter bounds_: upper and lower bounds on your parameter values.
+- _(Initial conditions)_: If you have a dynamic model.
+- _Run diagnostics_: Things that need to be specified in order to run the MCMC code.
+
+We will work you through this step by step, with example code that you can type along the way. As always it will be good to load up the libraries you will be using.
+
+## Example 1: Solving a differential equation model of tourism
+First let's load up some of the libraries we will need to analyze the MCMC:
+```{r warning=FALSE}
+library(tidyverse)
+library(MAT369Code)
+library(deSolve)
+
+```
+
+The library `deSolve` is another method that solves differential equations, rather than the function `systems`.  It is a little bit more flexible for the purposes we have here.
+
+
+### Model
+The example that we are going to use relates to land use management, in particular a coupled system between a resource (such as a national park) and the amount of visitors it receives, such as the one described [here](https://espace.library.uq.edu.au/data/UQ_7692/A_simple_mathema.pdf?Expires=1565380784&Key-Pair-Id=APKAJKNBJ4MJBJNC6NLQ&Signature=MB3gO6l1dkEOMfRtQ7moPD5m04u51u8uPSPRA3DgXrNwYYOSEyiVsUh2ZTrPl8~UJAhlWL8LYO2PlJvjv8zbnyJ1I55TBR3DLj-6AwMcCWWpDFyFdZ0UUqlGgGSmx2iN7JHZ25Zpt7rvCloCCowElPFsgiPBcy6EX1287nUv8nYVB13LxrOwBoc7IR1sFP8UvdTsHl6BDrCbr2siw0GzBG7h3mkEWsoX35zoU84yN6lcQoUwtMSkdI33EyOj9PXoLLwhpY0kBHvnH5s2RTHVaCyyKyE-xGMiw~mQfiGz9qdHPYG4TDJNUf0Xgqo7WlsRquwRHlxJ3Q7bV~9LtWBcoA__). The tourism model relies on two non-dimensonal scaled variables, $R$ which is the amount of the resource (as a percentage) and $V$ the percentage of visitors that could visit (also as a percentage):
+
+\begin{align}
+\frac{dR}{dt}&=R\cdot (1-R)-aV \\
+\frac{dV}{dt}&=b\cdot V \cdot (R-V)
+\end{align}
+
+This model has two parameters $a$ and $b$, which relate to how the resource is used up as visitors come ($a$) and how as the visitors increase, word of mouth leads to a negative effect of it being too crowded ($b$).
+
+
+We will need to implement this model in our code.  We solve this model via numerical methods to solve ordinary differential equations.  This can be quite tricky, but I think we are up to the task here. As we will see in the second example the approach will vary if you have a model that is not an ODE, but it still can be done.  Because we just want to get the data back from the modle
+
+
+```{r, fig.show='hold'}
+model <- function(time, state, parameters){
+  with(as.list(c(parameters,state)),{
+    dR = resources*(1-resources)-a*visitors  ## <-- You may edit here (and add additional lines as necessary)
+    dV = b*visitors*(resources-visitors)
+    list(c(dR,dV))
+  })
+}
+
+
+# define a function that will solve the model
+
+solveModel <- function(parameters) {
+  return(as.data.frame(  ## Do not edit this line
+    ode(initialCondition, time, func = model,parms = parameters)  ## <-- You may edit here (and add additional lines as necessary)
+  )  ## Do not edit this line
+  )
+}
+```
+
+
+### Data
+For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park as shown in the original paper:
+```{r, echo=FALSE,results='asis'}
+knitr::kable(parks)
+
+
+```
+
+By plotting these we have the following:
+
+```{r, echo=FALSE,fig.width=5,fig.height=4}
+parks %>% 
+  gather(key=variable,value=value,visitors,resources) %>%
+  ggplot(aes(x=time,y=value,color=variable)) +
+  geom_line(size=1) +
+  geom_point(size=2) +
+    theme(plot.title = element_text(size=20),
+          axis.title.x=element_text(size=20),
+          axis.text.x=element_text(size=15),
+          axis.text.y=element_text(size=15),
+          axis.title.y=element_text(size=20),
+          legend.position = 'bottom') +
+    labs(x='Time',y = 'Proportion')
+
+```
+
+We can see that the data show as the visitors increase the percentage of the resources decrease.  Perhaps from this limited dataset given we can estimate the parameters $a$ and $b$.
+
+### Parameter bounds (including upper and lower bounds)
+
+For all of the parameters in our system we need to define the initial guess and the upper and lower bounds of each parameter.  This is down through defining three vectors:
+
+```{r, fig.show='hold'}
+# initial guess of parameters
+parameters = c(a = 15, b = 4)
+
+# Lower and upper values of parameters
+lower_bound <- c(a=10,b=0)
+upper_bound <- c(a=30,b=5)
+```
+
+
+
+### Initial Conditions
+In order to have the MCMC run because we have a differential equation, we need to specify:
+
+- the times that these measurements occur
+- the initial condition
+- the name of the independent variable (the cost function needs this to work)
+
+```{r, results='asis'}
+input_data <- parks
+time = input_data$time  # the output time vector -must match your data for ODE model
+
+initialCondition = c(resources = 0.995, visitors = 0.00167)
+
+independent_var = "time"
+
+```
+
+
+
+### Run Diagnostics (iterations and burn in percentages)
+Two additional things need to be defined: how many iterations we wish to run call this variable `iterations` and the percentage of the first few iterations we will not compute due to the "burn-in" period.  This number must be between 0 and 1.  
+
+
+```{r, fig.show='hold'}
+iterations = 1000
+burn_percentage = 0.3
+```
+
+If you do not specify these values, they will default to 1500 iterations and a burn-in percentage of 0.2. That is it!  All we need to do is to run our code:
+
+```{r, fig.width=4,fig.height=3}
+
+mcmcEstimate(input_data,independent_var,parameters,lower_bound,upper_bound,iterations,burn_percentage) 
+```
+
+### Analyzing the results.
+
+You will notice that a lot of different types of MCMC graphs are generated.  Let's take a look at each one individually.  The first plot is called a pairwise parameter plot.  This contains a lot of different plots together, in a matrix pattern:
+
+
+```{r, echo=FALSE,out.width = "2in"}
+knitr::include_graphics("figures/13-mcmc/histogram.png")
+```
+
+Along of the diagonal of this plot is a histogram of the accepted parameter values from the Metropolis algorithm. Depending on the results that you obtain, you may have some interesting shaped histograms.  Generally they are grouped in the following ways:
+
+- *well-constrained:* the parameter takes on a definite, well-defined value.
+- *edge-hitting:* the parameter seems to cluster near the edges of its value.  The parameter $b$ seems to behave like this.
+- *non-informative:* the histogram looks like a uniform distribution.
+
+The parameter $a$ could be either edge-hitting or well-constrained.  Since we only did 1000 iterations, a typical procedure is to increase the number of iterations to see if the posterior histogram can be well defined.
+
+The lower off-diagonal blocks show the pairwise parameter plots for any two parameters.  These plots help us to identify equifinality in the models.  If two parameters are heavily associated this suggests that we may not be able to resolve all of the parameters independently.  For this case there does not seem to be any association, as shown by the correlation coefficient between the two in the upper diagonal.
+
+The next plot that is shown is an *ensemble* estimate of the results with the data. Because we iterate through the parameter space sequentially, we take each of these parameter sets and run the model forward for each of them.  This will give use a solution curve.  From our work with bootstrapping we know that the distribution of values give a better sense of the overall estimate, so what we do is take the ensemble value across each time point.
+
+
+This provides a high-level model-data overview.  The black line represents the median ensemble average, and the grey is the 95% confidence interval, giving you a perspective of the model spread with the data.  For our results here it does look there is wide variation in the model, most likely due to the relative wide confidence intervals on our parameters.
+
+```{r, echo=FALSE,out.width = "2in"}
+knitr::include_graphics("figures/13-mcmc/output-plot.png")
+```
+
+## Example 2: An empirical model
+Now that we say an example with a differential equation model, let's also try an MCMC example with an empirical model.  We are going to return to the problem exploring the phosphorous content in algae (denoted by $x$) to the phosphorous content in daphnia (denoted by $y$).
+
+### Model
+The equation we are going to fit is:
+
+\begin{equation}
+y = c \cdot x^{1/\theta}
+\end{equation}
+
+
+This model has two parameters $c$ and $theta$, which we have seen previously.
+
+To define the model it is a slight variation in what we did for a differential equation model.  In this case, it is just one equation, and what gets returned (in the command `list(algae=algae,daphnia=daphnia)` are the columns of a data frame.  While it looks a little weird, we do need to name the columns.  
+
+
+```{r, fig.show='hold'}
+# define model equation
+model <- function(y, parameters){
+  with(as.list(c(parameters,y)),{
+    daphnia <- c*algae^(1/theta)
+    list(algae=algae,daphnia=daphnia)   # For a fitting function we just need this
+  })
+}
+
+
+# define a function that will solve the model
+solveModel <- function(parameters) {
+  out <-model(input_data,parameters)  ## <-- You may edit here (and add additional lines as necessary)
+  return(data.frame(out))  ## Do not edit this line
+  
+}
+```
+
+
+
+### Data
+We are going to use the dataset phosophorous (already located in the `MAT369Code` package)
+```{r, echo=FALSE, results='asis'}
+knitr::kable(phosphorous)
+
+```
+
+### Parameter bounds (including upper and lower bounds)
+The parameters are $c$ and $\theta$, which we will set to a value and then ranges for them:
+
+```{r, fig.show='hold'}
+parameters = c(c = 1, theta = 5)
+
+# Lower and upper values of parameters
+lower_bound <- c(c=0,theta=0)
+upper_bound <- c(c=10,theta=30)
+
+```
+
+
+The independent variable $x$ is the algae concentration:
+```{r,results='asis'}
+input_data <- phosphorous
+independent_var = "algae"
+
+```
+
+
+
+### Run Diagnostics (iterations and burn in percentages)
+Two additional things need to be defined: how many iterations we wish to run `iterations` and the percentage of the first few iterations we will not compute due to the "burn-in" period.  This number must be between 0 and 1.  
+
+
+```{r, fig.show='hold'}
+iterations = 1000
+burn_percentage = 0.3
+```
+
+That is it!  All we need to do is to run our code:
+
+```{r, fig.width=4,fig.height=3}
+mcmcEstimate(input_data,independent_var,parameters,lower_bound,upper_bound,iterations,burn_percentage) 
+```
+
+
+
+
+
+## More advanced ideas
+For the examples in this section we limited the number of iterations to a smaller number to make the results computationally feasible.  However we can extend the MCMC approach a few different ways:
+
+- One approach is to separate the data into two different sets - one for optimization and one for validation. In this approach the ``optimization data'' consists a certain percentage of the original dataset, leaving the remaining to validate the forward forecasts.  This is a type of cross-validation approach, and is generally preferred because you are demonstrating the strength of your model ability against non-optimized data.
+- We also run multiple ``chains'' of optimization, starting from a different value in parameter space.  What we do then after running each of these chains is to select the one with the best log-likelihood value, and run *another* MCMC iteration starting at that value.  They idea is that we have sampled the parameter space and are hopefully starting near an optimum value.
+
+These approaches are useful, but also take additional time and programming skill to analyze - but are definitely worth it!
+
+
+\newpage
+
+## Exercises
+```{exercise}
+For both of the MCMC examples in this section, increase the number of iterations to 10000.  Analyze your results from both cases.  How does increasing the number of iterations affect the posterior parameter estimates and their confidence intervals?  Does the log likelihood value change?
+```
+
+
+&nbsp;
+
+```{exercise}
+For the `phosphorous` data studied in this section, compare the 1:1 and the posterior parameter plots.  Summarize the following:
+  
+\begin{enumerate}
+\item The posterior parameter estimates, with 95% confidence interval.
+\item The posterior parameter histograms.
+\end{enumerate}
+
+Apply your knowledge of equifinality and other observations to determine by how much you have estimated the parameters $a$ and $b$ fom the data.
+
+```
+
+&nbsp;
+
+```{exercise}
+Run an MCMC parameter estimation on the dataset `yeast` from Gause (1932).  The equation for the volume of yeast $V$ over time is given by the following equation for an yeast growing in isolation is from Gause 1932
+\begin{equation}
+V = \frac{K}{1+e^{-a-bt}},
+\end{equation}
+
+where $K$ is the carrying capacity, $a$ and $b$ respective rate constants.  Apply the data for Sacchromyces to do an MCMC estimate for this equation.  You may assume the following prior values on your parameters:
+
+\begin{itemize}
+\item $K:$ 0 to 20
+\item $b$: 0 to 1
+\item $a$: automatically equals to $a = \ln(K/0.45-1)$
+\end{itemize}
+
+Be sure to report all outputs from the MCMC estimation (this includes parameter estimates, confidence intervals, log likelihood values, and any graphs).
+```
+
+&nbsp;
+
+```{exercise}
+Another model for this growth of yeast is the function $\displaystyle V= K + Ae^{-bt}$.  Compute an MCMC estimate for the parameters $K$ and $b$ (use the same bounds as in the previous problem).  You may assume that $V(0)=0.45$, so $A = K - 0.45$. Be sure to report all outputs from the MCMC estimation (this includes parameter estimates, confidence intervals, log likelihood values, and any graphs).  Compare your results to the previous exercise.
+```
+
+&nbsp;
+
+```{exercise}
+Run an MCMC parameter estimation on the dataset `wilson` according to the following differential equation:
+
+\begin{equation}
+\frac{dP}{dt} = b(N-P)
+\end{equation}
+
+\begin{itemize}
+\item $K:$ 60 to 90
+\item $b$: 0 to 1
+\end{itemize}
+
+Be sure to report all outputs from the MCMC estimation (this includes parameter estimates, confidence intervals, log likelihood values, and any graphs).
+
+
+```
+
+
+
+

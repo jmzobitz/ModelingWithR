@@ -1,0 +1,212 @@
+# The Metropolis Algorithm
+So far we have learned about cost and likelihood functions and the idea of sampling from a distribution.  In this section we will combine these two concepts together to discover a powerful algorithm that can efficient sample a distribution systematically.
+
+## Estimating the growth of a dog
+
+The problem we are considering is fitting the following data to a logistic model, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  For this situation we have two variables here: $D=$ the age of the dog in days and $W=$ the weight of the dog in pounds. The scatter plot of the data are shown below:
+
+
+```{r,fig.width=4,fig.height=3}
+plotData(wilson,x_label='Days since birth',y_label = 'Weight in pounds')
+```
+
+
+The function we wish to fit from the data is the following 
+\begin{equation}
+W =f(D,p_{1})= \frac{p_{1}}{1+e^{-(p_{2}+p_{3}D)}},
+\end{equation}
+where we have the parameters $p_{1}$, $p_{2}$, and $p_{3}$. Notice how $W$ is a function of $D$ and $p_{1}$. For convenience we will set $p_{2}= -2.461935$ and  $p_{3} = 0.017032$. Now we are only estimating the parameter $p_{1}$ which represents the maximum possible weight of the dog.
+
+
+We have nineteen measurements of the dog's weight over time.  Assuming these measures are all independent and identically distributed, we have the following likelihood function:
+
+\begin{equation}
+L(p_{1}) = \prod_{i=1}^{19} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{(W_{i}-f(D_{i},p_{1}))^{2}}{2 \sigma^{2}}}
+\end{equation}
+
+We will examine changes to the likelihood function in relation to $p_{1}$, so let's define the likelihood function:
+```{r,fig.width=4,fig.height=3}
+likelihood <- function(p1){
+  time = wilson$days
+  yMeasured = wilson$mass
+  
+  p2 = -2.461935;
+  p3 = 0.017032;
+  
+  predictedMass = p1/(1+exp(-(p2+p3*time))) 
+  
+  # If you don't know the uncertiainty on your measurements, here is a quick way to determine the value:
+  error=sd(predictedMass-yMeasured)
+  
+  ### Determine the likelihood of the values, and then sum them up.
+  singlelikelihoods = dnorm(predictedMass, mean = yMeasured, sd = error)
+  sumll = prod(singlelikelihoods)
+  
+  return(sumll)
+}
+```
+
+
+Now let's take an initial guess for this parameter.  You may recognize that $p_{1}$ is the horizontal asymptote of this the function $W$.  So at first glance let's set $p_{1}=78$.  Let's plot that result along with the data:
+
+```{r,fig.width=4,fig.height=3}
+days <- seq(0,1500,by=1)
+
+  p1 = 78
+  p2 = -2.461935
+  p3 = 0.017032
+mass <-  p1/(1+exp(-(p2+p3*days)))
+
+plotFunction_Data(days,mass,wilson,x_label='Days since birth',y_label = 'Weight in pounds')
+```
+
+It seems that this value of $p_{1}$ does a good job capturing the initial rate of growth initially but perhaps predicts too high of a mass towards the end. Let's also evaluate the likelihood function at this value of $p_{1}$ using `likelihood(78)`.  When we do that we obtain $L(78)$=`r likelihood(78)`.
+
+For comparison let's also examine the plot of the data when $p_{1}=65$:
+
+```{r,echo=FALSE,fig.width=5,fig.height=4}
+days <- seq(0,1500,by=1)
+
+  p1 = 78
+  p2 = -2.461935
+  p3 = 0.017032
+mass <-  p1/(1+exp(-(p2+p3*days)))
+
+mass2 <- 65/(1+exp(-(p2+p3*days)))
+my_data <- data.frame(days,mass,mass2) %>%
+  gather(key=p1_val,value=value,mass,mass2)
+ggplot() +
+  geom_point(data=wilson,aes(x=days,y=mass),color='red',size=2) +
+  geom_line(data=my_data,aes(x=days,y=value,color=p1_val),size=1.0) +
+    theme(plot.title = element_text(size=20),
+          axis.title.x=element_text(size=20),
+          axis.text.x=element_text(size=15),
+          axis.text.y=element_text(size=15),
+          axis.title.y=element_text(size=20),
+          legend.position = 'bottom') +
+    labs(x='Days since birth',y = 'Weight in pounds') +
+  scale_color_discrete(name=expression(p[1]),
+                      labels=c("78", "65"))
+
+
+
+```
+
+So it looks like $p_{1}=65$ underestimates the long term growth.  For comparison let's compute the likelihood $L(65)$=`r likelihood(65)`.
+
+As you can see the value of $L(65)$ is 2 orders of magnitude smaller, meaning it is less likely compared to $p_{1}=78$.  But these numbers are really small!  One way we can get a sense for the magnitude of the scale  is by examining the *ratio* of the likelihoods:
+
+\begin{equation}
+\mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) },
+\end{equation}
+
+where I have used the words "proposed" for the value you are testing (in this case $p_{1}=65$) and "current" for the value we currently have ($p_{1}=78$).  So let's compute this ratio: $\displaystyle \frac{ L(65) }{ L(78) }$=`r likelihood(65)/likelihood(78)`.
+
+So with this comparison we would say that $p_{1}=65$ is seventeen times more likely compared to the value of $p_{1}=78$ - that is an improvement!
+
+Can we do better?  Well let's examine the likelihood ratio of $p_{1}=70$.  In this case, we will take 65 to be the current value for $p_{1}$ and 70 the proposed value: $\displaystyle \frac{ L(70) }{ L(65) }$=`r likelihood(70)/likelihood(65)`. Wow!  That is about 7.5 million times more likely!
+
+I think we are onto something - here is a plot of the three values:
+
+```{r,echo=FALSE,fig.width=5,fig.height=4}
+days <- seq(0,1500,by=1)
+
+  p1 = 78
+  p2 = -2.461935
+  p3 = 0.017032
+mass <-  p1/(1+exp(-(p2+p3*days)))
+
+mass2 <- 65/(1+exp(-(p2+p3*days)))
+
+mass3 <- 70/(1+exp(-(p2+p3*days)))
+my_data <- data.frame(days,mass,mass2,mass3) %>%
+  gather(key=p1_val,value=value,-days)
+ggplot() +
+  geom_point(data=wilson,aes(x=days,y=mass),color='red',size=2) +
+  geom_line(data=my_data,aes(x=days,y=value,color=p1_val),size=1.0) +
+    theme(plot.title = element_text(size=20),
+          axis.title.x=element_text(size=20),
+          axis.text.x=element_text(size=15),
+          axis.text.y=element_text(size=15),
+          axis.title.y=element_text(size=20),
+          legend.position = 'bottom') +
+    labs(x='Days since birth',y = 'Weight in pounds') +
+  scale_color_discrete(name=expression(p[1]),
+                      labels=c("78", "65","70"))
+
+
+
+```
+
+
+So now, let's try $p_{1}=74$ and compare the likelihoods: $\displaystyle \frac{ L(74) }{ L(70) }$=`r likelihood(74)/likelihood(70)`.  This seems to be *less* likely because the ratio was less than one.
+
+
+You may think that we should reject this value and pick another one closer to 70.  However for non-linear problems we want to be extra careful that we don't accept a parameter value that leads us to a local (not global) optimum.  So one way to do that is compare the likelihood ratio to a number random number $r$ drawn between 0 and 1. How we implement a random number in R is the command `runif(1)`. When I tried this out I received a value of 0.125.  Since the likelihood ratio is smaller than the random number we generated, we will *reject* the value of $p_{1}$ and try again, keeping 70 as our value.  This is called a *decision step*.
+
+
+The neat part is that we can automate this process, such as in the following table:
+
+\begin{tabular}{|c|p{1in}|p{1in}|p{0.75in}|p{0.75in}| c|} \hline
+& & &&  & \\
+\textbf{Iteration} & \textbf{Current value of $p_{1}$}  & \textbf{Proposed value of $p_{1}$} & $\displaystyle\frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$& \textbf{Value of runif(1)} & \textbf{Accept?} \\ 
+ &  & & & &\\ \hline
+  & & & & & \\
+ 0& 78 & NA & NA & NA & NA \\
+  &  & & & &\\ \hline
+  & & & & & \\
+ 1 & 78 & 65 & 17.55936 & NA & yes \\
+  &  & & & &\\ \hline
+ & & & & & \\
+ 2 & 65 & 70 & 7465075 & NA  & yes \\
+  &  & & && \\ \hline
+  & & & & & \\
+ 3 & 70 & 74 & 0.09985308 & 0.1256974 & no \\
+  &  & & && \\ \hline
+\end{tabular}
+
+
+This table is the essence of what is called the [Metropolis-Hastings algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).  Here are the following components:
+
+
+1. A defined likelihood function.
+2. A starting value for your parameter.
+3. A proposal value for your parameter.
+4. Comparison of the likelihood ratios for the proposed to the current value ($\displaystyle \mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$).  The goal of this algorithm method is to determine the parameter set that optimizes the likelihood function, or makes the likelihood ratio greater than unity.  We will prefer values of $p_{1}$ that increase the likelihood. 
+5. A decision to accept the proposed parameter value.  If the likelihood ratio is greater than 1, then we accept this value.  However if the likelihood ratio is less than 1, we generate a random number $r$ (using `runif(1)`) and use this following process:
+  - If $r$ is less than the likelihood ratio we **accept** (keep) the proposed parameter value. 
+  - If $r$ is greater than the likelihood ratio we **reject** the proposed parameter value.
+
+## Concluding points
+While we have done Metropolis-Hastings "by hand", you may realize that we can automate this process.  We will explore that in the next section.  However there are several modifications we can do to make this algorithm more sophisticated:
+
+
+- While we have focused on implementation of the Metropolis Hastings algorithm with one parameter, this is easily extended to sets of parameter values, but we just change one parameter at a time.
+- We can select parameter values from multiple starting points to make sure we don't happen to start a chain near a local optimum.  These starting points are called chains, and we can select the chain that has the highest likelihood value.
+- We can use log likelihoods to make the likelihood ratio computation easier.  By this way, instead of division we compute a difference of log likelihoods.  This becomes numerically easier for R to handle, especially when the likelihood values are near zero.
+- As you would expect, the more times we iterate through this process, the better.  Your initial guesses probably weren't that great (or close to the global optimum), so a common procedure is to throw out the first percentage of iterations and call that the "burn-in" period.
+- We can systematically explore the parameter space, where the jump distance changes depending on if we are always accepting new parameters or not.  This process has several different implementations, but one is called *simulated annealing*.
+
+
+\newpage
+
+## Exercises
+
+```{exercise}
+Using the dataset `wilson` as in the section, do 10 more iterations of the Metropolis Algorithm by continuing the table.  See if you can get the value of $p_{1}$ to 2 decimal places of accuracy.
+```
+&nbsp;
+```{exercise}
+An alternative model for the dog's mass is the following differential equation:
+
+\begin{equation}
+\frac{dW}{dt} = -k (W-p_{1})
+\end{equation}
+
+\begin{enumerate}
+\item Apply separation of variables and $W(0)=5$ and the value of $p_{1}$ from the previous problem to write down the solution to this equation.  You final answer will depend on $k$.
+\item Write a likelihood function in \texttt{R} and apply the Metropolis algorithm to estimate the value of $k$ to three decimal places accuracy.  The true value of $k$ is between 0 and 1.
+\end{enumerate}
+```
+&nbsp;
+
