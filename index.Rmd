@@ -21,6 +21,8 @@ header-includes:
   - \floatplacement{figure}{H}
   - \usepackage[shortlabels]{enumitem}
   - \usepackage{mathtools}
+  - \pgfplotsset{compat=1.17}
+
 output:
   bookdown::gitbook:
     toc_depth: 2
@@ -57,10 +59,11 @@ output:
 ```{r include=FALSE}
 # Define the packages that we need to load up:
 library(tidyverse)
-#library(MAT369Code)
+library(MAT369Code)
 library(lubridate)
 library(bookdown)
 library(knitr)
+library(kableExtra)
 ```
 
 
@@ -76,9 +79,12 @@ waterparks
 family
 kids
 
+
+
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown'
 ), 'packages.bib')
 ```
+
