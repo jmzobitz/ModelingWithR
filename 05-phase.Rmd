@@ -1,17 +1,23 @@
-# Phase space and equilibrium solutions
+# Phase lines and equilibrium solutions {#phase-05}
 
-In modeling with differential equations, we want to understand how a system develops both qualitatively and quantitatively.  Euler's method (and other associated numerical methods for solving differential equations) illustrate solution behavior numerically.  In this section we are going to focus on the qualitative aspects of a differential equation.
+In modeling with differential equations, we want to understand how a system develops both qualitatively and quantitatively.  Euler's method (and other associated numerical methods for solving differential equations) illustrate solution behavior numerically. One key thing about the qualitative analysis is we are interested in the *motion* or the "flow" of the solution at a given point.  Is the solution increasing, decreasing, or staying the same?
+
+For this section we will discuss qualitative aspects of a differential equation. We are going to focus on differential equations in one variable. Section \@ref(coupled-06) will build your understanding of the same idea with coupled systems of equations. 
 
 ## Equilibrium solutions
-One key thing about the qualitative analysis is we are interested in the *motion* and the general tendency and the flow of the solution.  Because there could be several possibilities about the flow, one very easy place is to examine where the is _no_ flow - meaning the solution is stationary.  Borrowing ideas from calculus, this occurs when the rate of change is zero.
+A great place to start is where the rate of change for a differential equation is zero, or in other words there is _no_ flow.  Borrowing ideas from calculus, this occurs when the rate of change is zero.  We solve this by setting the left hand side of $\displaystyle \frac{dy}{dt}=f(y)$ equal to zero and solving for $y$ (or whatever dependent variable describes the problem).
 
 ```{example}
 What are the equilibrium solutions to $\displaystyle \frac{dy}{dt}=- y$?
 ```
 
-For this example we know that when the rate of change is zero, this means that $\displaystyle \frac{dy}{dt} = 0$, or when $0 = -y$. So $y=0$ is the equilibrium solution. This example does have a general solution is when $y(t)=Ce^{-t}$, where $C$ is an arbitrary constant.  Figure \@ref(fig:exponential) plots different solution curves, with the equilibrium solution shown as a horizontal line:
+```{solution}
+For this example we know that when the rate of change is zero, this means that $\displaystyle \frac{dy}{dt} = 0$, or when $0 = -y$. So $y=0$ is the equilibrium solution. 
+```
 
-```{r exponential, echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'}
+The general solution to the differential equation $\displaystyle \frac{dy}{dt}=- y$ is when $y(t)=Ce^{-t}$, where $C$ is an arbitrary constant.  Figure \@ref(fig:exponential) plots different solution curves, with the equilibrium solution shown as a horizontal line:
+
+```{r, label="exponential", echo=FALSE,fig.width=4,fig.height=3,fig.cap="Exponential solution curves"}
  t<- seq(0,5,length.out = 50)
 data.frame(time=t,s1=exp(-t),s2=2*exp(-t),s3=-1*exp(-t),s4=-2*exp(-t)) %>%
   gather(key=constant,value=soln,-time) %>%
@@ -26,19 +32,19 @@ data.frame(time=t,s1=exp(-t),s2=2*exp(-t),s3=-1*exp(-t),s4=-2*exp(-t)) %>%
 ```
 
 
-Notice how all solutions tend to $y=0$ as $t$ increases, no matter if the initial condition is positive or negative.
-
+Notice that as $t$ increases, all solutions approach the equilbrium solution $y=0$ as $t$ no matter if the initial condition is positive or negative.  You can also evaluate the following limit for the solution: $\displaystyle \lim_{t\rightarrow \infty} Ce^{-t} = 0$ to verify this is the case too.
+ 
 ```{example}
 What are the equilibrium solutions to $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$?
 ```
 
+```{solution}
 In this case the equilibrium solutions occur when $N \cdot(1-N) = 0$, or when $N=0$ or $N=1$.
-&nbsp;
 
-Given that the generic solution to this differential equation is $$ \displaystyle N(t)= \frac{N_0}{N_0 +(1-N_0) e^{-t}}.$$ Figure \@ref(fig:logistic_soln) displays several different solution curves.
+```
+The generic solution to this differential equation is $$ \displaystyle N(t)= \frac{N_0}{N_0 +(1-N_0) e^{-t}}.$$ Figure \@ref(fig:logistic-soln) displays several different solution curves.
 
-
-```{r logistic_soln, echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'}
+```{r, label="logistic-soln", echo=FALSE,fig.width=4,fig.cap="Solution curves for $N'=N(1-N)$",fig.height=3,fig.pos='H'}
  t<- seq(0,5,length.out = 50)
 data.frame(time=t,s1=2/(2+(1-2)*exp(-t)),s2=1.5/(1.5+(1-1.5)*exp(-t)),s3=0.5/(0.5+(1-0.5)*exp(-t)),s4=0.25/(0.25+(1-0.25)*exp(-t)),s5=0.1/(0.1+(1-0.1)*exp(-t))) %>%
   gather(key=constant,value=soln,-time) %>%
@@ -54,9 +60,11 @@ data.frame(time=t,s1=2/(2+(1-2)*exp(-t)),s2=1.5/(1.5+(1-1.5)*exp(-t)),s3=0.5/(0.
 
 &nbsp;
 
-As with the previous figure, notice how all the solutions tend towards $N=1$, but even solutions that start close to $N=0$ seem to move away from this equilibrium solution.  This brings us to understanding classifying the *stability* of the equilibrium solutions.
+In Figure \@ref(fig:logistic-soln) notice how all the solutions tend towards $N=1$, but even solutions that start close to $N=0$ seem to move away from this equilibrium solution.  This example brings us to understanding classifying the *stability* of the equilibrium solutions.
 
-## Stability of equilibrium solutions
+
+## Phase lines for differentail equations
+
 
 While it is one thing to determine where the equilibrium solutions are, we are also interested in classifying the **stability** of the equilibrium solutions.  To do this investigate the behavior of the differential around the equilibrium solutions, using facts from calculus:
 
@@ -67,10 +75,10 @@ While it is one thing to determine where the equilibrium solutions are, we are a
 We say that the solution $y=0$ is a _stable_ equilibrium solution in this case.
 
 
-Let's apply this logic to our differential equation $\displaystyle \frac{dy}{dt}=- y$.  We know that if $y=3$, $\displaystyle \frac{dy}{dt}=- 3 <0$, so we say the function is *decreasing* to $y=0$.  If  $y=-2$, $\displaystyle \frac{dy}{dt}=- (-2) = 2 >0$, so we say the function is *increasing* to $y=0$.  This can be represented neatly in the following figure, which is a phase line diagram:
+Let's apply this logic to our differential equation $\displaystyle \frac{dy}{dt}=- y$.  We know that if $y=3$, $\displaystyle \frac{dy}{dt}=- 3 <0$, so we say the function is *decreasing* to $y=0$.  If  $y=-2$, $\displaystyle \frac{dy}{dt}=- (-2) = 2 >0$, so we say the function is *increasing* to $y=0$.  This can be represented neatly in the phase line diagram for Figure \@ref(fig:phaseline1):
 
 
-```{r,echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'}
+```{r,label="phaseline1",echo=FALSE,fig.width=4,fig.height=3,fig.cap="Phase line to $y'=-y$."}
 eq_soln<-data.frame(x=c(0),y=c(0),label="y = 0")
 data.frame(point=c(-2,3),label=c("y' > 0","y' < 0"),tendency=c("y increasing","y decreasing")) %>%
 ggplot() +
@@ -94,15 +102,21 @@ ggplot() +
 
 Because the solution is *increasing* to $y=0$ when $y <0$, and *decreasing* to $y=0$ when $y >0$, we say that the equilibrium solution is **stable**, which is also confirmed by the solutions we plotted above.
 
-```{example}
+```{example,label="general-exponential"}
 Classify the stability of the equilibrium solutions to $\displaystyle \frac{dy}{dt} = k \cdot y$, where $k$ is a parameter.
 ```
+
+```{solution}
 In this case the equilibrium solution is still $y=0$.  We will need to consider two different cases for the stability depending on the value of $k$ ($k>0$, $k<0$, and $k=0$):
 
-- When $k>0$, the phase line will be similar to the one above.
-- When $k=0$ the phase line will be:
+- When $k<0$, the phase line will be similar Figure \@ref(fig:phaseline1).
+- When $k>0$ the phase line will be is shown in the Figure \@ref(fig:phaseline2). We say in this case that the equilibrium solution is *unstable*, as all solutions flow away from the equilibrium.  Several different solutions are shown in Figure \@ref(fig:solncurve-1) 
+- When $k=0$ we have the differential equation $\displaystyle \frac{dy}{dt}=0$, which has $y=C$ as a general solution.  For this special case the equilibrium solution is neither stable or unstable^[By all intents and purposes this is a different differential equation than $\displaystyle \frac{dy}{dt}=k\cdot y$; something peculiar is going on here - which we come back to when discuss bifurcations in Section \@ref(bifurcation-19).].
 
-```{r,echo=FALSE,fig.width=4,fig.height=3}
+
+```
+  
+```{r,label="phaseline2",echo=FALSE,fig.width=4,fig.height=3, fig.cap="Phaseline for $y'=ky$, with $k>0$."}
 eq_soln<-data.frame(x=c(0),y=c(0),label="y = 0")
 data.frame(point=c(-2,3),label=c("y' < 0","y' > 0"),tendency=c("y decreasing","y increasing")) %>%
 ggplot() +
@@ -124,9 +138,9 @@ ggplot() +
 
 ```
 
-So in this scenario, the equilibrium solution is *unstable*, as all solutions flow away from the equilibrium.
 
-```{r, echo=FALSE,fig.width=4,fig.height=3}
+
+```{r,label=solncurve-1, echo=FALSE,fig.width=4,fig.height=3,fig.cap="Solution curves for $y'=ky$, with $k>0$."}
  t<- seq(0,2,length.out = 50)
 data.frame(time=t,s1=exp(t),s2=2*exp(t),s3=-1*exp(t),s4=-2*exp(t)) %>%
   gather(key=constant,value=soln,-time) %>%
@@ -140,11 +154,16 @@ data.frame(time=t,s1=exp(t),s2=2*exp(t),s3=-1*exp(t),s4=-2*exp(t)) %>%
 
 ```
 
-- Finally when $k=0$ we have the differential equation $\displaystyle \frac{dy}{dt}=0$, which has $y=C$ as a general solution.  For this special case the equilibrium solution is neither stable or unstable.  (By all intents and purposes this is a different differential equation than $\displaystyle \frac{dy}{dt}=k\cdot y$; something peculiar is going on here - which we come back to when discuss bifurcations.)
+
 
 &nbsp;
 
-Let's investigate our other differential equation $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$.  This differential equation has equilbrium solutions when $N(1-N)=0$, or $N=0$ or $N=1$.  We evaluate the stability of the solutions in the following table:
+```{example}
+Let's investigate the phase line for the differential equation $\displaystyle \frac{dN}{dt} = N \cdot(1-N)$ and classify stability of the equilibrium solutions.
+```
+
+```{solution}
+This differential equation has equilbrium solutions when $N(1-N)=0$, or $N=0$ or $N=1$.  We evaluate the stability of the solutions in the following table:
 
 **Test point** | **Sign of $N'$**  | **Tendency of solution**
 -------------| ------------- | -------------
@@ -154,9 +173,21 @@ Let's investigate our other differential equation $\displaystyle \frac{dN}{dt} =
     $N=1$ |  Zero | Equilibrium solution
     $N=2$ |  Negative | Decreasing
 
-Notice how the points that were selected in the first column are either the the _left_ or the _right_ of the equilbrium solution.  We can also represent the information in the table using a phase line diagram, but in this case we need to include _two_ equilibrium solutions:
+Notice how the selected test points in the first column are either the the _left_ or the _right_ of the equilbrium solution.  We can also represent the information in the table using a phase line diagram (Figure \@ref(fig:phaseline-N)), but in this case we need to include _two_ equilibrium solutions.
 
-```{r,echo=FALSE,fig.width=4,fig.height=3,fig.pos='H'}
+The table and Figure \@ref(fig:phaseline-N) confirms that $N$ is moving _away_ from $N=0$ (either decreasing when $N$ is less than 0 and increasing when $N$ is greater than 0) and moving _towards_ $N=1$ (either increasing when $N$ is between 0 and 1 and decreasing when $N$ is greater than one.
+
+&nbsp;
+These results suggest that equilibrium solution at $N=0$ to be *unstable* and at $N=1$ to be *stable*.
+
+
+```  
+  
+  
+  
+  
+  
+```{r,label="phaseline-N",echo=FALSE,fig.width=4,fig.height=3,fig.pos='H',fig.cap="Phase line diagram for the differential equation $N'=N(1-N)$."}
 eq_soln<-data.frame(x=c(0,1),y=c(0,1),label=c("N = 0","N = 1"))
 data.frame(point=c(-0.5,0.5,1.5),label=c("N' < 0","N' > 0","N' < 0"),tendency=c("N decreasing","N increasing","N decreasing")) %>%
 ggplot() +
@@ -178,29 +209,29 @@ ggplot() +
 
 ```
 
-Notice how the table and the phase line diagram confirms that $N$ is moving _away_ from $N=0$ (either decreasing when $ N$ is less than 0 and increasing when $N$ is greater than 0) and moving _towards_ $N=1$ (either increasing when $N$ is between 0 and 1 and decreasing when $N$ is greater than one.
 
-&nbsp;
-These results suggest that equilibrium solution at $N=0$ to be *unstable* and at $N=1$ to be *stable*.
 
 Other than writing the words in the phase line diagram, we also use arrows to signify increasing or decreasing in the solutions.
 
+## A stability test for equilibrium solutions
 
-### Connection to local linearization.
 
-Notice how when constructing the phase line diagram we relied on the behavior of solutions *around* the equilibrium solution to classify the stability.  As an alternative we can also use the equilibrium solution itself.
+Notice how when constructing the phase line diagram we relied on the behavior of solutions *around* the equilibrium solution to classify the stability.  As an alternative we can also use the point at the equilibrium solution itself.
 
 To do this we are going to consider the general differential equation $\displaystyle \frac{dy}{dt}=f(y)$.  We are going to assume that we have an equilibrium solution at $y=y_{*}$.
 
-We are going to borrow local linearization (which we say when working on Euler's method) and construct a locally linear approximation to $L(y)$ to $f(y)$ at $y=y_{*}$:
+We use local linearization to construct a locally linear approximation to $L(y)$ to $f(y)$ at $y=y_{*}$:
 
 $$L(y) = f(y_{*}) + f'(y_{*}) \cdot (y-y_{*})  $$
 We will use $L(y)$ as an approximation to $f(y)$. There are two key things here. First, because we have an equilibrium solution, $f(y_{*}) =0$.  The other key thing is that if we define the variable $P = y-y_{*}$, then the differential equation translates to
 
-$$ \frac{dP}{dt} = f'(y_{*}) \cdot P $$
+\begin{equation}
+\frac{dP}{dt} = f'(y_{*}) \cdot P  (\#eq:local-linear)
+\end{equation}
 
-Does this differential equation look familiar - it should!  This is similar to the example where we classified the stability of $\displaystyle \frac{dy}{dt} = k \cdot y$ -- cool!  So let's use what we learned above to classify the stability:
+Does Equation \@ref(eq:local-linear) look familiar?  I - it should!  This is similar to the example where we classified the stability of $\displaystyle \frac{dy}{dt} = k \cdot y$ -- cool!  So let's use what we learned in Example \@ref(exm:general-exponential) above to classify the stability:
 
+**Local linearization stability test for equilibrium solutions:** For a differential equation $\displaystyle \frac{dy}{dt} = f(y)$ with equilibrium solution $y_{*}$, we can classify the stability of the equilibrium solution through the following:
 
 - If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be _unstable_.
 - If $f'(y_{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be _stable_.
@@ -214,41 +245,75 @@ Apply local linearization to classify the stability of the equilibrium solutions
 The locally linear approximation is $L(N) = 1-2N$.  We have $L(0)=1>0$, so $N=0$ is unstable.  Similarly $L(1)=-1$, so $N=1$ is stable.
 ```
 
-
-
-
-
-
-
 \newpage
 
 ## Exercises
 
-```{exercise}
+```{exercise,label="eq-soln-ex"}
 What are the equilibrium solutions to the following differential equations?
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
 \item $\displaystyle \frac{dS}{dt} = 0.3 \cdot(10-S)$
 \item $\displaystyle \frac{dP}{dt} = P \cdot(P-1)(P-2)$
 \end{enumerate}
 
-After identifying the equilibrium solutions construct a phase line for each of the differential equations and classify the stability of the equilibrium solutions using the derivative stability test.
+Then classify the stability of the equilbrium solutions using the local linearization stability test.
+
 ```
 &nbsp;
 ```{exercise}
-Can a solution curve cross an equilibrium solution of a differential equation?
+Using your results from Exercise \@ref(exr:eq-soln-ex), construct a phase line for each of the differential equations and classify the stability of the equilibrium solutions.
 ```
 &nbsp;
+
+
+```{exercise}
+A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{P}{1+2P} - 0.2P$.
+
+
+\begin{enumerate}[label=\alph*.]
+\item Determine the equilibrium solutions for this differential equation.
+\item Classify the stability of the equilibrium solutions using the local linearization stability test.
+\end{enumerate}
+
+```
+
+&nbsp;
+
+
+<!-- Based off LW pg 4 -->
+```{exercise}
+A cell with radius $r$ assimilates nutrients at a rate proportional to its surface area, but uses nutrients proportional to its volume, according to the following differential equation:
+  $$ \frac{dr}{dt} =  4 \pi r^{2} -  \frac{4}{3} \pi r^{3}. $$
+  
+\begin{enumerate}[label=\alph*.]
+\item Determine the equilibrium solutions for this differential equation.
+\item Construct a phase line for this differential equation to classify the stability of the equilibrium solutions.
+\end{enumerate}
+  
+  
+```
+&nbsp;
+
 <!-- Thornley and Johnson -->
 ```{exercise}
-The Chanter equation of growth is the following:
+The Chanter equation of growth is the following, where $W$ is the weight of an object:
   \begin{equation}
-\frac{dW}{dt} = \mu \cdot W(B-W)e^{-Dt},
+\frac{dW}{dt} =  W(3-W)e^{-Dt},
 \end{equation}
 
-with $\mu$, $B$, and $D$ are variables.  What are the equilibrium solutions to this model?  What happens to the rate of growth ($W'$) as $t$ grows large?  Why would this be a more realistic model of growth than the saturating model ($\displaystyle  \frac{dW}{dt} = \mu \cdot W(B-W)$)?
+Use this differential equation to answer the following questions.
+
+\begin{enumerate}[label=\alph*.]
+\item What happens to the rate of growth ($\displaystyle  \frac{dW}{dt}$) as $t$ grows large?
+\item What are the equilibrium solutions to this model?  Are they stable or unstable?
+\item Notice how the equilbrium solutions are the same as those for the logistic model.  Based on your previous work, do why would this model be a more realistic model of growth than the logistic model $\displaystyle  \frac{dW}{dt} = \cdot W(3-W)$?
+\end{enumerate}
 ```
 
+
 &nbsp;
+
+
 ```{exercise}
 Red blood cells are formed from stem cells in the bone marrow.  The red blood cell density $r$ satisfies an equation of the form
 
@@ -256,35 +321,10 @@ Red blood cells are formed from stem cells in the bone marrow.  The red blood ce
 \frac{dr}{dt} = \frac{br}{1+r^{n}} - c r,
 \end{equation}
 
-where $n>1$ and $b>1$ and $c>0$.  Find all the equilibrium solutions to this differential equation.
-```
-&nbsp;
-For all of the following problems:
-
-\begin{enumerate}
-\item Determine the equilibrium solutions for this differential equation.
-\item Construct a phase line for this differential equation and classify the stability of the equilibrium solutions using the derivative stability test.
-\end{enumerate}
-
-
-&nbsp;
-<!-- LW exercise 5, pg 36 -->
-
-```{exercise}
-The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island.  Further, the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate.  The growth rate of the number of species on the island is the immigration rate minus the extinction rate, given by the following differential equation:
-
-$$ \frac{dS}{dt} = I_{m} \left(1-\frac{S}{P} \right) - \frac{ES}{P}. $$
+where $n>1$ and $b>1$ and $c>0$.  Find all the equilibrium solutions $r_{*}$ to this differential equation. \emph{Hint:} can you factor an $r$ from your equation first?
 ```
 &nbsp;
 
-```{exercise}
-A colony of bacteria growing in a nutrient-rich medium deplete the nutrient as they grow. As a result, the nutrient concentration $x(t)$ is steadily decreasing.  The equation describing this decrease is the following:
-$$ \displaystyle \frac{dx}{dt} = - \mu \frac{x (\xi- x)}{\kappa + x}, $$
-
-where $\mu$, $\kappa$, and $\xi$ are all parameters greater than zero.
-
-```
-&nbsp;
  <!-- Van den Berg page 19 -->
 ```{exercise}
 Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream.  An equation that represents the level of $S$ in the blood is the following:
@@ -294,18 +334,52 @@ $$ \frac{dS}{dt} = I + p \cdot (W - S) $$
 Where the parameter $I$ represents the active uptake of salt, $p$ is the permeability of the skin, and $W$ is the salinity in the water.
 
 
+\begin{enumerate}[label=\alph*.]
+\item First set $I=0$.  Determine the equilibrium solutions for this differential equation. Express your answer $S_{*}$ in terms of the parameters $p$, and $W$.
+\item Next consider $I>0$.  Determine the equilibrium solutions for this differential equation. Express your answer $S_{*}$ in terms of the parameters $p$, $W$, and $I$.  Why should your new equilbrium solution be greater than the equilibrium solution from the previous problem?
+\item Classify the stability of both equilibrium solutions using the local linearization stability test.
+\end{enumerate}
+
+```
+&nbsp;
+
+
+
+
+
+<!-- LW exercise 5, pg 36 -->
+
+```{exercise}
+The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island.  Further, the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate.  The growth rate of the number of species on the island is the immigration rate minus the extinction rate, given by the following differential equation:
+
+\begin{equation} \frac{dS}{dt} = I_{m} \left(1-\frac{S}{P} \right) - \frac{ES}{P}
+\end{equation}
+  
+\begin{enumerate}[label=\alph*.]
+\item Determine the equilibrium solutions $S_{*}$ for this differential equation. Expression your answer in terms of $I_{M}$, $P$, and $E$.
+\item Classify the stability of the equilibrium solutions using the local linearization stability test.
+\end{enumerate}
+  
+```
+&nbsp;
+
+```{exercise}
+A colony of bacteria growing in a nutrient-rich medium deplete the nutrient as they grow. As a result, the nutrient concentration $x(t)$ is steadily decreasing.  The equation describing this decrease is the following:
+$$ \displaystyle \frac{dx}{dt} = - \mu \frac{x \cdot (\xi- x)}{\kappa + x}, $$
+
+where $\mu$, $\kappa$, and $\xi$ are all parameters greater than zero.
+
+\begin{enumerate}[label=\alph*.]
+\item Determine the equilibrium solutions $x_{*}$ for this differential equation.
+\item Construct a phase line for this differential equation and classify the stability of the equilibrium solutions.
+\end{enumerate}
 
 
 ```
 &nbsp;
-<!-- Based off LW pg 4 -->
+
+
 ```{exercise}
-A cell with radius $r$ assimilates nutrients at a rate proportional to its surface area, but uses nutrients proportional to its volume, according to the following differentiatl equation:
-  $$ \frac{dr}{dt} = k_{1} 4 \pi r^{2} - k_{2} \frac{4}{3} \pi r^{3}. $$
+Can a solution curve cross an equilibrium solution of a differential equation?
 ```
 &nbsp;
-
-```{exercise}
-A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{aP}{1+abP} - dP$, where $a$, $b$ and $d$ are parameters.
-
-```

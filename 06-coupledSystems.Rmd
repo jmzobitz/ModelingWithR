@@ -1,9 +1,9 @@
-# Coupled systems of equations
+# Coupled systems of equations {#coupled-06}
 In this section we will learn how to qualitatively understand systems of differential equations.  When analyzing a single differential equation we used the idea of a phase line to understand if a solution was stable or unstable.  Here we extend that to equations of more than one variable and investigate what we will call the *phase plane*.
 
 ## Model redux: flu with quarantine
 
-A few sections ago we studied the following coupled model for a flu:
+In Section \@ref(intro-01) we studied the following model for the flu as a coupled system of equations:
 
 
 \begin{align*}
@@ -20,7 +20,7 @@ In this scenario we are also going to consider that those who are infected are q
 
 \node [vspecies] (S) {$S$} ;
 \node [vspecies, right of = S] (I) {$I$} ;
-\draw [->,thick] (S) --  node {\small{$k$}} (I) ;
+\draw [->,thick] (S) --  node {\small{$kS$}} (I) ;
 \draw [->,thick] (I.south) --  node[right] {\small{$\beta$}} +(0pt,-1cm) ;
 \end{tikzpicture}
 \end{center}
@@ -28,48 +28,70 @@ In this scenario we are also going to consider that those who are infected are q
 
 
 Which gives us the following system of equations:
-\begin{align*}
+\begin{equation}
+\begin{split}(\#eq:flu-quarantine)
 \frac{dS}{dt} &= -kSI \\
 \frac{dI}{dt} &= kSI - \beta I
+\end{split}
+\end{equation}
+
+To find the equilibrium solutions we want to find values of $S$ and $I$ where the rates $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ are _both_ zero. This can be done by algebraically solving the system of equations:
+
+\begin{align*}
+0 &= -kSI \\
+0 &= kSI - \beta I
 \end{align*}
 
-In the last section we studied the qualitative analysis of a differential equation by finding equilibrium solutions.  In this case the solution was where the rates were in steady state.
+Let's examine the first equation ($0 = -kSI$), which we can see is consistent when either $S=0$ and $I=0$.  These give us two options, which we then use in the second equation ($0 = kSI - \beta I$).  When $S=0$, then $0 = k\cdot 0 \cdot I - \beta I \rightarrow 0 = -\beta I$, which is consistent when $I=0$. So $(S_{*},I_{*}) = (0,0)$ is one equilibrium solution. (In fact, if $I=0$, then any value of $S$ would be an equilibrium solution. Can you explain why?)
 
-For a multivariable system of equations, the same idea holds, but we want to investigate curves where $S'$ and $I'$ equal zero.  We call these curves the *nullclines*
+This is an interesting example.  We call the equations $S=0$ and $I=0$ when $\displaystyle \frac{dS}{dt}=0$ as *nullclines* for $S$.  In a similar manner, the equations in $S$ and $I$ when $\displaystyle \frac{dI}{dt}=0$ are called *nullclines* for $I$.  Let's try to determine formulas for these equations:
 
-For this example $S'=0$ when $-k S I =0$, so the nullcline is the equation $S=0$ or $I=0$. In the other hand, when $I'=0$ when $k S - \beta I = 0$ which means that either $I=0$, or $\displaystyle I = \frac{\beta}{k} S$.  Notice how this nullcline depends as a function of $S$. At this point it is helpful to visualize these nullclines in the plane (since we have two equations), with $S$ on the horizontal axis and $I$ on the vertical axis.
+\begin{align*}
+0 &= kSI-\beta I \\
+0 &= I\cdot (kS - \beta )
+\end{align*}
+
+Because the last equation is factored as a product, nullclines for $I$ are either $I=0$ or $\displaystyle S = \frac{\beta}{k}$.
+
+Nullclines are not equilibrium solutions by themselves - it is the _intersection_ of two different nullclines that determine equilibrium solutions. Figure \@ref(fig:quarantine-nullclines) shows the nullclines in the $S-I$ plane (since we have two equations), with $S$ on the horizontal axis and $I$ on the vertical axis.
 
 
 
-```{r, echo=FALSE, fig.width=4,fig.height=3}
+```{r quarantine-nullclines, echo=FALSE,message=FALSE,warning=FALSE, fig.width=4,fig.height=3,fig.cap="Nullclines for Equation \\@ref(eq:flu-quarantine). To generate the plot we assumed $\\beta=1$ and $k=1$"}
 k <- 1
 beta <-1
 ggplot(data.frame(x=c(0,2)), aes(x))  +
   labs(x = "S",y = "I") +
-  stat_function(fun=function(x)beta/k*x, geom="line", aes(colour="I'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="S'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="I'=0"),size=2,linetype=2,inherit.aes = TRUE) +
-geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S'=0"),size=2,inherit.aes = TRUE) +
-  scale_color_discrete(name="Nullclines")
+  #stat_function(fun=function(x)beta/k, geom="line", aes(colour="I' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="S' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="I' = 0"),size=2,linetype=2,inherit.aes = TRUE) +
+geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S' = 0"),size=2,inherit.aes = TRUE) +
+geom_segment(data=data.frame(x1=beta/k,x2=beta/k,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="I' = 0"),size=2,inherit.aes = TRUE)
+#geom_vline(xintercept = beta/k, aes(colour="I' = 0"),size=2) +
+    scale_color_discrete(name="Nullclines",breaks=c("S' = 0","I' = 0"))
 
 
 ```
 
-One thing to note on the above graphic: there is a nullcline for $S$ and $I$ along the horizontal axis. A key thing to note is that where two different nullclines cross is an *equilibrium solution* to the system of equations.  This means that **both** $S'$ and $I'$ are zero at this point.  This looks like the nullclines cross when both $S=I=0$.
+A key thing to note is that where two different nullclines cross is an *equilibrium solution* to the system of equations.  This means that **both** $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ are zero at this point. Examining Figure \@ref(fig:quarantine-nullclines), there are three possibilities:
 
-You may also notice that the entire horizontal axis is an equilibrium solution because the nullclines for $S$ and $I$ are the same curve.  There is a practical interpretation of these nullclines - whenever $I=0$, meaning there are no infected people around, the solution is at an equilibrium. 
+1. At $S=0$ and $I=0$ (otherwise known as the origin).  This equilibrium solution makes biological sense: if there is nobody susceptible or infected (everyone is perfectly healthy - yay!) there are no flu cases.
+2. Building on the last equilibrium solution, the entire horizontal axis is an equilibrium solution because the nullclines for $S$ and $I$ are the ($I=0$).  There is a practical interpretation of this nullcline - whenever $I=0$, meaning there are no infected people around, the solution is at an equilibrium. 
+3. There is also a third possibility where the vertical line at $S=1$ crosses the horizontal axis ($S=1$, $I=0$), but that also falls under the second equilibrium solution.
 
-
-Algebraically we can also verify that the origin is an equilibrium solution by substituting $S=0$ (what we found for $S$ in the first equation) into the second equation.
-
-
-## A slope field
-Let's go back to the idea of a phase plane, but this time we will plug in different values of $S$ and $I$ into our system of equations and plot out a little field.
-
-We can think of these rates as mini-tangent lines.  In fact, let's evaluate the derivatives $\frac{dS}{dt}$ and $\frac{dI}{dt}$ for different values of $S$ and $I$. 
+Now that we have identified our nullclines and equilibrium solutions, we will add additional context with the *flow* of the solution.
 
 
-```{r, echo=FALSE}
+### Adding context to our phase plane: slope fields
+Let's go back to the idea of a phase plane, but this time we are going to add more context to our nullcline graph by evaluating different values of $S$ and $I$ into our system of equations and plot the _slope field_.
+
+First let's evaluate the derivatives $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ in Equation \@ref(eq:flu-quarantine) for different values of $S$ and $I$:
+
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+k<-1
+beta <- 1
+
 dS <- function(S,I) {
   -k*S*I
 }
@@ -78,60 +100,74 @@ dI <- function(S,I) {
   k*S*I-beta*I
 }
 
-S<- seq(0,2,length.out=5)
-I <- seq(0,2,length.out=5)
+S<- seq(0,4,length.out=10)
+I <- seq(0,4,length.out=10)
 model_out <- data.frame(S,I,dS_dt=dS(S,I),dI_dt=dI(S,I))
-kable(model_out,caption = 'Phase Plane values')
+kable(model_out,caption = 'Values of $\\frac{dS}{dt}$ and $\\frac{dI}{dt}$ for the flu with quarantine model.')
 
 
 ```
 
-Notice how the different values of $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ at each of the $S$ and $I$ values. We think of the coordinate pair of $\displaystyle \left( \frac{dS}{dt}, \frac{dI}{dt} \right)$ showing a vector in the $(S,I)$ plane. We associate  $\displaystyle \frac{dS}{dt}$ with left-right motion, so positive  $\displaystyle \frac{dx}{dt}$ means pointing to the right.  Likewise, we associate  $\displaystyle \frac{dI}{dt}$ with up-down motion, so positive  $\displaystyle \frac{dI}{dt}$ means the vector points up. At the point $(S,I)=(1,1)$, we have an arrow that points directly to the west because and $\displaystyle \frac{dI}{dt} < 0$ and $\displaystyle \frac{dI}{dt} =0$.  If we sequentially sample points in the $(S,I)$ plane we get a vector field plot, superimposed with the nullclines:
+Notice how the different values of $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ at each of the $S$ and $I$ values. We can plot each of the coordinate pairs of $\displaystyle \left( \frac{dS}{dt}, \frac{dI}{dt} \right)$ with a vector in the $(S,I)$ plane. We associate  $\displaystyle \frac{dS}{dt}$ with left-right motion, so positive  $\displaystyle \frac{dS}{dt}$ means pointing to the right.  Likewise, we associate  $\displaystyle \frac{dI}{dt}$ with up-down motion, so positive  $\displaystyle \frac{dI}{dt}$ means the vector points up. At the point $(S,I)=(1,1)$, we have an arrow that points directly to the west because and $\displaystyle \frac{dI}{dt} < 0$ and $\displaystyle \frac{dI}{dt} =0$.  If we sequentially sample points in the $(S,I)$ plane we get a vector field plot, superimposed with the nullclines:
 
-```{r, echo=FALSE,fig.width=4,fig.height=3}
-phaseplane(20,c(0,2),c(0,2),'S','I',dS,dI) +
-  stat_function(fun=function(x)beta/k*x, geom="line", aes(colour="I'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="S'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="I'=0"),size=2,linetype=2,inherit.aes = TRUE) +
-  geom_vline(xintercept = 0,color='#00bfc4',size=2) +
-#geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S'=0"),size=2,inherit.aes='TRUE') +
-  scale_color_discrete(name="Nullclines") +
-  geom_point(aes(x=0,y=0),size=3)
+```{r, echo=FALSE,fig.width=4,fig.height=3, fig.cap="Phaseplane for Equation \\@ref(eq:flu-quarantine). To generate the plot we assumed $\\beta=1$ and $k=1$"}
+k <-1
+beta <- 1
+s_window <- c(0,4)
+i_window <- c(0,4)
+
+systems_eq <- c(dsdt ~ -k*S*I,
+                didt ~ k*S*I-beta*I )
+ 
+
+
+ # We hacked out the color codes - can't do stat function on a phase plot!
+phaseplane(systems_eq,'S','I',s_window,i_window) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="S' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="I' = 0"),size=2,linetype=2,inherit.aes = TRUE) +
+  geom_vline(xintercept = 0,color='#00bfc4',size=2)  +
+  geom_vline(xintercept = beta/k,color='#f8766d',size=2)  +
+  #geom_vline(xintercept = beta/k, aes(colour="I' = 0"),size=2) +
+  scale_color_discrete(name="Nullclines",breaks=c("S' = 0","I' = 0"))
+
+
+
 ```
 
 
 
-## Motion around the nullclines
+### Motion around the nullclines
 
 We can also extend the motion around the nullclines to investigate the stability. With a one dimensional differential equation we used a number line to quantify values where the solution is increasing / decreasing.  The problem with several differential equations is that the notion of "increasing" or "decreasing"" becomes difficult to understand - as there is an additional degree of freedom! Simply put, in a plane you can move left/right *or* up/down. The benefit for having nullclines is that they **isolate** the motion in one direction.  
 
 In general for a two dimensional system: 
-- Along the nullcline for the variable on the horizontal axis, the only motion is up/down.
-- Along the nullcline for the variable on the vertical axis, the only motion is left/right.
+- When a horizontal axis variable has a nullcline, the only allowed motion is up/down.
+- When a vertical axis variable has a nullcline,  the only motion is up/down.
 
-For our model with the quarantine, if we choose points where $I'=0$ then we know that the only motion is to the left and the right because $S$ can still change along that curve.  If we choose points where $S'=0$ then we know that the only motion is to the up/down because $I$ can still change along that curve.
+Applying this knowledge to Equation \@ref(eq:flu-quarantine), if we choose points where $I'=0$ then we know that the only motion is to the left and the right because $S$ can still change along that curve.  If we choose points where $S'=0$ then we know that the only motion is to the up/down because $I$ can still change along that curve (Figure \@ref(fig:nullclines-quarantine-explained)).
 
 
-```{r, echo=FALSE, fig.width=5,fig.height=4}
-
+```{r nullclines-quarantine-explained, echo=FALSE, fig.width=5,fig.height=4,fig.cap="Nullclines for Equation \\@ref(eq:flu-quarantine) with context on the direction of the motion."}
 k <- 1
 beta <-1
 ggplot(data.frame(x=c(0,2)), aes(x))  +
   labs(x = "S",y = "I") +
-  stat_function(fun=function(x)beta/k*x, geom="line", aes(colour="I'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="S'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="I'=0"),size=2,linetype=2,inherit.aes = TRUE) +
-geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S'=0"),size=2,inherit.aes = TRUE) +
-  scale_color_discrete(name="Nullclines") +
+  #stat_function(fun=function(x)beta/k, geom="line", aes(colour="I' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="S' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="I' = 0"),size=2,linetype=2,inherit.aes = TRUE) +
+geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S' = 0"),size=2,inherit.aes = TRUE) +
+geom_segment(data=data.frame(x1=beta/k,x2=beta/k,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="I' = 0"),size=2,inherit.aes = TRUE) +
+#geom_vline(xintercept = beta/k, aes(colour="I' = 0"),size=2) +
+    scale_color_discrete(name="Nullclines",breaks=c("S' = 0","I' = 0")) +
   geom_text(aes(x=0.3,y=1.5,label="Along this curve \n you have only \n up/down motion"),hjust="left") +
-  geom_text(aes(x=1.0,y=0.5,label="Along this curve \n you have only \n left/right motion"),hjust="left") +
+  geom_text(aes(x=1.8,y=1.40,label="Along this curve \n you have only \n left/right motion"),hjust="left") +
   geom_curve(aes(x = 0.4, y = 1.25, xend = 0.05, yend = 1.0),
              curvature = 0.05, angle = 15,
              arrow = arrow(length = unit(0.25,"cm"))) +
-  geom_curve(aes(x = 1.25, y = 0.70, xend = 1.25, yend = 1.20),
+  geom_curve(aes(x = 1.75, y = 1.25, xend = 1.05, yend = 1.0),
              curvature = 0.05, angle = 15,
-             arrow = arrow(length = unit(0.25,"cm"))) 
-
+             arrow = arrow(length = unit(0.25,"cm"))) +
+  xlim(c(0,4)) + ylim(c(0,4))
 
 ```
 
@@ -139,17 +175,25 @@ geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,
 ## Determining stability
 The picture of the phase plane with the nullcline qualitatively tells us about the stability of an equilibrium point.  Once of the equilibrium solutions is at the origin $(S,I)=(0,0)$.  As before we want to investigate if the equilibrium solution is stable or unstable.
 
-We will zoom in a little more near the equilibrium solution:
+Figure \@ref(fig:zoom-quarantine-plane) zooms in the phaseplane at the  equilibrium solution at $S=0$, $I=0$:
 
-```{r, echo=FALSE,fig.width=4,fig.height=3}
-phaseplane(20,c(0,0.25),c(0,0.25),'S','I',dS,dI) +
-  stat_function(fun=function(x)beta/k*x, geom="line", aes(colour="I'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="S'=0"),size=2) +
-  stat_function(fun=function(x)0, geom="line", aes(colour="I'=0"),size=2,linetype=2,inherit.aes = TRUE) +
-  geom_vline(xintercept = 0,color='#00bfc4',size=2) +
-#geom_segment(data=data.frame(x1=0,x2=0,y1=0,y2=2),aes(x=x1,xend=x2,y=y1,yend=y2,colour="S'=0"),size=2,inherit.aes='TRUE') +
-  scale_color_discrete(name="Nullclines") +
-  geom_point(aes(x=0,y=0),size=3)
+```{r,label="zoom-quarantine-plane", echo=FALSE,fig.width=4,fig.height=3}
+k <-1
+beta <- 1
+
+systems_eq <- c(dsdt ~ -k*S*I,
+                didt ~ k*S*I-beta*I )
+
+
+ # We hacked out the color codes - can't do stat function on a phase plot!
+phaseplane(systems_eq,'S','I',c(0,0.25),c(0,0.25))  +
+  stat_function(fun=function(x)0, geom="line", aes(colour="S' = 0"),size=2) +
+  stat_function(fun=function(x)0, geom="line", aes(colour="I' = 0"),size=2,linetype=2,inherit.aes = TRUE) +
+  geom_vline(xintercept = 0,color='#00bfc4',size=2)  +
+  #geom_vline(xintercept = beta/k,color='#f8766d',size=2)  +
+  #geom_vline(xintercept = beta/k, aes(colour="I' = 0"),size=2) +
+  scale_color_discrete(name="Nullclines",breaks=c("S' = 0","I' = 0"))
+
 ```
 
 
@@ -157,96 +201,223 @@ As you can see the arrows appear to be pointing into and towards the equilibrium
 
 
 ## Generating a phase plane in `R`
-The `MAT369Code` package has some basic functionality to generate a phase plane.  Let's say we have the following differential equations:
+Let's take what we learned from the case study of the flu model with quarantine to qualitatively analyze a system of differential equations:
 
-\begin{align}
+- We determine nullclines by setting the derivatives equal to zero.
+- Equilibrium solutions occur where nullclines for the two different equations intersect.
+- The arrows in the phase plane help us characterize the stability of the equilibrium solution.
+
+To determine the phaseplane diagram `MAT369Code` package has some basic functionality to generate a phase plane. Consider the following system of differential equations (Equation \@ref(eq:phase-example)):
+
+\begin{equation}
+\begin{split}(\#eq:phase-example)
 \frac{dx}{dt} &= x-y \\
 \frac{dy}{dt} &= -x+y
-\end{align}
+\end{split}
+\end{equation}
 
 
-In order to analyze these we need to define functions for $x'$ and $y'$, which I will annotate as $dx$ and $dy$ respectively:
+In order to generate a phaseplane diagram for Equation \@ref(eq:phase-example) we need to define functions for $x'$ and $y'$, which I will annotate as $dx$ and $dy$ respectively.  We are going to collect these equations in one vector called `system_eq`, using the tilde (~) as a replacement for the equals sign:
 
 ```{r}
-dx <- function(x,y) {
-  x-y
-}
-
-dy <- function(x,y) {
-  x+y
-}
+system_eq <- c(dx ~ x-y,
+               dy ~ x+y)
 
 ```
 
-Then what we do is apply the command `phaseplane`, which will generate a vector field of $N$ points over a domain:
+Then what we do is apply the command `phaseplane`, which will generate a vector field over a domain:
 
-```{r,fig.width=4,fig.height=3,}
-n_points <- 5  # Number of points we want to sample our vector field.
+```{r,fig.width=4,fig.height=3,fig.cap="Phaseplane diagram for Equation \\@ref(eq:phase-example)"}
+phaseplane(system_eq,'x','y')  # The values in quotes are the labels for the axes and to identify the variables - they are needed!
 
-# Define the range we wish to evaluate this vector field
-x <- c(-2,2)
-y <- c(-2,2)
+```
 
-phaseplane(20,x,y,'x','y',dx,dy)  # The values in quotes are the labels for the axes
+The command `phaseplane` has an option called `eq_soln` that will if there are any equilibrium solutions to be found and report them to the console.  For example try running `phaseplane(system_eq,'x','y',eq_soln=TRUE)` and see what gets output to console.   While this option lists equilibrium solutions, you should confirm them with the differential equation through direct solving.
+
+
+### Generating a phase line in R:
+From Section \@ref(phase-05) we discussed how to construct phaselines by hand.  It turns out that the command `phaseplane` can also plot phase lines.  Let's take a look at an example first and then discuss how that it works.
+
+
+
+
+```{example}
+A colony of bacteria growing in a nutrient-rich medium deplete the nutrient as they grow. As a result, the nutrient concentration $x(t)$ is steadily decreasing.  Determine the phaseline for the following differential equation:
+  
+  \begin{equation}(\#eq:bacteria-colony)
+\frac{dx}{dt} = - 0.7 \cdot \frac{x \cdot (3- x)}{1 + x}
+\end{equation}
 
 
 ```
 
-
-## More refined numerical solvers
-Perhaps in the course of working with Euler's method you encounter a differential equation that produces some nonsensible results.  Take for example the following which is the implementation of our quarantine model:
-
-```{r,fig.width=4,fig.height=3}
-deltaT <- .1    # timestep length
-timeSteps <- 15   # must be a number greater than 1
-
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
-initialCondition <- c(S=300, I=1)  # Be sure you have enough conditions as you do variables.
-
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dS = -k*S*I  # <-- You may edit this line
-    dI = k*S*I-beta*I # <-- You may edit this line.
-    return(list(c(dS, dI)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
+The R code to generate this phaseline is the following:
 
 
-euler(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters)
+```{r}
+# Define the windows where we make the plots
+t_window <- c(0,3)
+x_window <- c(0,5)
+
+# Define the differential equation
+system_eq <- c(dt ~ 1,
+               dx ~ -0.7 * x*(3-x)/(1+x))
+
+phaseplane(system_eq,"t","x",t_window,x_window)
+
+
 ```
 
-You may notice the solution for $S$ wiggles around $t=0.75$ and is negative.  This is concerning because we know there can't be negative people!  This requires a little more investigation.
+Notice how we have the equation $dt = 1$.  What we are doing is re-writing the differential equation with a new variable $s$ (Equation \@ref(eq:single-phase)):
 
-If we take a look at $t=0.75$ the value for $S \approx 1$ and the value for $I \approx 280$.  If we let $k=0.05$ and $\beta=0.2$, this means that $\displaystyle \frac{dS}{dt}=-14$ and $\displaystyle \frac{dI}{dt}=-42$.  The values of $S$ and $I$ are both decreasing!  We know that our Euler's method update is one where the new value is the old value plus any change.  So the new value for $S = 1 -14\cdot 0.1 = -0.4$.  Mathematically Euler's method is doing nothing incorrect, but we know realistically this cannot happen.
+\begin{equation}
+\begin{split}(\#eq:single-phase)
+\frac{dt}{ds} &= 1 \\
+\frac{dx}{ds} &= - 0.7 \cdot \frac{x \cdot (3- x)}{1 + x}
+\end{split}
+\end{equation}
 
-In turns out that this can easily be overcome.  While Euler's method is useful, it does quite poorly in cases where the solution is changing rapidly - or we might need to make some smaller step sizes.  How we remedy this is to use a *variable step-solver*.  If you take a course in numerical analysis you might study these, but for the moment we have this implemented in the `MAT369Code` package, which by all intents and purposes is replacing `euler` with systems:
-
-```{r,fig.width=4,fig.height=3}
-deltaT <- .1    # timestep length
-timeSteps <- 15   # must be a number greater than 1
-
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
-initialCondition <- c(S=300, I=1)  # Be sure you have enough conditions as you do variables.
-
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dS = -k*S*I  # <-- You may edit this line
-    dI = k*S*I-beta*I # <-- You may edit this line.
-    return(list(c(dS, dI)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
-
-
-systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters)
-```
-
-We still need to specify the stepsize $\Delta t$, as that is what gets returned and plotted for a solution.
-
-\newpage
+The differential equation $\displaystyle \frac{dt}{ds} = 1$ has solution $s=t$, so in essence is the same as Equation \@ref(eq:bacteria-colony) (perhaps a little more complicated).  However re-writing this system was a quick and handy workaround to re-use code.
 
 ## Exercises
+
+```{exercise}
+Determine equilibrium solutions for Equation \@ref(eq:phase-example).
+```
+
+&nbsp;
+
+```{exercise}
+This problem considers the following system of differential equations:
+ \begin{align*} 
+\frac{dx}{dt} &= y \\ 
+\frac{dy}{dt} &= -x 
+\end{align*}
+
+\begin{enumerate}[label=\alph*.]
+\item Determine the equations of the nullclines and equilibrium point of this system of differential equations.
+\item Modify the function \texttt{phaseplane} to generate a phaseplane of this system.
+\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
+\item Based on the work you generated, determine if the equilibrium solution is \emph{stable} or \emph{unstable}.
+\item Verify that the functions $x(t) = \sin(t)$ and $y=\cos(t)$ is one solution to this system of differential equations.
+\end{enumerate}
+```
+ 
+ &nbsp;
+ 
+```{exercise}
+Considers the following system of differential equations:
+
+  \begin{equation} 
+\begin{split}
+\frac{dx}{dt} &= y \\ 
+\frac{dy}{dt} &= 3x^{2}-1 
+\end{split}
+\end{equation}
+
+
+ \begin{enumerate}[label=\alph*.]
+ \item Determine the equations of the nullclines and equilibrium solutions for this system of differential equations.
+\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
+\item Modify the function \texttt{phaseplane} to generate a phaseplane of this system.
+\item  Make a hypothesis to classify if the equilibrium point is \emph{stable} or \emph{unstable}.
+\end{enumerate} 
+```
+
+&nbsp;
+
+
+<!-- %Thornley pg 80 -->
+```{exercise}
+A plant grows propritional to its current length $L$.  Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value.  The system of equations that models this plant growth is the following:
+\begin{equation}
+\begin{split}
+\frac{dL}{dt} &= \mu L \\ 
+\frac{d\mu}{dt}  &= -0.1 \mu \\
+\end{split}
+\end{equation}
+
+\begin{enumerate}[label=\alph*.]
+ \item Explain why $L=0$ and $\mu=0$ is the only equilibrium solution to this differential equation.
+\item Modify the function \texttt{phaseplane} to generate a phaseplane of this system.
+\item Is the origin a stable equilibrium solution?
+\end{enumerate} 
+
+```
+&nbsp;
+
+
+```{exercise}
+Red blood cells are formed from stem cells in the bone marrow.  The red blood cell density $r$ satisfies an equation of the form
+
+\begin{equation}
+\frac{dr}{dt} = \frac{0.2r}{1+r^{2}} -  0.1 r,
+\end{equation}
+
+\begin{enumerate}[label=\alph*.]
+ \item What are the equilibrium solutions for this differential equation?
+\item Modify the function \texttt{phaseplane} to generate a phaseline for this differential euqation for $0 \leq t \leq 5$ and $0 \leq r \leq 5$.
+\item Based on the phaseline, are the equilibrium solutions stable or unstable?
+\end{enumerate} 
+
+```
+&nbsp;
+
+ <!-- Van den Berg page 19 -->
+```{exercise}
+Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream.  An equation that represents the level of $S$ in the blood is the following:
+
+$$ \frac{dS}{dt} = 1 + 0.3 \cdot (3 - S) $$
+
+\begin{enumerate}[label=\alph*.]
+\item What are the equilibrium solutions for this differential equation?
+\item Modify the function \texttt{phaseplane} to generate a phaseline for this differential euqation for $0 \leq t \leq 10$ and $0 \leq S \leq 10$.
+\item Based on the phaseline, are the equilibrium solutions stable or unstable?
+\end{enumerate}
+
+```
+&nbsp;
+
+
+
+
+<!-- From van den Berg, pg 59, exercise 3.13 -->
+```{exercise}
+The core body temperature ($T$) of a mammal is coupled to the heat production (scaled by heat capacity $Q$) with the following system of differential equations:
+ \begin{equation}
+\begin{split}
+\frac{dT}{dt} &= Q + 0.5 \cdot (20-T) \\ 
+\frac{dQ}{dt} &= 0.1 \cdot (38-T),
+\end{split}
+\end{equation}
+
+ 
+ \begin{enumerate}[label=\alph*.]
+ \item Determine the equations of the nullclines and equilibrium point of this system of differential equations.
+\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
+\item  Make a hypothesis to classify if the equilibrium point is \emph{stable} or \emph{unstable}.
+\end{enumerate}
+ 
+```
+
+&nbsp;
+
+
+```{exercise}
+Consider the following system of differential equations for the lynx-hare model:
+  \begin{align}
+\frac{dH}{dt} &= r H - b HL \\
+\frac{dL}{dt} &=ebHL -dL
+\end{align}
+
+\begin{enumerate}[label=\alph*.]
+\item Determine the steady states of this system of differential equations.
+\item Determine equations for the nullclines, expressed as $L$ as a function of $H$.  There should be two nullclnes for each rate. 
+\end{enumerate}
+```
+
+&nbsp;
+
 <!-- Van den berg, page 102 -->
 
 ```{r, echo=FALSE,out.width = "4in",fig.cap="\\label{fig:chemostat}An example of a chemostat."}
@@ -264,7 +435,7 @@ A chemostat is a tank used to study microbes and ecology, where microbes grow un
 \end{align}
 
 where we have the following parameters: $\mu$ is the per capita reproduction rate, $F$ is the flow rate, $V$ is the volume of the culture solution, $D$ is the dilution rate, $C_{R}$ is the concentration of nutrients entering the culture, and $S$ is a stoichiometric conversion of nutrients to biomass. 
- \begin{enumerate}
+ \begin{enumerate}[label=\alph*.]
  \item Write the equations of the nullclines for this differential equation.
  \item Determine the equilibrium solutions for this system of differential equations.
  \item Generate a phaseplane for this differential equation with the values $\mu=1$, $D=1$, $C_{R}=2$ and $S=1$ and $V=1$.
@@ -274,80 +445,10 @@ where we have the following parameters: $\mu$ is the per capita reproduction rat
  
 &nbsp;
 
-```{exercise}
-Consider the following system of differential equations for the lynx-hare model:
-  \begin{align}
-\frac{dH}{dt} &= r H - b HL \\
-\frac{dL}{dt} &=ebHL -dL
-\end{align}
 
-\begin{enumerate}
-\item Determine the steady states of this system of differential equations.
-\item Determine equations for the nullclines, expressed as $L$ as a function of $H$.  There should be two nullclnes for each rate. 
-\end{enumerate}
-```
-
-&nbsp;
  
-<!-- From van den Berg, pg 59, exercise 3.13 -->
-```{exercise}
-The core body temperature ($T$) of a mammal is coupled to the heat production (scaled by heat capacity $Q$) with the following system of differential equations:
- \begin{align} 
-\frac{dT}{dt} &= Q + \mu \cdot (T_{a}-T) \\ 
-\frac{dQ}{dt} &= \rho \cdot (T_{s}-T),
-\end{align}
- where we have the following parameters: $\rho>0$ is the reactivity, $\mu$ is the heat loss rate, and $T_{a}$ is the ambient (outside) temperature and $T_{s}$ is the normal body temperature.
- 
- \begin{enumerate}
- \item Determine the equations of the nullclines and equilibrium point of this system of differential equations.
-\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
-\item  Make a hypothesis to classify if the equilibrium point is \emph{stable} or \emph{unstable}.
-\end{enumerate}
- 
-```
-
-&nbsp;
-
-```{exercise}
-This problem considers the following system of differential equations:
-
-  \begin{align} \frac{dx}{dt} &= y \\ 
-\frac{dy}{dt} &= 3x^{2}-1 
-\end{align}
 
 
- \begin{enumerate}
- \item Determine the equations of the nullclines and equilibrium point of this system of differential equations.
-\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
-\item Use the function \texttt{systems} to generate a numerical solution to the differential equation and plot your solution. \emph{You will need to determine the appropriate stepsize ($\Delta t$) and number of time steps ($N$) for the code.}  The initial conditions you use are:  $x(0) = -0.5$, $y(0) = 0.5$
-\item  Repeat for initial conditions $\displaystyle x(0) = \frac{1}{\sqrt{3}}$, $y(0) = 0$.
-\item  Make a hypothesis to classify if the equilibrium point is \emph{stable} or \emph{unstable}.
-\item Modify the function \texttt{phaseplane} to generate a phase portrait of this system.
-\item Evaluate if your hand-drawn verify your phase portraits, and classification of the equilibrium solutions match your computationally generated results.
-\end{enumerate} 
-```
-
-&nbsp;
-```{exercise}
-This problem considers the following system of differential equations:
- \begin{align*} 
-\frac{dx}{dt} &= y \\ 
-\frac{dy}{dt} &= -x 
-\end{align*}
-
-\begin{enumerate}
-\item Determine the equations of the nullclines and equilibrium point of this system of differential equations.
-\item For each point along a nullcline, determine the resulting motion (up-down or left-right).
-\item Based on the work you generated, determine if the equilibrium solution is \emph{stable} or \emph{unstable}.
-\item Verify that the functions $x(t) = \sin(t)$ and $y=\cos(t)$ is one solution to this system of differential equations.
-\item Modify the function \texttt{phaseplane} to generate a phase portrait of this system.
-\item Use the function \texttt{systems} to solve this system of differential equations numerically.
-\item Evaluate if your hand-drawn verify your phase portraits, and classification of the equilibrium solutions match your computationally generated results.
-\end{enumerate}
-```
- 
- &nbsp;
- 
 
  
 ```{r, echo=FALSE,out.width = "4in",fig.cap="\\label{fig:gause}Population results from two yeast species growing in competition. From Gause (1932)"}
@@ -365,7 +466,7 @@ knitr::include_graphics("figures/06-coupledSystems/gause-results.png")
 \end{align*}
 
  where $y_{1}$ and $y_{2}$ are the two species of yeast with the parameters $b_{1}, \; b_{2}, \; K_{1}, \; K_{2}, \; \alpha, \; \beta$ describing the characteristics of the yeast species.
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
 \item Determine the equilibrium solutions for this differential equation.  Express your answer in terms of the parameters $b_{1}, \; b_{2}, \; K_{1}, \; K_{2}, \; \alpha, \; \beta$.
 \item Gause computed the following values of the parameters: $b_{1}=0.21827, \; b_{2}=0.06069, \; K_{1}=13.0, \; K_{2}=5.8, \; \alpha=3.15, \; \beta=0.439$.  Using these values, what would be the predicted values for the equilibrium solutions?
 \item Use the function \texttt{systems} to solve this system of differential equations numerically.

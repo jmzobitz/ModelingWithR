@@ -1,43 +1,47 @@
-# Modeling with rates of change
+# Modeling with rates of change {#modeling-rates-03}
 So far we have looked at some examples for how we can apply rates of change to develop a mathematical model, and also learned a little bit about the ways we can apply computational software such as `R`.
 
-In this section we are going to look some additional examples of how we can translate equations with rates of change to understand phenomena.  
+In this section we are going to look some additional examples of how we can translate equations with rates of change to understand phenomena.  The focus here will be on writing differential equations from a contextual description.
+
+Oftentimes when we construct differential equations from a contextual description we bring our own understanding and knowledge to this situation.  How _you_ may write down the differential equation may be different from someone else - _do not worry!_  This is the fun part of modeling: models can be considered testable hypotheses that can be refined when confronted with data.
+
+In this section I work through a few well-known examples from mathematical biology and you will apply that knowledge to develop models from context.
 
 ## Lynx and Hares
-Our first example is a *system of differential equations*.  The context is between the snowshoe hare and the Canadian lynx. Here is a picture of them below from [link](https://www.cbc.ca/news/canada/north/canseq150-genome-sequencing-lynx-hare-1.4676308) 
+Our first example is a *system of differential equations*.  The context is between the snowshoe hare and the Canadian lynx. Figure \@ref(fig:lynx-hare) shows a picture of them below from [link](https://www.cbc.ca/news/canada/north/canseq150-genome-sequencing-lynx-hare-1.4676308) 
 
-```{r, echo=FALSE}
+```{r lynx-hare, echo=FALSE, fig.cap = "The lynx and hare - aren't they beautiful?",fig.width=4}
 knitr::include_graphics("figures/03-systems/lynx-hare.png")
 ```
 
-This has been a well studied system (REFERENCES), and a timeseries of their population is shown with this figure from REFERENCE.
+Figure \@ref(fig:lynx-hare-time) timeseries of their population is shown with this figure from @stenseth_population_1997.
 
 
-```{r, echo=FALSE}
+```{r,label="lynx-hare-time", echo=FALSE, fig.cap="A timeseries of the combined lynx and hare system.  Notice how the populations are coupled with each other.",fig.height=4}
 knitr::include_graphics("figures/03-systems/lynx-hare-timeseries.png")
 ```
 
-Notice how in this figure both populations seem to fluctuate periodically.  One plausible reason is that the lynx prey on the snowshoe hares, which causes the population to initially decline.  Once the snowshoe hare population declines, then there is less food for the lynx to survive, so their population declines.  The decline in the lynx population causes the hare population to increase, and so on it goes ...
+Notice how in Figure \@ref(fig:lynx-hare-time) both populations seem to fluctuate periodically.  One plausible reason is that the lynx prey on the snowshoe hares, which causes the population to initially decline.  Once the snowshoe hare population declines, then there is less food for the lynx to survive, so their population declines.  The decline in the lynx population causes the hare population to increase, and so on it goes ...
 
 
 In summary it is safe to say that the two populations are *coupled* to one another.  But in order to understand how they are coupled together, first let's consider the two populations *separately*.
 
 
-The hares grow much more quickly than then lynx - in fact some hares have been known to reproduce several times a year, so a reasonable assumption (assuming the hare population is much larger) is that rate of change of the hares is proportional to the hare population.  Based on this assumption we have the following differential equation, with $H$ is the population of the hares:
+The hares grow much more quickly than then lynx - in fact some hares have been known to reproduce several times a year.  A reasonable assumption for large hare populations is that rate of change of the hares is proportional to the hare population.  Based on this assumption Equation \@ref(eq:hareOnly) describes the rate of change of the hare population, with $H$ is the population of the hares:
 
 \begin{equation}
-\frac{dH}{dt} = r H
+\frac{dH}{dt} = r H (\#eq:hareOnly)
 \end{equation}
 
-In this case we know that the growth rate $r$ is positive, so then the rate of change ($H'$) will be positive as well, and $H$ will be increasing. Typical values given for $r$ in REFERENCE are between 1.8 - 2.0 year$^{-1}$.  One way to think about $b$ is - to take its inverse (about 0.5 - 0.55 years), which represents the amount of time that passes before the hare population decreases by one (pretty short!)
+In this case we know that the growth rate $r$ is positive, so then the rate of change ($H'$) will be positive as well, and $H$ will be increasing. Typical values given for $r$ in @stenseth_population_1997 are between 1.8 - 2.0 year$^{-1}$.  You may be thinking that the units on $r$ seem odd - (year$^{-1}$).  Another way to think about $r$ is to take its inverse: $r^{-1} \approx$  0.5 - 0.55 years.  Then $r^{-1}$ represents the amount of time that passes before the hare population increases (pretty short!)
 
-Let's consider the lynx now.  A approach is to assume their population declines exponentially, or changes at the rate proportional to the current population.  Let's consider $L$ to be the lynx population, so we have the following equation for them:
+Let's consider the lynx now.  A approach is to assume their population declines exponentially, or changes at the rate proportional to the current population.  Let's consider $L$ to be the lynx population, with the following differential equation (Equation \@ref(eq:lynxOnly)):
 
 \begin{equation}
-\frac{dL}{dt} = -dL
+\frac{dL}{dt} = -dL (\#eq:lynxOnly)
 \end{equation}
 
-As you can see in this case, the death rate $d$ is positive, leading to a negative rate of change for the Lynx population (and a decreasing value for $L$).  Typical values of $d$ are 0.9 - 2.4 year$^{-1}$.  One way to think about $d$ is - like $b$ - to take its inverse (about 0.4 - 1.1 years), which represents the amount of time that passes before the lynx population decreases by one.
+We assume the death rate $d$ in Equation \@ref(eq:lynxOnly) is positive, leading to a negative rate of change for the Lynx population (and a decreasing value for $L$).  Typical values of $d$ are 0.9 - 2.4 year$^{-1}$.  Similar to $r$, another way $d$ is - like $b$ - to take its inverse (about 0.4 - 1.1 years), which represents the amount of time that passes before the lynx population decreases by one.
 
 The next part to consider is how they interact.  Since the hares are prey for the lynx, when the lynx hunt, the hare population.  We can represent this with the following adjustment to our hare equation:
 
@@ -59,38 +63,39 @@ Notice the symmetry between the rate of change for the hares and the lynx equati
 \frac{dL}{dt} =e\cdot bHL -dL
 \end{equation}
 
-(sometimes people just make a new parameter $c=e \cdot b$, but for now we will just leave it as is).  So now we have the following coupled system of differential equations:
+(sometimes people just make a new parameter $c=e \cdot b$, but for now we will just leave it as is).  Equation \@ref(eq:lynx-hare-combined) shows the coupled system of differential equations:
 
-\begin{align}
+\begin{equation}
+\begin{split}
 \frac{dH}{dt} &= r H - b HL \\
 \frac{dL}{dt} &=ebHL -dL
-\end{align}
+\end{split}
+(\#eq:lynx-hare-combined)
+\end{equation}
 
+The schematic diagram representing these interactions is the following is shown in Figure \@ref(fig:lynxhare-schematic):
 
-The schematic diagram representing these interactions is the following:
+```{tikz, lynxhare-schematic,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram Lynx-Hare system."}
 
-```{r lynxhare,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE}
-\begin{center}
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
 
 \node [vspecies] (H) {$H$} ;
 \node [vspecies, right of = H] (L) {$L$} ;
-\draw [->] ([yshift=3pt]H.east) --  node[above] {\small{$b$}} ([yshift=3pt]L.west) ;
-\draw [->] ([yshift=-3pt]L.west) --  node[below] {\small{$eb$}} ([yshift=-3pt]H.east) ;
+\draw [->] ([yshift=3pt]H.east) --  node[above] {\small{$ebH$}} ([yshift=3pt]L.west) ;
+% \draw [->] ([yshift=-3pt]L.west) --  node[below] {\small{$ebL$}} ([yshift=-3pt]H.east) ;
 \draw [->] (L.east) --  node[above] {\small{$d$}} +(1cm,0pt) ;
 \draw [<-] (H.west) --  node[above] {\small{$r$}} +(-1cm,0pt) ;
 
 \end{tikzpicture}
-\end{center}
+
 ```
 
 
 
- This differential equation is a classical model in mathematical biology and differential equations - it is called the *predator prey* model, also known as the [Lotka-Volterra equations](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations).  There is a lot of interesting mathematics from this system of equations that we will study later in this textbook.  The next steps of the analysis that we will be working on is determining solutions to these differential equations numerically or directly.
+Equation \@ref(eq:lynx-hare-combined) is a classical model in mathematical biology and differential equations - it is called the *predator prey* model, also known as the [Lotka-Volterra equations](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations).  There is a lot of interesting mathematics from this system of equations that we will study later in this textbook.  In later sections we will graphically and numerically analyze these equations and their solutions.
 
-Stenseth paper - this is a lot more complicated than we think!
 
 ## The Law of Mass Action
 Notice in the previous section that the interaction between the lynx and the hare was of the form *bHL* - meaning you needed both positive values of *H* and *L* for the interaction to continue.  This law states that the rate of a change is directly proportional to the *product* of the populations.
@@ -107,10 +112,9 @@ How we would write the product of formation, or $\displaystyle \frac{dS}{dt}$ is
 \frac{dS}{dt}= kAB,
 \end{equation}
 
-where $k$ is the proportionality constant or the rate constant associated with the reaction.  If we wanted to represent this as a schematic we would have the following diagram:
+where $k$ is the proportionality constant or the rate constant associated with the reaction.  If we wanted to represent this as a schematic we would have the following diagram (Figure \@ref(fig:mass-action)):
 
-```{r,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE}
-\begin{center}
+```{tikz, mass-action,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram of the law of mass action."}
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
@@ -119,13 +123,13 @@ where $k$ is the proportionality constant or the rate constant associated with t
 \node [vspecies, right of = A] (S) {$S$} ;
 \draw [->] ([yshift=0pt]A.east) --  node[above] {\small{$kB$}} ([yshift=0pt]S.west) ;
 \end{tikzpicture}
-\end{center}
+
 
 ```
 
-We could also consider if there was a constant decay of the substrate, which we might revise our diagram to the following:
+We could also consider if there was a constant decay of the substrate, which we might revise Figure \@ref(fig:mass-action) to Figure \@ref(fig:mass-action-revised):
 
-```{r,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE}
+```{tikz, mass-action-revised,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Revised schematic diagram of the law of mass action with decay."}
 \begin{center}
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -140,34 +144,66 @@ We could also consider if there was a constant decay of the substrate, which we 
 
 ```
 
-## Invasive species
-Let's look at another example where we will determine a differential equation model from a context:
+For this case, the rate of change of $S$ would then be:
+
+\begin{equation}
+\frac{dS}{dt}= kAB - dS, (\#eq:mass-action-decay)
+\end{equation}
+
+You may be wondering about rates for $A$ and $B$. When $S$ is formed $A$ and $B$ are catalyzed, so the rate of formation for $S$ (the positive term in Equation \@ref(eq:mass-action-decay)) will be a loss for $A$ and $B$ (Equation \@ref(eq:mass-action-ab)):
+
+\begin{equation}
+\begin{split}
+\frac{dA}{dt} &= -kAB \\
+\frac{dB}{dt} &= -kAB
+\end{split}
+(\#eq:mass-action-ab)
+\end{equation}
 
 
-> An invasive species enters new territory at a rate proportional to the difference between the current number of native individuals and the number of invasive individuals established in the territory. Assume that the number of native individuals is constant.
+Both equations are similar in this case, not pending any additional inputs or outputs.
+
+## Establishing species
+Let's look at another example where from we will determine a differential equation model from a context:
+
+
+> An newly introduced plant species is introduced to a region.  It competes with another established species for nutrients (and is a better competitor).  However, the growth rate of the new species is proportional to the difference between the current number of established species and the number of new species.  You may assume that the number of established species is a constant _E_.
+
+
 <!-- LW pg 5 -->
 
 
-For this problem we will start by naming our variables.  Let $I$ represent number of invasive individuals and $N$ the number of native individuals.  We will break this down accordingly:
+For this problem we will start by naming our variables.  Let $N$ represent number of new species and $E$ the number of established species.  We will break this down accordingly:
 
-- *An invasive species enters new territory at a rate proportional* means $\displaystyle \frac{dI}{dt}$.
-- *proportional to the difference between the current number of native individuals and the number of invasive individuals established in the territory* means $\displaystyle k \cdot (N-I)$, where $k$ is the proportionality constant.  Including this parameter helps to avoid assuming we have a 1:1 correspondence between the growth rate of the invasive individuals and the population difference.
-- *Assume that the number of native individuals is constant.* This means that $N=C$, or equivalently $\displaystyle \frac{dN}{dt} = 0$  (a constant function has zero rate of change).
+- *"the growth rate of the new species"* means $\displaystyle \frac{dN}{dt}$.
+- *"is proportional to the difference between the current number of established species and the number of new species"* means $\displaystyle k \cdot (E-N)$, where $k$ is the proportionality constant.  Including this parameter helps to avoid assuming we have a 1:1 correspondence between the growth rate of the new species and the population difference.
+- *"and is a better competitor"* helps to explain why the term is $\displaystyle k \cdot (E-N)$ insteady of $\displaystyle k \cdot (N-E)$.  We know that the newly established species will start out in much smaller numbers than $N$.  But since it is a better competitor, we would expect its rate to increase initially.  So $\displaystyle \frac{dN}{dt}$ should be *positive* rather than negative.  Assuming $N < E$, then $E-N > 0$, which guarantees that the new species will grow.
 
-So in summary we have the following model:
+
+So this description could be modeled with Equation in summary we have the following model:
 \begin{equation}
-\frac{dI}{dt} = k(N-I)
+\frac{dN}{dt} = k(E-N)
 \end{equation}
 
 Does this equation seem familiar to you?  It is similar to the second model in Chapter 1 for the spread of Ebola!  While this may seem surprising, it is often the case that similar equations appear in different contexts.  It is far more advantageous to learn how to analyze models qualitatively rather than memorize several different types of models and not see the connections between them.
 
+An interesting solution to a differential equation is the _steady state_ or _equilibrium_ solution.  We find this where the rate equals zero.  Let's take a look how to do that for our establishing plant model
 
+```{example}
+What is the steady state value for the differential equation $\displaystyle \frac{dE}{dt} = k(E-N)$?  (That is solve for $E$ when $\displaystyle \frac{dE}{dt} = 0$.)
+```
+
+```{solution}
+Let's solve $\displaystyle \frac{dE}{dt} = k(E-N)  = 0$.  For this equation we want to express the right hand side in terms of $E$.  The parameter $k$ is a constant $k > 0$, so really the steady state occurs when $E-N = 0$, or when $N = E$.
+```
+
+What this model tells us that eventually the new species will overtake the established species $E$.
 
 <!-- LW pg 73 has some good examples, derived in handlingh patches. -->
 ## Other types of functional responses 
-In several examples we have seen a rate of change proportional to the current population, as in the rate of growth of the hare population is $rH$.  This is one example of what we would call a [*functional response*](https://en.wikipedia.org/wiki/Functional_response).  Another type of functional response assumes that the rate reaches a limiting value proportional to the population size, so $\displaystyle \frac{dH}{dt} = \frac{rH}{1+arH}$. This is an example of a **type II functional response**.  Finally the type II response has also been generalized (a **type III functional response**) $\displaystyle \frac{dH}{dt} = \frac{rH^{2}}{1+arH^{2}}$. The following plot shows all three together:
+In several examples we have seen a rate of change proportional to the current population, as in the rate of growth of the hare population is $rH$.  This is one example of what we would call a [*functional response*](https://en.wikipedia.org/wiki/Functional_response).  Another type of functional response assumes that the rate reaches a limiting value proportional to the population size, so $\displaystyle \frac{dH}{dt} = \frac{rH}{1+arH}$. This is an example of a **type II functional response**.  Finally the type II response has also been generalized (a **type III functional response**) $\displaystyle \frac{dH}{dt} = \frac{rH^{2}}{1+arH^{2}}$. Figure \@ref(fig:function-response) shows all three functional responses together:
 
-```{r,echo=FALSE,fig.width=5,fig.height=4}
+```{r function-response,echo=FALSE,fig.width=5,fig.height=4,fig.cap="Comparison between Type I - Type III functional responses."}
 x <- seq(0,2,by=.01)
 
   
@@ -201,9 +237,9 @@ Notice the limiting behavior in the Type II and Type III functional responses.  
 ```{exercise}
 Consider the following type of functional responses:
 \begin{align}
-\mbox{ Type I: } \frac{dP}{dt} &= a P \\
-\mbox{ Type II: } \frac{dP}{dt} &= \frac{aP}{1+abP} \\
-\mbox{ Type III: } \frac{dP}{dt} &= \frac{rP^{2}}{1+arP^{2}}
+\mbox{ Type I: } \frac{dP}{dt} &= 0.1 P \\
+\mbox{ Type II: } \frac{dP}{dt} &= \frac{0.1P}{1+.03P} \\
+\mbox{ Type III: } \frac{dP}{dt} &= \frac{0.1P^{2}}{1+.05P^{2}}
 \end{align} 
   
 For each of the functional responses evaluate $\displaystyle \lim_{P \rightarrow \infty} \frac{dP}{dt}$.  Since these functional responses represent a rate of change of a population, what are some examples (hypothetical or actual) would each of these responses be appropriate?
@@ -212,7 +248,30 @@ For each of the functional responses evaluate $\displaystyle \lim_{P \rightarrow
 ```
 &nbsp;
 ```{exercise}
-A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{aP}{1+abP} - dP$, where $a$, $b$ and $d$ are parameters.  Determine the value of $P$ when the population is in steady state, that is $\displaystyle \frac{dP}{dt}=0$.
+A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{0.1P}{1+.05P} -P$.
+
+\begin{enumerate}[label=\alph*.]
+\item On the same axis, plot the equations $\displaystyle f(P) = \frac{0.1P}{1+.05P}$ and $g(P)=P$.  What are the two positive values of $P$ where $f(P)$ and $g(P)$ intersect?
+\item Next algebraically determine the two steady state values of $P$, that is solve $\displaystyle \frac{dP}{dt}=0$ for $P$.  (\emph{Hint:} factor a $P$ out of the expression $\displaystyle \frac{0.1P}{1+5P} -P$.)
+\item Does your algebraic solution match your graphical solutions?
+\end{enumerate}
+```
+&nbsp;
+
+```{exercise}
+A population grows according to the equation $\displaystyle \frac{dP}{dt} = 2P - \frac{4P^{2}}{1+P^{2}}$.
+
+\begin{enumerate}[label=\alph*.]
+\item On the same axis, plot the equations $\displaystyle f(P) = 2P$ and $\displaystyle g(P)=\frac{4P^{2}}{1+P^{2}}$.  What are the two positive values of $P$ where $f(P)$ and $g(P)$ intersect?
+\item Next algebraically determine the two steady state values of $P$, that is solve $\displaystyle \frac{dP}{dt}=0$ for $P$.  (\emph{Hint:} factor a $P$ out of the expression $\displaystyle 2P - \frac{4P^{2}}{1+P^{2}}$.)
+\item Does your algebraic solution match your graphical solutions?
+\end{enumerate}
+```
+&nbsp;
+
+
+```{exercise}
+A population grows according to the equation $\displaystyle \frac{dP}{dt} = \frac{aP}{1+abP} - dP$, where $a$, $b$ and $d$ are parameters. Determine the two steady state values of $P$, that is solve $\displaystyle \frac{dP}{dt}=0$ for $P$.
 ```
 &nbsp;
 ```{exercise}
@@ -222,49 +281,42 @@ For a chemical reaction takes two chemicals $X$ and $Y$ to form a substrate $Z$ 
 X + Y \rightleftharpoons Z,
 \end{equation}
 
-where the proportionality constant $k_+$ is associated with the formation of the substrate $Z$ and $k_-$ the disassociation ($Z$ decays back to $X$ and $Y$). Write down a differential equation that represents the rate of reaction $\displaystyle \frac{dZ}{dt}$.
+where the proportionality constant $k_+$ is associated with the formation of the substrate $Z$ and $k_-$ the disassociation ($Z$ decays back to $X$ and $Y$).
+
+&nbsp;
+
+Write down a differential equation that represents the rate of reaction $\displaystyle \frac{dZ}{dt}$.
 
 ```  
 
 &nbsp;
 
-For each of the following exercises consider the following contextual situations modeling rates of change.  Name variables for each situation and write down a differential equation describing the context. For each problem you will need to:
-\begin{itemize}
+<!-- Thornley and Johnson. Logan and Wollesensky pg 4 -->
+```{exercise}
+For each of the following exercises consider the following contextual situations modeling rates of change.  Name variables for each situation and write down a differential equation describing the context. Be sure to identify and briefly describe any parameters you need for your model. For each problem you will need to:
+
+  \begin{itemize}
 \item Name and describe all variables.
 \item Write down a differential equation.
 \item Identify and describe any parameters needed.
 \item Write a brief one-two sentence explanation of why your differential equation models the situation at hand.
 \item Hand sketch a rough graph of what you think the solution as a function of time - \emph{note:} your solution needs to be consistent with your explanation and vice versa.
 \end{itemize}
-&nbsp;
-```{exercise}
-The rate of change of an animal's body temperature is proportional to the difference in temperature between the environment.
-```
-&nbsp;
-<!-- Thornley and Johnson -->
-```{exercise}
-A plant grows propritional to its current length $L$.  Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value.  You will need to write down a system of two equation with variables $L$ and $\mu$.  
-```
-&nbsp;
-<!-- Logan and wollensenky -->
-```{exercise}
-A patient undergoing chemotherapy receives an injection at rate $I$. This injection decreases the rate that a tumor accumulates mass. Independent of the injection, the tumor accumulates mass at a rate proportional to the mass of the tumor.
-```
-&nbsp;
-<!-- Logan and wollensenky page 4 -->
-```{exercise}
-A cell with radius $r$ assimilates nutrients at a rate proportional to its surface area, but uses nutrients proportional to its volume. Determine an equation that represents the rate of change of the radius. 
-```
-&nbsp;
-```{exercise}
-The rate that a cancer cell divides (increases in amount) is proportional to the amount of healthy cells in its surrounding environment.  You may assume that a healthy cell has a mortality $\delta_{H}$ and a cancer cell has mortality $\delta_{C}$.  Be sure to write down a system of differential equations for the population of cancer cells $C$ and healthy cells $H$.
-```
-&nbsp;
-```{exercise}
-The rate that a virus is spread to the population is proportional to the probability that a person is sick (out of $N$ total sick and healthy individuals). 
-```
 
+
+\begin{enumerate}[label=\alph*.]
+\item The rate of change of an animal's body temperature is proportional to the difference in temperature between the environment.
+\item A plant grows propritional to its current length $L$.  Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value.  You will need to write down a system of two equation with variables $L$ and $\mu$.
+\item A patient undergoing chemotherapy receives an injection at rate $I$. This injection decreases the rate that a tumor accumulates mass. Independent of the injection, the tumor accumulates mass at a rate proportional to the mass of the tumor.
+\item A cell with radius $r$ assimilates nutrients at a rate proportional to its surface area, but uses nutrients proportional to its volume. Determine an equation that represents the rate of change of the radius. 
+\item A patient undergoing chemotherapy receives an injection at rate $I$. This injection decreases the rate that a tumor accumulates mass. Independent of the injection, the tumor accumulates mass at a rate proportional to the mass of the tumor.
+\item The rate that a cancer cell divides (increases in amount) is proportional to the amount of healthy cells in its surrounding environment.  You may assume that a healthy cell has a mortality $\delta_{H}$ and a cancer cell has mortality $\delta_{C}$.  Be sure to write down a system of differential equations for the population of cancer cells $C$ and healthy cells $H$.
+The rate that a virus is spread to the population is proportional to the probability that a person is sick (out of $N$ total sick and healthy individuals). 
+\item
+\end{enumerate}
+```
 &nbsp;
+
 
 ```{r pesticide-ch3,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Reaction schemes."}
 \begin{center}

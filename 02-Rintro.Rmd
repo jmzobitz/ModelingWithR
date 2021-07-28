@@ -1,17 +1,17 @@
-# Introduction to R
+# Introduction to R {#r-intro-02}
 The primary tool we have to analyze models will be `R` and `RStudio`, which are commonly used for scientific and statistical computations.  This is an exciting program and powerful program to learn!  Admittedly learning a software requires a learning curve, however I think it is worth it.  With `R` you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models.
 
 ## R and RStudio
 We will use a lot with RStudio, which is an Integrated Development Environment for R.
 These are two separate downloads and files, which can be found here:
 
-- R: [https://cran.r-project.org/mirrors.html](Link to download mirror) (you need to select a location to download from; choose any one that is geographically close to you.)
-- RStudio: [https://www.rstudio.com/products/rstudio/download/](Choose RStudio desktop - the free version).
+- R: (https://cran.r-project.org/mirrors.html)[Link to download mirror] (you need to select a location to download from; choose any one that is geographically close to you.)
+- RStudio: (https://www.rstudio.com/products/rstudio/download/)[Choose RStudio desktop - the free version].
 
 ### Why do we have two programs?
-Think of R as your basic program - this is the engine that does the computation.  RStudio was developed as an Integrated Development Environment - meaning a place where you can see everything you are working on in one place.  Here is an example of an RStudio pane that I have:
+Think of R as your basic program - this is the engine that does the computation.  RStudio was developed as an Integrated Development Environment - meaning a place where you can see everything you are working on in one place.  Figure \@ref(fig:r-studio-pane) shows an example of an RStudio pane that I have:
 
-```{r, echo=FALSE,out.width = "5in"}
+```{r r-studio-pane, echo=FALSE,out.width = "5in",fig.align="center",fig.cap="A sample RStudio pane from one of my projects."}
 knitr::include_graphics("figures/02-intro/rStudio-pane.png")
 ```
 
@@ -27,7 +27,7 @@ There are 4 key panels that I work with, clockwise from the top:
 Now we are ready to work with R and RStudio!
 
 
-## First steps with RStudio: how does this all work?
+## First steps: getting acquainted with R
 Let's get started!  Open up RStudio.  Task one will be to create a project.  A project is a central place to organize your materials for this course.  You may do this already, but R can be picky about its working directory - and navigating to it.  I found creating a project file is an easy way to avoid some of that fussiness.  Let me describe steps in how to do this.
 
 1. In RStudio select "File" then  "New Project"
@@ -38,7 +38,7 @@ Let's get started!  Open up RStudio.  Task one will be to create a project.  A p
 
 
 ### "Working" with R
-Our next step: where do we get R to do something? For example if we wanted to compute of `4+9` (yeah, it is 13, but this is an illustrative example), we could type this command in the R console (lower right) window.  Let's try this now.
+Our next step: where do we get R to do something? For example if we wanted to compute of `4+9` (yeah, it is 13, but this is an illustrative example), we could type this command in the R console (lower left) window.  Let's try this now.
 
 1. In the console type `4+9`
 2. Then hit enter (or return)
@@ -67,7 +67,7 @@ You have several options:
 1. Copying and pasting the command to the window.  Shortcuts are Ctrl+C / Command+C for copying and Ctrl+V / Command+C for Windows / Mac.
 2. Run the line.  This means that your cursor is at the line in your source file, then clicking the 'Run' button in the upper right hand side of the source window.  Shortcuts are Ctrl+Enter / Command+Enter.
 
-```{r, echo=FALSE,out.width = "5in"}
+```{r, echo=FALSE,out.width = "5in",fig.align="center",fig.cap="Sending a command to the console."}
 knitr::include_graphics("figures/02-intro/rStudio-pane-source.png")
 ```
 
@@ -83,7 +83,7 @@ The neat part about a source file is that it allows you to save the file (Ctrl+S
 
 &nbsp;
 
-## Second steps with RStudio: Packages
+## Increasing functionality with packages
 One awesome versatility with R is the ability to add packages - these packages extend the functionality of R with contributed, specialized code. These are similar to apps on your phone.  You can get packages from a few different places:
 
 - [CRAN](https://cran.r-project.org/), which stands for Comprehensive R Archive Network.  This is the clearing house for many contributed packages - and allows for easy cross platform functonality.
@@ -104,7 +104,7 @@ install.packages('devtools')
 
 Sometimes when you are installing packages you may be prompted to install additional packages.  In this case just say yes.
 
-- Github.  This is another place where people can share code and packages.  The code here has not been vetted through CRAN for compatability, but if you trust the person sharing the code, it should work.  In order to do this we will need to first load up the `devtools` library:
+- Github.  This is another place where people can share code and packages.  The code here has not been vetted through CRAN for compatibility, but if you trust the person sharing the code, it should work.  In order to do this we will need to first load up the `devtools` library:
 
 ```{r eval=FALSE}
 library(devtools)
@@ -122,14 +122,16 @@ library(MAT369Code)
 
 You need to load up your these libraries _each time you restart your R session_.  This is part of the benefit of a script file - at the start I always declare the libraries that I will need at the start of the script file, as shown in the following figure:
 
-```{r, echo=FALSE,out.width = "5in"}
+```{r, echo=FALSE,out.width = "5in",fig.align="center",fig.cap="A sample R script."}
 knitr::include_graphics("figures/02-intro/sample-R-script.png")
 ```
 
 Also notice here that the first few lines of the script file I used comments `#` to denote the basic purpose of the file, who wrote it, and the date it was last revised.  This type of information is good programming practice at the start.
 
 
-### Defining variables
+## Working with R: variables, data frames, and datasets
+
+### Creating variables
 The next thing we will want to do is to define variables that are stored locally.  This is pretty easy to do:
 
 ```{r}
@@ -138,13 +140,7 @@ my_result <- 4+9
 
 The symbol `<-` is assignment (you can use equals (=), but it is good coding practice to use the arrow for assignment).  Notice how I named the variable called `my_result`.  Generally I prefer using *descriptive* names for variables for the context at hand (In other words, `x` would be an odd choice - too ambiguous.)  I also used snake case to string together multiple words.  In practice you can use snake case, or alphabetic cases (`myResult`) or even `my.result` (although that may not be preferred practice in the long run).  You can't use `my-result` because it looks like subtraction.
 
-Here is the good news, then we can compute with the new variable, so for example `10*my_result` should yield 130.  Cool, no?
-
-
-
-```{example}
-Define a sequence, spaced from 0 to 5 with spacing of 0.05.  Store this in a variable called `my_sequence`
-```
+Here is the good news, then we can compute with the new variable, so for example `10*my_result` should yield 130.  Cool, no?  As an example, let's define a sequence, spaced from 0 to 5 with spacing of 0.05.  Store this in a variable called `my_sequence`.
 
 To do this we use the `seq` command and requires the starting value, ending value, and step size:
 ```{r eval=FALSE}
@@ -152,7 +148,7 @@ my_sequence <- seq(from=0,to=5,by=0.05)
 ```
 
 
-The format is `seq(from=start,to=end,by=step_size)`.  The `seq` command is a pretty flexible - there are alternative ways you can generate a sequence by specifying the starting and the end values along with the number of points. If you want to know more about `seq` you can always use `?` followed by the command - that will bring up the help values:
+The format for the function `seq` is `seq(from=start,to=end,by=step_size)`.  The `seq` command is a pretty flexible - there are alternative ways you can generate a sequence by specifying the starting and the end values along with the number of points. If you want to know more about `seq` you can always use `?` followed by the command - that will bring up the help values:
 
 ```{r eval=FALSE}
 ?seq
@@ -160,25 +156,33 @@ The format is `seq(from=start,to=end,by=step_size)`.  The `seq` command is a pre
 
 Once you get more comfortable with syntax in R, you will see that `seq(0,5,0.5)` gives the same result as `seq(from=0,to=5,by=0.05)`, but it is helpful to write your code *so that you can understand what it does*.
 
-## Third steps with RStudio: Data frames
+### Data frames
 A key structure in `R` is that of a data frame, which allows different types of data to be collected together. A data frame is like a spreadsheet where each column is a value and each row a value (much like you would find in a spreadsheet):
 
-```{r echo = FALSE, message=FALSE,results='asis'}
-kable(mtcars[1:5,c(1,3)],caption = 'A data frame')
+```{r sample-data, echo = FALSE, message=FALSE,results='asis'}
+mtcars[1:5,c(1,3)] %>%
+  kbl(caption = "A data frame") %>%
+  kable_paper(full_width = FALSE)
+
+
 ```
 
-This data table shows the miles per gallon in one column (the variable `mpg` and the engine size (the variable `disp`) for different types of cars.  The row names (`Mazda RX4`) just tell you the type of the car.  Sometimes row names are not shown.
+Table \@ref(tab:sample-data)  shows the miles per gallon in one column (the variable `mpg` and the engine size (the variable `disp`) for different types of cars.  The row names (`Mazda RX4`) just tell you the type of the car.  Sometimes row names are not shown.
 
-Another data frame may list solutions to a differential equation, like we did with our three infection models in Chapter 1:
+Another data frame may list solutions to a differential equation, like we did with our three infection models in Chapter \@ref(intro-01):
 
-```{r echo = FALSE, message=FALSE, results='asis'}
+```{r model-table, echo = FALSE, message=FALSE, results='asis'}
 time <- seq(0,600,length.out=100)
 n <- 4000
 k <- 0.03
 i0 <- 5
 
 model_out <- tibble(time,model_1=i0*exp(k*time),model_2=n-(n-i0)*exp(-k*time),model_3=n*i0/(i0 + (n-i0)*exp(-k*time)))
-kable(model_out[1:5,],caption = 'Model Solutions')
+
+model_out[1:5,] %>%
+  kbl(caption = "Model solutions") %>%
+  kable_paper(full_width = FALSE)
+
 ```
 
 Data frames are an example of *tidy* data, where each row is an observation, each column a variable (which can be quantitative or categorical). There are several different ways to define a data frame in `R`.  I am going to rely on the approach utilized by the `tidyverse`, which calls data frames `tibbles`.  So for example, here is I am going to define a data frame that computes the quadratic function $y=3x^2-2x$ for $-5 \leq x \leq 2$.
@@ -194,7 +198,7 @@ my_data <- tibble(x=x,
 
 Notice that the data frame `my_data` uses the column (variable) names of `x` and `y`.  You could have also used `tibble(x,y)`, but it is helpful to name the columns in the way that you would like them to be named.
 
-## Fourth Steps with RStudio: Reading in datasets
+### Reading in datasets
 R has a lot of built in datasets!  In fact to see all the datasets, type `data()` at the console.  This will popup a new window in RStudio with the names.  Cool!
 
 If you want to see the datasets for a specific package (such as `MAT369Code`) you type `data(package = "MAT369Code")` at the console.
@@ -220,8 +224,8 @@ Notice the quotes around the FILENAME.  **Pro tip:** If you have the data files 
 
 
 
-## Fifth steps with RStudio: plotting 
-Now we are ready to begin visualizing data frames.  Two types of plots that we will need to make will be a scatter plot and a line plot.  We are going to consider both of these separately.
+## Visualization with R
+Now we are ready to begin visualizing data frames.  Two types of plots that we will need to make will be a scatter plot and a line plot.  We are going to consider both of these separately, with examples that you should be able to customize.
 
 ### Making a scatterplot
 One dataset we have is the mass of a dog over time, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  We have two variables here: $D=$ the age of the dog in days and $W=$ the weight of the dog in pounds.  I have the data loaded into the `MAT369Code` package, which you can investigate by typing the following at the command line (I display it below as well):
@@ -233,14 +237,18 @@ glimpse(wilson)
 (Notice that I have assumed you have the MAT369Code library loaded.)  You can also explore the documentation for this dataset by typing `?wilson` at the console.
 
 ```{r echo = FALSE, message=FALSE,results='asis'}
-kable(wilson,caption = 'Weight of a dog over time') 
+
+wilson %>%
+  kbl(caption = 'Weight of a dog over time') %>%
+  kable_paper(full_width = FALSE)
+
 ```
 
 Notice that this data frame has two variables: `days` and `mass`
 To make a scatter plot of these data we are going to use the command `ggplot`:
 ```{r,fig.width=4,fig.height=3}
-ggplot() + 
-  geom_point(data = wilson, aes(x = days, y = mass)) +
+ggplot(data = wilson) + 
+  geom_point(aes(x = days, y = mass)) +
   labs(x='Days since birth',
          y='Weight (pounds)')
 
@@ -248,12 +256,12 @@ ggplot() +
 
 Wow!  This looks complicated.  Let's break this down step by step:
 
-- `ggplot() + ` sets up the graphics structure.  
-- `geom_point(data = wilson, aes(x = days, y = mass))` defines the type of plot we are going to be making.  
+- `ggplot(data = wilson) + ` sets up the graphics structure and identifies the name of the data frame we are include.  
+- `geom_point(aes(x = days, y = mass))` defines the type of plot we are going to be making.  
 - `geom_point()` defines the type of plot geometry (or _geom_) we are using here - in this case, a point plot.
-- The statement `data = wilson` means that we are using the data frame `wilson`..  `aes(x = days, y = mass)` determines the _aesthetics_ of the plot.  On the x axis is the days variable, on the y axis is the mass variable.
+- `aes(x = days, y = mass)` determines the _aesthetics_ of the plot.  On the x axis is the days variable, on the y axis is the mass variable.
 - The statement beginning with `labs(x=...)` defines the labels on the x and y axes.
-- 
+
 
 I know this seems like a lot to write for a plot, but this structure is actually used for some more advanced data visualization.  Trust me - learning how to make informative plots can be a useful skill!
 
@@ -267,21 +275,22 @@ mass <-  70/(1+exp(2.46-0.017*days))
 wilson_model <- tibble(days = days,
                        mass = mass)
 
-ggplot() +
-  geom_line(data = wilson_model, aes(x=days,y=mass)) + 
+ggplot(data = wilson_model) +
+  geom_line(aes(x=days,y=mass)) + 
   labs(x='Days since birth',
-         y='Weight (pounds)') +
+         y='Weight (pounds)')
   
   
 ```
+
 Notice that once we have the data frame set up, the structure is very similar to the scatter plot - but this time we are calling using `geom_line()` than `geom_point`.
 
 ### Changing options
 Want a different color?  Thicker line?  That is fairly easy to do.  For example if we wanted to make either our points or line a different color, we can just choose the following:
 
 ```{r eval=FALSE}
-ggplot() + 
-  geom_point(data = wilson, aes(x = days, y = mass), color='red',size=2) 
+ggplot(data = wilson) + 
+  geom_point(aes(x = days, y = mass), color='red',size=2) 
   labs(x='Days since birth',
          y='Weight (pounds)')
 
@@ -289,31 +298,31 @@ ggplot() +
 
 Notice how the command `color='red'` was applied _outside_ of the aes - which means it gets mapped to each of the points in the data frame.  `size=2` refers to the size (in millimeters) of the points.  I've linked more options about the colors and sizes you can use here:
 
-- [named colors in R](https://www.r-graph-gallery.com/42-colors-names.html) Scroll down to "Picking one color in R" - you can see the list of options!
-- [colors](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/). More information about working with colors.
-- [hexadecimal colors](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#hexadecimal-color-code-chart)  (You specify these by the code so `"#FF3300"` is a red color.)
-- [sizes](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html)
+- **Named colors in R:** [LINK](https://www.r-graph-gallery.com/42-colors-names.html) Scroll down to "Picking one color in R" - you can see the list of options!
+- **More colors:** [LINK](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/). More information about working with colors.
+- **Using hexadecimal colors:** [LINK](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#hexadecimal-color-code-chart)  (You specify these by the code so `"#FF3300"` is a red color.)
+- **Changing sizes of lines and points:** [LINK](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html)
 
 
 ### Combining scatter and line plots.
 This is actually easy to do, especially since we are combining both the plot geoms together.  Try running the following code (I am still using the data frame `wilson_model` as defined above:
 
 ```{r,fig.width=4,fig.height=3}
-ggplot() +
-  geom_point(data = wilson, aes(x = days, y = mass),color='red') +
+ggplot(data = wilson) +
+  geom_point(aes(x = days, y = mass),color='red') +
   geom_line(data = wilson_model, aes(x=days,y=mass)) +
   labs(x='Days since birth',
          y='Weight (pounds)')
   
 ```
 
+Notice in the above code a subtle difference when I added in the dataset `wilson_model` with `geom_line`: you need to name the `data` bringing in a new data frame to a plot geom.
+
+
 While it may be useful to have a legend to the plot, for this course we will make plots where this the context will be more apparent.  Additional reading on legends can be found [here](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/).
 
 
-Finally you perhaps want to compare the function to the data, the command \texttt{plotFunction\_Data} will do that for you:
-
-
-## Fifth steps with RStudio: defining functions
+## Defining functions
 We will study lots of other built-in functions for this course, but you may also be wondering how you define your own function (let's say $y=x^{3}$).  We need the following construct:
 
 ```{r eval=FALSE}
@@ -335,11 +344,8 @@ cubic <- function(x) {
 }
 ```
 
-So now if we want to evaluate $y(2)=2^{3}$ we type `cubic(2)`.  Neat!
+So now if we want to evaluate $y(2)=2^{3}$ we type `cubic(2)`.  Neat! Now let's make a plot of the graph $y=x^{3}$ using the function defined as `cubic`.  Here is the `R` code that will accomplish this:
 
-```{example}
-Let's make a plot of the graph $y=x^{3}$ using the function defined.  Here is the `R` code that will accomplish this:
-```
 
 ```{r,fig.width=4,fig.height=3}
 x <- seq(from = 0, to = 2, by = 0.05)
@@ -347,12 +353,14 @@ y <- cubic(x)
 
 my_data <- tibble(x=x,y=y)
 
-ggplot() +
-  geom_line(data = my_data, aes(x=x,y=y)) +
+ggplot(data = my_data) +
+  geom_line(aes(x=x,y=y)) +
   labs(x='x',
          y='y')
   
 ```
+
+
 ### Functions with inputs
 Sometimes you may want to define a function with different input parameters, so for example the function $y=x^{3}+c$.  To define that, we can modify the function to have input variables:
 
@@ -375,29 +383,29 @@ my_data_revised <- tibble(x=x,
                   c_pos2=cubic_revised(x,2),
                   c_neg1=cubic_revised(x,-1))
 
-ggplot() +
-  geom_line(data = my_data_revised, aes(x=x,y=c_zero)) +
-  geom_line(data = my_data_revised, aes(x=x,y=c_pos1)) +
-  geom_line(data = my_data_revised, aes(x=x,y=c_pos2)) +
-  geom_line(data = my_data_revised, aes(x=x,y=c_neg1)) +
+ggplot(data = my_data_revised) +
+  geom_line(aes(x=x,y=c_zero)) +
+  geom_line(aes(x=x,y=c_pos1)) +
+  geom_line(aes(x=x,y=c_pos2)) +
+  geom_line(aes(x=x,y=c_neg1)) +
   labs(x='x',
          y='y')
   
 ```
 
-Notice how I defined multiple columns of the data frame `my_data_revised` in the `tibble` command, and then used mutiple `geom_line` commands to plot the data.  This could be an easy way to plot multiple curves together on the same plot.
+Notice how I defined multiple columns of the data frame `my_data_revised` in the `tibble` command, and then used mutiple `geom_line` commands to plot the data.  Since we had combined the different values of `c` in a single data frame we didn't need to define the `data` with each instance of `geom_line`.
 
 
 ## Concluding thoughts
 This is not meant to be a self-contained chapter in `R` but rather one to get you  - those miles have been trod by others, and here are few of my favorites that I turn to:
 
-* [R Graphics](http://www.cookbook-r.com/).  This is a go to resource for making graphics.  (I also use google a lot too.)
-* [The Pirates Guide to R](https://bookdown.org/ndphillips/YaRrr/).  This book promises to build your R knowledge from the ground up.
-* [R for Reproducible Scientific Analysis](http://swcarpentry.github.io/r-novice-gapminder/).  This set of guided tutorials can help you build your programming skills in R.
-* [R for Data Science](https://r4ds.had.co.nz/) this is a useful book to take your R knowledge to the next level.
+* [**R Graphics**](http://www.cookbook-r.com/).  This is a go to resource for making graphics.  (I also use google a lot too.)
+* [**The Pirates Guide to R**](https://bookdown.org/ndphillips/YaRrr/).  This book promises to build your R knowledge from the ground up.
+* [**R for Reproducible Scientific Analysis**](http://swcarpentry.github.io/r-novice-gapminder/).  This set of guided tutorials can help you build your programming skills in R.
+* [**R for Data Science**](https://r4ds.had.co.nz/) this is a useful book to take your R knowledge to the next level.
 
 The best piece of advice: DON'T PANIC!  Patience and persistence are your friend. Reach out for help, and recognize that like with any new endeavor, practice makes progress.
-
+x
 \newpage
 
 ## Exercises
@@ -419,16 +427,18 @@ Make a scatterplot (`geom_point()`) of the dataset `phosphorous` in the `MAT369C
 &nbsp;
 
 ```{exercise}
-Change the scatterplot of Wilson's weight over time to a either a hexadecimal or a named color of your choice.
-```
-&nbsp;
-```{exercise}
 Change the line plot of Wilson's weight over time so the line is blue and the size is 4.
 ```
 &nbsp;
+
+```{exercise}
+Change the color of the scatterplot of Wilson's weight over time to a either a hexadecimal color or a named color of your choice.
+```
+&nbsp;
+
 ```{exercise}
 For this exercise you will do some plotting:
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
 \item Define a sequence (call this sequence $x$) that ranges between -12 to 12 with spacing of .05.
 \item Also define the variable $y$ such that $y=\sin(x)$.
 \item Make a scatter plot to graph $y=\sin(x)$.  Set the points to be red.
@@ -436,31 +446,22 @@ For this exercise you will do some plotting:
 \end{enumerate}
 ```
 &nbsp;
-```{exercise}
-For this exercise you will import in data to make a scatterplot.
-\begin{enumerate}
-\item Download the file \texttt{hw1Data.csv} found on the \emph{moodle} website.
-\item Load in the csv file to the R workspace.
-\item Use `geom_point()` to make a scatter plot of the data.  Label the x and y axes correctly.  Set the points to be blue, with size 2.
-\item A function that describes these data is $C= 0.0002y^{2} + 0.006y + 13.864$.  Use \texttt{geom_line()} to make a graphic of the data with the function.  Add this function to your plot.  Choose your favorite color for this line.
-\end{enumerate}
-```
-&nbsp;
+
 ```{exercise}
 An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c$ are both constants is a constant.  Let's just assume that $c=1$ and the $0 \leq x \leq 1$.
 
-Write a function called `nutrient` that will make a sequence of `y` values for an input `x` and `theta` ($theta$).  Then use that code to make a make a line plot (`geom_line()`) for five different values of$\theta>1$, appropriately labeling all axes.
+Write a function called `nutrient` that will make a sequence of `y` values for an input `x` and `theta` ($theta$).  Then use that code to make a make a line plot (`geom_line()`) for five different values of $\theta>1$, appropriately labeling all axes.
 ```
 &nbsp;
 
 ```{exercise}
 Researchers measured the phosphorous content of *Daphnia* and its primary food source algae. This is the dataset `phosphorous` in the `MAT369Code` library. 
 
-Researchs believe that *Daphnia* has strict homeostatic regulation of the phosphorous in algae, and as such want to determine the value of $\theta$ in the equation $y= \displaystyle y = c x^{1/\theta}$.  They have already determined that the value of $c=1.737$.  This data
+Researchers believe that *Daphnia* has strict homeostatic regulation of the phosphorous in algae, and as such want to determine the value of $\theta$ in the equation $y= \displaystyle y = c x^{1/\theta}$.  They have already determined that the value of $c=1.737$.
 
-\begin{enumerate}
-\item If you haven't already, make a scatterplot (`geom_point()`) of the dataset `phosphorous` in the `MAT369Code` library. Be sure to label the axes correctly.
-\item Use your function `nutrient` from the previous exercise to make an initial guess for `theta` ($theta$) that would be consistent with the data.  You can evaluate your guess by plotting (with `geom_line()`) against the data.
+\begin{enumerate}[label=\alph*.]
+\item If you haven't already, make a scatterplot (\texttt{geom\_point()}) of the dataset \texttt{phosphorous} in the package library. Be sure to label the axes correctly.
+\item Use your function \texttt{nutrient} from the previous exercise to make an initial guess for \texttt{theta} ($\theta$) that would be consistent with the data.  You can evaluate your guess by plotting (with \texttt{geom\_line()}) against the data.
 \item Use guess and check to refine the value of $\theta$ that seems to work best.
 \item When you have the correct value, enter in the value of $\theta$ by clicking on [here](https://tinyurl.com/day2theta).
 \end{enumerate}
@@ -469,18 +470,18 @@ Researchs believe that *Daphnia* has strict homeostatic regulation of the phosph
 
 ```{exercise}
 For this exercise you will investigate some built-in functions.  Remember you can learn more about a function by typing `?FUNCTION`, where `FUNCTION` is the name.
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
 \item Explain (using your own words) what the function \texttt{runif(1,100,1000)} does.
 \item Explain (using your own words) what the function \texttt{ceiling()} does, showing an example of its use.
 \end{enumerate}
 ```
 &nbsp;
 ```{exercise}
-For this exercise you will investigate some built-in functions.  Remember you can learn more about a function by typing `?FUNCTION`, where `FUNCTION` is the name.
-\begin{enumerate}
+For this exercise you write a sample function file.
+\begin{enumerate}[label=\alph*.]
 \item Create a new source file and save it as \texttt{myFunction.R}.
-\item Type this code the file you created: `myInteger <- ceiling(runif(1, 100, 1000))` (This will declare a variable `myInteger` that you will work with in the following steps.)
-\item Determine a function in R that will \textbf{compute a cumulative sum} from 1 to the value of `myInteger`.  Modify your file so that it also computes the cumulative sum and then source your file.
+\item Type this code the file you created: \texttt{myInteger <- ceiling(runif(1, 100, 1000))} (This will declare a variable \texttt{myInteger} that you will work with in the following steps.)
+\item Determine a function in R that will \textbf{compute a cumulative sum} from 1 to the value of \texttt{myInteger}.  Modify your file so that it also computes the cumulative sum and then source your file.
 \item Copy and paste your function into your homework document for evaluation.
 \end{enumerate}
 ```
@@ -501,9 +502,9 @@ x^2 & \text{ for } 0 \leq x < 1,\\
 2-x &\text{ for } 1 \leq x \leq  2 \\
 \end{cases}
 \end{equation}
-\begin{enumerate}
-\item Define a function in `R` that computes $y$ for $0 \leq x \leq 2$.
-\item Use `geom_line()` to generate a graph of $y(x)$ over the interval $0 \leq x \leq 2$.
+\begin{enumerate}[label=\alph*.]
+\item Define a function in \texttt{R} that computes $y$ for $0 \leq x \leq 2$.
+\item Use \texttt{geom\_line()} to generate a graph of $y(x)$ over the interval $0 \leq x \leq 2$.
 \end{enumerate}
 ```
 &nbsp;
@@ -517,9 +518,9 @@ r =
 \end{cases}
 \end{equation}
 
-\begin{enumerate}
-\item Define a function in `R` that computes $r$ for $0 \leq T \leq 30$.
-\item Use `geom_line()` to generate a graph of $r(T)$ over the interval $0 \leq T \leq 30$.
+\begin{enumerate}[label=\alph*.]
+\item Define a function in \texttt{R} that computes $r$ for $0 \leq T \leq 30$.
+\item Use \texttt{geom\_line()} to generate a graph of $r(T)$ over the interval $0 \leq T \leq 30$.
 \end{enumerate}
 
 ```

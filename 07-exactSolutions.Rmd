@@ -1,24 +1,30 @@
-# Exact Solutions to Differential Equations
+# Exact Solutions to Differential Equations {#exact-solns-07}
 
-We have already discussed some tools that can analyze differential equations qualitatively.  By interpreting values of the rate of change for different values of the dependent variable (i.e. $\displaystyle \frac{dS}{dt}$ versus $S$), we can determine that qualitative behaviors of the solution in a phase line.  The phase plane allowed us to examine equilibrium solutions and their stability  Beyond this graphical approach, it is also helpful to know the exact solution to an equation using some of the tools you may have learned from Calculus.  
+We have already discussed some tools that can analyze differential equations numerically (Section \@ref(euler-04)) and qualitatively (Sections \@ref(phase-05) and \@ref(coupled-06)).  The phase plane allowed us to evaluate equilibrium solutions and their stability.  Beyond this graphical approach, it is also helpful to know the exact solution to an equation. In this section we will study a few techniques to find exact solutions to differential equation.  We will apply some of the tools you may have learned from calculus.  
 
 ## Separable Differential Equations
 One technique to solve differential equations is the method of *separation of variables*. Let's look at an example:
 
 What is the general solution to $\displaystyle \frac{dy}{dx} = yx^{2}$?  To solve this expression we collect the variables involving $x$ and one side of the equation, and the variables involving $y$ on the other:
 
-$$ \frac{1}{y} dy = x^{2} dx $$.
+\begin{equation*}
+\frac{1}{y} dy = x^{2} dx.
+\end{equation*}
 
 Now the next step is to determine the antiderivative of both sides of expression:
 
-$$\int  \frac{1}{y} dy = \ln(y) + C$$.
-$$ \int x^{2} dx  = \frac{1}{3} x^{3} + C$$.
+\begin{equation*}
+\begin{split}
+\int  \frac{1}{y} dy = \ln(y) + C. \\
+\int x^{2} dx  = \frac{1}{3} x^{3} + C.
+\end{split}
+\end{equation*}
 
 Finally since both sides are equal we can solve for the dependent variable $y$.  One thing to note: usually for antiderivatives we always include a $+C$.  For solving differential equations it is okay just to keep only one $+C$, which usually is best on the side of the independent variable:
 
-$$\ln(y) =\frac{1}{3} x^{3} + C \rightarrow e^{\ln(y)} = e^{\frac{1}{3} x^{3} + C} $$.
-$$y = Ce^{\frac{1}{3} x^{3}} $$.
-
+\begin{equation*}
+\ln(y) =\frac{1}{3} x^{3} + C \rightarrow e^{\ln(y)} = e^{\frac{1}{3} x^{3} + C} \rightarrow y = Ce^{\frac{1}{3} x^{3}}.
+\end{equation*}
 
 
 
@@ -33,21 +39,177 @@ We are in business!  So here is a general technique approach to solving a differ
 
 If we solve this equation using separation of variables we havUsing your work above as a guide, solve this differential equation to determine a solution $y(x)$.
 
+## Integrating factors
+One model that we have looked at is the the $SI$ model where the spread of the disease is proportional to the number infected:
+
+\begin{equation*}
+\frac{dI}{dt} = .03(1000-I) = 30  - .03I
+\end{equation*}
+
+
+While this differential equation can be solved via separation of variables, let's try a different approach as an illustration of another useful technique.  First let's write the terms involving $I$ on one side of the equation:
+
+\begin{equation*}
+\frac{dI}{dt} + .03I = 30.
+\end{equation*}
+
+What we are going to do is multiply both sides of this equation by $e^{.03t}$ (I'll explain more about that later):
+
+\begin{equation*}
+\frac{dI}{dt} \cdot e^{.03t} + .03I \cdot e^{.03t} = 30  \cdot e^{.03t}
+\end{equation*}
+
+Hmmm - this seems like we are making our equation harder to solve, doesn't it?  However the left hand side is actually the derivative of the expression $I \cdot e^{kt}$!  Let's take a look:
+
+
+\begin{equation*}
+\frac{d}{dt} \left( I \cdot e^{.03t} \right) = \frac{dI}{dt} \cdot e^{.03t} + I \cdot .03 e^{.03t}
+\end{equation*}
+
+This derivative is courtesy of the product rule from calculus.  Ok, so what does this do to the differential equation?  Well, by re-writing the differential equation as a derivative and integrating:
+
+\begin{equation}
+\begin{split}
+\frac{d}{dt} \left( I \cdot e^{.03t} \right) &= 30 \cdot e^{.03t} \rightarrow \\
+\int \frac{d}{dt} \left( I \cdot e^{.03t} \right) \; dt &= \int 30 \cdot e^{.03t} \; dt \rightarrow \\
+I \cdot e^{.03t} &= 30 \cdot e^{.03t} + C
+\end{split}
+\end{equation}
+
+Notice how by writing the left hand side in terms of the product rule and integrating we could find the solution.  We added the $+C$ to the right hand side.  All that is left to do is to solve in terms of $I(t)$ by dividing by $e^{kt}$.  We will label this solution $I_{1}(t)$:
+
+\begin{equation}
+I_{1}(t) = 1000 + Ce^{-.03t}  (\#eq:i1)
+\end{equation}
+
+Cool!  The function $e^{.03t}$ is called an _integrating factor_.  To see what is meant by that, let's try one more example.
+
+In this case, we are going to assume that the rate of infection is time dependent, or $k(t) = .03t$.  How this would work in practice is that initially (at $t=0$) there is no infection, but the infection rate increases as time goes on.
+
+Our differential equation in this case is:
+
+\begin{equation*}
+\frac{dI}{dt} + .03 t \cdot I = 30 t.
+\end{equation*}
+
+So if we want to write the left hand side as a product, what we will do is multiply the _entire_ differential equation by $\displaystyle e^{\int .03t \; dt} = e^{ 0.015 t^{2}}$  This term is called the _integrating factor_:
+
+\begin{equation*}
+\frac{dI}{dt} \cdot e^{ 0.015 t^{2}} + .03 t \cdot I \cdot e^{0.015 t^{2}} = 30 t \cdot e^{0.015 t^{2}}
+\end{equation*}
+
+First we rewrite the left hand side using the product rule:
+\begin{equation*}
+\frac{dI}{dt} \cdot e^{ 0.015 t^{2}} + .03 t \cdot I \cdot e^{0.015 t^{2}} = \frac{d}{dt} \left( I \cdot e^{0.015  t^{2}} \right). 
+\end{equation*}
+
+Now we can integrate this equation by:
+
+\begin{equation}
+\begin{split}
+\frac{d}{dt} \left( I \cdot e^{0.015 t^{2}} \right) &= 30 t \cdot e^{0.015 t^{2}}  \rightarrow \\
+\int \frac{d}{dt} \left( I \cdot e^{0.015  t^{2}} \right) \; dt &= \int 30t \cdot e^{0.015 t^{2}}  \; dt \rightarrow \\
+I \cdot e^{0.015 t^{2}} &= N \cdot e^{0.015 t^{2}} + C
+\end{split}
+\end{equation}
+
+All right!  So the last step is to write the equation in terms of $I(t)$, which we will label $I_{2}(t)$:
+
+\begin{equation}
+I_{2}(t) =  1000 + C e^{-0.015 t^{2}}  (\#eq:i2)
+\end{equation}
+
+Figure \@ref(fig:if-compare) compares solutions when $I(0)=10$.
+
+```{r if-compare,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Comparison of two integrating factor solutions, Equation \\@ref(eq:i1) in red and Equation \\@ref(eq:i2) in blue.', fig.width=4,fig.height=3}
+t <- seq(0,100,by=0.05)
+
+# I_{1}(t) = 1000 + Ce^{-.03t} \\
+# I_{2}(t) =  1000 + C e^{-0.015 t^{2}}
+
+solutions <- tibble(t,
+                    soln1 = 1000-990*exp(-.03*t),
+                    soln2 = 1000-990*exp(-.015*t^2))
+
+
+solutions %>%
+  pivot_longer(cols=c("soln1","soln2"),names_to="type",values_to="value") %>%
+  ggplot(aes(x=t,y=value,color=type)) + geom_line(size=2) +
+  labs(x="Time",y="Infected") +
+  guides(color=FALSE)
+```
+
+
+
+Ok, let's summarize this integrating factor approach for differential equations that can be written in the form $$\frac{dy}{dt} + f(t) \cdot y = g(t)$$
+
+1. Calculate the _integrating factor_ $\displaystyle e^{\int f(t) \; dt}$.  Hopefully the integral $\displaystyle \int f(t) \; dt$ is easy to compute!
+2. Next multiply the integrating factor across your equation to rewrite the differential equation as $\displaystyle \frac{d}{dt} \left( y \cdot e^{\int f(t) \; dt} \right) = g(t) \cdot e^{\int f(t) \; dt}$.
+3. Then compute the integral $\displaystyle H(t) = \int g(t) \cdot e^{\int f(t) \; dt} \; dt$.  This looks intimidating - but hopefully is manageable to compute!  Don't forget the $+C$!
+4. Then solve for $y(t)$:  $\displaystyle y(t) = H(t) \cdot e^{-\int f(t) \; dt} + C e^{-\int f(t) \; dt}$.
+
+This technique is a handy way to work with equations that aren't easily separable.
+
 
 ## Guess and Check
-Say for example we have the following equation that describes the rate of change above:  The first approach if a function is a solution to a differential equation is the guess and check method, or by direct substitution.
+A final approach is called the guess and check method.  Say for example we have the following equation that describes the rate of change above:  The first approach if a function is a solution to a differential equation is the guess and check method, or by direct substitution.
 
 \[ \frac{dS}{dt} = 0.7 S \]
 
-Now let's try to see if the function $\tilde{S}(t) = 5 e^{0.7t}$ is a solution in order to do that, we need to differentiate $\tilde{S}(t)$, which using our knowledge of calculus is $0.7 \cdot 5 e^{-0.7t}$.  If we note that $\displaystyle \frac{d\tilde{S}}{dt} = 0.7 \tilde{S} = 0.7 e^{0.7t}$ than the function $\tilde{S}$ does solve the differential equation.
+We know that we can apply separation of variables, but instead  let's try to see if the function $\tilde{S}(t) = 5 e^{0.7t}$ is a solution in order to do that, we need to differentiate $\tilde{S}(t)$, which using our knowledge of calculus is $0.7 \cdot 5 e^{-0.7t}$.  If we note that $\displaystyle \frac{d\tilde{S}}{dt} = 0.7 \tilde{S} = 0.7 e^{0.7t}$ than the function $\tilde{S}$ does solve the differential equation.
 
-**Your turn!**  You try the following equations:
-$\tilde{R}(t) = 10e^{0.7t}$, $\tilde{P} = e^{0.7t}$, $\tilde{Q} = 5e^{0.7t}$, $\tilde{F}=3$, $\tilde{G}=0$, $\tilde{Q}(t)+\tilde{R}(t)$ where $C$ signifies a constant value.
+Super cool!  Let's try an example:
 
-Hopefully you were able to verify that $\tilde{R}$ and $\tilde{Q}$ and $\tilde{G}$ all were solutions to the differential equation, and that $\tilde{R} + \tilde{Q}$ was a solution as well. The most general solution to this differential equation is $S(t)=Ce^{0.7t}$, where the initial condition would determine the value of $C$.  What this example illustrates is the principle that if you have two solutions to a differential equation, they can be added together and produce a new solution.  This is an example of a *linear combinations* of solutions, and we can state this more formally:
+```{example}
+Verify the following functions are solutions to the differential equation $\displaystyle \frac{dS}{dt} = 0.7 S$:
+        
+- $\tilde{R}(t) = 10e^{0.7t}$
+- $\tilde{P}(t) = e^{0.7t}$
+- $\tilde{Q}(t) = 5e^{0.7t}$
+- $\tilde{F}(t)=3$
+- $\tilde{G}(t)=0$
+
+
+```
+
+```{remark}
+Let's apply direct differentiation to each of these functions:
+
+- $\tilde{R}(t) = 10e^{0.7t} \rightarrow \tilde{R}'(t) = 7e^{0.7t}$
+- $\tilde{P}(t) = e^{0.7t} \rightarrow \tilde{P}'(t) = e^{0.7t}$
+- $\tilde{Q}(t) = 5e^{0.7t} \rightarrow \tilde{Q}'(t) = 3.5e^{0.7t}$
+- $\tilde{F}(t)=3 \rightarrow \tilde{F}'(t) = 0$
+- $\tilde{G}(t)=0 \rightarrow \tilde{G}'(t) = 0$
+
+Now we will compare each of these solutions to the right hand side:
+        
+- $0.7\tilde{R}(t) = 0.7 \cdot 10e^{0.7t} \rightarrow  7e^{0.7t}$
+- $0.7\tilde{P}(t) = 0.7 e^{0.7t}$
+- $0.7\tilde{Q}(t) = 0.7 \cdot 5e^{0.7t} \rightarrow = 3.5e^{0.7t}$
+- $0.7 \tilde{F}(t)=0.7 \cdot 3 \rightarrow 2.1$
+- $0.7 \tilde{G}(t)=0.7 \cdot 0 \rightarrow  0$        
+
+Notice how the right hand sides of each equation equals the left hand sides.  When that is the case, our candidate functions are indeed solutions to the differential equation!
+```
+
+## Superposition of solutions
+Related to the Guess and Check method is this concept called superposition of solutions.  Here how this works: if you have two known solutions to a differential equation, then the sum (or difference) is a solution as well.  Let's look at an example:
+
+```{example}
+Show that $\tilde{S}(t) = 5e^{0.7t} + e^{0.7t}$ is a solution to the differential equation $\displaystyle \frac{dS}{dt} = 0.7 S$
+```
+
+```{remark}
+By direct differentiation, $\tilde{S}'(t) = 3.5e^{0.7t} + 0.7e^{0.7t}$.  Also we have that $0.7 \cdot \tilde{S}(t) = 0.7 \cdot (5e^{0.7t} + e^{0.7t}) = 3.5 e^{0.7t} + 0.7 e^{0.7t}$, which equals $\tilde{S}$.
+```
+
+What this example illustrates is the principle that if you have two solutions to a differential equation, they can be added together and produce a new solution.  This is an example of a *linear combinations* of solutions, and we can state this more formally:
 
 > If $x(t)$ and $y(t)$ are solutions to the differential equation $z' = f(t,z)$, then $c(t) = a \cdot x(t) + b \cdot y(t)$ are also solutions, where $a$ and $b$ are constants.
 
+
+
+Hopefully you were able to verify that $\tilde{R}$ and $\tilde{Q}$ and $\tilde{G}$ all were solutions to the differential equation, and that $\tilde{R} + \tilde{Q}$ was a solution as well. The most general solution to this differential equation is $S(t)=Ce^{0.7t}$, where the initial condition would determine the value of $C$.  
 
 ## Applying guess and check more broadly
 As noted earlier, the guess and check method may seem to be trivial - if you have a differential equation, and solution, why verify it?  Well, this method helps to introduce a useful solution technique to a differential equation, and one that we can build up through directverification.
@@ -153,12 +315,44 @@ L(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t} + C_{2} e^{-b t}
 \end{align} 
 
 
-This method only works on *linear* differential equations (i.e. it wouldn't work if there was a term such as $kHL$ in our dynamics.  Later on in the course we will look a more systematic method to determine solutions to nonlinear systems of equations.
+This method only works on *linear* differential equations (i.e. it wouldn't work if there was a term such as $kHL$ in our dynamics.  Later on in the course we will look a more systematic method (i.e eigenvalues) to determine solutions to linear systems of equations.
 
 
 
 \newpage
 ## Exercises
+
+```{exercise}
+Determine the value of $C$ when $I(0)=10$ for the two equations:
+        
+\begin{equation}
+\begin{split}
+I_{1}(t) = 1000 + Ce^{-.03t} \\
+I_{2}(t) =  1000 + C e^{-0.015 t^{2}}
+\end{split}
+\end{equation}
+
+```
+
+&nbsp;
+
+```{exercise}
+Verify that $I_{2}(t) =  N + C e^{-0.5 k t^{2}}$ is the solution to the differential equation $\displaystyle \frac{dI}{dt} = kt (N-I)$.  Plot your dolution for various values of $k$ ranging from .001 to .1.  What effect does $k$ have on the solution?
+```
+
+&nbsp;
+
+```{exercise}
+A chemical reaction $2A \rightarrow C + D$ can be modeled with the following differential equation [@scholz_first-order_2014]:
+        
+\begin{equation}
+\frac{dA}{dt} = -2 k A^{2}
+\end{equation}
+
+Apply the method of separation of variables to determine a general solution for this differential equation.
+```
+
+&nbsp;
 
 ```{exercise}
 Which of the following differential equations be solved via separation of variables?
@@ -190,7 +384,14 @@ Solve the following differential equations by separation of variables:
 &nbsp;
 
 ```{exercise}
-What is the general solution to the differential equation $\frac{dP}{dt} = - \delta P$, $P(0)=P_{0}$, where $\delta$ is a constant parameter?
+Consider the following differential equation $\displaystyle \frac{dP}{dt} = - \delta P$, $P(0)=P_{0}$, where $\delta$ is a constant parameter.
+
+\begin{enumerate}[label=\alph*.]
+\item Solve this equation using the method of separation of variables.
+\item Solve this euqation using an integrating factor.
+\item Your two solutions from the two methods should be the same - are they?
+\end{enumerate}
+
 ```
 
 &nbsp;
@@ -209,8 +410,12 @@ where $\theta \geq 1$ is a constant. Apply separation of variables to determine 
 
 ```{exercise}
 Apply separation of variables to determine general solutions to the following systems of differential equations:
-\begin{align} \frac{dx}{dt} &= x \\ 
-\frac{dy}{dt} &= y \end{align}
+\begin{equation}
+\begin{split} 
+\frac{dx}{dt} &= x \\ 
+\frac{dy}{dt} &= y
+\end{split}
+\end{equation}
 (This system is an example of an *uncoupled* system of equations.)
 ```
 
@@ -241,6 +446,15 @@ Use the method developed in this section determine the general solution to the f
 ```
 
 &nbsp;
+
+```{exercise}
+Apply the method of integrating factors to determine the solution to the differential equation $\displaystyle \frac{dI}{dt} = (N-I) = kN  - kI$, where $k$ and $N$ are parameters.
+```
+
+&nbsp;
+
+
+
 
 ```{exercise}
 For each of the following differential equations:
