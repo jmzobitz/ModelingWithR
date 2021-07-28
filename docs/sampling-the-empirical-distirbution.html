@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.3 Sampling the empirical distirbution | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.3 Sampling the empirical distirbution | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.3 Sampling the empirical distirbution | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-06-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="statistical-theory-sampling-distributions.html"/>
+<link rel="next" href="bootstapping-with-linear-regression.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="chapter" data-level="2" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>2</b> The bootstrap method</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="plotting-histograms-in-r.html"><a href="plotting-histograms-in-r.html"><i class="fa fa-check"></i><b>2.1</b> Plotting histograms in R</a></li>
+<li class="chapter" data-level="2.2" data-path="statistical-theory-sampling-distributions.html"><a href="statistical-theory-sampling-distributions.html"><i class="fa fa-check"></i><b>2.2</b> Statistical theory: Sampling distributions</a></li>
+<li class="chapter" data-level="2.3" data-path="sampling-the-empirical-distirbution.html"><a href="sampling-the-empirical-distirbution.html"><i class="fa fa-check"></i><b>2.3</b> Sampling the empirical distirbution</a></li>
+<li class="chapter" data-level="2.4" data-path="bootstapping-with-linear-regression.html"><a href="bootstapping-with-linear-regression.html"><i class="fa fa-check"></i><b>2.4</b> Bootstapping with linear regression</a></li>
+<li class="chapter" data-level="2.5" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="sampling-the-empirical-distirbution" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Sampling the empirical distirbution</h2>
+<p>We can apply this same principle to measurements. The distribution of measurements can be called an <em>empirical distribution</em>. To examine data, we will use weather and precipitation today, which is collected in a cooperative <a href="https://www.cocorahs.org/ViewData/ListDailyPrecipReports.aspx">network of local observers</a>. These stations come from the Twin Cities of Minneapolis and St. Paul and surrounding suburbs:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+date
+</th>
+<th style="text-align:left;">
+time
+</th>
+<th style="text-align:left;">
+station_id
+</th>
+<th style="text-align:left;">
+station_name
+</th>
+<th style="text-align:right;">
+precip
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+05:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-52
+</td>
+<td style="text-align:left;">
+Champlin 1.8 ESE
+</td>
+<td style="text-align:right;">
+2.73
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+05:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-78
+</td>
+<td style="text-align:left;">
+Richfield 1.9 WNW
+</td>
+<td style="text-align:right;">
+4.27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+05:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-154
+</td>
+<td style="text-align:left;">
+Dayton 3.2 SE
+</td>
+<td style="text-align:right;">
+2.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+05:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-156
+</td>
+<td style="text-align:left;">
+Minnetonka 1.8 SW
+</td>
+<td style="text-align:right;">
+3.41
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+05:15:00
+</td>
+<td style="text-align:left;">
+MN-HN-148
+</td>
+<td style="text-align:left;">
+Maple Grove 4.0 SW
+</td>
+<td style="text-align:right;">
+2.21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+06:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-37
+</td>
+<td style="text-align:left;">
+Plymouth 0.8 SSE
+</td>
+<td style="text-align:right;">
+2.70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+06:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-39
+</td>
+<td style="text-align:left;">
+Rockford 0.5 NE
+</td>
+<td style="text-align:right;">
+2.55
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+06:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-49
+</td>
+<td style="text-align:left;">
+Maple Grove 2.4 E
+</td>
+<td style="text-align:right;">
+2.56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+06:00:00
+</td>
+<td style="text-align:left;">
+MN-HN-185
+</td>
+<td style="text-align:left;">
+Long Lake 1.7 NNW
+</td>
+<td style="text-align:right;">
+2.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9/21/2018
+</td>
+<td style="text-align:left;">
+06:03:00
+</td>
+<td style="text-align:left;">
+MN-HN-220
+</td>
+<td style="text-align:left;">
+Minnetrista 3.9 SW
+</td>
+<td style="text-align:right;">
+1.73
+</td>
+</tr>
+</tbody>
+</table>
+<p>While it is great to have only one value is reported for precipitation amounts, so the question is:
+<em>What could be a representative number for the average amount of rainfall received for this storm?</em></p>
+<p>Let <span class="math inline">\(R\)</span> be the distribution of rainfall in the Twin Cities. The measurements are <em>samples</em> of this distribution. One way to say is that the average of the precipitation data (2.8872727 inches) is good enough, but what we don’t know is how well that average value approximates the expected value of the distribution for <span class="math inline">\(R\)</span>.</p>
+<p>As an exploratory data analysis approach, one way we can do this is by a histogram of the precipitation measurements:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="sampling-the-empirical-distirbution.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-2"><a href="sampling-the-empirical-distirbution.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">data =</span> precipitation, <span class="fu">aes</span>(<span class="at">x =</span> precip),<span class="at">bins =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="sampling-the-empirical-distirbution.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Precipitation amount&#39;</span>,</span>
+<span id="cb7-4"><a href="sampling-the-empirical-distirbution.html#cb7-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">y=</span><span class="st">&#39;Number of observations&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="series_files/figure-html/unnamed-chunk-6-1.png" width="384" /></p>
+<p>The precipitation measurement illustrates the difference between a population (the true distribution of measurements) and a sample (what people observe). The histogram shown is called the <em>empirical distribution</em> of these data. For the purposes we get here, we are after what is called the <em>sample statistic</em>, which is usually the mean or standard deviation.</p>
+<p>This distribution looks bimodal with a lot of variability. How could we account for the representative value of the distribution <span class="math inline">\(R\)</span>? Each of the entries in the <code>precipitation</code> data frame represents a measurement made by a particular observer. To get the true distribution we would need to add more observers (such as when we sampled the normal distribution), but that isn’t realistic as the event has already passed.</p>
+<p>The way around this is a bootstrap sample, which is a sample of the original dataset with replacement. Sampling with replacement is the process of remaking a dataset, but you get to reselect <em>from the entire dataset at the same time</em>. This is easily done with the command <code>slice_sample</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="sampling-the-empirical-distirbution.html#cb9-1" aria-hidden="true" tabindex="-1"></a>p_new <span class="ot">&lt;-</span> <span class="fu">slice_sample</span>(precipitation,<span class="at">prop=</span><span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>What this code does is sample the <code>precipitation</code> data frame with replacement (<code>replace = TRUE</code>). Here is how replacement works: say you have each of the precipitation measurements written on a piece of paper in a hat. You draw one slip of paper, record the measurement, and then replace that slip of paper back in the hat to draw again, until you have as many measurements as the original data frame (in this case this is 56. The command <code>prop=1</code> means that we are sampling 100% of the <code>precipitation</code> data frame.</p>
+<p>One thing that we can do is compute the mean (average) and the standard deviation of the sample:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="sampling-the-empirical-distirbution.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_sample</span>(precipitation,<span class="at">prop=</span><span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="sampling-the-empirical-distirbution.html#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>),</span>
+<span id="cb10-3"><a href="sampling-the-empirical-distirbution.html#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##    mean    sd
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  2.94 0.745</code></pre>
+<p>Let’s break this code down:</p>
+<ul>
+<li>The command <code>summarize</code> is collapsing the <code>precipitation</code> data frame and computes the mean and the standard deviation <code>sd</code> of the column <code>precip</code>. We have the command <code>na.rm=TRUE</code> to remove any <code>NA</code> values that may affect the computation.</li>
+<li>How this code runs is first to do the sampling, and then the summary.</li>
+</ul>
+<p>If we want to run this multiple times we need some more powerful functionality here. The <code>purrr</code> package has the wonderful command <code>map</code>, which allows you to quickly iterate through a list quickly.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="sampling-the-empirical-distirbution.html#cb12-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> ,</span>
+<span id="cb12-2"><a href="sampling-the-empirical-distirbution.html#cb12-2" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span>(</span>
+<span id="cb12-3"><a href="sampling-the-empirical-distirbution.html#cb12-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">slice_sample</span>(precipitation,<span class="at">prop=</span><span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="sampling-the-empirical-distirbution.html#cb12-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>),</span>
+<span id="cb12-5"><a href="sampling-the-empirical-distirbution.html#cb12-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sd =</span> <span class="fu">sd</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>)) </span>
+<span id="cb12-6"><a href="sampling-the-empirical-distirbution.html#cb12-6" aria-hidden="true" tabindex="-1"></a>          )  <span class="co"># Close off the tilde ~ ()</span></span>
+<span id="cb12-7"><a href="sampling-the-empirical-distirbution.html#cb12-7" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># Close off the map_df</span></span></code></pre></div>
+<pre><code>## # A tibble: 10 x 2
+##     mean    sd
+##    &lt;dbl&gt; &lt;dbl&gt;
+##  1  2.70 0.706
+##  2  2.80 0.721
+##  3  2.68 0.570
+##  4  2.81 0.790
+##  5  2.83 0.715
+##  6  3.02 0.734
+##  7  2.83 0.703
+##  8  3.00 0.714
+##  9  3.03 0.766
+## 10  2.96 0.754</code></pre>
+<p>What should be returned is a dataframe with columns <code>mean</code> and <code>sd</code> that represents the mean and standard deviation of each bootstrap sample. The process of randomly sampling a dataset is called <em>bootstraping</em>.</p>
+<p>Let’s review this code bit by bit. Notice that I’ve written this on multiple lines to aid in reading. The basic structure is <code>map_df(1:N,~(COMMANDS))</code>, where <code>N</code> is the number of times you want to run your code (in this case <code>N=10</code>). The second part <code>~(COMMANDS)</code> lists the different commands we want to re-run (in this case it is our mean and standard deviation of the data frame).</p>
+<p>I can appreciate this programming might be a little tricky to understand and follow - don’t worry - the goal is to give you a tool that you can easily adapt to a situation. What I would do in a use-case scenario is to first get a working example (where you compute the mean and standard deviation), and then use the <code>map_df</code> to return your result.</p>
+<p>The final step would be to visualize the mean and the standard deviation. Let’s re-run our example and then plot:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="sampling-the-empirical-distirbution.html#cb14-1" aria-hidden="true" tabindex="-1"></a>bootstrap_samples <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span> ,</span>
+<span id="cb14-2"><a href="sampling-the-empirical-distirbution.html#cb14-2" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span>(</span>
+<span id="cb14-3"><a href="sampling-the-empirical-distirbution.html#cb14-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">slice_sample</span>(precipitation,<span class="at">prop=</span><span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="sampling-the-empirical-distirbution.html#cb14-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>),</span>
+<span id="cb14-5"><a href="sampling-the-empirical-distirbution.html#cb14-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sd =</span> <span class="fu">sd</span>(precip,<span class="at">na.rm=</span><span class="cn">TRUE</span>)) </span>
+<span id="cb14-6"><a href="sampling-the-empirical-distirbution.html#cb14-6" aria-hidden="true" tabindex="-1"></a>          )  <span class="co"># Close off the tilde ~ ()</span></span>
+<span id="cb14-7"><a href="sampling-the-empirical-distirbution.html#cb14-7" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># Close off the map_df</span></span>
+<span id="cb14-8"><a href="sampling-the-empirical-distirbution.html#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="sampling-the-empirical-distirbution.html#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Now make the histogram plots for the mean and standard deviation:</span></span>
+<span id="cb14-10"><a href="sampling-the-empirical-distirbution.html#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(bootstrap_samples) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="sampling-the-empirical-distirbution.html#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>mean))</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="series_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="sampling-the-empirical-distirbution.html#cb16-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(bootstrap_samples) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="sampling-the-empirical-distirbution.html#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>sd))</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="series_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>Excellent! This is shaping up nicely. Once we have sampled as much we want, <em>then</em> investigate the distribution of the computed sample statistics (we call this the <em>sampling distribution</em>). It turns out that sample statistics (such as the mean or the standard deviation) will in the long run - approximate the true distribution statistic (such as the mean or standard deviation). This is an example of a non-parametric bootstrap - meaning we are not trying to force a priori a distribution onto the data.</p>
+<p>One last task: summarize the distribution of bootstrap means and standard deviations. We will do this using a confidence interval, which comes from the percentiles of the distribution. Let’s take a look at the distribution of bootstrap means. The 2.5 percentile is approximately 2.7 inches. This means 2.5% of the distribution is at 2.7 inches or less. The median (50th percentile) is 2.9, so half of the distribution for is 2.9 inches or less. The 97.5 percentile is approximately 3.1, so 97.5% of the distribution is 3.1 inches or less. If we take the difference between 2.5% and 97.5% that is 95%, so 95% of the distribution is contained between 2.7 and 3.1 inches. If we are using the bootstrap mean, we would report that the median rainfall is 2.9 with a 95% confidence interval of 2.7 to 3.1. The confidence interval to give some indication of the uncertainty in the measurements.</p>
+<p>Here is how we would compute these different statistics using the <code>quantile</code> command, which we need to do separately for the mean and standard deviation:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="sampling-the-empirical-distirbution.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(bootstrap_samples<span class="sc">$</span>mean,<span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.5</span>,.<span class="dv">975</span>))</span></code></pre></div>
+<pre><code>##     2.5%      50%    97.5% 
+## 2.691068 2.889911 3.071718</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="sampling-the-empirical-distirbution.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(bootstrap_samples<span class="sc">$</span>sd,<span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.5</span>,.<span class="dv">975</span>))</span></code></pre></div>
+<pre><code>##      2.5%       50%     97.5% 
+## 0.6157899 0.7272193 0.8230154</code></pre>
+<p>Notice how we using the <code>probs=c(0.025,0.5,.975)</code> command to compute the different quantiles - they need to be scaled between 0 and 1.</p>
+<p>This code works through the bootstrap for 100 samples.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="statistical-theory-sampling-distributions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bootstapping-with-linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/11-bootstrap.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/11-bootstrap.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

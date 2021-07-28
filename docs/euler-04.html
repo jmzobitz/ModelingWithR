@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Euler’s method | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Euler’s method | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Euler’s method | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-07-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="exercises-2.html"/>
+<link rel="next" href="defining-an-algorithm.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="2" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>2</b> Models of rates with data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rates-of-change-in-the-world-a-model-is-born.html"><a href="rates-of-change-in-the-world-a-model-is-born.html"><i class="fa fa-check"></i><b>2.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="2.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>2.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="2.3" data-path="model-solutions.html"><a href="model-solutions.html"><i class="fa fa-check"></i><b>2.3</b> Model solutions</a></li>
+<li class="chapter" data-level="2.4" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>2.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="2.5" data-path="start-here.html"><a href="start-here.html"><i class="fa fa-check"></i><b>2.5</b> Start here</a></li>
+<li class="chapter" data-level="2.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>3</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="r-and-rstudio.html"><a href="r-and-rstudio.html"><i class="fa fa-check"></i><b>3.1</b> R and RStudio</a></li>
+<li class="chapter" data-level="3.2" data-path="first-steps-getting-acquainted-with-r.html"><a href="first-steps-getting-acquainted-with-r.html"><i class="fa fa-check"></i><b>3.2</b> First steps: getting acquainted with R</a></li>
+<li class="chapter" data-level="3.3" data-path="increasing-functionality-with-packages.html"><a href="increasing-functionality-with-packages.html"><i class="fa fa-check"></i><b>3.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="3.4" data-path="working-with-r-variables-data-frames-and-datasets.html"><a href="working-with-r-variables-data-frames-and-datasets.html"><i class="fa fa-check"></i><b>3.4</b> Working with R: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="3.5" data-path="visualization-with-r.html"><a href="visualization-with-r.html"><i class="fa fa-check"></i><b>3.5</b> Visualization with R</a></li>
+<li class="chapter" data-level="3.6" data-path="defining-functions.html"><a href="defining-functions.html"><i class="fa fa-check"></i><b>3.6</b> Defining functions</a></li>
+<li class="chapter" data-level="3.7" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>3.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="3.8" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>3.8</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>4</b> Modeling with rates of change</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>4.1</b> Lynx and Hares</a></li>
+<li class="chapter" data-level="4.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>4.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="4.3" data-path="establishing-species.html"><a href="establishing-species.html"><i class="fa fa-check"></i><b>4.3</b> Establishing species</a></li>
+<li class="chapter" data-level="4.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>4.4</b> Other types of functional responses</a></li>
+<li class="chapter" data-level="4.5" data-path="exercises-2.html"><a href="exercises-2.html"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>5</b> Euler’s method</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="defining-an-algorithm.html"><a href="defining-an-algorithm.html"><i class="fa fa-check"></i><b>5.1</b> Defining an Algorithm</a></li>
+<li class="chapter" data-level="5.2" data-path="building-an-iterative-method.html"><a href="building-an-iterative-method.html"><i class="fa fa-check"></i><b>5.2</b> Building an iterative method</a></li>
+<li class="chapter" data-level="5.3" data-path="eulers-method-applied-to-systems.html"><a href="eulers-method-applied-to-systems.html"><i class="fa fa-check"></i><b>5.3</b> Euler’s method applied to systems</a></li>
+<li class="chapter" data-level="5.4" data-path="more-refined-numerical-solvers.html"><a href="more-refined-numerical-solvers.html"><i class="fa fa-check"></i><b>5.4</b> More refined numerical solvers</a></li>
+<li class="chapter" data-level="5.5" data-path="exercises-3.html"><a href="exercises-3.html"><i class="fa fa-check"></i><b>5.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>6</b> Phase lines and equilibrium solutions</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>6.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="phase-lines-for-differentail-equations.html"><a href="phase-lines-for-differentail-equations.html"><i class="fa fa-check"></i><b>6.2</b> Phase lines for differentail equations</a></li>
+<li class="chapter" data-level="6.3" data-path="a-stability-test-for-equilibrium-solutions.html"><a href="a-stability-test-for-equilibrium-solutions.html"><i class="fa fa-check"></i><b>6.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="6.4" data-path="exercises-4.html"><a href="exercises-4.html"><i class="fa fa-check"></i><b>6.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>7</b> Coupled systems of equations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="model-redux-flu-with-quarantine.html"><a href="model-redux-flu-with-quarantine.html"><i class="fa fa-check"></i><b>7.1</b> Model redux: flu with quarantine</a></li>
+<li class="chapter" data-level="7.2" data-path="determining-stability.html"><a href="determining-stability.html"><i class="fa fa-check"></i><b>7.2</b> Determining stability</a></li>
+<li class="chapter" data-level="7.3" data-path="generating-a-phase-plane-in-r.html"><a href="generating-a-phase-plane-in-r.html"><i class="fa fa-check"></i><b>7.3</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="7.4" data-path="exercises-5.html"><a href="exercises-5.html"><i class="fa fa-check"></i><b>7.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>8</b> Exact Solutions to Differential Equations</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="separable-differential-equations.html"><a href="separable-differential-equations.html"><i class="fa fa-check"></i><b>8.1</b> Separable Differential Equations</a></li>
+<li class="chapter" data-level="8.2" data-path="integrating-factors.html"><a href="integrating-factors.html"><i class="fa fa-check"></i><b>8.2</b> Integrating factors</a></li>
+<li class="chapter" data-level="8.3" data-path="guess-and-check.html"><a href="guess-and-check.html"><i class="fa fa-check"></i><b>8.3</b> Guess and Check</a></li>
+<li class="chapter" data-level="8.4" data-path="superposition-of-solutions.html"><a href="superposition-of-solutions.html"><i class="fa fa-check"></i><b>8.4</b> Superposition of solutions</a></li>
+<li class="chapter" data-level="8.5" data-path="applying-guess-and-check-more-broadly.html"><a href="applying-guess-and-check-more-broadly.html"><i class="fa fa-check"></i><b>8.5</b> Applying guess and check more broadly</a></li>
+<li class="chapter" data-level="8.6" data-path="exercises-6.html"><a href="exercises-6.html"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="euler-04" class="section level1" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Euler’s method</h1>
+<p>The focus of this section is on <em>approximation</em> of solutions to a differential equation via a numerical method. Typically a first numerical methods one might learn to tackle this problem is <em>Euler’s method</em>, which is so fundamental it was popularized in the movie <a href="https://www.youtube.com/watch?v=v-pbGAts_Fg">Hidden Figures.</a></p>
+<p>The way we are going to do this is through expansion of the idea of a <em>locally linear approximation</em> to the tangent line. Let’s start with an example.</p>
+
+<div class="example">
+<p><span id="exm:flu-linear" class="example"><strong>Example 5.1  (The flu bug)  </strong></span>The rate of change of the flu through a population is given by the number of people infected <span class="math inline">\(t\)</span> days after infection is, <span class="math display">\[\displaystyle \frac{dI}{dt} = 3e^{-.025t}. \]</span> Assuming that <span class="math inline">\(I(0)=10\)</span>, what is a locally linear approximation to this infection? Second, using your linear approximation, what would you predict is the value after one day (<span class="math inline">\(I(1)\)</span>)?</p>
+</div>
+<p> </p>
+
+<div class="remark">
+ <span class="remark"><em>Remark. </em></span> In order to solve this problem, we know that the locally linear approximation is to <span class="math inline">\(I(t)\)</span> at <span class="math inline">\(t=0\)</span> is <span class="math inline">\(L(t) = I(0) + I&#39;(0) \cdot (t-0)\)</span>. Here, <span class="math inline">\(I(0)=10\)</span> and <span class="math inline">\(I&#39;(0)=3\)</span>, so <span class="math display">\[L(t) = 10 +3t\]</span>. Using <span class="math inline">\(L(t) \approx I(t)\)</span>, we have <span class="math inline">\(L(1)=10 + 3 = 13\)</span>. So our model predicts there will be 13 people sick.
+</div>
+<p> </p>
+<p>Notice in Example <a href="euler-04.html#exm:flu-linear">5.1</a> we used two pieces of information: the (given) value of the function at <span class="math inline">\(t=0\)</span> and the estimate of the derivative from the rate of change.</p>
+<p>It may be helpful to compare our prediction from <span class="math inline">\(L(1)\)</span> to the actual value. The solution to the differential equation in Example <a href="euler-04.html#exm:flu-linear">5.1</a> is <span class="math inline">\(I(t) = 130-120e^{-.025t}\)</span> (you should verify this is the case by differentation). Let’s compare in the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(t\)</span></th>
+<th>Linear approximation</th>
+<th>Actual Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>13</td>
+<td>12.96</td>
+</tr>
+</tbody>
+</table>
+<p>Not too bad, huh? Our approximation at <span class="math inline">\(L(1)\)</span> is an <em>overestimate</em>, mainly because the actual solution is concave down, but it isn’t that far off.</p>
+<p>Let’s build this solution out a little more by computing the rate of change at <span class="math inline">\(t=1\)</span>, assuming that thirteen people is a pretty close estimate of the <span class="math inline">\(I\)</span> at <span class="math inline">\(t=1\)</span>. What we could do is to build <em>another</em> linear approximation using the differential equation. So the locally linear approximation is to <span class="math inline">\(I(t)\)</span> at <span class="math inline">\(t=1\)</span> is</p>
+<p><span class="math display">\[ L(t) = I(1) + I&#39;(1) \cdot (t-1) \]</span>.</p>
+<p>Here, <span class="math inline">\(I(1)=13\)</span> and <span class="math inline">\(I&#39;(1)=2.92\)</span>, and <span class="math inline">\(L(t) = 13 +2.92(t-1).\)</span></p>
+<p>Assuming that <span class="math inline">\(L(t) \approx I(t)\)</span>, we can evaluate <span class="math inline">\(L(t)\)</span> at <span class="math inline">\(t=2\)</span> <em>as an approximation</em> for <span class="math inline">\(I(2)\)</span>: have <span class="math inline">\(L(2)=13 + 2.92 = 15.92\)</span>. Comparing this to the actual solution at <span class="math inline">\(t=2\)</span>, we have <span class="math inline">\(I(2)=15.85\)</span>. Again, not too bad of a solution.</p>
+<p>We can continue to build out the solution from there. Figure @ref(fig:eulers_ver1) shows what we would have for a solution if we continued to build out this approach:</p>
+<div class="figure">
+<img src="series_files/figure-html/eulers_ver1-1.png" alt="Approximation of a solution using local linearity" width="384" />
+<p class="caption">
+(#fig:eulers_ver1)Approximation of a solution using local linearity
+</p>
+</div>
+<p>When you plot them they do look indistinguishable from each other by eye. It looks like we are onto something here!</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="exercises-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="defining-an-algorithm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/04-eulersmethod.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/04-eulersmethod.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

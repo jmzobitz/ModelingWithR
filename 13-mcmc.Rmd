@@ -10,7 +10,7 @@ The MCMC approach is a systematic exploration to determine the minimum value of 
 - _(Initial conditions)_: If you have a dynamic model.
 - _Run diagnostics_: Things that need to be specified in order to run the MCMC code.
 
-We will work you through this step by step, with example code that you can type along the way. As always it will be good to load up the libraries you will be using.
+We will work you through this step by step, with example code that you can type along the way. As always it will be good to load up the libraries you will be using.  This section will examine two examples: one with a differential equation and one without.
 
 ## Example 1: Solving a differential equation model of tourism
 First let's load up some of the libraries we will need to analyze the MCMC:
@@ -245,7 +245,9 @@ That is it!  All we need to do is to run our code:
 mcmcEstimate(input_data,independent_var,parameters,lower_bound,upper_bound,iterations,burn_percentage) 
 ```
 
-
+SHOULD WE TALK ABOUT TIMING THE CODE TO GET A SENSE OF SCOPE?
+### Timing your code
+As you can imagine the more iterations we have the better our parameter estimates will be.  This comes with a tradeoff: it takes some time to run the full estimate.  To get a sense of timing the code there is a helpful clock function in `R` that starts a stopwatch if you will.  Do a smaller number of iterations will then give you a sense of the proportional scaling.
 
 
 
@@ -283,9 +285,9 @@ Apply your knowledge of equifinality and other observations to determine by how 
 &nbsp;
 
 ```{exercise}
-Run an MCMC parameter estimation on the dataset `yeast` from Gause (1932).  The equation for the volume of yeast $V$ over time is given by the following equation for an yeast growing in isolation is from Gause 1932
+Run an MCMC parameter estimation on the dataset `yeast` from @gause_experimental_1932, where the equation for the volume of yeast $V$ over time is given by the following equation for an yeast growing in isolation is:
 \begin{equation}
-V = \frac{K}{1+e^{-a-bt}},
+V = \frac{K}{1+e^{a-bt}},
 \end{equation}
 
 where $K$ is the carrying capacity, $a$ and $b$ respective rate constants.  Apply the data for Sacchromyces to do an MCMC estimate for this equation.  You may assume the following prior values on your parameters:

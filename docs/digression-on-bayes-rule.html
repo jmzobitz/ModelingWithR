@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.4 Digression on Bayes’ Rule | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.4 Digression on Bayes’ Rule | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.4 Digression on Bayes’ Rule | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-04-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="extending-the-cost-function.html"/>
+<link rel="next" href="exercises.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="chapter" data-level="2" data-path="cost-functions-bayes-rule.html"><a href="cost-functions-bayes-rule.html"><i class="fa fa-check"></i><b>2</b> Cost Functions &amp; Bayes’ Rule</a><ul>
+<li class="chapter" data-level="2.1" data-path="cost-functions-likelihood-functions-in-disguise.html"><a href="cost-functions-likelihood-functions-in-disguise.html"><i class="fa fa-check"></i><b>2.1</b> Cost functions: likelihood functions in disguise</a></li>
+<li class="chapter" data-level="2.2" data-path="connection-to-likelihood-functions.html"><a href="connection-to-likelihood-functions.html"><i class="fa fa-check"></i><b>2.2</b> Connection to likelihood functions</a></li>
+<li class="chapter" data-level="2.3" data-path="extending-the-cost-function.html"><a href="extending-the-cost-function.html"><i class="fa fa-check"></i><b>2.3</b> Extending the cost function</a></li>
+<li class="chapter" data-level="2.4" data-path="digression-on-bayes-rule.html"><a href="digression-on-bayes-rule.html"><i class="fa fa-check"></i><b>2.4</b> Digression on Bayes’ Rule</a></li>
+<li class="chapter" data-level="2.5" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="digression-on-bayes-rule" class="section level2">
+<h2><span class="header-section-number">2.4</span> Digression on Bayes’ Rule</h2>
+<!-- Adapted from Silver, *The Signal and the Noise*, 2012. -->
+<p>In order to understand Bayesian statistics we first need to understand Bayes’ rule and conditional probability. So let’s look at an example.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-3" class="example"><strong>Example 2.1  </strong></span>The following table shows results from a survey of people’s views on the economy and whether or not they voted for the President in the last election. Percentages are reported as decimals.
+</div>
+
+<table>
+<thead>
+<tr class="header">
+<th align="center">Probability</th>
+<th align="center">Optimistic view on economy</th>
+<th align="left">Pessimistic view on economy</th>
+<th align="left">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Voted for the president</td>
+<td align="center">0.20</td>
+<td align="left">0.20</td>
+<td align="left">0.40</td>
+</tr>
+<tr class="even">
+<td align="center">Did not vote for president</td>
+<td align="center">0.15</td>
+<td align="left">0.45</td>
+<td align="left">0.60</td>
+</tr>
+<tr class="odd">
+<td align="center">Total</td>
+<td align="center">0.35</td>
+<td align="left">0.65</td>
+<td align="left">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>Tables such as these are a clever way to organize information with conditional probability. We define the following probabilities:</p>
+<ul>
+<li>The probability you voted for the President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.15</li>
+<li>The probability you voted for the President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.45</li>
+</ul>
+<p>Sometimes we want to know not these individual pieces, but rather the probability of the people with an <strong>Optimistic view on the economy</strong>. How we calculate this is taking the probabilities with an optimistic view, whether or not they voted for the president. This probability is 0.35, or 0.20 + 0.15 = 0.35. On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65. Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)</p>
+<p>The next thing I need to introduce are <em>conditional probabilities</em>. A conditional probability is the probability of an outcome given some previous outcome. In probability theory you might study the following conditional probability equation, where Pr means “probability of an outcome” and <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are two different outcomes or events. The law of conditional probability states that:
+<span class="math display">\[\begin{align}
+\mbox{Pr}(A \mbox { and } B) &amp;= \mbox{Pr} (A \mbox{ given } B) \cdot  \mbox{Pr}(B) \\
+ &amp;= \mbox{Pr} (A | B) \cdot  \mbox{Pr}(B) \\
+  &amp;= \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)
+\end{align}\]</span></p>
+<p>Typically in the conditional probability equation we remove “and” and write <span class="math inline">\(P(A \mbox{ and } B) = P(AB)\)</span> and “given” as <span class="math inline">\(P(A \mbox{ given } B) = P(A|B)\)</span>.</p>
+<p>Sometimes people believe that your views of the economy <a href="https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/">influence if you are going to vote for the President</a>, so it is useful to determine the following <strong>conditional probabilities</strong>:</p>
+<ul>
+<li>The probability you voted for the president <em>given</em> you have an optimistic view of the economy is a rearrangement of the conditional probability equation:</li>
+</ul>
+<p><span class="math display">\[\begin{align}
+\mbox{Pr(Voted for President | Optimistic View on Economy)} = \\
+\frac{\mbox{Pr(Voted for President and Optimistic View on Economy)}}{\mbox{Pr(Optimistic View on Economy)}} = \\
+\frac{0.20}{0.35} = 0.57
+\end{align}\]</span></p>
+<p>So this probability seems telling. Contrast this percentage to that of the probability you voted for the President, which is 0.4. Perhaps your view of the economy influences whether or not you would vote to re-elect the President.</p>
+<p>How could we systematically incorporate prior information into a parameter estimation problem? We are going to introduce <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a>, which is a rearrangment of the rule for conditional probability:</p>
+<p><span class="math display">\[\begin{equation}
+\mbox{Pr} (A | B) = \frac{ \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)}{\mbox{Pr}(B) }
+\end{equation}\]</span></p>
+<p>It turns out Bayes’ Rule is a really helpful way to understand how we can systematically incorporate this prior information into the likelihood function (and by association the cost function). For data assimilation problems our goal is to estimate parameters, given data. So we can think of Bayes’ rule in terms of parameters and data:</p>
+<p><span class="math display">\[\begin{equation}
+\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) = \frac{\mbox{Pr}( \mbox{ data } | \mbox{ parameters }) \cdot \mbox{ Pr}( \mbox{ parameters }) }{\mbox{Pr}(\mbox{ data }) }.
+\end{equation}\]</span></p>
+<p>Here are a few observations from that last equation:</p>
+<ul>
+<li>The term <span class="math inline">\(\mbox{Pr}( \mbox{ data } | \mbox{ parameters })\)</span> is similar to the model data residual, or the standard likelihood function.</li>
+<li>If we think of the term <span class="math inline">\(\mbox{Pr}( \mbox{ parameters })\)</span>, then prior information is a multiplicative effect on the likelihood function - this is good news! You will demonstrate in the homework that the log likelihood is related to the cost function - so when we added that additional term to form <span class="math inline">\(\tilde{S}(b)\)</span>, we accounted for the prior information correctly.</li>
+<li>The expression <span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span> is the start of a framework for a probability density function, which should integrate to unity. (You will explore this more if you study probability theory.) In many cases we select parameters that optimize a likelihood or cost function. So the expression in the denominator (<span class="math inline">\(\mbox{Pr}(\mbox{ data })\)</span> ) does not change the <em>location</em> of the optimum values. And in fact, many people consider the denominator term to be a <a href="https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem">normalizing constant</a>.</li>
+</ul>
+<p>In the following sections we will explore Bayes’ Rule in action and how to utilize it for different types of cost functions, but wow - we made some significant progress in our conceptual understanding of how to incorporate models and data.</p>
+<p>Returning back to our linear regression problem (<span class="math inline">\(y=bx\)</span>). We have the following assumptions:</p>
+<ul>
+<li>The data are independent, identically distributed. We can then write the likelihood function as the following:
+<span class="math display">\[\begin{equation}
+\mbox{Pr}(\vec{y} | b) = e^{-\frac{(3-b)^{2}}{\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{\sigma}}  \cdot e^{-\frac{(10-6b)^{2}}{\sigma}}
+\end{equation}\]</span></li>
+<li>Prior knowledge expects us to say that <span class="math inline">\(b\)</span> is normally distributed with mean 1.3 and standard deviation 0.1. Incorporating this information allows us to write the following:
+<span class="math display">\[\begin{equation}
+\mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi \sigma}} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\end{equation}\]</span></li>
+</ul>
+<p>So when we combine the two pieces of information, the probability of the <span class="math inline">\(b\)</span>, given the data <span class="math inline">\(\vec{y}\)</span> is the following:</p>
+<p><span class="math display">\[\begin{equation}
+\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma}}  \cdot e^{-\frac{(10-6b)^{2}}{2\sigma}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\end{equation}\]</span></p>
+<p>Notice we are ignoring the denominator term, as stated above, hence the approximately equals (<span class="math inline">\(\approx\)</span>) in the last expression. The plot of <span class="math inline">\(\mbox{Pr}(b | \vec{y})\)</span>, assuming <span class="math inline">\(\sigma = 1\)</span> is shown in Figure <a href="digression-on-bayes-rule.html#fig:likelihoodbayes">2.5</a>:</p>
+<div class="figure"><span id="fig:likelihoodbayes"></span>
+<img src="series_files/figure-html/likelihoodbayes-1.png" alt="Posterior Probilities with Bayes Rule" width="384" />
+<p class="caption">
+Figure 2.5: Posterior Probilities with Bayes Rule
+</p>
+</div>
+<p>It looks like the value that optimizies our posterior probability is <span class="math inline">\(b=\)</span> 3. This is very close to the value of <span class="math inline">\(\tilde{b}\)</span> from the cost function approach. Again, <em>this is no coincidence</em>. Adding in prior information to the cost function or using Bayes’ Rule are equivalent approaches. Now that we have seen the usefulness of cost functions and Bayes’ Rule we can begin to apply this to larger problems involving more equations and data. In order to do that we need to explore some computational methods to scale this problem up - which we will do so in the next sections.</p>
+<!-- In this case, the distribution equation for the likelihood function is the following:  (WE MIGHT NEED SOME MORE TERMS HERE) -->
+<!-- The likelihood of the parameter we can assume a normal distribution with mean: (WE MIGHT NEED SOME MORE TERMS HERE) -->
+<div style="page-break-after: always;"></div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="extending-the-cost-function.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/10-costFunctions.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/10-costFunctions.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

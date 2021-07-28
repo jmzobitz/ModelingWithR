@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.2 Computing ensemble averages | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.2 Computing ensemble averages | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.2 Computing ensemble averages | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-07-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="ensemble-averages.html"/>
+<link rel="next" href="doing-many-simulations-and-visualizing.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="chapter" data-level="2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>2</b> Simulating and Visualizing Randomness</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="ensemble-averages.html"><a href="ensemble-averages.html"><i class="fa fa-check"></i><b>2.1</b> Ensemble Averages</a></li>
+<li class="chapter" data-level="2.2" data-path="computing-ensemble-averages.html"><a href="computing-ensemble-averages.html"><i class="fa fa-check"></i><b>2.2</b> Computing ensemble averages</a></li>
+<li class="chapter" data-level="2.3" data-path="doing-many-simulations-and-visualizing.html"><a href="doing-many-simulations-and-visualizing.html"><i class="fa fa-check"></i><b>2.3</b> Doing many simulations and visualizing</a></li>
+<li class="chapter" data-level="2.4" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.4</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="computing-ensemble-averages" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Computing ensemble averages</h2>
+<p>Dealing with an ensemble average is a great way to show your uncertainty or confidence in a model outcome. But how would you compute an ensemble average?</p>
+<p>We are going to build this up step by step. For example let’s say we have the following data in Table <a href="computing-ensemble-averages.html#tab:simul-table">2.1</a>:</p>
+<table>
+<caption>
+<span id="tab:simul-table">Table 2.1: </span>Simulations of a variable at different times.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+t
+</th>
+<th style="text-align:right;">
+sim1
+</th>
+<th style="text-align:right;">
+sim2
+</th>
+<th style="text-align:right;">
+sim3
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.76
+</td>
+<td style="text-align:right;">
+0.55
+</td>
+<td style="text-align:right;">
+3.44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+3.82
+</td>
+<td style="text-align:right;">
+2.62
+</td>
+<td style="text-align:right;">
+2.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.82
+</td>
+<td style="text-align:right;">
+3.29
+</td>
+<td style="text-align:right;">
+2.48
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2.80
+</td>
+<td style="text-align:right;">
+4.40
+</td>
+<td style="text-align:right;">
+3.26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.03
+</td>
+<td style="text-align:right;">
+2.99
+</td>
+<td style="text-align:right;">
+1.62
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notice how all the simulations (<code>sim1</code>, <code>sim2</code>, <code>sim3</code>) share the variable <code>t</code> in common, so it makes sense to plot them on the same axis in Figure <a href="computing-ensemble-averages.html#fig:simul-graph">2.3</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="computing-ensemble-averages.html#cb1-1" aria-hidden="true" tabindex="-1"></a>my_table <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="computing-ensemble-averages.html#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-3"><a href="computing-ensemble-averages.html#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim1)) <span class="sc">+</span></span>
+<span id="cb1-4"><a href="computing-ensemble-averages.html#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim1)) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="computing-ensemble-averages.html#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim2)) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="computing-ensemble-averages.html#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim2)) <span class="sc">+</span></span>
+<span id="cb1-7"><a href="computing-ensemble-averages.html#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim3)) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="computing-ensemble-averages.html#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>sim3)) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="computing-ensemble-averages.html#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="at">y=</span><span class="st">&quot;Simulation Value&quot;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:simul-graph-prev"></span>
+<img src="series_files/figure-html/simul-graph-prev-1.png" alt="Initial Timeseries plot of the three simulations from Table \@ref(tab:simul-table)." width="5in" />
+<p class="caption">
+Figure 2.2: Initial Timeseries plot of the three simulations from Table <a href="computing-ensemble-averages.html#tab:simul-table">2.1</a>.
+</p>
+</div>
+<p>One thing to adjust in the code used to produce the spaghettic plot in Figure <a href="computing-ensemble-averages.html#fig:simul-graph-prev">2.2</a> is that the code is really long - we needed a <code>geom_point</code> and <code>geom_line</code> for each simulation. While this isn’t bad when you have three simulations, one lesson we will learn is that the more simulations gives you better confidence in your results. If we have 500 simulations this would be a pain to code! Fortunately there is a command called <code>pivot_longer</code> that gathers different columns together:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="computing-ensemble-averages.html#cb2-1" aria-hidden="true" tabindex="-1"></a>my_table_long <span class="ot">&lt;-</span> my_table <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="computing-ensemble-averages.html#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">&quot;sim1&quot;</span><span class="sc">:</span><span class="st">&quot;sim3&quot;</span>),<span class="at">names_to=</span><span class="st">&quot;name&quot;</span>,<span class="at">values_to=</span><span class="st">&quot;value&quot;</span>)</span>
+<span id="cb2-3"><a href="computing-ensemble-averages.html#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="computing-ensemble-averages.html#cb2-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(my_table_long, <span class="at">caption =</span> <span class="st">&quot;Simulations of a variable at different times, condensed into a long table.&quot;</span>)</span></code></pre></div>
+<table>
+<caption>
+<span id="tab:simul-table-long">Table 2.2: </span>Simulations of a variable at different times, condensed into a long table.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+t
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sim1
+</td>
+<td style="text-align:right;">
+1.76
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sim2
+</td>
+<td style="text-align:right;">
+0.55
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sim3
+</td>
+<td style="text-align:right;">
+3.44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sim1
+</td>
+<td style="text-align:right;">
+3.82
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sim2
+</td>
+<td style="text-align:right;">
+2.62
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sim3
+</td>
+<td style="text-align:right;">
+2.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sim1
+</td>
+<td style="text-align:right;">
+4.82
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sim2
+</td>
+<td style="text-align:right;">
+3.29
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sim3
+</td>
+<td style="text-align:right;">
+2.48
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sim1
+</td>
+<td style="text-align:right;">
+2.80
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sim2
+</td>
+<td style="text-align:right;">
+4.40
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sim3
+</td>
+<td style="text-align:right;">
+3.26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sim1
+</td>
+<td style="text-align:right;">
+2.03
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sim2
+</td>
+<td style="text-align:right;">
+2.99
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sim3
+</td>
+<td style="text-align:right;">
+1.62
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notice how the command <code>pivot_longer</code> takes the different simulations (<code>sim1</code>, <code>sim2</code>, <code>sim3</code>) and reassigns the column names to a new column <code>name</code> and the values in the different columns to <code>value</code>. This process called pivoting creates a new data frame, which is easier to generate the spaghetti plot.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="computing-ensemble-averages.html#cb3-1" aria-hidden="true" tabindex="-1"></a>my_table_long <span class="ot">&lt;-</span> my_table <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="computing-ensemble-averages.html#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">&quot;sim1&quot;</span><span class="sc">:</span><span class="st">&quot;sim3&quot;</span>),<span class="at">names_to=</span><span class="st">&quot;name&quot;</span>,<span class="at">values_to=</span><span class="st">&quot;value&quot;</span>)</span>
+<span id="cb3-3"><a href="computing-ensemble-averages.html#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="computing-ensemble-averages.html#cb3-4" aria-hidden="true" tabindex="-1"></a>my_table_long <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="computing-ensemble-averages.html#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>value,<span class="at">group=</span>name)) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="computing-ensemble-averages.html#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb3-7"><a href="computing-ensemble-averages.html#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-8"><a href="computing-ensemble-averages.html#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="at">y=</span><span class="st">&quot;Simulation Value&quot;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:simul-graph"></span>
+<img src="series_files/figure-html/simul-graph-1.png" alt="Timeseries plot of the three simulations from Table \@ref(tab:simul-table)." width="5in" />
+<p class="caption">
+Figure 2.3: Timeseries plot of the three simulations from Table <a href="computing-ensemble-averages.html#tab:simul-table">2.1</a>.
+</p>
+</div>
+<div id="grouping" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Grouping</h3>
+<p>To compute an ensemble average we collect the time points at <span class="math inline">\(t=1\)</span> together, <span class="math inline">\(t=2\)</span> together, and so on. In each of these groups we then compute the mean (average). This process is called <em>grouping</em> and then applying a summarizing function to all the members in a particular group (which in this case is the mean). Here is the code to do that process with the data frame <code>my_table_long</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="computing-ensemble-averages.html#cb4-1" aria-hidden="true" tabindex="-1"></a>summarized_table <span class="ot">&lt;-</span> my_table_long <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="computing-ensemble-averages.html#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="computing-ensemble-averages.html#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_val =</span> <span class="fu">mean</span>(value))</span>
+<span id="cb4-4"><a href="computing-ensemble-averages.html#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="computing-ensemble-averages.html#cb4-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(summarized_table, <span class="at">caption =</span> <span class="st">&quot;Simulations of a variable at different times, along with the mean value (last column).&quot;</span>)</span></code></pre></div>
+<table>
+<caption>
+<span id="tab:table-summary">Table 2.3: </span>Simulations of a variable at different times, along with the mean value (last column).
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+t
+</th>
+<th style="text-align:right;">
+mean_val
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.916667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2.990000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3.530000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3.486667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.213333
+</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s break this down.</p>
+<ul>
+<li>The command <code>group_by(t)</code> means collect similar time points together</li>
+<li>The next line computes the mean. The command <code>summarize</code> means to that we are going to create a new data frame column (labeled <code>mean_val</code> that is the mean of all the grouped times, from the <code>value</code> column.</li>
+</ul>
+<p>We can add this mean value to our data (Figure <a href="computing-ensemble-averages.html#fig:simul-graph-rev">2.4</a>), represented with a thick red line.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="computing-ensemble-averages.html#cb5-1" aria-hidden="true" tabindex="-1"></a>my_table_long <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="computing-ensemble-averages.html#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>value,<span class="at">group=</span>name)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="computing-ensemble-averages.html#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb5-4"><a href="computing-ensemble-averages.html#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb5-5"><a href="computing-ensemble-averages.html#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data=</span>summarized_table,<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>mean_val),<span class="at">color=</span><span class="st">&#39;red&#39;</span>,<span class="at">size=</span><span class="dv">2</span>,<span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="computing-ensemble-averages.html#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>summarized_table,<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>mean_val),<span class="at">color=</span><span class="st">&#39;red&#39;</span>,<span class="at">size=</span><span class="dv">2</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="computing-ensemble-averages.html#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="computing-ensemble-averages.html#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="at">y=</span><span class="st">&quot;Simulation Value&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:simul-graph-rev"></span>
+<img src="series_files/figure-html/simul-graph-rev-1.png" alt="Timeseries plot of the three simulations from Table \@ref(tab:table-summary)." width="5in" />
+<p class="caption">
+Figure 2.4: Timeseries plot of the three simulations from Table <a href="computing-ensemble-averages.html#tab:table-summary">2.3</a>.
+</p>
+</div>
+<p>Notice how we added the additional <code>geom_point</code> and <code>geom_line</code> with the option <code>inherit.aes = FALSE</code>. This stands for “inherit aesthetics” When you add a new data frame to a plot, the initial aesthetics (such as the <code>color</code> or the <code>group</code>) are passed on. Setting <code>inherit.aes = FALSE</code> allows you to work with a clean slate.</p>
+<p>Computing the other parts of the ensemble average requires knowledge of how to compute percentiles of a distribution of values. For our purposes here we will use the 95% confidence interval, so that means the 2.5th, 97.5th percentile (which only 5% of the values will be outside of the specified interval), along with the median value (50th percentile). Let’s take a look at the code how do do that:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="computing-ensemble-averages.html#cb7-1" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb7-2"><a href="computing-ensemble-averages.html#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="computing-ensemble-averages.html#cb7-3" aria-hidden="true" tabindex="-1"></a>quantile_table <span class="ot">&lt;-</span> my_table_long <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="computing-ensemble-averages.html#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="computing-ensemble-averages.html#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">q_val =</span> <span class="fu">quantile</span>(value,</span>
+<span id="cb7-6"><a href="computing-ensemble-averages.html#cb7-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">probs =</span> quantile_vals),</span>
+<span id="cb7-7"><a href="computing-ensemble-averages.html#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">q_name =</span> quantile_vals) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="computing-ensemble-averages.html#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>,<span class="at">values_from=</span><span class="st">&quot;q_val&quot;</span>,<span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span>)</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;t&#39;. You can override using the `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="computing-ensemble-averages.html#cb9-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(quantile_table, <span class="at">caption =</span> <span class="st">&quot;Simulations of a variable at different times, along with the median and the 95% confidence interval.&quot;</span>)</span></code></pre></div>
+<table>
+<caption>
+<span id="tab:quantile-table">Table 2.4: </span>Simulations of a variable at different times, along with the median and the 95% confidence interval.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+t
+</th>
+<th style="text-align:right;">
+q0.025
+</th>
+<th style="text-align:right;">
+q0.5
+</th>
+<th style="text-align:right;">
+q0.975
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.6105
+</td>
+<td style="text-align:right;">
+1.76
+</td>
+<td style="text-align:right;">
+3.3560
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2.5345
+</td>
+<td style="text-align:right;">
+2.62
+</td>
+<td style="text-align:right;">
+3.7600
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2.5205
+</td>
+<td style="text-align:right;">
+3.29
+</td>
+<td style="text-align:right;">
+4.7435
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2.8230
+</td>
+<td style="text-align:right;">
+3.26
+</td>
+<td style="text-align:right;">
+4.3430
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1.6405
+</td>
+<td style="text-align:right;">
+2.03
+</td>
+<td style="text-align:right;">
+2.9420
+</td>
+</tr>
+</tbody>
+</table>
+<p>While this code is a little more involved, let’s break it down piece by piece:</p>
+<ul>
+<li>To make things easier the variable <code>quantile_vals</code> computes the different quantiles, expressed between 0 to 1 - so 2.5% is 0.025, 50% is 0.5, and 97.5% is .975.</li>
+<li>As above, we are still looking grouping by the variable <code>t</code> and summarizing our data frame.</li>
+<li>However rather than applying the mean, we are using the command <code>quantile</code>, whose value is computed with the new column <code>q_val</code>. Like the mean, we define which columns we apply the quantile function in the column <code>value</code>. We use <code>probs = quantile_vals</code> to specify the quantiles that we wish to compute.</li>
+<li>We also create a new column called <code>q_name</code> the contains the names of the quantile probabilities.</li>
+<li>The command <code>pivot_wider</code> takes the values in <code>q_val</code> with the associated names in <code>q_name</code> and creates new columns associated with each quantile. This process of making a data frame wider is the opposite of making a skinny and tall data frame with <code>pivot_longer</code>. Notice that a key convention in column names is that they don’t start with a number, so we <em>glue</em> a <code>q</code> onto the names of the column.</li>
+</ul>
+<p>Wow. This is getting involved. One thing to keep in mind is that the the code as written should be easily adaptable if you need to compute an ensemble average. The last command about pivoting may seem foreign, but learning how to pivot data is a good skill to invest time in. If you take an introductory data science or data visualization course I bet you will learn more about the role of pivoting data - but for now you can just adapt the above code to your needs</p>
+<p>Now onto plotting the data. What we will do is plot the ensemble average as a ribbon, so that is a new plot <code>geom_ribbon</code>. It requires a few more aesthetics (<code>ymin</code> and <code>ymax</code>, or the minimum and maximum y values to be plotted).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="computing-ensemble-averages.html#cb10-1" aria-hidden="true" tabindex="-1"></a>my_table_long <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="computing-ensemble-averages.html#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>value,<span class="at">color=</span>name)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="computing-ensemble-averages.html#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb10-4"><a href="computing-ensemble-averages.html#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb10-5"><a href="computing-ensemble-averages.html#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data=</span>quantile_table,<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>q0<span class="fl">.5</span>),<span class="at">color=</span><span class="st">&#39;red&#39;</span>,<span class="at">size=</span><span class="dv">2</span>,<span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="computing-ensemble-averages.html#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>quantile_table,<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>q0<span class="fl">.5</span>),<span class="at">color=</span><span class="st">&#39;red&#39;</span>,<span class="at">size=</span><span class="dv">2</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="computing-ensemble-averages.html#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data=</span>quantile_table,<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>,<span class="at">fill=</span><span class="st">&#39;red&#39;</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="computing-ensemble-averages.html#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="computing-ensemble-averages.html#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="at">y=</span><span class="st">&quot;Simulation Value&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
+## &quot;none&quot;)` instead.</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:simul-graph-conf"></span>
+<img src="series_files/figure-html/simul-graph-conf-1.png" alt="Timeseries plot of the three simulations from Table \@ref(tab:table-summary), along with the 95% confidence interval (red)." width="5in" />
+<p class="caption">
+Figure 2.5: Timeseries plot of the three simulations from Table <a href="computing-ensemble-averages.html#tab:table-summary">2.3</a>, along with the 95% confidence interval (red).
+</p>
+</div>
+<p>A lot of this code to produce Figure <a href="computing-ensemble-averages.html#fig:simul-graph-conf">2.5</a> is similar to when we plotted the mean value (Figure <a href="computing-ensemble-averages.html#fig:simul-graph-rev">2.4</a>), but we changed the second data frame to be plotted to <code>quantile_table</code> and included the <code>geom_ribbon</code> command. The command <code>alpha = 0.2</code> refers to the transparency of the plot. The <code>fill</code> aesthetic just provides the shading (in other words the fill) between <code>ymin</code> and <code>ymax</code>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ensemble-averages.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="doing-many-simulations-and-visualizing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/22-stochasticSimulation.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/22-stochasticSimulation.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

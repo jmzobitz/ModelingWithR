@@ -1,0 +1,444 @@
+# Bifurcation {#bifurcation-20}
+
+In this section we will study a key topic that applies the qualititative stability analysis to examine sensitivity to parameters, or what is called *bifurcation*.
+
+## A series of equations
+First let's consider the differential equations $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Chapter 5):
+
+
+- If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be unstable.
+- If $f'(y_{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be stable.
+- If $f'(y_{*}) = 0$, we cannot conclude anything about the stability of $y=y_{*}$.
+
+We know $f(x)=1-x^2$ and $f'(x)=-2x$.  Since $f'(1)=-2$ and $f'(-1)=2$, then the equilibrium solution $x=1$ is stable and $x=-1$ unstable.
+
+Here is a plot of the phase plane along with some solutions:
+
+```{r echo=FALSE,fig.width=5,fig.height=4,results='hide',warning=FALSE}
+dx <- function(x,y) {
+  1
+}
+
+dy <- function(x,y) {
+  1-y^2
+}
+
+
+deltaT <- .1    # timestep length
+timeSteps <- 20   # must be a number greater than 1
+
+parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+
+ initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
+                        c(x=1.5),
+                        c(x=1),
+                        c(x=0.5),
+                        c(x=0),
+                        c(x=-0.5),
+                        c(x=-1),
+                        c(x=-1.5),
+                        c(x=-2))
+dynamics <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = 1-x^2  # <-- You may edit this line
+    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+
+phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
+  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE)+ ggtitle(expression("dx/dt = 1"~-x^2))
+```
+
+
+NEED TO DISCUSS SOME MORE HERE AND MOTIVATE WHY WE WANT TO CONSIDER A DIFFERENT EQUATIONS
+
+There are two more differential equations to consider:
+$\displaystyle \frac{dx}{dt} = -1-x^{2}$ and $\displaystyle \frac{dx}{dt} = -x^{2}$.  The first differential equation does not have any equilibrium solutions.  The stability of the second equation is a little more tricky.  While it has an equilibrium solution at $x=0$, the derivative test cannot apply because $f'=-2x$ and $f'(0)=0$.  However investigating the sign of $f(x)$ to the left and right of $x=0$, we see that this solution is constantly decreasing, so the equilibrium is unstable.
+
+So let's also take a look at these phaseplanes along with the solution:
+
+```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
+dx <- function(x,y) {
+  1
+}
+
+dy <- function(x,y) {
+  -1-y^2
+}
+
+
+deltaT <- .1    # timestep length
+timeSteps <- 20   # must be a number greater than 1
+
+parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+
+ initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
+                        c(x=1.5),
+                        c(x=1),
+                        c(x=0.5),
+                        c(x=0),
+                        c(x=-0.5),
+                        c(x=-1),
+                        c(x=-1.5),
+                        c(x=-2))
+dynamics <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = -1-x^2  # <-- You may edit this line
+    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+
+phaseplane(10,c(0,2),c(-2,2),'x','y',dx,dy) +
+  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE) + ggtitle(expression("dx/dt = -1"~-x^2))
+
+
+
+###
+dx <- function(x,y) {
+  1
+}
+
+dy <- function(x,y) {
+  -y^2
+}
+
+
+deltaT <- .1    # timestep length
+timeSteps <- 20   # must be a number greater than 1
+
+parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+
+ initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
+                        c(x=1.5),
+                        c(x=1),
+                        c(x=0.5),
+                        c(x=0),
+                        c(x=-0.5),
+                        c(x=-1),
+                        c(x=-1.5),
+                        c(x=-2))
+dynamics <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = -x^2  # <-- You may edit this line
+    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+
+phaseplane(10,c(0,2),c(-2,2),'x','y',dx,dy) +
+  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE) + ggtitle(expression("dx/dt = "~-x^2))
+
+
+
+
+
+```
+
+
+There is an interesting pattern going on here.  If we instead consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$ the value of $c$ influences whether or not we will have a stable equilibrium solution.
+
+Steady states to this differential equation are when $x^{*}=\pm \sqrt{c}$.  If $c>0$ we have two steady states.  If $c=0$ there is only one steady state, and if $c<0$, then there are no steady states.
+
+We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$:
+
+
+Equilibrium solution | $f'(x^{*})$  | Tendency of solution | 
+-------------| ------------- | ------------- | 
+    $x^{*}=\sqrt{c}$ | $-2 \sqrt{c}$ | Stable 
+    $x^{*}=-\sqrt{c}$ |  $2 \sqrt{c}$ | Unstable 
+   $x^{*}=0$  | 0 | Inconclusive 
+
+
+Even better, since we have a function dependence of $x^{*}$ on the value of $c$, we can represent the different notions of stability encapsulated in the above table graphically in what is called a *bifurcation diagram*:
+
+```{r,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap='A saddle-node bifurcation'}
+\begin{center}
+
+\begin{tikzpicture}
+%\draw[help lines, color=gray!30, dashed] (-4.9,-4.9) grid (4.9,4.9);
+\draw[<->,ultra thick] (-3,0)--(3,0) node[right]{$c$};
+\draw[<->,ultra thick] (0,-1)--(0,3) node[above]{$x^{*}$};
+\draw[->,thick,scale=0.5,domain=0:5,smooth,variable=\x,blue] plot (\x,{sqrt(\x)});
+\draw[->,thick,scale=0.5,domain=0:5,dashed,variable=\x,blue] plot (\x,-{sqrt(\x)});
+\node at (3,-1.5) {Unstable};
+\node at (3,1.5) {Stable};
+
+\end{tikzpicture}
+
+
+\end{center}
+```
+
+For this particular example we have what is called a *saddle-node* bifurcation.  It might be helpful to think of this $c$ like a tuning knob.  As $c>0$ we will always have two different equilibrium solutions that are symmetrical based on the value of $c$.  The positive one will be stable, the other unstable.  As $c$ gets smaller these equilbrium solutions will collapse into one, which will be unstable.  If $c$ is negative, the equilibrium solution disappears.
+
+## Bifurcations with systems of equations 
+
+ Determine the behavior of solutions near the origin for the system
+ \begin{equation}
+ \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}.
+ \end{equation}
+
+This equation has one free parameter $b$ that we will analyze using the trace determinant conditions developed in the last chapter. Let's call the matrix $A$, so the tr$(A)=4$ and $\det(A)=3-b$.  Since the trace is always positive either it will be a saddle if the $\det(A)<0$, or when $3<b$.  We have a unstable spiral when $3>b$ and $(\mbox{tr}(A))^2-4 \det(A)<0$, or when $4^2-4\cdot(3-b) = 16-12+4b = 4+4b<0$, which leads to $b<-1$.  Notice this is a contradictory condition - we have already assumed $b>3$, so we will not have any unstable spirals.
+
+To summarize, we have the following dynamics:
+
+- When $b<3$ the equilibrium solution will be a saddle.
+- When $b=3$ we will have an unstable solution.
+- When $b>3$ we will have a unstable node.
+
+Let's take a look at the phase plane with solution curves.
+
+```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE}
+b <- -1
+
+dx <- function(x,y) {
+  3*x+b*y
+}
+
+dy <- function(x,y) {
+  x+y
+}
+
+
+deltaT <- .01    # timestep length
+timeSteps <- 200   # must be a number greater than 1
+
+parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+
+initialCondition <- rbind(c(x=0.25,y=0.25),  # Separate out initial conditions with a separate row.
+                        #  c(x=0.5,y=.5),
+                        #  c(x=1,y=1),
+                          c(x=-0.25,y=0.25),  # Separate out initial conditions with a separate row.
+                        #  c(x=-0.5,y=.5),
+                        #  c(x=-1,y=1),
+                          c(x=0.25,y=-0.25),  # Separate out initial conditions with a separate row.
+                        #  c(x=0.5,y=-.5),
+                        #  c(x=1,y=-1),
+                          c(x=-0.25,y=-0.25)  # Separate out initial conditions with a separate row.
+                        #  c(x=-0.5,y=-.5),
+                        #  c(x=-1,y=-1)
+                          )
+dynamics <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = 3*x+b*y  # <-- You may edit this line
+    dy <- x+y
+    return(list(c(dx,dy)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
+  spread(key=variables,value=value)
+
+phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
+  geom_line(data=outData,aes(x=x,y=y,color=as.factor(run),group=run),inherit.aes = FALSE,size=1)  + guides(color=FALSE)+ ggtitle("b=-1") + xlim(c(-2,2))+ylim(c(-2,2))
+
+###
+
+
+
+b<-4
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
+  spread(key=variables,value=value)
+
+phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
+  geom_line(data=outData,aes(x=x,y=y,color=as.factor(run),group=run),inherit.aes = FALSE,size=1)  + guides(color=FALSE)+ ggtitle("b=4") + xlim(c(-2,2))+ylim(c(-2,2))
+
+```
+
+The benefit of a bifurcation diagram is that is provides a complete understanding of the dynamics of the system *as a function of the parameters*.  In this section we examined one-parameter bifurcations, but this can also be extended further to two parameter bifurcation families.  In general the methods are similar to what we have done.
+
+As a final example we have examined equilibrium solutions that are points, but we can also determine equilibrium solutions that are functions.
+
+ Consider the following highly nonlinear system:
+\begin{align*}
+\frac{dx}{dt} =-y-x(x^2+y^2-1) \\
+\frac{dy}{dt}=x-y(x^2+y^2-1)
+\end{align*}
+
+This system has an equilibrium solution at the point  $x=0$, $y=0$.	The phase plane of this system is shown below:
+
+```{r, echo=FALSE,out.width = "4in"}
+knitr::include_graphics("figures/19-bifurcation/limitCycles.png")
+```
+
+ 
+Even though we have an equilibrium solution at the origin, the phase plane suggests there might be other equilibrium solutions.  To further explore this, let's look at the phase plane with some solution curves below:
+
+```{r warning=FALSE,echo=FALSE,fig.width=4,fig.height=4}
+mu <- 1
+
+dx <- function(x,y) {
+  -y-x*(x^2+y^2-mu)
+}
+
+dy <- function(x,y) {
+  x-y*(x^2+y^2-mu)
+}
+
+
+deltaT <- 0.1    # timestep length
+timeSteps <- 100  # must be a number greater than 1
+
+parameters = c(b=1)   # parameters: a named vector (you will mess with this later)
+
+
+
+initialCondition <- rbind(c(x=0.1,y=0.5),  # Separate out initial conditions with a separate row.
+                            c(x=0.3,y=.5),
+                            c(x=0.7,y=0.5),
+                          c(x=-0.3,y=.5),
+                          c(x=0.7,y=-0.5),
+                          c(x=0.7,y=-0.5),
+                          c(x=0.9,y=0),  # Separate out initial conditions with a separate row.
+                            c(x=1.1,y=.5))
+dynamics <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {  # Do not edit this line
+    dx = -y-x*(x^2+y^2-mu)
+    dy = x-y*(x^2+y^2-mu)
+    return(list(c(dx,dy)))  # <-- If you have more equations you will need to list the dVariables
+  })
+}
+
+
+outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
+  spread(key=variables,value=value)
+
+phaseplane(10,c(-1.5,1.5),c(-1.5,1.5),'x','y',dx,dy) +
+  geom_point(data=outData,aes(x=x,y=y,group=run),color='blue',inherit.aes = FALSE,size=2)  + guides(color=FALSE)+ xlim(c(-1.5,1.5))+ylim(c(-1.5,1.5))
+```
+
+What is interesting is that the solution is tending towards a circle of radius 1 (or the equation $x^{2}+y^{2}=1$). This is an example of an equilibrium solution that is a *curve* rather than a specific point.  You will show in the homework that this system transforms to
+
+\begin{equation}
+\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}.
+\end{equation}
+
+This is done through applying a polar coordinate transformation to this system.  The dynamics of this system can be shown that $X=0$ is unstable (meaning the origin is an unstable solution) and the circle of radius 1 is stable. In this case we would say $r=1$ is a *stable limit cycle*.
+
+This is another example of next steps with studying the qualitative analysis of systems.  We have looked almost exclusively at equilibrium points, but you may also have curves in the plane that are solutions as well.  
+
+
+
+
+
+\newpage
+
+## Exercises
+```{exercise}
+Apply local linearization to classify stability of the following differential equations:
+  \begin{enumerate}
+\item $\displaystyle \frac{dx}{dt} = x-x^{2}$
+\item $\displaystyle \frac{dx}{dt} = -x^{2}$
+\item $\displaystyle \frac{dx}{dt} = -x-x^{2}$
+  \end{enumerate}
+```
+&nbsp;
+```{exercise}
+Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{2}$.  What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out plot the bifurcation diagram, with the parameter $c$ along the horizontal axis.  This bifurcation is called a \emph{transcritical} bifurcation.
+```
+&nbsp;
+```{exercise}
+Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{3}$.  What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out plot the bifurcation diagram, with the parameter $c$ along the horizontal axis.  This bifurcation is called a \emph{pitchfork} bifurcation.
+```
+&nbsp;
+```{exercise}
+ Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the system
+ \begin{equation}
+ \frac{\vec{x}}{dt} = \begin{pmatrix} 3 & b \\ b & 1 \end{pmatrix} \vec{x}.
+ \end{equation}
+```
+&nbsp;
+<!-- LW pg 164 -->
+```{exercise}
+Consider the linear system of equations:
+    \begin{align*}
+\frac{dx}{dt}&=-ax-y \\
+\frac{dy}{dt} &= -x-ay
+\end{align*}
+
+Construct a bifurcation diagram for this system of equations.
+
+```
+&nbsp;
+
+```{exercise}
+ Consider the following highly nonlinear system:
+\begin{align*}
+\frac{dx}{dt} =-y-x(x^2+y^2-1) \\
+\frac{dy}{dt}=x-y(x^2+y^2-1)
+\end{align*}
+
+We are going to transform the system by defining new variables $x=r \cos \theta$ and $y=r \sin \theta$.  Observe that $r^2=x^2+y^2$.
+
+\begin{enumerate}
+\item Consider the equation $r^2=x^2+y^2$, where $r$, $x$, and $y$ are all functions of time. Apply implicit differentiation to determine a differential equation for $\displaystyle \frac{d(r^{2})}{dt}$, expressed in terms of $x$, $y$, $\displaystyle \frac{dx}{dt}$ and $\displaystyle \frac{dy}{dt}$.
+\item Multiply $\frac{dx}{dt}$ by $2x$ and $\frac{dy}{dt}$ by $2y$ on both sides of the equation.  Then add the two equations together.  You should get an expression for $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $x$ and $y$.
+\item Re-write the equation for the right hand side of $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $r^{2}$.
+
+\item Use your equation that you found to verify that 
+
+\begin{equation}
+\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}
+\end{equation}
+
+\item Verify that $X=1$ is a stable node and $X=0$ is unstable.
+\item As discussed in the text this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is a unstable limit cycle?  Justify your work.
+\end{enumerate}
+```
+&nbsp;
+```{exercise}
+Construct a bifurcation diagram for $\displaystyle \frac{dX}{dt} = - X(X-\mu)$, $\mu$ is a parameter.  Explain how you can apply that result to understanding the bifurcation diagram of the system
+
+\begin{align*}
+\frac{dx}{dt} =-y- x(x^2+y^2-\mu) \\
+\frac{dy}{dt}=x- y(x^2+y^2-\mu)
+\end{align*}
+  
+This system is an example of a \emph{Hopf bifurcation}.
+```
+
+
+&nbsp;
+
+<!-- adapted LW pg 183 -->
+```{exercise}
+Consider following predator-prey model:
+    \begin{align*}
+\frac{dx}{dt}&=\frac{2}{3}x\left(1 - \frac{x}{4} \right) - \frac{xy}{1+x} \\
+\frac{dy}{dt} &= ry\left(1 - \frac{y}{x} \right)
+\end{align*}
+
+\begin{enumerate}
+\item Explain the various terms in this model and their biological meaning.
+\item Determine the equilibrium solutions.
+\item Evaluate the Jacobian at each of the equilibrium solutions.
+\item Construct a bifurcation diagram (with the parameter $r$) for each of the equilibrium solutions.
+\end{enumerate}
+```
+&nbsp;
+<!-- adapted LW pg 185, get some more citations in here -->
+```{exercise}
+The immune response to HIV has been described with differential equations.  In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where $v$ is the virus load and $x$ the immune response:
+    \begin{align*}
+\frac{dv}{dt}&=rv - pxv \\
+\frac{dx}{dt} &= cv-bx
+\end{align*}
+
+\begin{enumerate}
+\item Explain the various terms in this model and their biological meaning.
+\item Determine the equilibrium solutions.
+\item Evaluate the Jacobian at each of the equilibrium solutions.
+\item Construct a bifurcation diagram for each of the equilibrium solutions.
+\end{enumerate}
+```
+

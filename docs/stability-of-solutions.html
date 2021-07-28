@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.3 Stability of solutions | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.3 Stability of solutions | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.3 Stability of solutions | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-06-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="the-phase-plane.html"/>
+<link rel="next" href="exercises.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="part"><span><b>I Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="2" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>2</b> Systems of linear equations</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>2.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="2.2" data-path="the-phase-plane.html"><a href="the-phase-plane.html"><i class="fa fa-check"></i><b>2.2</b> The phase plane</a></li>
+<li class="chapter" data-level="2.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>2.3</b> Stability of solutions</a></li>
+<li class="chapter" data-level="2.4" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.4</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="stability-of-solutions" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Stability of solutions</h2>
+<p>Because we have already identified the equilibrium solution for Equation <a href="linearsystems-15.html#eq:example-ch15">(2.1)</a>, the focus is to understand if the equilibrium solution is stable or unstable. There are two other (non-equilibrium) solutions to this system of differential equations:</p>
+<ul>
+<li><strong>Solution 1:</strong> <span class="math inline">\(x=0\)</span> and <span class="math inline">\(y =e^{t}\)</span></li>
+<li><strong>Solution 2:</strong> <span class="math inline">\(x=e^{2t}\)</span> and <span class="math inline">\(y=e^{2t}\)</span></li>
+</ul>
+<p>We can make a table of the solution for different values of <span class="math inline">\(t\)</span>:</p>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-5">Table 2.1: </span>Solution values
+</caption>
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 2px solid #00000050; ">
+Solution 1
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 2px solid #00000050; ">
+Solution 2
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:right;">
+t
+</th>
+<th style="text-align:right;">
+x1
+</th>
+<th style="text-align:right;">
+y1
+</th>
+<th style="text-align:right;">
+x2
+</th>
+<th style="text-align:right;">
+y2
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:right;">
+1.11
+</td>
+<td style="text-align:right;">
+1.11
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.12
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:right;">
+1.38
+</td>
+<td style="text-align:right;">
+1.38
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.21
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.23
+</td>
+<td style="text-align:right;">
+1.52
+</td>
+<td style="text-align:right;">
+1.52
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.26
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.30
+</td>
+<td style="text-align:right;">
+1.68
+</td>
+<td style="text-align:right;">
+1.68
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.32
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.38
+</td>
+<td style="text-align:right;">
+1.90
+</td>
+<td style="text-align:right;">
+1.90
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.45
+</td>
+<td style="text-align:right;">
+2.10
+</td>
+<td style="text-align:right;">
+2.10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.42
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.52
+</td>
+<td style="text-align:right;">
+2.32
+</td>
+<td style="text-align:right;">
+2.32
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.47
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.60
+</td>
+<td style="text-align:right;">
+2.56
+</td>
+<td style="text-align:right;">
+2.56
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.70
+</td>
+<td style="text-align:right;">
+2.89
+</td>
+<td style="text-align:right;">
+2.89
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.79
+</td>
+<td style="text-align:right;">
+3.19
+</td>
+<td style="text-align:right;">
+3.19
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.63
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.88
+</td>
+<td style="text-align:right;">
+3.53
+</td>
+<td style="text-align:right;">
+3.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.68
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.97
+</td>
+<td style="text-align:right;">
+3.90
+</td>
+<td style="text-align:right;">
+3.90
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.10
+</td>
+<td style="text-align:right;">
+4.39
+</td>
+<td style="text-align:right;">
+4.39
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.79
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.20
+</td>
+<td style="text-align:right;">
+4.85
+</td>
+<td style="text-align:right;">
+4.85
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.32
+</td>
+<td style="text-align:right;">
+5.37
+</td>
+<td style="text-align:right;">
+5.37
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.44
+</td>
+<td style="text-align:right;">
+5.93
+</td>
+<td style="text-align:right;">
+5.93
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.95
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.59
+</td>
+<td style="text-align:right;">
+6.69
+</td>
+<td style="text-align:right;">
+6.69
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.72
+</td>
+<td style="text-align:right;">
+7.39
+</td>
+<td style="text-align:right;">
+7.39
+</td>
+</tr>
+</tbody>
+</table>
+<p>We can incorporate the information from the table with the phase plane:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
+<p>Do you notice the motion in the <span class="math inline">\(xy\)</span> plane of the two solutions? They are straight lines! It turns out that these straight lines solutions are quite useful - we will study them in a later section. But for the moment we will apply the idea of linear combinations to plot another solution, where <span class="math inline">\(\vec{z}(t)=\vec{x}_{1}(t) -0.1 \vec{x}_{2}(t)\)</span>:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
+<p>The phase plane suggests that the equilibrium solution at the origin is unstable because <em>both</em> the arrows and the solution seem to be pointing away from the origin. We can also investigate stability <em>algebraically</em> for each solution (<span class="math inline">\(s_{1}(t)\)</span> and <span class="math inline">\(s_{2}(t)\)</span>). We will organize our solutions in vector format, factoring out the exponential functions in each of the expressions:</p>
+<p>Let’s look at this more systematically:</p>
+<ul>
+<li>Solution 1: <span class="math inline">\(\displaystyle \vec{s}_{1}(t) = \begin{pmatrix} 0 \\ e^{t} \end{pmatrix}= \begin{pmatrix} 0 \\ e^{t} \end{pmatrix} =e^{t} \begin{pmatrix} 0 \\ 1 \end{pmatrix}\)</span>.</li>
+<li>Solution 2: <span class="math inline">\(\displaystyle \vec{s}_{2}(t) = \begin{pmatrix} e^{2t} \\ e^{2t} \end{pmatrix}= \begin{pmatrix} e^{2t} \\ e^{2t} \end{pmatrix} = e^{2t} \begin{pmatrix} 1 \\ 1\end{pmatrix}\)</span>.</li>
+</ul>
+<p>By factoring out the exponential functions we can see the straight line solutions! The vectors <span class="math inline">\(\displaystyle \begin{pmatrix} 0 \\ 1\end{pmatrix}\)</span> and <span class="math inline">\(\displaystyle \begin{pmatrix} 1 \\ 1\end{pmatrix}\)</span> are the lines <span class="math inline">\(x=0\)</span> and <span class="math inline">\(y=x\)</span>, as shown in our phase plane diagrams with the red and blue lines respectively.</p>
+<p>To investigate stability we investigate the long term behavior of the exponential functions. Notice that <span class="math inline">\(\displaystyle \lim_{t \rightarrow \infty} e^{t}\)</span> and <span class="math inline">\(\displaystyle \lim_{t \rightarrow \infty} e^{2t}\)</span> <em>both</em> do not have a finite value, so we classify the equilibrium solution as “unstable.”</p>
+<p>So to recap the following about straight line solutions to two-dimensional linear systems:</p>
+<ul>
+<li><p>Straight line solutions have the form <span class="math inline">\(\displaystyle \vec{s}(t) = e^{\lambda t} \vec{v}\)</span>. Methods to determine <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\vec{v}\)</span> will be studied in later sections.</p></li>
+<li><p>For a 2 dimensional linear system, you have generally will two straight line solutions <span class="math inline">\(\vec{s}_{1}\)</span> and <span class="math inline">\(\vec{s}_{2}\)</span>. This means you will have two different values of <span class="math inline">\(\lambda\)</span> (<span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span>). The general “solution” to the system of differential equations is the linear sum of the two:
+<span class="math inline">\(\vec{x}(t) = c_{1} \vec{s}_{1}(t) + c_{2} \vec{s}_{2}(t)\)</span>.</p></li>
+<li><p>Geometrically these straight line solutions are lines that passing through the origin in the <span class="math inline">\(xy\)</span> plane.</p></li>
+<li><p>If both values of <span class="math inline">\(\lambda\)</span> are <em>greater</em> than 0, equilibrium solution is <em>unstable</em>.</p></li>
+<li><p>If both values of <span class="math inline">\(\lambda\)</span> are <em>less</em> than 0, equilibrium solution is <em>stable</em>.</p></li>
+</ul>
+<p>In the exercises you will look at additional examples to understand the behavior of linear systems.</p>
+<div style="page-break-after: always;"></div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="the-phase-plane.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/15-linearSystems.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/15-linearSystems.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

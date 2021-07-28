@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7.1 Model redux: flu with quarantine | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7.1 Model redux: flu with quarantine | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7.1 Model redux: flu with quarantine | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-07-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="coupled-06.html"/>
+<link rel="next" href="determining-stability.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="2" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>2</b> Models of rates with data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="rates-of-change-in-the-world-a-model-is-born.html"><a href="rates-of-change-in-the-world-a-model-is-born.html"><i class="fa fa-check"></i><b>2.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="2.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>2.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="2.3" data-path="model-solutions.html"><a href="model-solutions.html"><i class="fa fa-check"></i><b>2.3</b> Model solutions</a></li>
+<li class="chapter" data-level="2.4" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>2.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="2.5" data-path="start-here.html"><a href="start-here.html"><i class="fa fa-check"></i><b>2.5</b> Start here</a></li>
+<li class="chapter" data-level="2.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>3</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="r-and-rstudio.html"><a href="r-and-rstudio.html"><i class="fa fa-check"></i><b>3.1</b> R and RStudio</a></li>
+<li class="chapter" data-level="3.2" data-path="first-steps-getting-acquainted-with-r.html"><a href="first-steps-getting-acquainted-with-r.html"><i class="fa fa-check"></i><b>3.2</b> First steps: getting acquainted with R</a></li>
+<li class="chapter" data-level="3.3" data-path="increasing-functionality-with-packages.html"><a href="increasing-functionality-with-packages.html"><i class="fa fa-check"></i><b>3.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="3.4" data-path="working-with-r-variables-data-frames-and-datasets.html"><a href="working-with-r-variables-data-frames-and-datasets.html"><i class="fa fa-check"></i><b>3.4</b> Working with R: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="3.5" data-path="visualization-with-r.html"><a href="visualization-with-r.html"><i class="fa fa-check"></i><b>3.5</b> Visualization with R</a></li>
+<li class="chapter" data-level="3.6" data-path="defining-functions.html"><a href="defining-functions.html"><i class="fa fa-check"></i><b>3.6</b> Defining functions</a></li>
+<li class="chapter" data-level="3.7" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>3.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="3.8" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>3.8</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>4</b> Modeling with rates of change</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>4.1</b> Lynx and Hares</a></li>
+<li class="chapter" data-level="4.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>4.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="4.3" data-path="establishing-species.html"><a href="establishing-species.html"><i class="fa fa-check"></i><b>4.3</b> Establishing species</a></li>
+<li class="chapter" data-level="4.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>4.4</b> Other types of functional responses</a></li>
+<li class="chapter" data-level="4.5" data-path="exercises-2.html"><a href="exercises-2.html"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>5</b> Euler’s method</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="defining-an-algorithm.html"><a href="defining-an-algorithm.html"><i class="fa fa-check"></i><b>5.1</b> Defining an Algorithm</a></li>
+<li class="chapter" data-level="5.2" data-path="building-an-iterative-method.html"><a href="building-an-iterative-method.html"><i class="fa fa-check"></i><b>5.2</b> Building an iterative method</a></li>
+<li class="chapter" data-level="5.3" data-path="eulers-method-applied-to-systems.html"><a href="eulers-method-applied-to-systems.html"><i class="fa fa-check"></i><b>5.3</b> Euler’s method applied to systems</a></li>
+<li class="chapter" data-level="5.4" data-path="more-refined-numerical-solvers.html"><a href="more-refined-numerical-solvers.html"><i class="fa fa-check"></i><b>5.4</b> More refined numerical solvers</a></li>
+<li class="chapter" data-level="5.5" data-path="exercises-3.html"><a href="exercises-3.html"><i class="fa fa-check"></i><b>5.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>6</b> Phase lines and equilibrium solutions</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>6.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="phase-lines-for-differentail-equations.html"><a href="phase-lines-for-differentail-equations.html"><i class="fa fa-check"></i><b>6.2</b> Phase lines for differentail equations</a></li>
+<li class="chapter" data-level="6.3" data-path="a-stability-test-for-equilibrium-solutions.html"><a href="a-stability-test-for-equilibrium-solutions.html"><i class="fa fa-check"></i><b>6.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="6.4" data-path="exercises-4.html"><a href="exercises-4.html"><i class="fa fa-check"></i><b>6.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>7</b> Coupled systems of equations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="model-redux-flu-with-quarantine.html"><a href="model-redux-flu-with-quarantine.html"><i class="fa fa-check"></i><b>7.1</b> Model redux: flu with quarantine</a></li>
+<li class="chapter" data-level="7.2" data-path="determining-stability.html"><a href="determining-stability.html"><i class="fa fa-check"></i><b>7.2</b> Determining stability</a></li>
+<li class="chapter" data-level="7.3" data-path="generating-a-phase-plane-in-r.html"><a href="generating-a-phase-plane-in-r.html"><i class="fa fa-check"></i><b>7.3</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="7.4" data-path="exercises-5.html"><a href="exercises-5.html"><i class="fa fa-check"></i><b>7.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>8</b> Exact Solutions to Differential Equations</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="separable-differential-equations.html"><a href="separable-differential-equations.html"><i class="fa fa-check"></i><b>8.1</b> Separable Differential Equations</a></li>
+<li class="chapter" data-level="8.2" data-path="integrating-factors.html"><a href="integrating-factors.html"><i class="fa fa-check"></i><b>8.2</b> Integrating factors</a></li>
+<li class="chapter" data-level="8.3" data-path="guess-and-check.html"><a href="guess-and-check.html"><i class="fa fa-check"></i><b>8.3</b> Guess and Check</a></li>
+<li class="chapter" data-level="8.4" data-path="superposition-of-solutions.html"><a href="superposition-of-solutions.html"><i class="fa fa-check"></i><b>8.4</b> Superposition of solutions</a></li>
+<li class="chapter" data-level="8.5" data-path="applying-guess-and-check-more-broadly.html"><a href="applying-guess-and-check-more-broadly.html"><i class="fa fa-check"></i><b>8.5</b> Applying guess and check more broadly</a></li>
+<li class="chapter" data-level="8.6" data-path="exercises-6.html"><a href="exercises-6.html"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-redux-flu-with-quarantine" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Model redux: flu with quarantine</h2>
+<p>In Section <a href="intro-01.html#intro-01">2</a> we studied the following model for the flu as a coupled system of equations:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{dS}{dt} &amp;= -kSI \\
+\frac{dI}{dt} &amp;= kSI
+\end{align*}\]</span></p>
+<p>In this scenario we are also going to consider that those who are infected are quarantined, proportional to the number infected, according to the following schematic:</p>
+<p><img src="series_files/figure-html/quarantine-1.png" width="672" /></p>
+<p>Which gives us the following system of equations:
+<span class="math display" id="eq:flu-quarantine">\[\begin{equation}
+\begin{split}\tag{7.1}
+\frac{dS}{dt} &amp;= -kSI \\
+\frac{dI}{dt} &amp;= kSI - \beta I
+\end{split}
+\end{equation}\]</span></p>
+<p>To find the equilibrium solutions we want to find values of <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> where the rates <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> are <em>both</em> zero. This can be done by algebraically solving the system of equations:</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp;= -kSI \\
+0 &amp;= kSI - \beta I
+\end{align*}\]</span></p>
+<p>Let’s examine the first equation (<span class="math inline">\(0 = -kSI\)</span>), which we can see is consistent when either <span class="math inline">\(S=0\)</span> and <span class="math inline">\(I=0\)</span>. These give us two options, which we then use in the second equation (<span class="math inline">\(0 = kSI - \beta I\)</span>). When <span class="math inline">\(S=0\)</span>, then <span class="math inline">\(0 = k\cdot 0 \cdot I - \beta I \rightarrow 0 = -\beta I\)</span>, which is consistent when <span class="math inline">\(I=0\)</span>. So <span class="math inline">\((S_{*},I_{*}) = (0,0)\)</span> is one equilibrium solution. (In fact, if <span class="math inline">\(I=0\)</span>, then any value of <span class="math inline">\(S\)</span> would be an equilibrium solution. Can you explain why?)</p>
+<p>This is an interesting example. We call the equations <span class="math inline">\(S=0\)</span> and <span class="math inline">\(I=0\)</span> when <span class="math inline">\(\displaystyle \frac{dS}{dt}=0\)</span> as <em>nullclines</em> for <span class="math inline">\(S\)</span>. In a similar manner, the equations in <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> when <span class="math inline">\(\displaystyle \frac{dI}{dt}=0\)</span> are called <em>nullclines</em> for <span class="math inline">\(I\)</span>. Let’s try to determine formulas for these equations:</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp;= kSI-\beta I \\
+0 &amp;= I\cdot (kS - \beta )
+\end{align*}\]</span></p>
+<p>Because the last equation is factored as a product, nullclines for <span class="math inline">\(I\)</span> are either <span class="math inline">\(I=0\)</span> or <span class="math inline">\(\displaystyle S = \frac{\beta}{k}\)</span>.</p>
+<p>Nullclines are not equilibrium solutions by themselves - it is the <em>intersection</em> of two different nullclines that determine equilibrium solutions. Figure <a href="model-redux-flu-with-quarantine.html#fig:quarantine-nullclines">7.1</a> shows the nullclines in the <span class="math inline">\(S-I\)</span> plane (since we have two equations), with <span class="math inline">\(S\)</span> on the horizontal axis and <span class="math inline">\(I\)</span> on the vertical axis.</p>
+<div class="figure"><span id="fig:quarantine-nullclines"></span>
+<img src="series_files/figure-html/quarantine-nullclines-1.png" alt="Nullclines for Equation \@ref(eq:flu-quarantine). To generate the plot we assumed $\beta=1$ and $k=1$" width="384" />
+<p class="caption">
+Figure 7.1: Nullclines for Equation <a href="model-redux-flu-with-quarantine.html#eq:flu-quarantine">(7.1)</a>. To generate the plot we assumed <span class="math inline">\(\beta=1\)</span> and <span class="math inline">\(k=1\)</span>
+</p>
+</div>
+<pre><code>## &lt;ggproto object: Class ScaleDiscrete, Scale, gg&gt;
+##     aesthetics: colour
+##     axis_order: function
+##     break_info: function
+##     break_positions: function
+##     breaks: S&#39; = 0 I&#39; = 0
+##     call: call
+##     clone: function
+##     dimension: function
+##     drop: TRUE
+##     expand: waiver
+##     get_breaks: function
+##     get_breaks_minor: function
+##     get_labels: function
+##     get_limits: function
+##     guide: legend
+##     is_discrete: function
+##     is_empty: function
+##     labels: waiver
+##     limits: NULL
+##     make_sec_title: function
+##     make_title: function
+##     map: function
+##     map_df: function
+##     n.breaks.cache: NULL
+##     na.translate: TRUE
+##     na.value: grey50
+##     name: Nullclines
+##     palette: function
+##     palette.cache: NULL
+##     position: left
+##     range: &lt;ggproto object: Class RangeDiscrete, Range, gg&gt;
+##         range: NULL
+##         reset: function
+##         train: function
+##         super:  &lt;ggproto object: Class RangeDiscrete, Range, gg&gt;
+##     rescale: function
+##     reset: function
+##     scale_name: hue
+##     train: function
+##     train_df: function
+##     transform: function
+##     transform_df: function
+##     super:  &lt;ggproto object: Class ScaleDiscrete, Scale, gg&gt;</code></pre>
+<p>A key thing to note is that where two different nullclines cross is an <em>equilibrium solution</em> to the system of equations. This means that <strong>both</strong> <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> are zero at this point. Examining Figure <a href="model-redux-flu-with-quarantine.html#fig:quarantine-nullclines">7.1</a>, there are three possibilities:</p>
+<ol style="list-style-type: decimal">
+<li>At <span class="math inline">\(S=0\)</span> and <span class="math inline">\(I=0\)</span> (otherwise known as the origin). This equilibrium solution makes biological sense: if there is nobody susceptible or infected (everyone is perfectly healthy - yay!) there are no flu cases.</li>
+<li>Building on the last equilibrium solution, the entire horizontal axis is an equilibrium solution because the nullclines for <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> are the (<span class="math inline">\(I=0\)</span>). There is a practical interpretation of this nullcline - whenever <span class="math inline">\(I=0\)</span>, meaning there are no infected people around, the solution is at an equilibrium.</li>
+<li>There is also a third possibility where the vertical line at <span class="math inline">\(S=1\)</span> crosses the horizontal axis (<span class="math inline">\(S=1\)</span>, <span class="math inline">\(I=0\)</span>), but that also falls under the second equilibrium solution.</li>
+</ol>
+<p>Now that we have identified our nullclines and equilibrium solutions, we will add additional context with the <em>flow</em> of the solution.</p>
+<div id="adding-context-to-our-phase-plane-slope-fields" class="section level3" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> Adding context to our phase plane: slope fields</h3>
+<p>Let’s go back to the idea of a phase plane, but this time we are going to add more context to our nullcline graph by evaluating different values of <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> into our system of equations and plot the <em>slope field</em>.</p>
+<p>First let’s evaluate the derivatives <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> in Equation <a href="model-redux-flu-with-quarantine.html#eq:flu-quarantine">(7.1)</a> for different values of <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span>:</p>
+<table>
+<caption>
+<span id="tab:unnamed-chunk-96">Table 7.1: </span>Values of <span class="math inline">\(\frac{dS}{dt}\)</span> and <span class="math inline">\(\frac{dI}{dt}\)</span> for the flu with quarantine model.
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+S
+</th>
+<th style="text-align:right;">
+I
+</th>
+<th style="text-align:right;">
+dS_dt
+</th>
+<th style="text-align:right;">
+dI_dt
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.4444444
+</td>
+<td style="text-align:right;">
+0.4444444
+</td>
+<td style="text-align:right;">
+-0.1975309
+</td>
+<td style="text-align:right;">
+-0.2469136
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.8888889
+</td>
+<td style="text-align:right;">
+0.8888889
+</td>
+<td style="text-align:right;">
+-0.7901235
+</td>
+<td style="text-align:right;">
+-0.0987654
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.3333333
+</td>
+<td style="text-align:right;">
+1.3333333
+</td>
+<td style="text-align:right;">
+-1.7777778
+</td>
+<td style="text-align:right;">
+0.4444444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.7777778
+</td>
+<td style="text-align:right;">
+1.7777778
+</td>
+<td style="text-align:right;">
+-3.1604938
+</td>
+<td style="text-align:right;">
+1.3827160
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2.2222222
+</td>
+<td style="text-align:right;">
+2.2222222
+</td>
+<td style="text-align:right;">
+-4.9382716
+</td>
+<td style="text-align:right;">
+2.7160494
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2.6666667
+</td>
+<td style="text-align:right;">
+2.6666667
+</td>
+<td style="text-align:right;">
+-7.1111111
+</td>
+<td style="text-align:right;">
+4.4444444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3.1111111
+</td>
+<td style="text-align:right;">
+3.1111111
+</td>
+<td style="text-align:right;">
+-9.6790123
+</td>
+<td style="text-align:right;">
+6.5679012
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3.5555556
+</td>
+<td style="text-align:right;">
+3.5555556
+</td>
+<td style="text-align:right;">
+-12.6419753
+</td>
+<td style="text-align:right;">
+9.0864198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4.0000000
+</td>
+<td style="text-align:right;">
+4.0000000
+</td>
+<td style="text-align:right;">
+-16.0000000
+</td>
+<td style="text-align:right;">
+12.0000000
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notice how the different values of <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> at each of the <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> values. We can plot each of the coordinate pairs of <span class="math inline">\(\displaystyle \left( \frac{dS}{dt}, \frac{dI}{dt} \right)\)</span> with a vector in the <span class="math inline">\((S,I)\)</span> plane. We associate <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> with left-right motion, so positive <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> means pointing to the right. Likewise, we associate <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> with up-down motion, so positive <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> means the vector points up. At the point <span class="math inline">\((S,I)=(1,1)\)</span>, we have an arrow that points directly to the west because and <span class="math inline">\(\displaystyle \frac{dI}{dt} &lt; 0\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt} =0\)</span>. If we sequentially sample points in the <span class="math inline">\((S,I)\)</span> plane we get a vector field plot, superimposed with the nullclines:</p>
+<div class="figure"><span id="fig:unnamed-chunk-97"></span>
+<img src="series_files/figure-html/unnamed-chunk-97-1.png" alt="Phaseplane for Equation \@ref(eq:flu-quarantine). To generate the plot we assumed $\beta=1$ and $k=1$" width="384" />
+<p class="caption">
+Figure 7.2: Phaseplane for Equation <a href="model-redux-flu-with-quarantine.html#eq:flu-quarantine">(7.1)</a>. To generate the plot we assumed <span class="math inline">\(\beta=1\)</span> and <span class="math inline">\(k=1\)</span>
+</p>
+</div>
+</div>
+<div id="motion-around-the-nullclines" class="section level3" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> Motion around the nullclines</h3>
+<p>We can also extend the motion around the nullclines to investigate the stability. With a one dimensional differential equation we used a number line to quantify values where the solution is increasing / decreasing. The problem with several differential equations is that the notion of “increasing” or “decreasing”" becomes difficult to understand - as there is an additional degree of freedom! Simply put, in a plane you can move left/right <em>or</em> up/down. The benefit for having nullclines is that they <strong>isolate</strong> the motion in one direction.</p>
+<p>In general for a two dimensional system:
+- When a horizontal axis variable has a nullcline, the only allowed motion is up/down.
+- When a vertical axis variable has a nullcline, the only motion is up/down.</p>
+<p>Applying this knowledge to Equation <a href="model-redux-flu-with-quarantine.html#eq:flu-quarantine">(7.1)</a>, if we choose points where <span class="math inline">\(I&#39;=0\)</span> then we know that the only motion is to the left and the right because <span class="math inline">\(S\)</span> can still change along that curve. If we choose points where <span class="math inline">\(S&#39;=0\)</span> then we know that the only motion is to the up/down because <span class="math inline">\(I\)</span> can still change along that curve (Figure <a href="model-redux-flu-with-quarantine.html#fig:nullclines-quarantine-explained">7.3</a>).</p>
+<div class="figure"><span id="fig:nullclines-quarantine-explained"></span>
+<img src="series_files/figure-html/nullclines-quarantine-explained-1.png" alt="Nullclines for Equation \@ref(eq:flu-quarantine) with context on the direction of the motion." width="480" />
+<p class="caption">
+Figure 7.3: Nullclines for Equation <a href="model-redux-flu-with-quarantine.html#eq:flu-quarantine">(7.1)</a> with context on the direction of the motion.
+</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="coupled-06.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="determining-stability.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/06-coupledSystems.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/06-coupledSystems.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

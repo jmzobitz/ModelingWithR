@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.3 What do eigenvalues tell us? | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.3 What do eigenvalues tell us? | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.3 What do eigenvalues tell us? | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-06-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="computing-eigenvalues-and-eigenvectors.html"/>
+<link rel="next" href="concluding-thoughts.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="chapter" data-level="2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>2</b> What are eigenvalues?</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="straight-line-solutions.html"><a href="straight-line-solutions.html"><i class="fa fa-check"></i><b>2.1</b> Straight line solutions</a></li>
+<li class="chapter" data-level="2.2" data-path="computing-eigenvalues-and-eigenvectors.html"><a href="computing-eigenvalues-and-eigenvectors.html"><i class="fa fa-check"></i><b>2.2</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="2.3" data-path="what-do-eigenvalues-tell-us.html"><a href="what-do-eigenvalues-tell-us.html"><i class="fa fa-check"></i><b>2.3</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="2.4" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>2.4</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.5" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="what-do-eigenvalues-tell-us" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> What do eigenvalues tell us?</h2>
+<p>Here the focus of the section changes a little bit from finding the solution of the differential equation (e.g. the formulas <span class="math inline">\(s_{1}(t)\)</span> and <span class="math inline">\(s_{2}(t)\)</span>) to understanding what the solutions would <em>look</em> like in the phaseplane. This is intentional: once we have found the eigenvalues, finding eigenvectors can seem rather mundane at times (perhaps heavy on the algebra), yet we know they will be a straight line through the origin. We know the general form of the solution is <span class="math inline">\(\vec{x}(t) = c_{1} e^{\lambda_{1}t} \cdot \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \cdot \vec{v}_{2}\)</span>, so what else is there?</p>
+<p>In fact, studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let’s think about the characteristic equation for a 2 by 2 matrix, simplifying things out:</p>
+<p><span class="math display">\[\begin{align*}
+\det(A - \lambda I) &amp;= 0 \\
+(a - \lambda)(d-\lambda)-bc &amp;= 0 \\
+\lambda^{2} - (a+d) \lambda + ad-bc &amp; = 0
+\end{align*}\]</span></p>
+<p>The last line of the above equation is a quadratic equation in <span class="math inline">\(\lambda\)</span>. Think about what you know about quadratic equations: there may be 2 distinct solutions, no solution (the solutions are imaginary) or 1 solution (repeated solutions). Also the solutions may be positive or negative. There are so many different combinations! In this case the solutions are referring to eigenvalues, so there is a phaseplane associated with each case. What types of phaseplanes do all those different types of eigenvalues produce? Let’s take a look at each of these cases, focusing our analysis on a two-dimensional system of equations (the results can be generalized to higher-dimensional systems).</p>
+<div id="all-eigenvalues-positive-unstable-node" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> All eigenvalues positive (unstable node)</h3>
+<p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 2 &amp; 0 \\ 1 &amp; 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p>The eigenvalues are both positive:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="what-do-eigenvalues-tell-us.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))  </span></code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1] 2 1
+## 
+## $vectors
+##          X1 X2
+## 1 0.7071068  0
+## 2 0.7071068  1</code></pre>
+<p>The phase plane for this diagram is shown below:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-8-1.png" width="336" /></p>
+<p>Notice how the phase plane diagram has all arrows pointing from the origin. In the phaseplane a solution would move <em>away</em>, so the origin is an unstable node.</p>
+<p>Plotting both solutions versus time shows that they increase in <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span></p>
+</div>
+<div id="all-eigenvalues-negative-stable-node" class="section level3" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> All eigenvalues negative (stable node)</h3>
+<p>Now consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} -2 &amp; 0 \\ 1 &amp; -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p>(This is a <em>slight</em> modification from the previous example.) The eigenvalues are both positive:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="what-do-eigenvalues-tell-us.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>))  </span></code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1] -2 -1
+## 
+## $vectors
+##           X1 X2
+## 1  0.7071068  0
+## 2 -0.7071068  1</code></pre>
+<p>In this case the situation is reversed, with the phase plane having all arrows pointing to the origin.</p>
+<p><img src="series_files/figure-html/unnamed-chunk-10-1.png" width="336" /></p>
+<p>We say the equilibrium solution is a <em>stable node</em>. In the phaseplane a solution would eventually move towards the origin (asymptotically)</p>
+</div>
+<div id="one-positive-one-negative-eigenvalue" class="section level3" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> One positive one negative eigenvalue</h3>
+<p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 3 &amp; -2 \\ 1 &amp; -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p>The eigenvalues are both positive:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="what-do-eigenvalues-tell-us.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="sc">-</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>))  </span></code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1]  2.4142136 -0.4142136
+## 
+## $vectors
+##          X1        X2
+## 1 0.9596830 0.5054495
+## 2 0.2810846 0.8628562</code></pre>
+<p>This situation is called a saddle node, best explained with a phase diagram:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-12-1.png" width="336" /></p>
+<p>This equilibrium solution is called a <em>saddle node</em>. From one direction (the horizontal) the arrows point away from the origin, but in the vertical direction the arrows point towards the origin. We will see that this behavior is due to the contradictory nature of the solution - one part of the solution (the one associated with the negative eigenvalue) decays asymptotically to zero. The other positive eigenvalue is associated with the asymptotically unstable, giving the solution trajectory the saddle shape.</p>
+</div>
+<div id="imaginary-eigenvalues" class="section level3" number="2.3.4">
+<h3><span class="header-section-number">2.3.4</span> Imaginary eigenvalues</h3>
+<p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} -3 &amp; -8 \\ 4 &amp; -6 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p>The eigenvalues are both positive:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="what-do-eigenvalues-tell-us.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="sc">-</span><span class="dv">8</span>,<span class="dv">4</span>,<span class="sc">-</span><span class="dv">6</span>))  </span></code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1] -4.5+5.454356i -4.5-5.454356i
+## 
+## $vectors
+##                     X1                   X2
+## 1 0.8164966+0.0000000i 0.8164966+0.0000000i
+## 2 0.1530931-0.5566829i 0.1530931+0.5566829i</code></pre>
+<p>There are two eigenvalues to this system: <span class="math inline">\(\lambda = -4.5+5.45i\)</span> and <span class="math inline">\(\lambda = -4.5 - 5.45i\)</span>. In this case the <span class="math inline">\(i\)</span> means the eigenvalues are imaginary. Notice how the eigenvalues are similar, but the signs on the second term differs. We say the eigenvalues are <em>complex conjugates</em> of each other, and write them in the form <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>.</p>
+<p>Let’s take a look at the phase plane for this system. When <span class="math inline">\(\alpha &lt; 0\)</span> the equilibrium solution is a spiral sink:</p>
+<p><img src="series_files/figure-html/unnamed-chunk-14-1.png" width="336" /></p>
+<p>This phaseplane has some spiraling motion to it. Why does that occur? Imaginary eigenvalues can occur when the solution to <span class="math inline">\(\det(A-\lambda I)=0\)</span> has imaginary solutions. More generally, we say <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>. Because the eigenvalues are complex, we would also expect the eigenvectors to be complex as well (i.e. <span class="math inline">\(\vec{v} \pm i \vec{w}\)</span>). Don’t let the term <em>imaginary</em> fool you: by using properties from complex analysis it can be shown that the complete solution is:</p>
+<p><span class="math display">\[\begin{equation}
+\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t))
+\end{equation}\]</span></p>
+<p>Notice the trigonometric terms in the solution - we should expect the solution to be periodic and to have some periodic behavior to it. In fact, When <span class="math inline">\(\alpha &lt; 0\)</span> we say the equilibrium solution is a <em>spiral sink</em> because the exponential terms in the solution decay asymptotically to zero.</p>
+<p>As you would expect, when <span class="math inline">\(\alpha &gt; 0\)</span> we classify a phaseplane as a spiral source, as we can see in the phase plane for <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 4 &amp; -5 \\ 3 &amp; 2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p><img src="series_files/figure-html/unnamed-chunk-15-1.png" width="336" /></p>
+<p>The final case for imaginary eigenvalues is when <span class="math inline">\(\alpha = 0\)</span>, which is termed a <em>center</em> equilibrium. As an example, let’s examine the phaseplane for the system <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p><img src="series_files/figure-html/unnamed-chunk-16-1.png" width="336" /></p>
+<p>Notice how the arrows don’t spin in (or out here) - but seem to point in a circle.</p>
+</div>
+<div id="repeated-eigenvalues" class="section level3" number="2.3.5">
+<h3><span class="header-section-number">2.3.5</span> Repeated eigenvalues</h3>
+<p>For repeated eigenvalues the solution is still stable or unstable depending on the sign of the eigenvalue, but rather the form of the solution changes:</p>
+<p><span class="math display">\[\begin{equation}
+\vec{x}(t) = \left( c_{1} v_{1} + c_{2} \vec{v}_{2} \right) e^{\lambda t} + c_{2} v_{1} t e^{\lambda t}
+\end{equation}\]</span></p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="computing-eigenvalues-and-eigenvectors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="concluding-thoughts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/18-eigenvalues.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/18-eigenvalues.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

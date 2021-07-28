@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.4 Bootstapping with linear regression | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.4 Bootstapping with linear regression | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.4 Bootstapping with linear regression | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-06-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sampling-the-empirical-distirbution.html"/>
+<link rel="next" href="exercises.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
+<li class="chapter" data-level="2" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>2</b> The bootstrap method</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="plotting-histograms-in-r.html"><a href="plotting-histograms-in-r.html"><i class="fa fa-check"></i><b>2.1</b> Plotting histograms in R</a></li>
+<li class="chapter" data-level="2.2" data-path="statistical-theory-sampling-distributions.html"><a href="statistical-theory-sampling-distributions.html"><i class="fa fa-check"></i><b>2.2</b> Statistical theory: Sampling distributions</a></li>
+<li class="chapter" data-level="2.3" data-path="sampling-the-empirical-distirbution.html"><a href="sampling-the-empirical-distirbution.html"><i class="fa fa-check"></i><b>2.3</b> Sampling the empirical distirbution</a></li>
+<li class="chapter" data-level="2.4" data-path="bootstapping-with-linear-regression.html"><a href="bootstapping-with-linear-regression.html"><i class="fa fa-check"></i><b>2.4</b> Bootstapping with linear regression</a></li>
+<li class="chapter" data-level="2.5" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bootstapping-with-linear-regression" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> Bootstapping with linear regression</h2>
+<p>Hopefully you can see how much more useful the bootstrap is in terms calculating sample statistics. Another neat application of the bootstrap is determining and expands the provenance of the data. A key goal is to get at the population level parameters, rather than the data level parameters. Can we use this as a modeling tool? - YES!</p>
+<p>In this case, the “population” represent the distribution on possibilities of parameters. A set of measurements is a <em>sample</em> of these parameters. What we can do is a bootstrap sample for the temperature data, fit a quadratic function to each of the new datasets, and then look at the distribution in parameter values.</p>
+<p>We are going to return to our example of the global temperature dataset from Section <a href="#linear-regression-08"><strong>??</strong></a>, and do the following steps:</p>
+<ul>
+<li>Do a bootstrap sample of the data 100 times.</li>
+<li>With each sample, fit a quadratic function.</li>
+<li>Following each fit, examine the histogram of each fitting coefficient.</li>
+</ul>
+<p>Here is how we can do this in with the command <code>bootstrap</code> from the <code>modelr</code> pacakge:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="bootstapping-with-linear-regression.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
+<span id="cb22-2"><a href="bootstapping-with-linear-regression.html#cb22-2" aria-hidden="true" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> globalTemp <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> yearSince1880 <span class="sc">+</span> <span class="fu">I</span>(yearSince1880<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-3"><a href="bootstapping-with-linear-regression.html#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="bootstapping-with-linear-regression.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the bootstrap samples</span></span>
+<span id="cb22-5"><a href="bootstapping-with-linear-regression.html#cb22-5" aria-hidden="true" tabindex="-1"></a>  boot <span class="ot">&lt;-</span> modelr<span class="sc">::</span><span class="fu">bootstrap</span>(global_temperature, <span class="at">n=</span><span class="dv">100</span>)</span>
+<span id="cb22-6"><a href="bootstapping-with-linear-regression.html#cb22-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-7"><a href="bootstapping-with-linear-regression.html#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># You might not need to modify this code as much</span></span>
+<span id="cb22-8"><a href="bootstapping-with-linear-regression.html#cb22-8" aria-hidden="true" tabindex="-1"></a>  models <span class="ot">&lt;-</span> <span class="fu">map</span>(boot<span class="sc">$</span>strap, <span class="sc">~</span> <span class="fu">lm</span>( regression_formula, <span class="at">data =</span> .))</span>
+<span id="cb22-9"><a href="bootstapping-with-linear-regression.html#cb22-9" aria-hidden="true" tabindex="-1"></a>  tidied <span class="ot">&lt;-</span> <span class="fu">map_df</span>(models, broom<span class="sc">::</span>tidy, <span class="at">.id =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb22-10"><a href="bootstapping-with-linear-regression.html#cb22-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-11"><a href="bootstapping-with-linear-regression.html#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Make the histogram.  We will make a facetted plot</span></span>
+<span id="cb22-12"><a href="bootstapping-with-linear-regression.html#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data=</span>tidied) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="bootstapping-with-linear-regression.html#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>estimate)) <span class="sc">+</span></span>
+<span id="cb22-14"><a href="bootstapping-with-linear-regression.html#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>term,<span class="at">scales=</span><span class="st">&quot;free&quot;</span>)</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="series_files/figure-html/coeff-plot-11-1.png" width="384" /></p>
+<p>There several new elements of this code, so let’s break this down bit by bit:</p>
+<ul>
+<li>The code <code>boot &lt;- modelr::bootstrap(global_temperature, n=100)</code> creates 100 bootstrap samples of the <code>global_temperature</code> dataset. The list <code>boot</code> has two entries: (1) <code>.id</code> which is a reference (1 to 100) of a particular bootstrap sample and (2) <code>strap</code> which contains the information about the bootstrap sample.</li>
+<li>The next portion of the code applies the <code>map</code> command (similar to <code>map_df</code>) to first compute the linear regression for each bootstrap sample. The linear regression fits are stored in the data frame <code>models</code>.</li>
+<li>Finally we extract out the information about parameters using the command <code>tidy</code> from the <code>broom</code> package. The data frame <code>tidied</code> is organized by the bootstrap sample <code>.id</code> and has several columns, but we are going to focus on two of them: <code>estimate</code>, which tells you the numerical value of the coefficient in the column <code>term</code>. Other information about error estimates and statistical significance are included.</li>
+<li>In our histogram’s horizontal axis we want to plot the value of the quantitative variable <code>estimate</code>.<br />
+</li>
+<li>You should see an interesting plot here. We are facetting the histograms by the coefficients of the histogram (hence the term <code>facet_wrap(~term,scales="free")</code>, which says “plot a histogram for each variable in the column term.” We use <code>scales="free"</code> because each coefficient has a different range of values. (You can see the difference if you remove <code>scales="free"</code> from the plotting command.)</li>
+</ul>
+<p>Figure <a href="#fig:coeff-plot-11"><strong>??</strong></a> is an example of a “small multiples” plot - the title of the plot is the value of the coefficient multiplying each term:</p>
+<table>
+<thead>
+<tr class="header">
+<th><strong>Small multiple title</strong></th>
+<th><strong>Coefficient of </strong> <span class="math inline">\(T=a + bY + cY^{2}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Intercept</code></td>
+<td><span class="math inline">\(a\)</span></td>
+</tr>
+<tr class="even">
+<td><code>yearSince1880</code></td>
+<td><span class="math inline">\(b\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>I(yearSince1880^2)</code></td>
+<td><span class="math inline">\(c\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Notice that with the bootstrap we can get information about the distribution of the estimated parameters, which includes the median and the 95% confidence interval. This is super useful in reporting results from parameter estimates.</p>
+<p>The idea of sampling with replacement, generating a parameter estimate, and then repeating over several iterations is at the heart of many computational parameter estimation methods. Such an approach helps make non-linear problems more tractable.</p>
+<p>While we did a bootstrap parameter estimate on a quadratic function, this also works for a log transformation of a dataset, as with the <code>phosphorous</code> dataset of algae and daphnia we have studied previously. You will investigate this in one of the homework exercises.</p>
+<p>This section extended your abilities in R by showing you how to generate histograms, sample a dataset, and compute statistics. The goal here is to give you examples that you can re-use in this section’s exercises. Enjoy!</p>
+<div style="page-break-after: always;"></div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sampling-the-empirical-distirbution.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/11-bootstrap.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/11-bootstrap.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

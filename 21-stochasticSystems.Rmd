@@ -1,0 +1,242 @@
+# (PART) Stochastic Differential Equations {-} 
+
+# Stochastic Biological Systems {#stoch-sys-21}
+
+So far in this course we have studied *deterministic* differential equations.  Given information about the solution or certain values of the parameters we could characterize the long term behavior of the system.  In this part we will study *stochastic* differential equations - which means that the differential equation is subject to randomness - either in the parameters (which may cause a change in the stability for a time) or in the variables themselves.
+
+Stochastic differential equations are a neat field of study because the field can be studied using computational approaches with some interesting mathematical approaches. In this part we will give you a taste of how to incorporate stochastics into your differential equation and focus on some solution techniques. Some of the ideas we will learn can be applied in other contexts.  For example, Brownian motion is foundational to modern physics or can be applied to modeling changes in the stock market.  
+
+So far in this course we have studied *deterministic* differential equations. Given information about the solution or certain values of the parameters we could characterize the long term behavior of the system. Now we are studying *stochastic* differential equations (also called SDEs) - which means that the differential equation is subject to randomness - either in the parameters (which may cause a change in the stability for a time) or in the variables themselves. Hopefully the previous sections imparted a sense (1) that parameter values may change according to the data used to estimate them (parameter estimation) and (2) changing a parameter may drastically alter the long-term dynamics of a system (bifurcation). Learning about stochastic differential equations will extend your knowledge.
+
+
+Understanding how to model SDEs requires learning some new mathematics as well as ways to numerically simulate this mathematics. A lot of SDEs rely on numerical simulation, so we will build up our understanding of some of the results of numerical simulation first.
+
+<!-- ### Author: JMZ, modified from Logan and Wolesesnky "Mathematical Methods in Biology" -->
+<!-- ### Purpose: Create a sandhill crane model of discrete dynamics x(t+1)=r*x(t), as detailed on page 311 -->
+<!-- ### r = 1+b-d, where b is the birth rate, d is the death rate. -->
+<!-- ### b and d are drawn from normally distributed random variables. -->
+
+## A discrete system
+Let's focus on an example that involves discrete populations. Moose are large animals (part of the deer family) weighing 1000 pounds that can be found in Northern Minnesota [link](https://www.dnr.state.mn.us/mammals/moose.html).  Here is a picture of a moose: [link](https://images.dnr.state.mn.us/natural_resources/snapshots/mammals/1moose.jpg).  While in the early 2000's the population of the moose was 8000, recent estimates have the numbers at 3000, although that seems to have stabilized [link](https://files.dnr.state.mn.us/wildlife/moose/moosesurvey.pdf)
+
+
+A starting model that describes their population dynamics is the discrete dynamical system:
+
+\begin{equation}
+M_{t+1} = M_{t} + b \cdot M_{t} - M \cdot M_{t},
+\end{equation}
+
+where $M_{t}$ is the population of the moose cranes in year $t$, and $b$ the birth rate and $d$ the death rate.  This equation can be reduced down to $M_{t+1}=r M_{t}$ where $r=1+b-d$ is the net birth/death rate.  This model states that the population of cranes in the next year equals the current population, added to any fraction of births and taking away any deaths.
+
+This discrete dynamical system is a little bit different from a continuous dynamical system, but can be simulated pretty easily.  
+
+```{r,eval=FALSE}
+
+M0 <- 3000  # Initial population of moose
+N <- 5  # Number of years we simulate
+
+moose <- function(r) {
+  out_moose <- array(M0,dim=N)
+  for (i in 1:(N-1)) {
+    out_moose[i+1] <- r*out_moose[i]
+  }
+  return(out_moose)
+}
+
+```
+
+Notice how the function `moose` returns the current population of moose after $N$ years with the net birth rate $r$.  Let's take a look at the results for different values of $r$:
+```{r,fig.width=4,fig.height=3,fig.align='center'}
+
+out_moose <- tibble( years = 1:N,
+                     r0.575 = moose(0.575),
+                     r1 = moose(1),
+                     r1.4 = moose(1.4))
+
+
+ggplot(data = out_moose) +
+  geom_line(aes(x=years,y=r0.575),color='red') +
+  geom_line(aes(x=years,y=r1),color='blue') +
+  geom_line(aes(x=years,y=r1.4),color='green') +
+  labs(x='Years',
+         y='Moose')
+
+
+
+
+```
+Let's remind ourselves of what is going on in the code.
+
+- `out_moose <- tibble` creates a data frame that we can use for plotting.  We call several different instances of the `moose` code for different net birth rates.  I've decided to label each of those instances with the value of the birth rate *r* for reference.
+- The command `geom_line` makes a line plot.  Remember that we need to specify both the x (horizontal) and y (vertical) axes.  I specified the different colors to distinguish the different birth rates.
+
+Notice how for some values of $r$ the population starts to decline, stay the same, or increase.  Let's analyze this system a little more.  Just like with a continuous differential equation we want to look for solutions that are in steady state, or ones were the population is staying the same.  In other words this means that $M_{t+1}=M_{t}$, or $M_{t}=rM_{t}$.  If we simplify this expression this means that $M_{t}-r M_{t}=0$, or $(r-1)M_{t}=0$.  Assuming that $M_{t}$ is not equal to zero, then this equation is consistent only when $r=1$.  This makes sense: we know $r=1-b-d$, so the only way this can be one is if $b=d$, or the births balance out the deaths.
+
+Ok, so we found our equilibrium solution.  What is the general form of this solution? Just like when we were solving continuous systems and we assumed an exponential solution we will do the same here, but this time we represent the solution as $M_{t}=A\cdot v^{t}$, which is an exponential equation.  Since we have $M_{0}=3000$, then $A=3000$.  Plugging this expression into our equation we have:
+
+\begin{equation}
+100 \cdot v^{t+1} = r 3000 \cdot v^{t}
+\end{equation}
+
+Our goal is to figure out a value for $v$ that is consistent with this expression.  Just like we did with the equilibrium solution we can arrange to the following equation, using the fact that $v^{t+1}=v^{t}\cdot v$:
+
+\begin{equation}
+3000 v^{t} (v-r) = 0
+\end{equation}
+
+Since we assume $v\neq 0$, the only possibility is if $v=r$.  Aha!  Our general solution then is
+
+\begin{equation}
+M_{t}=3000 r^{t}
+\end{equation}
+
+We know that if $r>1$ we have exponential growth and $r<1$ exponential decay, consistent with our results above.
+
+There is some comfort here: just like in continuous systems we find the eigenvalues that determine the stability of the equilibrium solution.  For discrete systems the stability is based on the value relative to one (not zero) - so it is good to be aware of what type of system you are looking at!
+
+Now that we have an understanding of how this system works we can begin to look at stochasticity.
+
+## Discrete systems of equations
+One way that we can extend this model is to account for both adult and juvenile moose populations.  Here is one mode.
+
+## Environmental Stochasticity
+It may be the case that environmental effects drastically change the net birth rate from one year to the next.  For example it is known that in snowy winters or warm summers the net birth rate changes from $r=1.4$ to $r=0.575$.  This would be a pretty drastic effect on the system - as one case is associated with exponential growth and the other exponential decay.
+
+Because the years when this snowfall could occur is random we need to account for this in our model.  One way is to create a conditional statement based on the probability that the snow depth will be less deep. How we implement that in a code is by drawing a uniform random number each year and adjusting the birth rate:
+
+
+```{r}
+M0 <- 100  # Initial population of cranes
+N <- 5  # Number of years we simulate
+
+# We use the snowfall_rate  as an input variable
+
+moose <- function(snowfall_rate) {
+    out_sandhills <- array(M0,dim=N)
+      for (i in 1:(N-1)) {
+        r = 1.4  # Normal net birth rate
+        if (runif(1)<snowfall_rate) {
+          r = 0.575   # Decreased flood rate
+        }
+        out_moose[i+1] <- r*out_moose[i]
+      }
+  return(out_sandhills)
+  }
+
+
+```
+
+
+Let's take a look at some solutions for different realizations of the flood rate:
+
+```{r,echo=FALSE,fig.width=4,fig.height=3,fig.align='center'}
+
+S0 <- 100  # Initial population of cranes
+N <- 10  # Number of years we simulate
+
+# We use the flood rate as an input variable
+
+  sandhills <- function(flood_rate) {
+    out_sandhills <- array(S0,dim=N)
+      for (i in 1:(N-1)) {
+        r = 1.4  # Normal net birth rate
+        if (runif(1)<flood_rate) {
+          r = 0.575   # Decreased flood rate
+        }
+        out_sandhills[i+1] <- r*out_sandhills[i]
+      }
+  return(out_sandhills)
+  }
+
+
+
+data.frame(r0.01=sandhills(0.01),r0.1=sandhills(0.1),r0.3=sandhills(0.3)) %>%
+  mutate(year=1:N) %>%
+  gather(key=r,value=value,1:3) %>% mutate(r=str_sub(r,2)) %>%
+  ggplot(aes(x=year,y=value,color=as.factor(r))) + geom_point(size=2) +
+  geom_line(size=1) +
+  xlab('Year') + ylab('Population') +
+  scale_color_discrete(name="Flood rate") +
+  theme(legend.position="bottom",
+        legend.text=element_text(size=14),
+        axis.title.x=element_text(size=18),
+        axis.text.x=element_text(size=10),
+        axis.text.y=element_text(size=10),
+        axis.title.y=element_text(size=18))
+
+
+```
+
+As you can see when the flood rate is very low (a 1% chance of a flood), the population continues exponentially.  If it an order of magnitude higher (10% chance) it can still increase, but one bad flood year does knock the population down.  Finally if it is too high (30%) the population just seems to fluctuate.
+
+This type of stochasticity is important, but we really don't get a sense for the full scoop running three simulations.  Just like in estimating parameters our goal is to simulate a bunch of realizations of the stochastic process and then analyze the *ensemble* of the population.
+
+I've written code `sandhillsEnvironmental` that will allow you to examine long term ensembles of the population, which is an extension of the loop above.
+
+```{r,fig.width=4,fig.height=3,fig.align='center'}
+
+initialPopulation <- 100  # Initial population size
+floodRate <- 1/25 # The frequency of flooding. (1/25 = one in 25 years)
+nYears <- 20 #the number of years we run our population
+nSimulations <- 100 # Number of simulations we try
+
+sandhillsEnvironmental(initialPopulation,floodRate,nYears,nSimulations)
+```
+What gets plotted is the spaghetti plot (named as if a bowl of spaghetti was dropped on the floor).  This shows the solutions for each of the simulations.  Following that plot is the ensemble average, which shows the median and the 95% confidence interval of your solutions.  If the flood rate is once every 25 years the sandhill crane population seems to be doing well.
+
+More interesting results occur if the catastrophic flood rate doubles:
+
+```{r,fig.width=4,fig.height=3,fig.align='center'}
+
+initialPopulation <- 100  # Initial population size
+floodRate <- 0.3 # The frequency of flooding. (1/25 = one in 25 years)
+nYears <- 20 #the number of years we run our population
+nSimulations <- 100 # Number of simulations we try
+
+sandhillsEnvironmental(initialPopulation,floodRate,nYears,nSimulations)
+```
+
+Here the population seems to increase across *some* realization, but really tends to stay at about the initial value.
+
+
+Both of these examples introduced a different type of random effects into the dynamical system.  Both contexts (environmental or demographic stochasticity) affected the net reproduction rate $r$, but in different ways.  The important lesson is that the *type* of stochasticity matters just as much as *how* it is implemented.
+
+\newpage
+
+## Exercises
+DO SOME MODELS WITH LOONS HERE (SEE PUBS)
+
+```{exercise}
+A population grows according the the growth law $x_{t+1}=r_{t}x_{t}$.
+\begin{enumerate}
+\item Determine the general solution to this discrete dynamical system.
+\item Plot a sample growth curve with $r_{t}=0.86$ and $r_{t}=1.16$, with $x_{0}=100$. Show your solution for $t=50$ generations.
+\item Now consider a model where $r_{t}=0.86$ with probability 1/2 and $r_{t}=1.16$ with probability 1/2.  Write a function that will predict the population after $t=50$.  Show three or four different realizations of this stochastic process.
+\end{enumerate}
+```
+
+&nbsp;
+ <!-- %LW #2 page 317 -->
+```{exercise}
+A ``patch'' has area $a$, perimeter $s$, and a strip (band) of width $w$ inside the boundary of $a$ from which the animals disperse.  Only those in the strip disperse.  Let $u_{t}$ be the number of animals in $a$ at any time $t$.  The growth rate of all the animals in $a$ is $r$.  The rate at which animals disperse from the strip is proportional to the fraction of the animals in the strip, with proportionality constant $\epsilon$, which is the emigration rate for those in the strip.
+
+\begin{enumerate}
+\item Draw a picture of the situation described above.
+\item Explain why the equation that describes the dynamics is $$ u_{t+1}=ru_{t} - \epsilon \left( \frac{w \cdot s}{a} u_{t} \right) $$
+\item Determine conditions on the parameters $r$, $w$, $s$, $\epsilon$, and $a$ under which the population is growing.
+\end{enumerate}
+```
+
+&nbsp;
+
+<!-- LW pg 318 -->
+```{exercise}
+An animal reproduces two, one, or no offspring.  The chance it produces one offspring is 0.50, two offspring 0.25, and no offspring 0.25.  This animal does not survive after reproducing.  Use the function `population` in the `MAT 369Code` library to produce 1000 realizations of this stochastic process over 20 generations.  Assume the initial population size is 10 individuals.  Comment on the long term dynamics of the population.
+```
+
+&nbsp;
+<!-- LW pg 318 -->
+```{exercise}
+You are playing a casino game.  If you win the game earn a dollar.  If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.  You play the game 200 times.  Use the function `casino` in the `MAT369Code` library to produce 1000 realizations of this stochastic process. Comment on the long term dynamics of your earnings. Then assuming the house win probability is 0.52 figure out how long the game, on average, runs before you are broke.  Finally, adjusting the house win probability, hypothesize a function of the length of game as a function of the house win probability.
+```
+

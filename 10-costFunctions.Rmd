@@ -1,5 +1,5 @@
-# Cost Functions & Bayes' Rule
-The last section we examined likelihood functions, which combined a model with data using probability density functions.  We chose the parameter values for the model that optimized the likelihood function.  We will study this idea of parameter estimation using *cost functions*, which is another approach to the parameter estimation problem.
+# Cost Functions & Bayes' Rule {#cost-fns-10}
+In Section \@ref(likelihood-09) we examined likelihood functions, which were needed when combining a model with data using probability density functions.  In this section we will study this idea of parameter estimation using *cost functions*, which is another approach to the parameter estimation problem.
 
 
 ## Cost functions: likelihood functions in disguise
@@ -38,102 +38,122 @@ Notice that the values of the residual at each $(x,y)$ pair change as $b$ change
 
 
 \begin{equation}
-S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-6b)^2
+S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2
 \end{equation}
 
-```{r quadsb,echo=FALSE,fig.width=4,fig.height=3,fig.cap='The square residual $S(b)$'}
-new_data <- data.frame(x =c(1,2,4,6),y =c(3,5,4,10) ) 
+```{r quadsb,echo=FALSE,fig.width=4,fig.height=3,fig.cap='The square residual $S(b)$. The vertical line denotes the minimum value at $b=1.561$.'}
+new_data <- data.frame(x =c(1,2,4,4),y =c(3,5,4,10) ) 
 b=seq(0,5,0.01)
 lb = map(.x=b,.f=~(sum((new_data$y-.x*new_data$x)^2))) %>% as.numeric()
 
 data.frame(b,lb) %>%
   ggplot(aes(x=b,y=lb)) +
   geom_line() +
-  geom_vline(xintercept = 1.561,color='red')
+  geom_vline(xintercept = b[which.min(lb)],color='red') +
+  labs(y="S(b)") +
+  annotate(
+    geom = "curve", x = 2.5, y = 260, xend = 1.9, yend = 200, 
+    curvature = .3, arrow = arrow(length = unit(2, "mm"))
+  ) +
+  annotate(geom = "text", x = 2.6, y = 260, label = "Minimum of S(b) \n at b = 1.86", hjust = "left")
 
 ```
 
 
-This looks like a function of one variable.  Let's make a plot of $S(b)$ in Figure \@ref(fig:quadsb). Ok, the plot of $S(b)$ looks like a really nice quadratic function, with a minimum at $b=1.561$.  Did you notice that this value for $b$ is the same value for the minimum that we found in the likelihood?  In fact, if we multiplied out $S(b)$ and collected terms, this *would* be a quadratic function - which has a well defined optimum value that you can find using calculus.  
+This looks like a function of one variable.  Let's make a plot of $S(b)$ in Figure \@ref(fig:quadsb). Notice how the plot of $S(b)$ looks like a really nice quadratic function, with a minimum at $b=1.86$.  Did you notice that this value for $b$ is the same value for the minimum that we found in the likelihood function from Section \@ref(likelihood-09)?  In fact, if we multiplied out $S(b)$ and collected terms, this *would* be a quadratic function - which has a well defined optimum value that you can find using calculus. 
+
+
+Let's compare the value of $b$ to the best fit line in Figure \@ref(fig:sbbestfit).
+
 ```{r sbbestfit,echo=FALSE,warning=FALSE,fig.width=4,fig.height=3,fig.cap='Data with the best fit line'}
 new_data <- data.frame(x =c(1,2,4,6),y =c(3,5,4,10) ) 
 new_data %>%
 ggplot(aes(x=x, y=y)) +
  geom_point(size=2,color='red') +
-  geom_abline(a=0,b=1.561) +
+  geom_abline(a=0,b=1.86) +
   xlim(c(0,10)) +
   ylim(c(0,15))
 
 ```
-Let's compare the value of $b$ to the best fit line in Figure \@ref(fig:sbbestfit).
 
-This cost function approach seems to be working out well in that we have a value for $b$, but it also looks like a lot of the data lies above the best fit line. In some cases we also want to characterize the uncertainty on each of the measurements.  The uncertainty may be the same ($\sigma$) for all measurements, or varies.  What we do then is to divide each of the components of the cost function by the given uncertainty.  We can represent this cost function more generally using $\sum$ notation:
+
+The cost function approach described above seems to be working out well in that we have a value for $b$, but it also looks like a lot of the data lies above the best fit line.  We can address that later, but one approach is to include the uncertainty on each of the measured values in the cost function.  The uncertainty may be the same ($\sigma$) for all measurements or it could vary from measurement to measurement.  In both cases we divide each of the components of the cost function by the given uncertainty.  We can represent this cost function more generally using $\sum$ notation:
 
 \begin{equation}
-S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma_{i}^{2}}
+S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma^{2}}
 \end{equation}
 
 ## Connection to likelihood functions
-
-
-
-We call the function $S(b)$ the cost function. There is something big going on here. In Chapter 9 we also defined the log likelihood function)
+We call the function $S(b)$ the _cost function_. There is something big going on here. In Section \@ref(likelihood-09) we also defined the log likelihood function (Equation \@ref(eq:loglikely)):
 
 \begin{equation}
-\ln(L(\vec{\alpha} | \vec{x},\vec{y} )) = − \frac{N}{\sqrt{2 \pi} \sigma} − \sum_{i=1}^{N} \frac{ −(y_{i} - f(x_{i},\vec{\alpha} ))^{2}}{ 2 \sigma^{2}}
+\ln(L(\vec{\alpha} | \vec{x},\vec{y} )) = -2 \ln(2) - 2 \ln (\pi) -(3-b)^{2}-(5-2b)^{2}-(4-4b)^{2}-(10-4b)^{2}
 \end{equation}
 
-If we compare this log likelihood equation with $N=4$, $\sigma = 1/\sqrt{2}$, and $f(x_{i},\vec{\alpha} ) =bx$ ($\vec{\alpha}=b$), then we have the function $S(b)$, modulo the term $\displaystyle − \frac{N}{\sqrt{2 \pi} \sigma}$.  **This is no coincidence**.  In fact, cost functions are known as loglikelihood functions depending on your viewpoint.  You may be concerned with the first term, but in fact it doesn't matter, typically our goal is to *optimize* a cost or log-likelihood function.  Vertically shifting a function doesn't not change the *location* of an optimum value (Why?  Think back to derivatives from Calculus I).
+If we compare this log likelihood equation with $N=4$, $\sigma = 1/\sqrt{2}$, and $f(x_{i},\vec{\alpha} ) =bx$ ($\vec{\alpha}=b$), then we have the function $S(b)$, modulo the terms $\displaystyle - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma)$.  **This is no coincidence**.
 
-This fact can also help us objectively understand qualitatively what likelihood or cost functions do.
+In fact, when you study probability and statistics you may encounter likelihood functions (or _log_-likelihood functions - notice how $S(b) \approx - \ln(L) $!).  Likelihood functions are similar in nature to cost functions.  You may be thinking: but the log likelihood function contains the extra factors of $\displaystyle - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma)$ - but you need not worry.  Here is why: our goal is to *optimize* a cost or log-likelihood function. What these extras terms do (for constant $\sigma$ is shift the graph of the log-likelihood function *vertically* but not *horizontally*. Vertically shifting a function doesn't not change the *location* of an optimum value (Why?  Think back to derivatives from Calculus I).
 
-Ok, so this leads to a key observation: **A quadratic cost function yields the same results as likelihood function assuming the residuals are normally distributed.**
-
-Even better yet, $ln(L) = - S(b)$!  How cool is that.
+Recognizing the connection between cost and likelihood functions and their goal of optimization leads to a key observation: **A quadratic cost function yields the same results as likelihood function assuming the residuals are normally distributed.**
 
 
 
 ## Extending the cost function
-We may be wondering if this can be extended additionally to incorporate other types of data.  For example, if we knew there was a given range of values that would make sense (say $b$ is near 1.3, with a standard deviation as 0.1), we should be able to incorporate this information into the cost function.  A naive approach would be just to add in some additional squared term:
+We may be wondering if this can be extended additionally to incorporate other types of data.  For example, if we knew there was a given range of values that would make sense (say $b$ is near 1.3 with a standard deviation of 0.1), we should be able to incorporate this information into the cost function.  A naive approach would be just to add in some additional squared term:
 
 \begin{equation}
-\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-6b)^2 + (b-1.3)^2
+\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{0.1^2}
 \end{equation}
 
-```{r priorcost,echo=FALSE,fig.width=4,fig.height=3,fig.cap='Comparing two cost functions'}
-new_data <- data.frame(x =c(1,2,4,6),y =c(3,5,4,10) ) 
+```{r priorcost,echo=FALSE,fig.width=4,fig.height=3,fig.cap='Comparing two cost functions $S(b)$ (black) and $\\tilde{S}(b)$ (black dashed line)'}
+new_data <- data.frame(x =c(1,2,4,4),y =c(3,5,4,10) ) 
 b=seq(0,5,0.01)
 lb = map(.x=b,.f=~(sum((new_data$y-.x*new_data$x)^2) + (.x-1.3)^2/0.1^2)) %>% as.numeric()
+lb_orig = map(.x=b,.f=~(sum((new_data$y-.x*new_data$x)^2))) %>% as.numeric()
 
-data.frame(b,lb) %>%
-  ggplot(aes(x=b,y=lb)) +
-  geom_line() +
-  geom_vline(xintercept = 1.561,color='red') +
+data.frame(b,lb,lb_orig) %>%
+  ggplot(aes(x=b)) +
+  geom_line(aes(y=lb_orig),color='black') +
+  geom_line(aes(y=lb),color='black',linetype='dashed') +
+  geom_vline(xintercept =  b[which.min(lb_orig)],color='red') +
   geom_vline(xintercept = b[which.min(lb)],color='blue') +
-  labs(x = "b",y = "S(b)") +
-  geom_text(aes(x=0.1,y=1500,label="The new minimum \n with prior information"),hjust="left") +
-  geom_text(aes(x=3,y=1500,label="The original \n minimum value"),hjust="left") +
-  geom_curve(aes(x = 0.5, y = 1250, xend = 1.3, yend = 750),
-             curvature = 0.05, angle = 15,
-             arrow = arrow(length = unit(0.25,"cm"))) +
-  geom_curve(aes(x = 3.5, y = 1250, xend = 1.6, yend = 550),
-             curvature = 0.05, angle = 15,
-             arrow = arrow(length = unit(0.25,"cm"))) 
+  labs(x = "b",y = "Cost Function") +
+  annotate(
+    geom = "curve", x = 2.5, y = 260, xend = 1.9, yend = 200, 
+    curvature = .3, arrow = arrow(length = unit(2, "mm"))
+  ) +
+  annotate(geom = "text", x = 2.6, y = 260, label = "Original optimum \n at b = 1.86", hjust = "left") +
+  annotate(
+    geom = "curve", x = 0.9, y = 260, xend = 1.4, yend = 200, 
+    curvature = .3, arrow = arrow(length = unit(2, "mm"))
+  ) +
+  annotate(geom = "text", x = 0.1, y = 300, label = "New optimum \n at b = 1.45", hjust = "left") +
+  
+  
+  
+  # geom_text(aes(x=0.1,y=300,label="The original \n minimum value"),hjust="left") +
+  # geom_text(aes(x=3,y=200,label="The new minimum \n with prior information"),hjust="left") +
+  # geom_curve(aes(x = 0.5, y = 300, xend = 1.3, yend = 750),
+  #            curvature = 0.05, angle = 15,
+  #            arrow = arrow(length = unit(0.25,"cm"))) +
+  # geom_curve(aes(x = 3.5, y = 400, xend = 1.9, yend = 550),
+  #            curvature = 0.05, angle = 15,
+  #            arrow = arrow(length = unit(0.25,"cm"))) +
+  ylim(c(0,400))
 
 
 ```
 
-The blue line in \@ref(fig:priorcost) shows the revised (updated value - it shifted a little bit). Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In a homework problem you verify this and compare the fitted value to the value of $b=1.561$.  Adding this prior information seems like an effective approach - and perhaps is applicable for problems in the sciences.  Many times a scientific study wants to build upon the existing body of literature and to take that into account.
+Aha!  Hopefully that shows how the revised cost function $\tilde{S}(b)$ changes the optimum value. Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In a homework problem you verify this new minimum value and compare the fitted value to the value of $b=1.86$.
 
-Such an approach to add in prior information to the cost function uses elements of Bayesian statistics - so let's have a digression into what that means.
+Adding this prior information seems like an effective approach - and perhaps is applicable for problems in the sciences.  Many times a scientific study wants to build upon the existing body of literature and to take that into account.  This approach of including prior information into the cost function uses elements of Bayesian statistics - so let's have a digression into what that means.
 
-## Digression on Bayes' Rule
+## Conditional Probabilities and Bayes' Rule
 <!-- Adapted from Silver, *The Signal and the Noise*, 2012. -->
 In order to understand Bayesian statistics we first need to understand Bayes' rule and conditional probability.  So let's look at an example.
 
-```{example}
+```{example president-pop}
 The following table shows results from a survey of people's views on the economy and whether or not they voted for the President in the last election.  Percentages are reported as decimals.
-```
 
 | Probability | Optimistic view on economy | Pessimistic view on economy | Total |
 |:------:|:-----:|:-----|:-----|
@@ -141,41 +161,53 @@ The following table shows results from a survey of people's views on the economy
 | Did not vote for president | 0.15 | 0.45 | 0.60 | 
 | Total | 0.35 | 0.65 | 1.00  |
 
+Compute the probability of having an optimistic view on the economy.
+```
 
-
-Tables such as these are a clever way to organize information with conditional probability. We define the following probabilities:
+```{remark}
+Probability tables are a clever way to organize information with conditional probability. We define the following probabilities:
 
 - The probability you voted for the President *and* have an **optimistic** view on the economy is 0.20
 - The probability you **did not** vote for the President *and* have an **optimistic** view on the economy is 0.15
 - The probability you voted for the President *and* have an **pessimistic** view on the economy is 0.20
 - The probability you **did not** vote for the President *and* have an **pessimistic** view on the economy is 0.45
 
+We calculate the probability of having an **Optimistic view on the economy**  by adding the probabilities with an optimistic view, whether or not they voted for the president. For this example, this probability sums to 0.20 + 0.15 = 0.35.  On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65.  Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)
 
+```
 
-Sometimes we want to know not these individual pieces, but rather the probability of the people with an **Optimistic view on the economy**.  How we calculate this is taking the probabilities with an optimistic view, whether or not they voted for the president.  This probability is 0.35, or 0.20 + 0.15 = 0.35.  On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65.  Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)
-
-The next thing I need to introduce are *conditional probabilities*. A conditional probability is the probability of an outcome given some previous outcome.  In probability theory you might study the following conditional probability equation, where Pr means "probability of an outcome" and $A$ and $B$ are two different outcomes or events. The law of conditional probability states that:
-\begin{align}
+### Conditional probabilities
+ A conditional probability is the probability of an outcome given some previous outcome, or $\mbox{Pr} (A | B)$, where Pr means "probability of an outcome" and $A$ and $B$ are two different outcomes or events. In probability theory you might study the following law of conditional probability:
+ 
+\begin{equation}
+\begin{split}(\#eq:law-cond-prop)
 \mbox{Pr}(A \mbox { and } B) &= \mbox{Pr} (A \mbox{ given } B) \cdot  \mbox{Pr}(B) \\
  &= \mbox{Pr} (A | B) \cdot  \mbox{Pr}(B) \\
   &= \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)
-\end{align}
+\end{split}
+\end{equation}
 
 Typically in the conditional probability equation we remove "and" and write $P(A \mbox{ and } B) = P(AB)$ and "given" as $P(A \mbox{ given } B) = P(A|B)$.
 
-Sometimes people believe that your views of the economy [influence if you are going to vote for the President](https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/), so it is useful to determine the following **conditional probabilities**:
+```{example}
+Sometimes people believe that your views of the economy [influence if you are going to vote for the President](https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/), so use the information from the table in Example \@ref(exm:president-pop) to compute the probability you voted for the president *given* you have an optimistic view of the economy.
+```
 
-- The probability you voted for the president *given* you have an optimistic view of the economy is a rearrangement of the conditional probability equation:
+```{remark pres-pop-con}
+To compute the  probability you voted for the president *given* you have an optimistic view of the economy is a rearrangement of Equation \@ref(eq:law-cond-prop):
 
-\begin{align}
+\begin{equation}
+\begin{split}(\#eq:econ-cond-prop)
 \mbox{Pr(Voted for President | Optimistic View on Economy)} = \\
 \frac{\mbox{Pr(Voted for President and Optimistic View on Economy)}}{\mbox{Pr(Optimistic View on Economy)}} = \\
 \frac{0.20}{0.35} = 0.57
-\end{align}
+\end{split}
+\end{equation}
 
-So this probability seems telling.  Contrast this percentage to that of the probability you voted for the President, which is 0.4. Perhaps your view of the economy influences whether or not you would vote to re-elect the President.
+```
+So the probability you compute in Equation \@ref(eq:econ-cond-prop) seems telling.  Contrast this percentage to that of the probability you voted for the President, which is 0.4. Perhaps your view of the economy does indeed influences whether or not you would vote to re-elect the President.
 
-
+### Bayes' Rule: Application of Conditional Probabilities
 How could we systematically incorporate prior information into a parameter estimation problem?  We are going to introduce [*Bayes' Rule*](https://en.wikipedia.org/wiki/Bayes%27_theorem), which is a rearrangment of the rule for conditional probability:
 
 \begin{equation}
@@ -193,54 +225,50 @@ Here are a few observations from that last equation:
 
 - The term $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ is similar to the model data residual, or the standard likelihood function.
 - If we think of the term $\mbox{Pr}( \mbox{ parameters })$, then prior information is a multiplicative effect on the likelihood function - this is good news!  You will demonstrate in the homework that the log likelihood is related to the cost function - so when we added that additional term to form $\tilde{S}(b)$, we accounted for the prior information correctly.
--  The expression $\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) $ is the start of a framework for a probability density function, which should integrate to unity.  (You will explore this more if you study probability theory.)  In many cases we select parameters that optimize a likelihood or cost function.  So the expression in the denominator ($\mbox{Pr}(\mbox{ data })$ ) does not change the *location* of the optimum values.  And in fact, many people consider the denominator term to be a [normalizing constant](https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem).
+-  The expression $\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$ is the start of a framework for a probability density function, which should integrate to unity.  (You will explore this more if you study probability theory.)  In many cases we select parameters that optimize a likelihood or cost function.  So the expression in the denominator ($\mbox{Pr}(\mbox{ data })$ ) does not change the *location* of the optimum values.  And in fact, many people consider the denominator term to be a [normalizing constant](https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem).
 
 
-We are going to explore Bayes' Rule in action and how to utilize it for different types of cost functions, but wow - we made some significant progress in our conceptual understanding of how to incorporate models and data.
+In the following sections we will explore Bayes' Rule in action and how to utilize it for different types of cost functions, but wow - we made some significant progress in our conceptual understanding of how to incorporate models and data.
 
+## Bayes' Rule and Linear Regression
 Returning back to our linear regression problem ($y=bx$).  We have the following assumptions:
 
-- The data are independent, identically distributed.  This allows us to write the following:
+- The data are independent, identically distributed.  We can then write the likelihood function as the following:
 \begin{equation}
-\mbox{Pr}(\vec{y} | b) = e^{-\frac{(3-b)^{2}}{\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{\sigma}}  \cdot e^{-\frac{(10-6b)^{2}}{\sigma}}
+\mbox{Pr}(\vec{y} | b) = \left( \frac{1}{\sqrt{2 \pi}}\right)^{4} e^{-\frac{(3-b)^{2}}{\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{\sigma}}  \cdot e^{-\frac{(10-4b)^{2}}{\sigma}}
 \end{equation}
-- Prior knowledge expects us to say that $b$ is normally distributed with mean 1.3 and standard deviation 0.1.  This allows us to write the following:
+- Prior knowledge expects us to say that $b$ is normally distributed with mean 1.3 and standard deviation 0.1.  Incorporating this information allows us to write the following:
 \begin{equation}
-\mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi \sigma}} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi} \cdot 0.1} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
 \end{equation}
 
 So when we combine the two pieces of information, the probability of the $b$, given the data $\vec{y}$ is the following:
 
 \begin{equation}
-\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma}}  \cdot e^{-\frac{(10-6b)^{2}}{2\sigma}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2}} \cdot e^{-\frac{(5-2b)^{2}}{2}}  \cdot e^{-\frac{(4-4b)^{2}}{2}}  \cdot e^{-\frac{(10-4b)^{2}}{2}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
 \end{equation}
 
 
-Notice we are ignoring the denominator term, as stated above, hence the approximately equals ($\approx$) in the last expression.  The plot of $\mbox{Pr}(b | \vec{y})$, assuming $\sigma = 1$ is shown below:
+Notice we are ignoring the terms $\displaystyle \left( \frac{1}{\sqrt{2 \pi}}\right)^{4}$ and $\displaystyle \frac{1}{\sqrt{2 \pi} \cdot 0.1}$, because per our discussion above not including them the does not change the *location* of the optimum value, only the value of the likelihood function. as stated above, hence the approximately equals ($\approx$) in the last expression.  The plot of $\mbox{Pr}(b | \vec{y})$, assuming $\sigma = 1$ is shown in Figure \@ref(fig:likelihoodbayes):
 
 
-```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Posterior Probilities with Bayes Rule', fig.width=4,fig.height=3}
+```{r likelihoodbayes,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Posterior Probilities with Bayes Rule', fig.width=4,fig.height=3}
 b=seq(0,3,0.01)
-new_data<-data.frame(x =c(1,2,4,6),y =c(3,5,4,10) )
-lb = map(.x=b,.f=~exp(-sum((new_data$y-.x*new_data$x)^2)/4)) %>% as.numeric()
-lb_rev = map(.x=b,.f=~exp(-sum((new_data$y-.x*new_data$x)^2)/4)*exp(-(.x-1.3)^2/(2*0.1^2))) %>% as.numeric()
+new_data<-data.frame(x =c(1,2,4,4),y =c(3,5,4,10) )
+lb = map(.x=b,.f=~exp(-sum((new_data$y-.x*new_data$x)^2)/2)) %>% as.numeric()
+lb_rev = map(.x=b,.f=~exp(-sum((new_data$y-.x*new_data$x)^2)/2)*exp(-(.x-1.3)^2/(2*0.1^2))) %>% as.numeric()
 data.frame(b,lb,lb_rev) %>%
   ggplot(aes(x=b)) +
   geom_line(aes(y=lb)) +
   geom_line(aes(y=lb_rev)) +
   geom_vline(xintercept = b[which.max(lb_rev)],color='blue') +
-  geom_vline(xintercept = 1.561,color='red') +
+  geom_vline(xintercept = b[which.max(lb)],color='red') +
   ylab('Posterior Probability')
 
 ```
 
-It looks like the value that optimizies our posterior probability is $b=$ `r b[which.min(lb_rev)]`.  This is very close to the value of $\tilde{b}$ from the cost function approach.  Again, *this is no coincidence*.  Adding in prior information to the cost function or using Bayes' Rule are equivalent approaches.  Now that we have seen the usefulness of cost functions and Bayes' Rule we can begin to apply this to larger problems involving more equations and data.  In order to do that we need to explore some computational methods to scale this problem up - which we will do so in the next sections.
+It looks like the value that optimizies our posterior probability is $b=$ `r b[which.max(lb_rev)]`.  This is very close to the value of $\tilde{b}$ from the cost function approach.  Again, *this is no coincidence*.  Adding in prior information to the cost function or using Bayes' Rule are equivalent approaches.  Now that we have seen the usefulness of cost functions and Bayes' Rule we can begin to apply this to larger problems involving more equations and data.  In order to do that we need to explore some computational methods to scale this problem up - which we will do so in the next sections.
 
-<!-- In this case, the distribution equation for the likelihood function is the following:  (WE MIGHT NEED SOME MORE TERMS HERE) -->
-
-
-
-<!-- The likelihood of the parameter we can assume a normal distribution with mean: (WE MIGHT NEED SOME MORE TERMS HERE) -->
 
 
 
@@ -258,28 +286,71 @@ It looks like the value that optimizies our posterior probability is $b=$ `r b[w
 
 ```{exercise}
 The following problem works with fitting $y=bx$ as in this section:
-  \begin{enumerate}
-\item Using calculus, show that the cost function $S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2$ has a minimum value at $b=1.561$.
-\item Use a similar approach to determine the minimum of the revised cost function $\tilde{S}=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-6b)^2 + (b-1.3)^2$.  Call this value $\tilde{b}$.
-\item Make a scatterplot using \texttt{plotFunction\_Data} to compare the fit with the value $\tilde{b}$.
+\begin{enumerate}[label=\alph*.]
+\item Using calculus, show that the cost function $S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2$ has a minimum value at $b=1.86$.
+\item Use a similar approach to determine the minimum of the revised cost function $\tilde{S}=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + (b-1.3)^2$.  Call this value $\tilde{b}$.
+\item Make a scatterplot (with `ggplot`) using of the data along with the line $y=\tilde{b}x$.
+\end{enumerate}
+```
+
+&nbsp;
+
+ <!-- From van den Berg, pg 59, exercise 3.13 -->
+```{exercise}
+Consider the nutrient equation $\displaystyle y = c x^{1/\theta}$ using the dataset `phosphorous`.
+
+\begin{enumerate}[label=\alph*.]
+\item Write down a formula for the objective function $S(c,\theta)$ that characterizes this equation (that includes the dataset \texttt{phosphorous}).
+\item Fix $c=1.737$.  Make a `ggplot` of $S(1.737,\theta)$ for $1 \leq \theta \leq 10$.  How many critical points does this function have over this interval?  Which value of $\theta$ is the global minimum?
 \end{enumerate}
 ```
 
 &nbsp;
 
 ```{exercise}
-One way to generalize the notion of prior information in cost functions is to include a term that represents the degree of uncertainty in the prior information, such as $\sigma$.  For the problem $y=bx$ this leads to the following cost function: $\displaystyle \tilde{S}_{revised}=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}$.  Use calculus to obtain an expression for $\tilde{b}_{revised}$, which will be a function of $\sigma$.  What happens to $\tilde{b}_{revised}$ as $\sigma \rightarrow \infty$?
+From the previous exercise, use the cost function $S(1.737,\theta)$:
+\begin{enumerate}[label=\alph*.]
+\item Researchers believe that $\theta \approx 7$.  Re-write $S(1.737,\theta)$ to account for this additional (prior) information.
+\item How does the inclusion of this additional information change the shape of the cost function and the location of the global minimum?
+\item Finally, reconsider the fact that $\theta \approx 7 \pm .5$ (as prior information).  How does that modify $S(1.737,\theta)$ further and the location of the global minimum?
+\end{enumerate}
+```
+
+&nbsp;
+
+```{exercise}
+Navigate to this [desmos file](https://tinyurl.com/day9linearRegression), which you will use to answer the following questions:
+
+\begin{enumerate}[label=\alph*.]
+\item By adjusting the sliders for $a$ and $b$, determine the values of $a$ and $b$ that you think best minimizes the objective function.
+\item Desmos can do linear regression!  To do that, you need to start a new cell and enter in the regression formula: $y_{1} \sim c + d x_{1}$.  (We need to use different parameters $c$ and $d$ because $a$ and $b$ are defined above).  How do the values of $c$ and $d$ compare to what you found with $a$ and $b$?
+\item Alternatively, you can also define an objective function with absolute value: $\displaystyle S_{mod}(a,b) = \sum_{i=1}^{n} | y_{i}-(a+bx_{i}) |$
+Implement the absolute value objective function in Desmos and manipulate the slider values for $a$ and $b$ to determine where $S_{mod}$ is minimized.  How do those values compare to the least squares estimate?
+\end{enumerate}
+
+```
+
+&nbsp;
+
+```{exercise}
+One way to generalize the notion of prior information using cost functions is to include a term that represents the degree of uncertainty in the prior information, such as $\sigma$.  For the problem $y=bx$ this leads to the following cost function: $\displaystyle \tilde{S}_{revised}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}$.
+
+
+Use calculus to determine the optimum value for $\tilde{S}_{revised}(b)$, expressed in terms of $\tilde{b}_{revised}$ = f(\sigma)$ (your optimum value will be a function of $\sigma$).  What happens to $\tilde{b}_{revised}$ as $\sigma \rightarrow \infty$?
 ```
 &nbsp;
+
+
+
 
 ```{exercise}
 For this problem you will minimize some generic functions.
 
-\begin{enumerate}
-\item Using calculus, verify that the optimum value of $y=ax^{2}+bx+c$ occurs at $x=-b/2a$.  (You can assume $a>0$.)
-\item Using calculus, verify that the optimum value of $z=e^{-(ax^{2}+bx+c)^{2}}$ also occurs at $x=-b/2a$.
-\item Algebraically show that $\ln(z) = -y$.
-\item Explain why $y$ is similar to a cost function $S(b)$ and $z$ is similar to a likelihood function.
+\begin{enumerate}[label=\alph*.]
+- Using calculus, verify that the optimum value of $y=ax^{2}+bx+c$ occurs at $x=-b/2a$.  (You can assume $a>0$.)
+- Using calculus, verify that the optimum value of $z=e^{-(ax^{2}+bx+c)^{2}}$ also occurs at $x=-b/2a$.
+- Algebraically show that $\ln(z) = -y$.
+- Explain why $y$ is similar to a cost function $S(b)$ and $z$ is similar to a likelihood function.
 \end{enumerate}
 
 ```
@@ -297,11 +368,7 @@ This problem continues the re-election of the President and viewpoint on the eco
 
 &nbsp;
 
-```{exercise}
-Show how you can derive Bayes' Rule from the law of conditional probability.
-```
 
-&nbsp;
 
 ```{exercise}
 Incumbents have an advantage in re-election due to wider name recognition, which may boost their re-election chances. Complete the following table, estimating the following probabilities.  Please report percentages as decimals.
@@ -319,37 +386,13 @@ Use Bayes' Rule to determine the probability of being elected, given that you ha
 
 ```
 
-&nbsp;
- <!-- From van den Berg, pg 59, exercise 3.13 -->
-```{exercise}
-In this problem we will explore the benefit of adding prior information to the nutrient equation $\displaystyle y = c x^{1/\theta}$ using the dataset `phosphorous`.
-
-\begin{enumerate}
-\item Write down a formula for the objective function $S(c,\theta)$ that characterizes this equation (that includes the dataset \texttt{phosphorous}).
-\item Fix $c=1.737$.  Use \texttt{plotFunction} to make a plot of $S(1.737,\theta)$ for $1 \leq \theta \leq 10$.  How many critical points does this function have over this interval?  Which value of $\theta$ is the global minimum?
-\item Researchers believe that $\theta \approx 7$.  Re-write $S(1.737,\theta)$ to account for this additional information.
-\item How does the inclusion of this additional information change the shape of the objective function and the location of the global minimum?
-\item Finally, reconsider the fact that $\theta \approx 7 \pm .5$.  How does that modify $S(1.737,\theta)$ further and the location of the global minimum?
-\end{enumerate}
-```
-
 
 &nbsp;
 
 ```{exercise}
-Navigate to this [desmos file](https://tinyurl.com/day9linearRegression), which you will use to answer the following questions:
-
-This file will be used to answer the following questions.
-
-\begin{enumerate}
-\item By moving the sliders around, determine the values of $a$ and $b$ that you think best minimize the objective function.
-\item Desmos can do linear regression!  To do that, you need to start a new cell and enter in the regression formula: $y_{1} \sim c + d x_{1}$.  (We need to use different parameters $c$ and $d$ because $a$ and $b$ are defined above).  How do the values of $c$ and $d$ compare to what you found with $a$ and $b$?
-\item Now use linear regression to fit a quadratic function $f(x,a,b,c)=a + bx + cx^{2}$.  What are the values of $a$, $b$, and $c$?
-\item Alternatively, you can also define an objective function with absolute value: $\displaystyle S_{mod}(a,b) = \sum_{i=1}^{n} | y_{i}-(a+bx_{i}) |$
-Implement the absolute value objective function in Desmos and manipulate the slider values for $a$ and $b$ to determine where $S_{mod}$ is minimized.  How do those values compare to the least squares estimate?
-\end{enumerate}
-
+Show how you can derive Bayes' Rule from the law of conditional probability.
 ```
+
 
 
 
