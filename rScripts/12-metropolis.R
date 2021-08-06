@@ -60,7 +60,7 @@ parameters <- tibble(p1 = c(78, 65), p2 = -2.461935, p3 = 0.017032)
 
 
 
-out_values <- compute_likelihood(my_model, MAT369Code::wilson, parameters)$likelihood
+out_values <- compute_likelihood(my_model, demodelr::wilson, parameters)$likelihood
 
 likelihood_ratio_wilson <- function(proposed, current) {
 

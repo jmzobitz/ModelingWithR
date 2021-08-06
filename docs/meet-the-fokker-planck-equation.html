@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R</title>
+  <title>15.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R" />
+  <meta property="og:title" content="15.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R" />
+  <meta name="twitter:title" content="15.1 Meet the Fokker-Planck Equation | Exploring modeling with data and differential equations using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -24,7 +24,6 @@
 <meta name="author" content="John M. Zobitz" />
 
 
-<meta name="date" content="2021-06-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +31,7 @@
   
   
 <link rel="prev" href="solvingSDEs-27.html"/>
-<link rel="next" href="exercises.html"/>
+<link rel="next" href="exercises-13.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,8 +50,74 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
@@ -72,11 +137,131 @@
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
-<li class="chapter" data-level="2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>2</b> Solving Stochastic Differential Equations</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="meet-the-fokker-planck-equation.html"><a href="meet-the-fokker-planck-equation.html"><i class="fa fa-check"></i><b>2.1</b> Meet the Fokker-Planck Equation</a></li>
-<li class="chapter" data-level="2.2" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.2</b> Exercises</a></li>
+<li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
+<li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
+</ul></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of rates with data</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="rates-of-change-in-the-world-a-model-is-born.html"><a href="rates-of-change-in-the-world-a-model-is-born.html"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="model-solutions.html"><a href="model-solutions.html"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="start-here.html"><a href="start-here.html"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="r-and-rstudio.html"><a href="r-and-rstudio.html"><i class="fa fa-check"></i><b>2.1</b> R and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="first-steps-getting-acquainted-with-r.html"><a href="first-steps-getting-acquainted-with-r.html"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with R</a></li>
+<li class="chapter" data-level="2.3" data-path="increasing-functionality-with-packages.html"><a href="increasing-functionality-with-packages.html"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="working-with-r-variables-data-frames-and-datasets.html"><a href="working-with-r-variables-data-frames-and-datasets.html"><i class="fa fa-check"></i><b>2.4</b> Working with R: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="visualization-with-r.html"><a href="visualization-with-r.html"><i class="fa fa-check"></i><b>2.5</b> Visualization with R</a></li>
+<li class="chapter" data-level="2.6" data-path="defining-functions.html"><a href="defining-functions.html"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with rates of change</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>3.1</b> Lynx and Hares</a></li>
+<li class="chapter" data-level="3.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="establishing-species.html"><a href="establishing-species.html"><i class="fa fa-check"></i><b>3.3</b> Establishing species</a></li>
+<li class="chapter" data-level="3.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>3.4</b> Other types of functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="exercises-2.html"><a href="exercises-2.html"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s method</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="defining-an-algorithm.html"><a href="defining-an-algorithm.html"><i class="fa fa-check"></i><b>4.1</b> Defining an Algorithm</a></li>
+<li class="chapter" data-level="4.2" data-path="building-an-iterative-method.html"><a href="building-an-iterative-method.html"><i class="fa fa-check"></i><b>4.2</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.3" data-path="eulers-method-applied-to-systems.html"><a href="eulers-method-applied-to-systems.html"><i class="fa fa-check"></i><b>4.3</b> Euler’s method applied to systems</a></li>
+<li class="chapter" data-level="4.4" data-path="more-refined-numerical-solvers.html"><a href="more-refined-numerical-solvers.html"><i class="fa fa-check"></i><b>4.4</b> More refined numerical solvers</a></li>
+<li class="chapter" data-level="4.5" data-path="exercises-3.html"><a href="exercises-3.html"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase lines and equilibrium solutions</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-lines-for-differentail-equations.html"><a href="phase-lines-for-differentail-equations.html"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differentail equations</a></li>
+<li class="chapter" data-level="5.3" data-path="a-stability-test-for-equilibrium-solutions.html"><a href="a-stability-test-for-equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="exercises-4.html"><a href="exercises-4.html"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled systems of equations</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="model-redux-flu-with-quarantine.html"><a href="model-redux-flu-with-quarantine.html"><i class="fa fa-check"></i><b>6.1</b> Model redux: flu with quarantine</a></li>
+<li class="chapter" data-level="6.2" data-path="determining-stability.html"><a href="determining-stability.html"><i class="fa fa-check"></i><b>6.2</b> Determining stability</a></li>
+<li class="chapter" data-level="6.3" data-path="generating-a-phase-plane-in-r.html"><a href="generating-a-phase-plane-in-r.html"><i class="fa fa-check"></i><b>6.3</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.4" data-path="exercises-5.html"><a href="exercises-5.html"><i class="fa fa-check"></i><b>6.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="separable-differential-equations.html"><a href="separable-differential-equations.html"><i class="fa fa-check"></i><b>7.1</b> Separable Differential Equations</a></li>
+<li class="chapter" data-level="7.2" data-path="integrating-factors.html"><a href="integrating-factors.html"><i class="fa fa-check"></i><b>7.2</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.3" data-path="guess-and-check.html"><a href="guess-and-check.html"><i class="fa fa-check"></i><b>7.3</b> Guess and Check</a></li>
+<li class="chapter" data-level="7.4" data-path="superposition-of-solutions.html"><a href="superposition-of-solutions.html"><i class="fa fa-check"></i><b>7.4</b> Superposition of solutions</a></li>
+<li class="chapter" data-level="7.5" data-path="applying-guess-and-check-more-broadly.html"><a href="applying-guess-and-check-more-broadly.html"><i class="fa fa-check"></i><b>7.5</b> Applying guess and check more broadly</a></li>
+<li class="chapter" data-level="7.6" data-path="exercises-6.html"><a href="exercises-6.html"><i class="fa fa-check"></i><b>7.6</b> Exercises</a></li>
+</ul></li>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression &amp; Curve Fitting</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="what-is-parameter-estimation.html"><a href="what-is-parameter-estimation.html"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="fitting-temperature-data.html"><a href="fitting-temperature-data.html"><i class="fa fa-check"></i><b>8.2</b> Fitting temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="moving-beyond-linear-models.html"><a href="moving-beyond-linear-models.html"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models</a></li>
+<li class="chapter" data-level="8.4" data-path="can-you-linearize-your-model.html"><a href="can-you-linearize-your-model.html"><i class="fa fa-check"></i><b>8.4</b> Can you linearize your model?</a></li>
+<li class="chapter" data-level="8.5" data-path="nonlinear-models.html"><a href="nonlinear-models.html"><i class="fa fa-check"></i><b>8.5</b> Nonlinear models</a></li>
+<li class="chapter" data-level="8.6" data-path="exercises-7.html"><a href="exercises-7.html"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="linear-regression-part-2.html"><a href="linear-regression-part-2.html"><i class="fa fa-check"></i><b>9.1</b> Linear regression, part 2</a></li>
+<li class="chapter" data-level="9.2" data-path="probability.html"><a href="probability.html"><i class="fa fa-check"></i><b>9.2</b> Probability</a></li>
+<li class="chapter" data-level="9.3" data-path="connecting-to-linear-regression.html"><a href="connecting-to-linear-regression.html"><i class="fa fa-check"></i><b>9.3</b> Connecting to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="plotting-likelihood-surfaces.html"><a href="plotting-likelihood-surfaces.html"><i class="fa fa-check"></i><b>9.4</b> Plotting likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="exercises-8.html"><a href="exercises-8.html"><i class="fa fa-check"></i><b>9.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions &amp; Bayes’ Rule</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="cost-functions-likelihood-functions-in-disguise.html"><a href="cost-functions-likelihood-functions-in-disguise.html"><i class="fa fa-check"></i><b>10.1</b> Cost functions: likelihood functions in disguise</a></li>
+<li class="chapter" data-level="10.2" data-path="connection-to-likelihood-functions.html"><a href="connection-to-likelihood-functions.html"><i class="fa fa-check"></i><b>10.2</b> Connection to likelihood functions</a></li>
+<li class="chapter" data-level="10.3" data-path="extending-the-cost-function.html"><a href="extending-the-cost-function.html"><i class="fa fa-check"></i><b>10.3</b> Extending the cost function</a></li>
+<li class="chapter" data-level="10.4" data-path="conditional-probabilities-and-bayes-rule.html"><a href="conditional-probabilities-and-bayes-rule.html"><i class="fa fa-check"></i><b>10.4</b> Conditional Probabilities and Bayes’ Rule</a></li>
+<li class="chapter" data-level="10.5" data-path="bayes-rule-and-linear-regression.html"><a href="bayes-rule-and-linear-regression.html"><i class="fa fa-check"></i><b>10.5</b> Bayes’ Rule and Linear Regression</a></li>
+<li class="chapter" data-level="10.6" data-path="exercises-9.html"><a href="exercises-9.html"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> The bootstrap method</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="plotting-histograms-in-r.html"><a href="plotting-histograms-in-r.html"><i class="fa fa-check"></i><b>11.1</b> Plotting histograms in R</a></li>
+<li class="chapter" data-level="11.2" data-path="statistical-theory-sampling-distributions.html"><a href="statistical-theory-sampling-distributions.html"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: Sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="sampling-the-empirical-distirbution.html"><a href="sampling-the-empirical-distirbution.html"><i class="fa fa-check"></i><b>11.3</b> Sampling the empirical distirbution</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstapping-with-linear-regression.html"><a href="bootstapping-with-linear-regression.html"><i class="fa fa-check"></i><b>11.4</b> Bootstapping with linear regression</a></li>
+<li class="chapter" data-level="11.5" data-path="exercises-10.html"><a href="exercises-10.html"><i class="fa fa-check"></i><b>11.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="the-metropolis-hastings-algorithm.html"><a href="the-metropolis-hastings-algorithm.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="estimating-the-growth-of-a-dog.html"><a href="estimating-the-growth-of-a-dog.html"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="applying-the-likelihood-to-evaluate-parameters.html"><a href="applying-the-likelihood-to-evaluate-parameters.html"><i class="fa fa-check"></i><b>12.2</b> Applying the likelihood to evaluate parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>13</b> Stochastic Differential Equations</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="the-stochastic-logistic-model.html"><a href="the-stochastic-logistic-model.html"><i class="fa fa-check"></i><b>13.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="13.2" data-path="the-euler-maruyama-method.html"><a href="the-euler-maruyama-method.html"><i class="fa fa-check"></i><b>13.2</b> The Euler-Maruyama Method</a></li>
+<li class="chapter" data-level="13.3" data-path="adding-stochasticity-to-parameters.html"><a href="adding-stochasticity-to-parameters.html"><i class="fa fa-check"></i><b>13.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="13.4" data-path="concluding-thoughts-1.html"><a href="concluding-thoughts-1.html"><i class="fa fa-check"></i><b>13.4</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="13.5" data-path="exercises-11.html"><a href="exercises-11.html"><i class="fa fa-check"></i><b>13.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>14</b> Simulating Stochastic Dynamics</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="the-stochastic-logistic-model-redux.html"><a href="the-stochastic-logistic-model-redux.html"><i class="fa fa-check"></i><b>14.1</b> The stochastic logistic model redux</a></li>
+<li class="chapter" data-level="14.2" data-path="a-stochastic-system-of-equations.html"><a href="a-stochastic-system-of-equations.html"><i class="fa fa-check"></i><b>14.2</b> A stochastic system of equations</a></li>
+<li class="chapter" data-level="14.3" data-path="generalizing-the-approach-.html"><a href="generalizing-the-approach-.html"><i class="fa fa-check"></i><b>14.3</b> Generalizing the approach.</a></li>
+<li class="chapter" data-level="14.4" data-path="exercises-12.html"><a href="exercises-12.html"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>15</b> Solving Stochastic Differential Equations</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="meet-the-fokker-planck-equation.html"><a href="meet-the-fokker-planck-equation.html"><i class="fa fa-check"></i><b>15.1</b> Meet the Fokker-Planck Equation</a></li>
+<li class="chapter" data-level="15.2" data-path="exercises-13.html"><a href="exercises-13.html"><i class="fa fa-check"></i><b>15.2</b> Exercises</a></li>
 </ul></li>
 <li class="divider"></li>
 <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
@@ -100,8 +285,8 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="meet-the-fokker-planck-equation" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Meet the Fokker-Planck Equation</h2>
+<div id="meet-the-fokker-planck-equation" class="section level2" number="15.1">
+<h2><span class="header-section-number">15.1</span> Meet the Fokker-Planck Equation</h2>
 <p>Let’s start with a general way to express a stochastic differential equation:</p>
 <p><span class="math display">\[\begin{equation}
 dx = a(x,t) \; dt + b(x,t) \; dW(t)
@@ -119,7 +304,7 @@ Our goal is to have a function that describes the evolution of <span class="math
 <p>We can write this equation in shorthand, dropping the dependence of <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span> for <span class="math inline">\(f(x,t)\)</span>, <span class="math inline">\(a(x,t)\)</span> and <span class="math inline">\(b(x,t)\)</span>: <span class="math inline">\(\displaystyle f_{t} = - (f \cdot a)_{x} + \frac{1}{2} (f \cdot b^{2})_{xx}\)</span>.</p>
 
 <div class="example">
-<span id="exm:unnamed-chunk-3" class="example"><strong>Example 2.1  </strong></span>Consider the SDE <span class="math inline">\(dx = dW(t)\)</span> and apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>.
+<span id="exm:unnamed-chunk-358" class="example"><strong>Example 15.1  </strong></span>Consider the SDE <span class="math inline">\(dx = dW(t)\)</span> and apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>.
 </div>
 
 <div class="remark">
@@ -127,26 +312,26 @@ Our goal is to have a function that describes the evolution of <span class="math
 <p><span class="math display">\[\begin{equation*}
 f_{t} = \frac{\sigma^{2}}{2} f_{xx}.
 \end{equation*}\]</span></p>
-<p>This equation should look familiar - it is the partial differential equation for diffusion!<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> The solution to the Fokker-Planck equation is <span class="math inline">\(\displaystyle f(x,t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-x^{2}/(2 \sigma^{2} t)}\)</span>.</p>
+<p>This equation should look familiar - it is the partial differential equation for diffusion!<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> The solution to the Fokker-Planck equation is <span class="math inline">\(\displaystyle f(x,t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-x^{2}/(2 \sigma^{2} t)}\)</span>.</p>
 </div>
-<p>I didn’t mention the initial condition to the SDE - in this case it is <span class="math inline">\(f(x,0)=\delta(x)\)</span>. The function <span class="math inline">\(\delta(x)\)</span> is called the <a href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta Function</a>. This function is a special type of probability density function, which you may study in a courses such as Functional Analysis (or Analysis). We can plot the evolution of this solution in Figure <a href="meet-the-fokker-planck-equation.html#fig:dirac-delta">2.1</a>:</p>
+<p>I didn’t mention the initial condition to the SDE - in this case it is <span class="math inline">\(f(x,0)=\delta(x)\)</span>. The function <span class="math inline">\(\delta(x)\)</span> is called the <a href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta Function</a>. This function is a special type of probability density function, which you may study in a courses such as Functional Analysis (or Analysis). We can plot the evolution of this solution in Figure <a href="meet-the-fokker-planck-equation.html#fig:dirac-delta">15.1</a>:</p>
 <div class="figure" style="text-align: center"><span id="fig:dirac-delta"></span>
 <img src="series_files/figure-html/dirac-delta-1.png" alt="The solution to SDE $dx = dW(t)$." width="384" />
 <p class="caption">
-Figure 2.1: The solution to SDE <span class="math inline">\(dx = dW(t)\)</span>.
+Figure 15.1: The solution to SDE <span class="math inline">\(dx = dW(t)\)</span>.
 </p>
 </div>
 <p> </p>
 <p>Now that we have a handle on the SDE <span class="math inline">\(dx = dW(t)\)</span>, let’s extend this next example a little more.</p>
-<div id="another-fokker-planck-equation" class="section level3" number="2.1.1">
-<h3><span class="header-section-number">2.1.1</span> Another Fokker-Planck Equation</h3>
-<p>Consider the SDE <span class="math inline">\(dx = r \; dt + \sigma \; dW(t)\)</span>, where r and <span class="math inline">\(\sigma\)</span> are constants. As a first step, let’s take a look at the deterministic equation: $ dx = r ; dt$. This is the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = r\)</span>, which has a linear function <span class="math inline">\(x(t) = rt + x_{0}\)</span> as its solution.</p>
+<div id="another-fokker-planck-equation" class="section level3" number="15.1.1">
+<h3><span class="header-section-number">15.1.1</span> Another Fokker-Planck Equation</h3>
+<p>Consider the SDE <span class="math inline">\(dx = r \; dt + \sigma \; dW(t)\)</span>, where r and <span class="math inline">\(\sigma\)</span> are constants. As a first step, let’s take a look at the deterministic equation: <span class="math inline">\(dx = r \; dt\)</span>. This is the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = r\)</span>, which has a linear function <span class="math inline">\(x(t) = rt + x_{0}\)</span> as its solution.</p>
 <p>We will apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>. In this case, the Fokker-Planck equation is <span class="math inline">\(\displaystyle f_{t} = -r f_{x}+ \frac{\sigma^{2}}{2} f_{xx}\)</span>. The partial differential equation is an example of a <em>diffusion-advection equation</em>. Amazingly this equation can be reduced to a diffusion equation through a change of variables and application of the multivariable change of variables. Let’s get to work to figure this out.</p>
-<p>First, let <span class="math inline">\(z=x-rt\)</span>. This change of variables may seem odd, but our goal here is to write <span class="math inline">\(f(x,t)=f(z)\)</span> and to develop expressions for <span class="math inline">\(f_{t}\)</span> <span class="math inline">\(f_{x}\)</span>, and <span class="math inline">\(f_{xx}\)</span> with this change of variables. But in order to do that, we will need to apply the <em>multivariate chain rule</em> (see Figure <a href="meet-the-fokker-planck-equation.html#fig:chain-rule">2.2</a>).</p>
+<p>First, let <span class="math inline">\(z=x-rt\)</span>. This change of variables may seem odd, but our goal here is to write <span class="math inline">\(f(x,t)=f(z)\)</span> and to develop expressions for <span class="math inline">\(f_{t}\)</span> <span class="math inline">\(f_{x}\)</span>, and <span class="math inline">\(f_{xx}\)</span> with this change of variables. But in order to do that, we will need to apply the <em>multivariate chain rule</em> (see Figure <a href="meet-the-fokker-planck-equation.html#fig:chain-rule">15.2</a>).</p>
 <div class="figure"><span id="fig:chain-rule"></span>
 <img src="series_files/figure-html/chain-rule-1.png" alt="Multivariable chain rule" width="672" />
 <p class="caption">
-Figure 2.2: Multivariable chain rule
+Figure 15.2: Multivariable chain rule
 </p>
 </div>
 <p>By the multivariable chain rule we can develop expressions for <span class="math inline">\(f_{t}\)</span> and <span class="math inline">\(f_{x}\)</span>:</p>
@@ -173,19 +358,19 @@ f(x, t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-(x-rt)^{2}/(2 \sigma^{2} t)}
 <div class="figure" style="text-align: center"><span id="fig:diff-advec"></span>
 <img src="series_files/figure-html/diff-advec-1.png" alt="Representative plots for the solution to the SDE $dx = r \; dt + \sigma \; dW(t)$." width="384" />
 <p class="caption">
-Figure 2.3: Representative plots for the solution to the SDE <span class="math inline">\(dx = r \; dt + \sigma \; dW(t)\)</span>.
+Figure 15.3: Representative plots for the solution to the SDE <span class="math inline">\(dx = r \; dt + \sigma \; dW(t)\)</span>.
 </p>
 </div>
 <p>Based on what we know of this distribution is that it should look like a normal distribution with mean <span class="math inline">\(\mu = rt\)</span> and variance <span class="math inline">\(\sigma^{2} t\)</span>. What the mean and variance tells us that the mean is shifting and growing more diffuse as time increases. Remember that our solution to the deterministic equation was linear, and the mean of our distribution grows linearly as well!</p>
-<p>Also notice in Figure <a href="meet-the-fokker-planck-equation.html#fig:diff-advec">2.3</a> as <span class="math inline">\(t\)</span> increases the solution shifts (‘’advects’’) to the right. The differential equation is an example of a <em>diffusion-advection</em> equation, or a solution that drifts as time increases.</p>
+<p>Also notice in Figure <a href="meet-the-fokker-planck-equation.html#fig:diff-advec">15.3</a> as <span class="math inline">\(t\)</span> increases the solution shifts (‘’advects’’) to the right. The differential equation is an example of a <em>diffusion-advection</em> equation, or a solution that drifts as time increases.</p>
 <p>The examples we study here are just a few examples of how to build a deeper understanding of stochastic processes and differential equations. There is a lot of power in understanding the theoretical distribution for some test cases. Stochastic differential equations is a fascinating field of study with a lot of interesting mathematics - I hope what you learned here will make you want to study it further!</p>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>To remind you, the solution to <span class="math inline">\(p_{t} = D p_{xx}\)</span> is <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}\)</span>. So in this case <span class="math inline">\(D = \sigma^{2}/2\)</span>.<a href="meet-the-fokker-planck-equation.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<ol start="4">
+<li id="fn4"><p>To remind you, the solution to <span class="math inline">\(p_{t} = D p_{xx}\)</span> is <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}\)</span>. So in this case <span class="math inline">\(D = \sigma^{2}/2\)</span>.<a href="meet-the-fokker-planck-equation.html#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -194,7 +379,7 @@ Figure 2.3: Representative plots for the solution to the SDE <span class="math i
         </div>
       </div>
 <a href="solvingSDEs-27.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="exercises-13.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -236,7 +421,7 @@ gitbook.start({
 "link": "https://jmzobitz.github.io/ModelingWithR/27-solvingSDEs.Rmd",
 "text": null
 },
-"download": ["series.pdf"],
+"download": {},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

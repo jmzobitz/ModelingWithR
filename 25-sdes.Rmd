@@ -129,7 +129,7 @@ logistic_run <- rerun(n_sims) %>%
   ggplot(data = logistic_run) +
   geom_line(aes(x=t, y=x, color = simulation)) +
   ggtitle("Spaghetti plot for the logistic SDE") +
-  guides(color=FALSE)
+  guides(color="none")
 
 
 ```
@@ -175,35 +175,84 @@ So we have the following, writing $\mbox{ Noise } \; dt = dW(t)$:
 \mbox{Stochastic part: } & x \left(1 - \frac{x}{K} \right) dW(t)
 \end{align*}
 
-There are a few things to notice here. First, the deterministic part of the differential equation is what we would expect without noise added.  Second, notice how the stochastic part of the differential equation changed.  Let's take a look at the simulations with the Euler-Maruyama method:
+There are a few things to notice here. First, the deterministic part of the differential equation is what we would expect without noise added.  Second, notice how the stochastic part of the differential equation changed.  Let's take a look at the simulations with the Euler-Maruyama method, denoting the deterministic and stochastic parts as `deterministic_logistic_r` and `stochastic_logistic_r` respectively:
 
-```{r parameter-stoch,fig.width=4,fig.height=3,fig.cap="Simulation of adding in "}
-  deltaT <- .05    # timestep length
-  timeSteps <- 200   # must be a number greater than 1
-  parameters <- c(r=0.8, K=100)   # parameters: a named vector
-  initialCondition <- c(x=3)  # Be sure you have enough conditions as you do variables.
-  nSimulations <- 500
-  sigma <- 1
 
-  deterministicDynamics <- function(t, state, parameters){
-      with(as.list(c(state, parameters)), {  # Do not edit this line
-      dx = r*x*(1-x/K)  # <-- You may edit this line
-      return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
-    })
-  }
-      
-  stochasticDynamics <- function(t, state, parameters){
-      with(as.list(c(state, parameters)), {  # Do not edit this line
-      dx = x*(1-x/K)  # <-- You may edit this line
-      return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
-      })
-    }
+```{r log-sde-r,fig.cap="One realization of the logistic differential equation with stochasticity in the parameter *r*." }
 
-eulerStochastic(deltaT,timeSteps,initialCondition,deterministicDynamics,
-                stochasticDynamics,parameters,nSimulations,sigma)
-  
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_logistic_r <- c(dx ~ r*x*(1-x/K))
+stochastic_logistic_r <-  c(dx ~ x*(1-x/K))
+
+# Identify the initial condition and any parameters
+init_logistic <- c(x=3)  # Be sure you have enough conditions as you do variables. 
+logistic_parameters <- c(r=0.8, K=100)   # parameters: a named vector
+
+# Identify how long we run the simulation
+deltaT_log <- .05    # timestep length
+timeSteps_log <- 200   # must be a number greater than 1
+
+# Identify the standard deviation of the stochastic noise
+sigma_log <- 1
+
+# Do one simulation of this differential equation
+logistic_out <- euler_stochastic(deterministic_rate = deterministic_logistic_r,
+                             stochastic_rate = stochastic_logistic_r,
+                             init_cond = init_logistic,
+                             parameters = logistic_parameters,
+                             deltaT = deltaT_log,
+                             n_steps = timeSteps_log,
+                             sigma = sigma_log)
+
+# Plot out the solution
+ggplot(data = logistic_out) +
+  geom_line(aes(x=t,y=x))
 ```
-Notice how the dynamics are different - there is a lot more variability in how quickly the solution rises to the steady state of $K=100$.
+
+As we did before, we can run multiple iterations of this stochastic process.  We will also compute and plot the ensemble average in Figure \@ref(fig:spaghetti-r).
+
+
+```{r spaghetti-r,fig.cap="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot."}
+# Many solutions
+n_sims <- 100  # The number of simulations
+
+# Compute solutions
+logistic_run_r <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(deterministic_rate = deterministic_logistic_r,
+                             stochastic_rate = stochastic_logistic_r,
+                             init_cond = init_logistic,
+                             parameters = logistic_parameters,
+                             deltaT = deltaT_log,
+                             n_steps = timeSteps_log,
+                             sigma = sigma_log)
+) %>%
+  map_dfr(~ .x, .id = "simulation")
+
+
+# Plot these all up together
+  ggplot(data = logistic_run_r) +
+  geom_line(aes(x=t, y=x, color = simulation)) +
+  ggtitle("Spaghetti plot for the logistic SDE") +
+  guides(color="none")
+
+  
+  ### Summarize the variables
+summarized_logistic_r <- logistic_run_r %>%
+  group_by(t) %>%  # All simulations will be grouped at the same timepoint.
+  summarise(x = quantile(x, c(0.25, 0.5, 0.75)), q = c("q0.025", "q0.5", "q0.975")) %>%
+  pivot_wider(names_from = q, values_from = x)
+
+
+### Make the plot
+ggplot(data = summarized_logistic_r) +
+  geom_line(aes(x = t, y = q0.5)) +
+  geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
+  ggtitle("Ensemble average plot for the logistic SDE")
+
+```
+
+Wow! Adding in stochasticity to the parameters changes things. Notice how the dynamics are different - there is a lot more variability in how quickly the solution rises to the steady state of $K=100$.
 
 ## Concluding thoughts
 If you start with a known differential equation and want to add stochasticity to a parameter, here is a process:
@@ -230,6 +279,12 @@ Consider the logistic differential equation (Equation \@ref(eq:logistic-stochast
 
 ```{exercise}
 Consider the logistic differential equation (Equation \@ref(eq:logistic-stochastic-sde)). In this section we set $\sigma = 1$. Re-run the code to generate 100 simulations with $\sigma = 0.01, \; 2, \; 10$ and then compute the ensemble. In each case, how does changing $\sigma$ affect the ensemble average?
+```
+
+&nbsp;
+
+```{exercise}
+Return back to the example of adding stochasticity to the parameter *r* in the logistic differential equation (Figure \@ref(fig:spaghetti-r)).  For these plots we set $\sigma = 1$. What happens to the resulting spaghetti and ensemble plots when $\sigma = 0.01, \; 0.1, \; 10$?
 ```
 
 &nbsp;

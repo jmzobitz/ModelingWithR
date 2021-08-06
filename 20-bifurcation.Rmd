@@ -3,147 +3,102 @@
 In this section we will study a key topic that applies the qualititative stability analysis to examine sensitivity to parameters, or what is called *bifurcation*.
 
 ## A series of equations
-First let's consider the differential equations $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Chapter 5):
+First let's consider the differential equations $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Section \@ref(phase-05)):
 
 
 - If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be unstable.
 - If $f'(y_{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be stable.
 - If $f'(y_{*}) = 0$, we cannot conclude anything about the stability of $y=y_{*}$.
 
-We know $f(x)=1-x^2$ and $f'(x)=-2x$.  Since $f'(1)=-2$ and $f'(-1)=2$, then the equilibrium solution $x=1$ is stable and $x=-1$ unstable.
+Applying this test, we know $f(x)=1-x^2$ and $f'(x)=-2x$.  Since $f'(1)=-2$ and $f'(-1)=2$, then the equilibrium solution $x=1$ is stable and $x=-1$ unstable.
 
-Here is a plot of the phase plane along with some solutions:
+Figure \@ref(fig:eq1-x2) shows a plot of the phase plane along with some solutions:
 
-```{r echo=FALSE,fig.width=5,fig.height=4,results='hide',warning=FALSE}
-dx <- function(x,y) {
-  1
-}
-
-dy <- function(x,y) {
-  1-y^2
-}
+```{r eq1-x2, echo=FALSE,fig.width=5,fig.height=4,results='hide',warning=FALSE,fig.cap="Phase plane of $x'=1-x^{2}$"}
+system_eq <- c(dxdt ~ 1,
+               dydt ~ 1-y^2)
 
 
-deltaT <- .1    # timestep length
-timeSteps <- 20   # must be a number greater than 1
+system_eq_rev <- c(dxdt ~ 1-x^2)
 
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
- initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
-                        c(x=1.5),
-                        c(x=1),
-                        c(x=0.5),
-                        c(x=0),
-                        c(x=-0.5),
-                        c(x=-1),
-                        c(x=-1.5),
-                        c(x=-2))
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dx = 1-x^2  # <-- You may edit this line
-    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
+initialCondition <- tibble(value = c(2,1.5,1,0.5,0,-0.5,-1,-1.5,-2),sim=1:9,vector="x") %>% relocate(vector) %>%
+  group_by(sim) %>%
+  nest()
 
 
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
 
-phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
-  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE)+ ggtitle(expression("dx/dt = 1"~-x^2))
+
+phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
+  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt = 1"~-x^2)) + xlab("t") + ylab("x")
+
 ```
 
 
-NEED TO DISCUSS SOME MORE HERE AND MOTIVATE WHY WE WANT TO CONSIDER A DIFFERENT EQUATIONS
-
-There are two more differential equations to consider:
-$\displaystyle \frac{dx}{dt} = -1-x^{2}$ and $\displaystyle \frac{dx}{dt} = -x^{2}$.  The first differential equation does not have any equilibrium solutions.  The stability of the second equation is a little more tricky.  While it has an equilibrium solution at $x=0$, the derivative test cannot apply because $f'=-2x$ and $f'(0)=0$.  However investigating the sign of $f(x)$ to the left and right of $x=0$, we see that this solution is constantly decreasing, so the equilibrium is unstable.
+Let's modify and extend this example further. Consider two more differential equations to consider:
+ - $\displaystyle \frac{dx}{dt} = -1-x^{2}$: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.
+ - $\displaystyle \frac{dx}{dt} = -x^{2}$:  The stability of the second equation is a little more tricky.  While it has an equilibrium solution at $x=0$, the stability test cannot apply because $f'=-2x$ and $f'(0)=0$.  However investigating the sign of $f(x)$ to the left and right of $x=0$, we see that this solution is constantly decreasing, so the equilibrium is unstable.
 
 So let's also take a look at these phaseplanes along with the solution:
 
-```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
-dx <- function(x,y) {
-  1
-}
-
-dy <- function(x,y) {
-  -1-y^2
-}
+```{r eq1-x2-2, echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1,fig.cap="Phase plane of $x'=-1-x^{2}$ and $x'=-x^{2}$"}
+system_eq <- c(dxdt ~ 1,
+               dydt ~ -1-y^2)
 
 
-deltaT <- .1    # timestep length
-timeSteps <- 20   # must be a number greater than 1
+system_eq_rev <- c(dxdt ~ -1-x^2)
 
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
- initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
-                        c(x=1.5),
-                        c(x=1),
-                        c(x=0.5),
-                        c(x=0),
-                        c(x=-0.5),
-                        c(x=-1),
-                        c(x=-1.5),
-                        c(x=-2))
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dx = -1-x^2  # <-- You may edit this line
-    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
+initialCondition <- tibble(value = c(2,1.5,1,0.5,0,-0.5,-1,-1.5,-2),sim=1:9,vector="x") %>% relocate(vector) %>%
+  group_by(sim) %>%
+  nest()
 
 
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
 
-phaseplane(10,c(0,2),c(-2,2),'x','y',dx,dy) +
-  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE) + ggtitle(expression("dx/dt = -1"~-x^2))
 
-
+phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
+  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt = -1"~-x^2)) + xlab("t") + ylab("x")
 
 ###
-dx <- function(x,y) {
-  1
-}
-
-dy <- function(x,y) {
-  -y^2
-}
+system_eq <- c(dxdt ~ 1,
+               dydt ~ -y^2)
 
 
-deltaT <- .1    # timestep length
-timeSteps <- 20   # must be a number greater than 1
+system_eq_rev <- c(dxdt ~ -x^2)
 
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
- initialCondition <- rbind(c(x=2),  # Separate out initial conditions with a separate row.
-                        c(x=1.5),
-                        c(x=1),
-                        c(x=0.5),
-                        c(x=0),
-                        c(x=-0.5),
-                        c(x=-1),
-                        c(x=-1.5),
-                        c(x=-2))
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dx = -x^2  # <-- You may edit this line
-    return(list(c(dx)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
+initialCondition <- tibble(value = c(2,1.5,1,0.5,0,-0.5,-1,-1.5,-2),sim=1:9,vector="x") %>% relocate(vector) %>%
+  group_by(sim) %>%
+  nest()
 
 
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE)
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
 
-phaseplane(10,c(0,2),c(-2,2),'x','y',dx,dy) +
-  geom_line(data=outData,aes(x=time,y=value,color=as.factor(run),group=run),inherit.aes = FALSE,size=2) + ylim(c(-2,2)) + guides(color=FALSE) + ggtitle(expression("dx/dt = "~-x^2))
 
-
-
-
+phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
+  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt ="~-x^2)) + xlab("t") + ylab("x")
 
 ```
 
 
-There is an interesting pattern going on here.  If we instead consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$ the value of $c$ influences whether or not we will have a stable equilibrium solution.
+There is an interesting pattern going on here. Let's build on these three examples in a more general context. Consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$ the value of $c$ influences whether or not we will have a stable equilibrium solution.
 
 Steady states to this differential equation are when $x^{*}=\pm \sqrt{c}$.  If $c>0$ we have two steady states.  If $c=0$ there is only one steady state, and if $c<0$, then there are no steady states.
 
@@ -183,10 +138,59 @@ For this particular example we have what is called a *saddle-node* bifurcation. 
 
  Determine the behavior of solutions near the origin for the system
  \begin{equation}
- \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}.
+ \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}. (\#eq:b-bifurc-20)
  \end{equation}
 
-This equation has one free parameter $b$ that we will analyze using the trace determinant conditions developed in the last chapter. Let's call the matrix $A$, so the tr$(A)=4$ and $\det(A)=3-b$.  Since the trace is always positive either it will be a saddle if the $\det(A)<0$, or when $3<b$.  We have a unstable spiral when $3>b$ and $(\mbox{tr}(A))^2-4 \det(A)<0$, or when $4^2-4\cdot(3-b) = 16-12+4b = 4+4b<0$, which leads to $b<-1$.  Notice this is a contradictory condition - we have already assumed $b>3$, so we will not have any unstable spirals.
+Let's take a look at the phase plane with solution curves.
+
+```{r bifuc-b-20, echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.cap="Comparison of two phase planes for Equation \\@ref(eq:b-bifurc-20)"}
+eq_1 <- c( dx ~ 3*x + -1, dy~x+y)
+
+initialCondition <- tibble(x = c(1,-1,1,-1),
+                           y = c(1,1,-1,-1),
+                           sim = 1:4) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_1,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+phaseplane(eq_1,'x','y',c(-5,5),c(-5,5)) +
+  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("b = -1"))
+
+###
+
+
+eq_2 <- c( dx ~ 3*x + 4, dy~x+y)
+
+initialCondition <- tibble(x = c(1,-1,1,-1),
+                           y = c(1,1,-1,-1),
+                           sim = 1:4) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_2,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+phaseplane(eq_2,'x','y',c(-5,5),c(-5,5)) +
+  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("b = 4"))
+
+```
+
+
+This equation has one free parameter $b$ that we will analyze using the trace determinant conditions developed in Section \@ref(stability-19). Let's call the matrix $A$, so the tr$(A)=4$ and $\det(A)=3-b$.  Since the trace is always positive either it will be a saddle if the $\det(A)<0$, or when $3<b$.  We have a unstable spiral when $3>b$ and $(\mbox{tr}(A))^2-4 \det(A)<0$, or when $4^2-4\cdot(3-b) = 16-12+4b = 4+4b<0$, which leads to $b<-1$.  Notice this is a contradictory condition - we have already assumed $b>3$, so we will not have any unstable spirals.
 
 To summarize, we have the following dynamics:
 
@@ -194,141 +198,66 @@ To summarize, we have the following dynamics:
 - When $b=3$ we will have an unstable solution.
 - When $b>3$ we will have a unstable node.
 
-Let's take a look at the phase plane with solution curves.
 
-```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE}
-b <- -1
+The benefit of a bifurcation diagram is that is provides a complete understanding of the dynamics of the system *as a function of the parameters*.  In this section we examined *one-parameter* bifurcations (for example we looked the stability of the equilibrium solution as it depends on *c* or *b*), but bifurcations can also be extended further to two parameter bifurcation families, applying similar methods.  In general the methods are similar to what we have done.
 
-dx <- function(x,y) {
-  3*x+b*y
-}
-
-dy <- function(x,y) {
-  x+y
-}
-
-
-deltaT <- .01    # timestep length
-timeSteps <- 200   # must be a number greater than 1
-
-parameters <- c(k=.05, beta=.2)   # parameters: a named vector
-
-initialCondition <- rbind(c(x=0.25,y=0.25),  # Separate out initial conditions with a separate row.
-                        #  c(x=0.5,y=.5),
-                        #  c(x=1,y=1),
-                          c(x=-0.25,y=0.25),  # Separate out initial conditions with a separate row.
-                        #  c(x=-0.5,y=.5),
-                        #  c(x=-1,y=1),
-                          c(x=0.25,y=-0.25),  # Separate out initial conditions with a separate row.
-                        #  c(x=0.5,y=-.5),
-                        #  c(x=1,y=-1),
-                          c(x=-0.25,y=-0.25)  # Separate out initial conditions with a separate row.
-                        #  c(x=-0.5,y=-.5),
-                        #  c(x=-1,y=-1)
-                          )
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dx = 3*x+b*y  # <-- You may edit this line
-    dy <- x+y
-    return(list(c(dx,dy)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
-
-
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
-  spread(key=variables,value=value)
-
-phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
-  geom_line(data=outData,aes(x=x,y=y,color=as.factor(run),group=run),inherit.aes = FALSE,size=1)  + guides(color=FALSE)+ ggtitle("b=-1") + xlim(c(-2,2))+ylim(c(-2,2))
-
-###
-
-
-
-b<-4
-
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
-  spread(key=variables,value=value)
-
-phaseplane(10,c(-2,2),c(-2,2),'x','y',dx,dy) +
-  geom_line(data=outData,aes(x=x,y=y,color=as.factor(run),group=run),inherit.aes = FALSE,size=1)  + guides(color=FALSE)+ ggtitle("b=4") + xlim(c(-2,2))+ylim(c(-2,2))
-
-```
-
-The benefit of a bifurcation diagram is that is provides a complete understanding of the dynamics of the system *as a function of the parameters*.  In this section we examined one-parameter bifurcations, but this can also be extended further to two parameter bifurcation families.  In general the methods are similar to what we have done.
-
-As a final example we have examined equilibrium solutions that are points, but we can also determine equilibrium solutions that are functions.
+## Limit Cycles and Bifurcations with systems of equations 
+The previous examples we have studied examine the stability of an equilibrium solution as a parameter changes. An extension of an equilibrium solution (as a point in space) is an equilibrium solution that is a *function*. 
 
  Consider the following highly nonlinear system:
-\begin{align*}
-\frac{dx}{dt} =-y-x(x^2+y^2-1) \\
+\begin{equation}
+\begin{cases}
+\frac{dx}{dt} =-y-x(x^2+y^2-1) \\ (\#eq:limit-cycle-20)
 \frac{dy}{dt}=x-y(x^2+y^2-1)
-\end{align*}
+\end{cases}
+\end{equation}
 
-This system has an equilibrium solution at the point  $x=0$, $y=0$.	The phase plane of this system is shown below:
+The phase plane for Equation \@ref(eq:limit-cycle-20) is shown in Figure \@ref(fig:phase-limit-20). You can verify that Equation \@ref(eq:limit-cycle-20) system has an equilibrium solution at the point  $x=0$, $y=0$. 
 
-```{r, echo=FALSE,out.width = "4in"}
-knitr::include_graphics("figures/19-bifurcation/limitCycles.png")
+```{r phase-limit-20, echo=FALSE,out.width = "4in",fig.cap="Phase plane for Equation \\ref(eq:limit-cycle-20)"}
+knitr::include_graphics("figures/20-bifurcation/limitCycles.png")
 ```
 
  
-Even though we have an equilibrium solution at the origin, the phase plane suggests there might be other equilibrium solutions.  To further explore this, let's look at the phase plane with some solution curves below:
+However the phase plane suggests there might be other equilibrium solutions. To further explore this, let's look at the phase plane with some solution curves in Figure \@ref(fig:limit-cycle-20-f):
 
-```{r warning=FALSE,echo=FALSE,fig.width=4,fig.height=4}
+```{r limit-cycle-20-f, warning=FALSE,echo=FALSE,fig.width=4,fig.height=4,fig.cap="Phase plane with solutions curves for Equation \\@ref(eq:limit-cycle-20)"}
 mu <- 1
 
-dx <- function(x,y) {
-  -y-x*(x^2+y^2-mu)
-}
-
-dy <- function(x,y) {
-  x-y*(x^2+y^2-mu)
-}
+mu_eq <- c( dx ~ -y-x*(x^2+y^2-1), dy~x-y*(x^2+y^2-1))
 
 
-deltaT <- 0.1    # timestep length
-timeSteps <- 100  # must be a number greater than 1
-
-parameters = c(b=1)   # parameters: a named vector (you will mess with this later)
-
-
-
-initialCondition <- rbind(c(x=0.1,y=0.5),  # Separate out initial conditions with a separate row.
-                            c(x=0.3,y=.5),
-                            c(x=0.7,y=0.5),
-                          c(x=-0.3,y=.5),
-                          c(x=0.7,y=-0.5),
-                          c(x=0.7,y=-0.5),
-                          c(x=0.9,y=0),  # Separate out initial conditions with a separate row.
-                            c(x=1.1,y=.5))
-dynamics <- function(t, state, parameters){
-  with(as.list(c(state, parameters)), {  # Do not edit this line
-    dx = -y-x*(x^2+y^2-mu)
-    dy = x-y*(x^2+y^2-mu)
-    return(list(c(dx,dy)))  # <-- If you have more equations you will need to list the dVariables
-  })
-}
+initialCondition <- tibble(x = c(1,0.3,0.7,-0.3,0.7,0.7,0.9,1.1),
+                           y = c(0.5,.5,.5,.5,-0.5,-0.5,0,0.5),
+                           sim = 1:8) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
 
 
-outData <- systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters,TRUE) %>%
-  spread(key=variables,value=value)
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(mu_eq,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
 
-phaseplane(10,c(-1.5,1.5),c(-1.5,1.5),'x','y',dx,dy) +
-  geom_point(data=outData,aes(x=x,y=y,group=run),color='blue',inherit.aes = FALSE,size=2)  + guides(color=FALSE)+ xlim(c(-1.5,1.5))+ylim(c(-1.5,1.5))
+phaseplane(mu_eq,'x','y',c(-1.5,1.5),c(-1.5,1.5)) +
+  geom_point(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-1.5,1.5)) + ylim(c(-1.5,1.5)) + guides(color="none")
+
+
 ```
 
-What is interesting is that the solution is tending towards a circle of radius 1 (or the equation $x^{2}+y^{2}=1$). This is an example of an equilibrium solution that is a *curve* rather than a specific point.  You will show in the homework that this system transforms to
+What is interesting in Figure \@ref(fig:limit-cycle-20-f) that the solution is tending towards a circle of radius 1 (or the equation $x^{2}+y^{2}=1$). This is an example of an equilibrium solution that is a *curve* rather than a specific point.  We can transform this system from $x$ and $y$ to a single new variables $X$ (see Exercise \@ref(exr:limit-transform-20)).
 
 \begin{equation}
-\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}.
+\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}. (\#eq:limit-X-20)
 \end{equation}
 
-This is done through applying a polar coordinate transformation to this system.  The dynamics of this system can be shown that $X=0$ is unstable (meaning the origin is an unstable solution) and the circle of radius 1 is stable. In this case we would say $r=1$ is a *stable limit cycle*.
+How Equation \@ref(eq:limit-cycle-20) transforms to Equation \@ref(eq:limit-X-20) is by applying a polar coordinate transformation to this system.  By applying stability analysis for Equation \@ref(eq:limit-X-20) we can show that the equilibrium solution $X=0$ is unstable (meaning the origin $x=0$ and $y=0$ is an unstable solution) and the circle of radius 1 is stable (which is the equation $x^{2}+y^{2}=1$). In this case we would say $r=1$ is a *stable limit cycle*.
 
-This is another example of next steps with studying the qualitative analysis of systems.  We have looked almost exclusively at equilibrium points, but you may also have curves in the plane that are solutions as well.  
-
-
-
+This is another example of next steps with studying the qualitative analysis of systems.  While we have focused on bifurcation of equilibrium solutions, hopefully this brief introduction will pique your interest in further study of bifurcations.
 
 
 \newpage
@@ -371,7 +300,7 @@ Construct a bifurcation diagram for this system of equations.
 ```
 &nbsp;
 
-```{exercise}
+```{exercise limit-transform-20}
  Consider the following highly nonlinear system:
 \begin{align*}
 \frac{dx}{dt} =-y-x(x^2+y^2-1) \\

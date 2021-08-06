@@ -1,7 +1,7 @@
 --- 
 title: "Exploring modeling with data and differential equations using R"
 author: "John M. Zobitz"
-date: "`r Sys.Date()`"
+date: "Version 2.0.0"
 description: "A textbook used for MAT 369 at Augsburg University."
 geometry: "left=0.5in,right=0.5in,top=0.75in,bottom=0.5in"
 site: bookdown::bookdown_site
@@ -59,7 +59,7 @@ output:
 ```{r include=FALSE}
 # Define the packages that we need to load up:
 library(tidyverse)
-library(MAT369Code)
+library(demodelr)
 library(lubridate)
 library(bookdown)
 library(knitr)
@@ -67,18 +67,42 @@ library(kableExtra)
 ```
 
 
-# Welcome  Creating this from Bookdown to Github {#welcome}
-I stumbled on how to do this by going to this [website](https://jules32.github.io/bookdown-tutorial/) and built this out from here.  I am glad that I will be able to work on this.
+# Welcome {-} 
+This book is written for you: the student learning about modeling and differential equations. Perhaps you first encountered models, differential equations, and better yet, building plausible models from data in your Calculus course.
 
-Who to thank
-Tidyverse
-Augsburg
-students
-sources
-waterparks
-family
-kids
+This book sits "at the intersection" of several different mathematics courses: differential equations, linear algebra, statistics, calculus, data science - as well as the partner disciplines of biology, chemsitry, physics, business, and economics.  An important idea is one of *transference* where a differential equation model applied in once context can also be applied (perhaps with different variable names) in a separate context.
 
+I intentionally emphasize models from biology and the environmental sciences, but throughout the text you can find examples from the other disciplines.  I hope you see the connections of this content to your own intended major.
+
+This book is divided into 4 parts:
+
+1. Modeling with differential equations and data.
+2. Model parameter estimation.
+3. Stability analysis for differential equations.
+4. Modeling with stochastic differential equations.
+
+This may seem like a different order than traditionally presented. This is a "modeling first" paradigm that first introduces models, and equally important, how to estimate parameters for a model using data. This conversation between models and data are important to help build plausibility.  Stability analysis helps to solidify the connection between models and parameters (which may change the underlying dynamical stability).  Finally the notion of *randomness* is extended with the introduction of stochastic differential equations.
+
+## Computational code {-}
+This book makes heavy use of the R programming language, and unabashedly develops programming principles using the `tidyverse` syntax and programming approach.  This is intentional to facilitate direct connections to courses in introductory data science or data visualization. Throughout the years learning (and teaching) different programming languages I have found R to be the most versatile and adaptable. The `tidyverse` syntax has also been transformational for me in my own work and as my students - the barrier to compute and write code is lowered. 
+
+There is a companion R package available to run programs and functions in the text.  Instructions to do so are given in Section \@ref(r-intro-02). The minimum version of R Version 4.0.2 (2020-06-22) and RStudio is Version 1.4.1106.
+
+<!-- I stumbled on how to do this by going to this [website](https://jules32.github.io/bookdown-tutorial/) and built this out from here.  I am glad that I will be able to work on this. -->
+
+## Acknowledgments {-}
+This book has been developed over the course of several years and has been written across different continents. 
+
+- **Augsburg University:** You have been my professional home for over 14 years and given me the space to be intellectually creative in my teaching. I have great colleagues to work with.
+
+- **Augsburg University students:** Thank you for your interest in this topic, providing honest and insightful feedback about the course. This has been a work in progress (albeit bumpy at times).
+
+- **My family:** Shannon, Colin, Grant, and Phoebe for humoring me while this project has been completed.
+
+- **Waterparks, coffee shops, soccer practices:** Many times this was written "in the spaces" between work and home, and especially during downtimes when my kids could play. Turns out my kids love waterparks. Who knew? 
+
+## Copyright {-}
+This work is distributed under the Creative Commons, Attribution-Non Commercial-No Derivatives 4.0 License.  You may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author (Zobitz) attribute and use it for non-commerical purposes. You may copy, distribute, display and perform only verbatim copies of the work, not derivative works and remixes based on it.
 
 
 ```{r include=FALSE}

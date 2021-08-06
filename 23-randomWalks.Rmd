@@ -57,26 +57,26 @@ Now that you have run this code, try running it again. Do you get the same resul
 Similar to section on stochastic simulation, One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations.  The code `randomWalk` can help us do that:
 
 ```{r,fig.width=4,fig.height=3}
-number_steps <- 200
-number_realizations <- 20
+number_steps <- 200  # How long we run our random walk
+number_realizations <- 20 # How many separate realizations we do
 
-randomWalk(number_steps,number_realizations)
+random_walk(number_steps,number_realizations)
 ```
 You will notice two plots get produced: (1) A **spaghetti plot** that plots all the different sample paths for this realization, and (2) a **ensemble plot** that takes the median and 95% confidence interval of the results.
 
-Something interesting looks like it is going on here.  The ensemble plot looks like a sideways parabola, but let's check to make sure that is the case.  Perhaps rerun `randomWalk` but set `number_realizations` to be 100:
+Something interesting looks like it is going on here.  The ensemble plot looks like a sideways parabola, but let's check to make sure that is the case.  Perhaps rerun `random_walk` but set `number_realizations` to be 100:
 
 ```{r,fig.width=4,fig.height=3}
 number_steps <- 200
 number_realizations <- 100
 
-randomWalk(number_steps,number_realizations)
+random_walk(number_steps,number_realizations)
 ```
 
 As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on *average* you go nowhere (in other words, the average position is $x=0$), but as the number of steps increase, you are very likely to be *somewhere* (in other words, the confidence interval increases as the number of steps increase).  The more realizations we can do the more robust this pattern becomes.  Figure  \@(fig:high-steps-random) shows the spaghetti and ensemble plots when the number of realizations is 1000:
 
 ```{r high-steps-random,fig.width=4,fig.height=3}
-randomWalk(2000,1000)
+random_walk(2000,1000)
 ```
 
 
@@ -134,7 +134,10 @@ Now that we have characterized the expected value or the average displacement le
 Next what we will compute the expectation $\langle (x^{i})^{2} \rangle$ of our multiplied expression term by term:
 
 - $\langle (x^{i-1})^{2} \rangle$: There is not much we can do with this term.
-- $\langle  2 x^{i-1} r(p) \rangle$: This term is zero. EXPLAIN WHY
+- $\langle  2 x^{i-1} r(p) \rangle$: This term is zero:
+\begin{equation}
+\big 2 x^{i-1} \langle r(p) \big \rangle = 2 x^{i-1} \cdot \frac{1}{2} - 2 x^{i-1} \cdot \frac{1}{2} = 0
+\end{equation}
 - $\langle r(p)^{2} \Delta x^{2} \rangle$: Since $r(p)$ is either positive or negative 1 depending on $p$, it must be the case that $r(p)^{2}=1$ for any value of $p$.  So in the expectation, the last term is just $\Delta x^{2}$.
 
 So the end result for the variance is:

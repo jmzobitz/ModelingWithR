@@ -14,7 +14,7 @@ bParam <- seq(-0.3,-0.1,length.out=100)
 parameters <- expand.grid(k=kParam,b=bParam)
 
 
-out_values <- compute_likelihood(my_model,MAT369Code::yeast,parameters,logLikely=TRUE)
+out_values <- compute_likelihood(my_model,demodelr::yeast,parameters,logLikely=TRUE)
 
 out_values$likelihood %>%
 ggplot()+
@@ -71,7 +71,7 @@ cParam <- seq(0,5,length.out=100)
 parameters <- expand.grid(c=cParam,theta=thetaParam)
 
 
-out_values <- compute_likelihood(my_model,MAT369Code::phosphorous,parameters,logLikely=TRUE)
+out_values <- compute_likelihood(my_model,demodelr::phosphorous,parameters,logLikely=TRUE)
 
 
 

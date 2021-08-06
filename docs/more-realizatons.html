@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2.2 More realizatons | Exploring modeling with data and differential equations using R</title>
+  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2.2 More realizatons | Exploring modeling with data and differential equations using R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="github-repo" content="openscapes/series" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.2 More realizatons | Exploring modeling with data and differential equations using R" />
+  
+  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  
+
+<meta name="author" content="John M. Zobitz" />
+
+
+<meta name="date" content="2021-07-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="random-walk-on-a-number-line.html"/>
+<link rel="next" href="random-walk-mathematics.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i><b>1.1</b> Computational code</a></li>
+<li class="chapter" data-level="1.2" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i><b>1.2</b> Acknowledgments</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>2</b> Random Walks</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walk-on-a-number-line.html"><a href="random-walk-on-a-number-line.html"><i class="fa fa-check"></i><b>2.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="2.2" data-path="more-realizatons.html"><a href="more-realizatons.html"><i class="fa fa-check"></i><b>2.2</b> More realizatons</a></li>
+<li class="chapter" data-level="2.3" data-path="random-walk-mathematics.html"><a href="random-walk-mathematics.html"><i class="fa fa-check"></i><b>2.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="2.4" data-path="continuous-random-walks-diffusion.html"><a href="continuous-random-walks-diffusion.html"><i class="fa fa-check"></i><b>2.4</b> Continuous random walks (diffusion)</a></li>
+<li class="chapter" data-level="2.5" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.5</b> Exercises</a></li>
+</ul></li>
+<li class="divider"></li>
+<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
+<li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
+<li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="more-realizatons" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> More realizatons</h2>
+<p>Similar to section on stochastic simulation, One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations. The code <code>randomWalk</code> can help us do that:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="more-realizatons.html#cb6-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb6-2"><a href="more-realizatons.html#cb6-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb6-3"><a href="more-realizatons.html#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="more-realizatons.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">randomWalk</span>(number_steps,number_realizations)</span></code></pre></div>
+<p><img src="series_files/figure-html/unnamed-chunk-4-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-4-2.png" width="384" />
+You will notice two plots get produced: (1) A <strong>spaghetti plot</strong> that plots all the different sample paths for this realization, and (2) a <strong>ensemble plot</strong> that takes the median and 95% confidence interval of the results.</p>
+<p>Something interesting looks like it is going on here. The ensemble plot looks like a sideways parabola, but let’s check to make sure that is the case. Perhaps rerun <code>randomWalk</code> but set <code>number_realizations</code> to be 100:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="more-realizatons.html#cb7-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb7-2"><a href="more-realizatons.html#cb7-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb7-3"><a href="more-realizatons.html#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="more-realizatons.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">randomWalk</span>(number_steps,number_realizations)</span></code></pre></div>
+<p><img src="series_files/figure-html/unnamed-chunk-5-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-5-2.png" width="384" /></p>
+<p>As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on <em>average</em> you go nowhere (in other words, the average position is <span class="math inline">\(x=0\)</span>), but as the number of steps increase, you are very likely to be <em>somewhere</em> (in other words, the confidence interval increases as the number of steps increase). The more realizations we can do the more robust this pattern becomes. Figure @(fig:high-steps-random) shows the spaghetti and ensemble plots when the number of realizations is 1000:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="more-realizatons.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">randomWalk</span>(<span class="dv">2000</span>,<span class="dv">1000</span>)</span></code></pre></div>
+<p><img src="series_files/figure-html/high-steps-random-1.png" width="384" /><img src="series_files/figure-html/high-steps-random-2.png" width="384" /></p>
+<p>Let’s investigate our observations a little more mathematically.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="random-walk-on-a-number-line.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="random-walk-mathematics.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/jules32/bookdown-tutorial/edit/master/23-randomWalks.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://jmzobitz.github.io/ModelingWithR/23-randomWalks.Rmd",
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -92,7 +92,7 @@ We call the function $S(b)$ the _cost function_. There is something big going on
 
 If we compare this log likelihood equation with $N=4$, $\sigma = 1/\sqrt{2}$, and $f(x_{i},\vec{\alpha} ) =bx$ ($\vec{\alpha}=b$), then we have the function $S(b)$, modulo the terms $\displaystyle - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma)$.  **This is no coincidence**.
 
-In fact, when you study probability and statistics you may encounter likelihood functions (or _log_-likelihood functions - notice how $S(b) \approx - \ln(L) $!).  Likelihood functions are similar in nature to cost functions.  You may be thinking: but the log likelihood function contains the extra factors of $\displaystyle - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma)$ - but you need not worry.  Here is why: our goal is to *optimize* a cost or log-likelihood function. What these extras terms do (for constant $\sigma$ is shift the graph of the log-likelihood function *vertically* but not *horizontally*. Vertically shifting a function doesn't not change the *location* of an optimum value (Why?  Think back to derivatives from Calculus I).
+In fact, when you study probability and statistics you may encounter likelihood functions (or _log_-likelihood functions - notice how $S(b) \approx - \ln(L)$!).  Likelihood functions are similar in nature to cost functions.  You may be thinking: but the log likelihood function contains the extra factors of $\displaystyle - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma)$ - but you need not worry.  Here is why: our goal is to *optimize* a cost or log-likelihood function. What these extras terms do (for constant $\sigma$ is shift the graph of the log-likelihood function *vertically* but not *horizontally*. Vertically shifting a function doesn't not change the *location* of an optimum value (Why?  Think back to derivatives from Calculus I).
 
 Recognizing the connection between cost and likelihood functions and their goal of optimization leads to a key observation: **A quadratic cost function yields the same results as likelihood function assuming the residuals are normally distributed.**
 
@@ -336,7 +336,7 @@ Implement the absolute value objective function in Desmos and manipulate the sli
 One way to generalize the notion of prior information using cost functions is to include a term that represents the degree of uncertainty in the prior information, such as $\sigma$.  For the problem $y=bx$ this leads to the following cost function: $\displaystyle \tilde{S}_{revised}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}$.
 
 
-Use calculus to determine the optimum value for $\tilde{S}_{revised}(b)$, expressed in terms of $\tilde{b}_{revised}$ = f(\sigma)$ (your optimum value will be a function of $\sigma$).  What happens to $\tilde{b}_{revised}$ as $\sigma \rightarrow \infty$?
+Use calculus to determine the optimum value for $\tilde{S}_{revised}(b)$, expressed in terms of $\tilde{b}_{revised} = f(\sigma)$ (your optimum value will be a function of $\sigma$).  What happens to $\tilde{b}_{revised}$ as $\sigma \rightarrow \infty$?
 ```
 &nbsp;
 
@@ -347,10 +347,10 @@ Use calculus to determine the optimum value for $\tilde{S}_{revised}(b)$, expres
 For this problem you will minimize some generic functions.
 
 \begin{enumerate}[label=\alph*.]
-- Using calculus, verify that the optimum value of $y=ax^{2}+bx+c$ occurs at $x=-b/2a$.  (You can assume $a>0$.)
+\item Using calculus, verify that the optimum value of $y=ax^{2}+bx+c$ occurs at $x=-b/2a$.  (You can assume $a>0$.)
 - Using calculus, verify that the optimum value of $z=e^{-(ax^{2}+bx+c)^{2}}$ also occurs at $x=-b/2a$.
-- Algebraically show that $\ln(z) = -y$.
-- Explain why $y$ is similar to a cost function $S(b)$ and $z$ is similar to a likelihood function.
+\item Algebraically show that $\ln(z) = -y$.
+\item Explain why $y$ is similar to a cost function $S(b)$ and $z$ is similar to a likelihood function.
 \end{enumerate}
 
 ```

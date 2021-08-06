@@ -108,7 +108,7 @@ Sometimes when you are installing packages you may be prompted to install additi
 
 ```{r eval=FALSE}
 library(devtools)
-install_github("jmzobitz/MAT369Code",build_vignettes= TRUE)
+install_github("jmzobitz/demodelr",build_vignettes= TRUE)
 ```
 
 What this command will do is pull in the package structure from my github page and install it locally.
@@ -117,7 +117,7 @@ Here is the good news: _you only need to install a package once before using it!
 
 ```{r eval=FALSE}
 library(tidyverse)
-library(MAT369Code)
+library(demodelr)
 ```
 
 You need to load up your these libraries _each time you restart your R session_.  This is part of the benefit of a script file - at the start I always declare the libraries that I will need at the start of the script file, as shown in the following figure:
@@ -201,7 +201,7 @@ Notice that the data frame `my_data` uses the column (variable) names of `x` and
 ### Reading in datasets
 R has a lot of built in datasets!  In fact to see all the datasets, type `data()` at the console.  This will popup a new window in RStudio with the names.  Cool!
 
-If you want to see the datasets for a specific package (such as `MAT369Code`) you type `data(package = "MAT369Code")` at the console.
+If you want to see the datasets for a specific package (such as `demodelr`) you type `data(package = "demodelr")` at the console.
 
 Perhaps what is most important is being able to read in datasets provided to you.  Data come in several different types of formats, but one of the more versatile ones are csv (**c**omma **s**eparated **v**alues).  What you need to do is the following:
 
@@ -228,13 +228,13 @@ Notice the quotes around the FILENAME.  **Pro tip:** If you have the data files 
 Now we are ready to begin visualizing data frames.  Two types of plots that we will need to make will be a scatter plot and a line plot.  We are going to consider both of these separately, with examples that you should be able to customize.
 
 ### Making a scatterplot
-One dataset we have is the mass of a dog over time, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  We have two variables here: $D=$ the age of the dog in days and $W=$ the weight of the dog in pounds.  I have the data loaded into the `MAT369Code` package, which you can investigate by typing the following at the command line (I display it below as well):
+One dataset we have is the mass of a dog over time, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  We have two variables here: $D=$ the age of the dog in days and $W=$ the weight of the dog in pounds.  I have the data loaded into the `demodelr` package, which you can investigate by typing the following at the command line (I display it below as well):
 
 ```{r eval=FALSE}
 glimpse(wilson)
 ```
 
-(Notice that I have assumed you have the MAT369Code library loaded.)  You can also explore the documentation for this dataset by typing `?wilson` at the console.
+(Notice that I have assumed you have the demodelr library loaded.)  You can also explore the documentation for this dataset by typing `?wilson` at the console.
 
 ```{r echo = FALSE, message=FALSE,results='asis'}
 
@@ -414,15 +414,15 @@ Create a folder on your computer and a project file where you will store all you
 ```
 &nbsp;
 ```{exercise}
-Install the packages `devtools`, `tidyverse` to your R installation.  Once that is done, then install the package `MAT369Code` from my github page.
+Install the packages `devtools`, `tidyverse` to your R installation.  Once that is done, then install the package `demodelr` from my github page.
 ```
 &nbsp;
 ```{exercise}
-What are the variables listed in the dataset `phosphorous` in the `MAT369Code` library?  (Hint: try the command `?phosphorous`.)
+What are the variables listed in the dataset `phosphorous` in the `demodelr` library?  (Hint: try the command `?phosphorous`.)
 ```
 &nbsp;
 ```{exercise}
-Make a scatterplot (`geom_point()`) of the dataset `phosphorous` in the `MAT369Code` library. Be sure to label the axes.
+Make a scatterplot (`geom_point()`) of the dataset `phosphorous` in the `demodelr` library. Be sure to label the axes.
 ```
 &nbsp;
 
@@ -455,7 +455,7 @@ Write a function called `nutrient` that will make a sequence of `y` values for a
 &nbsp;
 
 ```{exercise}
-Researchers measured the phosphorous content of *Daphnia* and its primary food source algae. This is the dataset `phosphorous` in the `MAT369Code` library. 
+Researchers measured the phosphorous content of *Daphnia* and its primary food source algae. This is the dataset `phosphorous` in the `demodelr` library. 
 
 Researchers believe that *Daphnia* has strict homeostatic regulation of the phosphorous in algae, and as such want to determine the value of $\theta$ in the equation $y= \displaystyle y = c x^{1/\theta}$.  They have already determined that the value of $c=1.737$.
 
