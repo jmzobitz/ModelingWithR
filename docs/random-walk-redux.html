@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.1 Random walk redux | Exploring modeling with data and differential equations using R</title>
+  <title>24.1 Random walk redux | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.1 Random walk redux | Exploring modeling with data and differential equations using R" />
+  <meta property="og:title" content="24.1 Random walk redux | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.1 Random walk redux | Exploring modeling with data and differential equations using R" />
+  <meta name="twitter:title" content="24.1 Random walk redux | Exploring Modeling with Data and Differential Equations Using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -24,7 +24,6 @@
 <meta name="author" content="John M. Zobitz" />
 
 
-<meta name="date" content="2021-07-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +31,7 @@
   
   
 <link rel="prev" href="diffusion-24.html"/>
-<link rel="next" href="concluding-thoughts.html"/>
+<link rel="next" href="concluding-thoughts-3.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,8 +50,74 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
@@ -72,12 +137,223 @@
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Welcome Creating this from Bookdown to Github</a></li>
-<li class="chapter" data-level="2" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>2</b> Diffusion</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="random-walk-redux.html"><a href="random-walk-redux.html"><i class="fa fa-check"></i><b>2.1</b> Random walk redux</a></li>
-<li class="chapter" data-level="2.2" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>2.2</b> Concluding Thoughts</a></li>
-<li class="chapter" data-level="2.3" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>2.3</b> Exercises</a></li>
+<li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
+<li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
+</ul></li>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of rates with data</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="rates-of-change-in-the-world-a-model-is-born.html"><a href="rates-of-change-in-the-world-a-model-is-born.html"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="model-solutions.html"><a href="model-solutions.html"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="start-here.html"><a href="start-here.html"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="r-and-rstudio.html"><a href="r-and-rstudio.html"><i class="fa fa-check"></i><b>2.1</b> R and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="first-steps-getting-acquainted-with-r.html"><a href="first-steps-getting-acquainted-with-r.html"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with R</a></li>
+<li class="chapter" data-level="2.3" data-path="increasing-functionality-with-packages.html"><a href="increasing-functionality-with-packages.html"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="working-with-r-variables-data-frames-and-datasets.html"><a href="working-with-r-variables-data-frames-and-datasets.html"><i class="fa fa-check"></i><b>2.4</b> Working with R: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="visualization-with-r.html"><a href="visualization-with-r.html"><i class="fa fa-check"></i><b>2.5</b> Visualization with R</a></li>
+<li class="chapter" data-level="2.6" data-path="defining-functions.html"><a href="defining-functions.html"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with rates of change</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>3.1</b> Lynx and Hares</a></li>
+<li class="chapter" data-level="3.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="establishing-species.html"><a href="establishing-species.html"><i class="fa fa-check"></i><b>3.3</b> Establishing species</a></li>
+<li class="chapter" data-level="3.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>3.4</b> Other types of functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="exercises-2.html"><a href="exercises-2.html"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s method</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="defining-an-algorithm.html"><a href="defining-an-algorithm.html"><i class="fa fa-check"></i><b>4.1</b> Defining an Algorithm</a></li>
+<li class="chapter" data-level="4.2" data-path="building-an-iterative-method.html"><a href="building-an-iterative-method.html"><i class="fa fa-check"></i><b>4.2</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.3" data-path="eulers-method-applied-to-systems.html"><a href="eulers-method-applied-to-systems.html"><i class="fa fa-check"></i><b>4.3</b> Euler’s method applied to systems</a></li>
+<li class="chapter" data-level="4.4" data-path="more-refined-numerical-solvers.html"><a href="more-refined-numerical-solvers.html"><i class="fa fa-check"></i><b>4.4</b> More refined numerical solvers</a></li>
+<li class="chapter" data-level="4.5" data-path="exercises-3.html"><a href="exercises-3.html"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase lines and equilibrium solutions</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-lines-for-differentail-equations.html"><a href="phase-lines-for-differentail-equations.html"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differentail equations</a></li>
+<li class="chapter" data-level="5.3" data-path="a-stability-test-for-equilibrium-solutions.html"><a href="a-stability-test-for-equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="exercises-4.html"><a href="exercises-4.html"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled systems of equations</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="model-redux-flu-with-quarantine.html"><a href="model-redux-flu-with-quarantine.html"><i class="fa fa-check"></i><b>6.1</b> Model redux: flu with quarantine</a></li>
+<li class="chapter" data-level="6.2" data-path="determining-stability.html"><a href="determining-stability.html"><i class="fa fa-check"></i><b>6.2</b> Determining stability</a></li>
+<li class="chapter" data-level="6.3" data-path="generating-a-phase-plane-in-r.html"><a href="generating-a-phase-plane-in-r.html"><i class="fa fa-check"></i><b>6.3</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.4" data-path="exercises-5.html"><a href="exercises-5.html"><i class="fa fa-check"></i><b>6.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="separable-differential-equations.html"><a href="separable-differential-equations.html"><i class="fa fa-check"></i><b>7.1</b> Separable Differential Equations</a></li>
+<li class="chapter" data-level="7.2" data-path="integrating-factors.html"><a href="integrating-factors.html"><i class="fa fa-check"></i><b>7.2</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.3" data-path="guess-and-check.html"><a href="guess-and-check.html"><i class="fa fa-check"></i><b>7.3</b> Guess and Check</a></li>
+<li class="chapter" data-level="7.4" data-path="superposition-of-solutions.html"><a href="superposition-of-solutions.html"><i class="fa fa-check"></i><b>7.4</b> Superposition of solutions</a></li>
+<li class="chapter" data-level="7.5" data-path="applying-guess-and-check-more-broadly.html"><a href="applying-guess-and-check-more-broadly.html"><i class="fa fa-check"></i><b>7.5</b> Applying guess and check more broadly</a></li>
+<li class="chapter" data-level="7.6" data-path="exercises-6.html"><a href="exercises-6.html"><i class="fa fa-check"></i><b>7.6</b> Exercises</a></li>
+</ul></li>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression &amp; Curve Fitting</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="what-is-parameter-estimation.html"><a href="what-is-parameter-estimation.html"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="fitting-temperature-data.html"><a href="fitting-temperature-data.html"><i class="fa fa-check"></i><b>8.2</b> Fitting temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="moving-beyond-linear-models.html"><a href="moving-beyond-linear-models.html"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models</a></li>
+<li class="chapter" data-level="8.4" data-path="can-you-linearize-your-model.html"><a href="can-you-linearize-your-model.html"><i class="fa fa-check"></i><b>8.4</b> Can you linearize your model?</a></li>
+<li class="chapter" data-level="8.5" data-path="nonlinear-models.html"><a href="nonlinear-models.html"><i class="fa fa-check"></i><b>8.5</b> Nonlinear models</a></li>
+<li class="chapter" data-level="8.6" data-path="exercises-7.html"><a href="exercises-7.html"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="linear-regression-part-2.html"><a href="linear-regression-part-2.html"><i class="fa fa-check"></i><b>9.1</b> Linear regression, part 2</a></li>
+<li class="chapter" data-level="9.2" data-path="probability.html"><a href="probability.html"><i class="fa fa-check"></i><b>9.2</b> Probability</a></li>
+<li class="chapter" data-level="9.3" data-path="connecting-to-linear-regression.html"><a href="connecting-to-linear-regression.html"><i class="fa fa-check"></i><b>9.3</b> Connecting to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="plotting-likelihood-surfaces.html"><a href="plotting-likelihood-surfaces.html"><i class="fa fa-check"></i><b>9.4</b> Plotting likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="exercises-8.html"><a href="exercises-8.html"><i class="fa fa-check"></i><b>9.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions &amp; Bayes’ Rule</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="cost-functions-likelihood-functions-in-disguise.html"><a href="cost-functions-likelihood-functions-in-disguise.html"><i class="fa fa-check"></i><b>10.1</b> Cost functions: likelihood functions in disguise</a></li>
+<li class="chapter" data-level="10.2" data-path="connection-to-likelihood-functions.html"><a href="connection-to-likelihood-functions.html"><i class="fa fa-check"></i><b>10.2</b> Connection to likelihood functions</a></li>
+<li class="chapter" data-level="10.3" data-path="extending-the-cost-function.html"><a href="extending-the-cost-function.html"><i class="fa fa-check"></i><b>10.3</b> Extending the cost function</a></li>
+<li class="chapter" data-level="10.4" data-path="conditional-probabilities-and-bayes-rule.html"><a href="conditional-probabilities-and-bayes-rule.html"><i class="fa fa-check"></i><b>10.4</b> Conditional Probabilities and Bayes’ Rule</a></li>
+<li class="chapter" data-level="10.5" data-path="bayes-rule-and-linear-regression.html"><a href="bayes-rule-and-linear-regression.html"><i class="fa fa-check"></i><b>10.5</b> Bayes’ Rule and Linear Regression</a></li>
+<li class="chapter" data-level="10.6" data-path="exercises-9.html"><a href="exercises-9.html"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> The bootstrap method</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="plotting-histograms-in-r.html"><a href="plotting-histograms-in-r.html"><i class="fa fa-check"></i><b>11.1</b> Plotting histograms in R</a></li>
+<li class="chapter" data-level="11.2" data-path="statistical-theory-sampling-distributions.html"><a href="statistical-theory-sampling-distributions.html"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: Sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="sampling-the-empirical-distirbution.html"><a href="sampling-the-empirical-distirbution.html"><i class="fa fa-check"></i><b>11.3</b> Sampling the empirical distirbution</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstapping-with-linear-regression.html"><a href="bootstapping-with-linear-regression.html"><i class="fa fa-check"></i><b>11.4</b> Bootstapping with linear regression</a></li>
+<li class="chapter" data-level="11.5" data-path="exercises-10.html"><a href="exercises-10.html"><i class="fa fa-check"></i><b>11.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="the-metropolis-hastings-algorithm.html"><a href="the-metropolis-hastings-algorithm.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="estimating-the-growth-of-a-dog.html"><a href="estimating-the-growth-of-a-dog.html"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="applying-the-likelihood-to-evaluate-parameters.html"><a href="applying-the-likelihood-to-evaluate-parameters.html"><i class="fa fa-check"></i><b>12.2</b> Applying the likelihood to evaluate parameters</a></li>
+<li class="chapter" data-level="12.3" data-path="concluding-points.html"><a href="concluding-points.html"><i class="fa fa-check"></i><b>12.3</b> Concluding points</a></li>
+<li class="chapter" data-level="12.4" data-path="exercises-11.html"><a href="exercises-11.html"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="mcmc-parameter-estimation-with-an-empirical-model.html"><a href="mcmc-parameter-estimation-with-an-empirical-model.html"><i class="fa fa-check"></i><b>13.1</b> MCMC Parameter Estimation with an Empirical Model</a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-parameter-estimation-with-a-differential-equation-model.html"><a href="mcmc-parameter-estimation-with-a-differential-equation-model.html"><i class="fa fa-check"></i><b>13.2</b> MCMC Parameter Estimation with a Differential Equation Model</a></li>
+<li class="chapter" data-level="13.3" data-path="timing-your-code.html"><a href="timing-your-code.html"><i class="fa fa-check"></i><b>13.3</b> Timing your code</a></li>
+<li class="chapter" data-level="13.4" data-path="further-extensions-to-mcmc.html"><a href="further-extensions-to-mcmc.html"><i class="fa fa-check"></i><b>13.4</b> Further extensions to MCMC</a></li>
+<li class="chapter" data-level="13.5" data-path="exercises-12.html"><a href="exercises-12.html"><i class="fa fa-check"></i><b>13.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="why-bother-with-more-models.html"><a href="why-bother-with-more-models.html"><i class="fa fa-check"></i><b>14.1</b> Why bother with more models?</a></li>
+<li class="chapter" data-level="14.2" data-path="the-information-on-information-criterion.html"><a href="the-information-on-information-criterion.html"><i class="fa fa-check"></i><b>14.2</b> The Information on Information Criterion</a></li>
+<li class="chapter" data-level="14.3" data-path="a-few-cautionary-notes.html"><a href="a-few-cautionary-notes.html"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
+<li class="chapter" data-level="14.4" data-path="exercises-13.html"><a href="exercises-13.html"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
+</ul></li>
+<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of linear equations</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="equilibrium-solutions-1.html"><a href="equilibrium-solutions-1.html"><i class="fa fa-check"></i><b>15.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="15.2" data-path="the-phase-plane.html"><a href="the-phase-plane.html"><i class="fa fa-check"></i><b>15.2</b> The phase plane</a></li>
+<li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
+<li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
+<li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
+<li class="chapter" data-level="16.3" data-path="exercises-15.html"><a href="exercises-15.html"><i class="fa fa-check"></i><b>16.3</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="a-first-example.html"><a href="a-first-example.html"><i class="fa fa-check"></i><b>17.1</b> A first example</a></li>
+<li class="chapter" data-level="17.2" data-path="the-lynx-hare-revisited.html"><a href="the-lynx-hare-revisited.html"><i class="fa fa-check"></i><b>17.2</b> The lynx hare revisited</a></li>
+<li class="chapter" data-level="17.3" data-path="tangent-plane-approximations.html"><a href="tangent-plane-approximations.html"><i class="fa fa-check"></i><b>17.3</b> Tangent plane approximations</a></li>
+<li class="chapter" data-level="17.4" data-path="the-jacobian-matrix.html"><a href="the-jacobian-matrix.html"><i class="fa fa-check"></i><b>17.4</b> The Jacobian matrix</a></li>
+<li class="chapter" data-level="17.5" data-path="predator-prey-with-logistic-growth.html"><a href="predator-prey-with-logistic-growth.html"><i class="fa fa-check"></i><b>17.5</b> Predator prey with logistic growth</a></li>
+<li class="chapter" data-level="17.6" data-path="concluding-thoughts-1.html"><a href="concluding-thoughts-1.html"><i class="fa fa-check"></i><b>17.6</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="17.7" data-path="exercises-16.html"><a href="exercises-16.html"><i class="fa fa-check"></i><b>17.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are eigenvalues?</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="straight-line-solutions.html"><a href="straight-line-solutions.html"><i class="fa fa-check"></i><b>18.1</b> Straight line solutions</a></li>
+<li class="chapter" data-level="18.2" data-path="computing-eigenvalues-and-eigenvectors.html"><a href="computing-eigenvalues-and-eigenvectors.html"><i class="fa fa-check"></i><b>18.2</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="18.3" data-path="what-do-eigenvalues-tell-us.html"><a href="what-do-eigenvalues-tell-us.html"><i class="fa fa-check"></i><b>18.3</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="18.4" data-path="concluding-thoughts-2.html"><a href="concluding-thoughts-2.html"><i class="fa fa-check"></i><b>18.4</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="18.5" data-path="exercises-17.html"><a href="exercises-17.html"><i class="fa fa-check"></i><b>18.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="two-dimensional-linear-systems-the-general-case.html"><a href="two-dimensional-linear-systems-the-general-case.html"><i class="fa fa-check"></i><b>19.1</b> Two dimensional linear systems: the general case</a></li>
+<li class="chapter" data-level="19.2" data-path="sensitivity-to-parameters-with-the-trace-determinant.html"><a href="sensitivity-to-parameters-with-the-trace-determinant.html"><i class="fa fa-check"></i><b>19.2</b> Sensitivity to parameters with the trace-determinant</a></li>
+<li class="chapter" data-level="19.3" data-path="higher-dimensional-stability.html"><a href="higher-dimensional-stability.html"><i class="fa fa-check"></i><b>19.3</b> Higher dimensional stability</a></li>
+<li class="chapter" data-level="19.4" data-path="exercises-18.html"><a href="exercises-18.html"><i class="fa fa-check"></i><b>19.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
+<ul>
+<li class="chapter" data-level="20.1" data-path="a-series-of-equations.html"><a href="a-series-of-equations.html"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcations-with-systems-of-equations.html"><a href="bifurcations-with-systems-of-equations.html"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.3" data-path="limit-cycles-and-bifurcations-with-systems-of-equations.html"><a href="limit-cycles-and-bifurcations-with-systems-of-equations.html"><i class="fa fa-check"></i><b>20.3</b> Limit Cycles and Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.4" data-path="exercises-19.html"><a href="exercises-19.html"><i class="fa fa-check"></i><b>20.4</b> Exercises</a></li>
+</ul></li>
+<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
+<ul>
+<li class="chapter" data-level="21.1" data-path="a-discrete-system.html"><a href="a-discrete-system.html"><i class="fa fa-check"></i><b>21.1</b> A discrete system</a></li>
+<li class="chapter" data-level="21.2" data-path="environmental-stochasticity.html"><a href="environmental-stochasticity.html"><i class="fa fa-check"></i><b>21.2</b> Environmental Stochasticity</a></li>
+<li class="chapter" data-level="21.3" data-path="discrete-systems-of-equations.html"><a href="discrete-systems-of-equations.html"><i class="fa fa-check"></i><b>21.3</b> Discrete systems of equations</a></li>
+<li class="chapter" data-level="21.4" data-path="exercises-20.html"><a href="exercises-20.html"><i class="fa fa-check"></i><b>21.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
+<ul>
+<li class="chapter" data-level="22.1" data-path="ensemble-averages.html"><a href="ensemble-averages.html"><i class="fa fa-check"></i><b>22.1</b> Ensemble Averages</a></li>
+<li class="chapter" data-level="22.2" data-path="computing-ensemble-averages.html"><a href="computing-ensemble-averages.html"><i class="fa fa-check"></i><b>22.2</b> Computing ensemble averages</a></li>
+<li class="chapter" data-level="22.3" data-path="doing-many-simulations-and-visualizing.html"><a href="doing-many-simulations-and-visualizing.html"><i class="fa fa-check"></i><b>22.3</b> Doing many simulations and visualizing</a></li>
+<li class="chapter" data-level="22.4" data-path="exercises-21.html"><a href="exercises-21.html"><i class="fa fa-check"></i><b>22.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
+<ul>
+<li class="chapter" data-level="23.1" data-path="random-walk-on-a-number-line.html"><a href="random-walk-on-a-number-line.html"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="23.2" data-path="more-realizatons.html"><a href="more-realizatons.html"><i class="fa fa-check"></i><b>23.2</b> More realizatons</a></li>
+<li class="chapter" data-level="23.3" data-path="random-walk-mathematics.html"><a href="random-walk-mathematics.html"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="23.4" data-path="continuous-random-walks-diffusion.html"><a href="continuous-random-walks-diffusion.html"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks (diffusion)</a></li>
+<li class="chapter" data-level="23.5" data-path="exercises-22.html"><a href="exercises-22.html"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion</a>
+<ul>
+<li class="chapter" data-level="24.1" data-path="random-walk-redux.html"><a href="random-walk-redux.html"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
+<li class="chapter" data-level="24.2" data-path="concluding-thoughts-3.html"><a href="concluding-thoughts-3.html"><i class="fa fa-check"></i><b>24.2</b> Concluding Thoughts</a></li>
+<li class="chapter" data-level="24.3" data-path="exercises-23.html"><a href="exercises-23.html"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Stochastic Differential Equations</a>
+<ul>
+<li class="chapter" data-level="25.1" data-path="the-stochastic-logistic-model.html"><a href="the-stochastic-logistic-model.html"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="25.2" data-path="the-euler-maruyama-method.html"><a href="the-euler-maruyama-method.html"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama Method</a></li>
+<li class="chapter" data-level="25.3" data-path="adding-stochasticity-to-parameters.html"><a href="adding-stochasticity-to-parameters.html"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="25.4" data-path="concluding-thoughts-4.html"><a href="concluding-thoughts-4.html"><i class="fa fa-check"></i><b>25.4</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="25.5" data-path="exercises-24.html"><a href="exercises-24.html"><i class="fa fa-check"></i><b>25.5</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Simulating Stochastic Dynamics</a>
+<ul>
+<li class="chapter" data-level="26.1" data-path="the-stochastic-logistic-model-redux.html"><a href="the-stochastic-logistic-model-redux.html"><i class="fa fa-check"></i><b>26.1</b> The stochastic logistic model redux</a></li>
+<li class="chapter" data-level="26.2" data-path="a-stochastic-system-of-equations.html"><a href="a-stochastic-system-of-equations.html"><i class="fa fa-check"></i><b>26.2</b> A stochastic system of equations</a></li>
+<li class="chapter" data-level="26.3" data-path="generalizing-the-approach-.html"><a href="generalizing-the-approach-.html"><i class="fa fa-check"></i><b>26.3</b> Generalizing the approach.</a></li>
+<li class="chapter" data-level="26.4" data-path="exercises-25.html"><a href="exercises-25.html"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solving Stochastic Differential Equations</a>
+<ul>
+<li class="chapter" data-level="27.1" data-path="meet-the-fokker-planck-equation.html"><a href="meet-the-fokker-planck-equation.html"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck Equation</a></li>
+<li class="chapter" data-level="27.2" data-path="exercises-26.html"><a href="exercises-26.html"><i class="fa fa-check"></i><b>27.2</b> Exercises</a></li>
 </ul></li>
 <li class="divider"></li>
 <li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
@@ -93,7 +369,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring modeling with data and differential equations using R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploring Modeling with Data and Differential Equations Using R</a>
           </h1>
         </div>
 
@@ -101,14 +377,14 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="random-walk-redux" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Random walk redux</h2>
+<div id="random-walk-redux" class="section level2" number="24.1">
+<h2><span class="header-section-number">24.1</span> Random walk redux</h2>
 <p>In our random walk derivation we focused on the <em>position</em> of a particle on the random walk, based upon prescribed rules. In this scenario we instead are going to consider the <em>probability</em> that a particle is at position <span class="math inline">\(x\)</span> in time <span class="math inline">\(t\)</span>. We will denote this probability as <span class="math inline">\(p(x,t)\)</span>. In other words, rather than focusing on where the particle is, we focus on the chance that the particle is at a given spot.</p>
 <p>A way to conceptualize this is at any given position <span class="math inline">\(x\)</span>, a particle can arrive there from either the left or the right, illustrated in the following number line:</p>
-<p><img src="series_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="series_files/figure-html/unnamed-chunk-334-1.png" width="672" /></p>
 <p>Notice how the the particle could only move in unit increments. To generalize this setup a little more where to increments <span class="math inline">\(\Delta x\)</span>, the equation that defines the probability <span class="math inline">\(p\)</span> of being at position <span class="math inline">\(x\)</span> at any time <span class="math inline">\(t\)</span> is the following:</p>
 <p><span class="math display" id="eq:master-diff">\[\begin{equation}
-p(x,t+\Delta t) = \frac{1}{2} p(x-\Delta x,t) + \frac{1}{2} p(x+\Delta x,t) \tag{2.1}
+p(x,t+\Delta t) = \frac{1}{2} p(x-\Delta x,t) + \frac{1}{2} p(x+\Delta x,t) \tag{24.1}
 \end{equation}\]</span></p>
 <p>The next step to analyze this expression is apply Taylor approximations on each side of the equation. First let’s do a locally linear approximation for <span class="math inline">\(p(x,t+\Delta t)\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
@@ -119,27 +395,27 @@ p(x,t+\Delta t)  \approx p(x,t) + \Delta t \cdot p_{t},
 \frac{1}{2} p(x-\Delta x,t)  &amp; \approx \frac{1}{2} p(x,t) -   \frac{1}{2} \Delta x \cdot p_{x} + \frac{1}{4} (\Delta x)^{2}\cdot  p_{xx} \\
 \frac{1}{2} p(x+\Delta x,t)  &amp; \approx \frac{1}{2} p(x,t) +   \frac{1}{2} \Delta x \cdot p_{x} + \frac{1}{4} (\Delta x)^{2} \cdot p_{xx}
 \end{align*}\]</span></p>
-<p>With these approximations we can re-write the Equation <a href="random-walk-redux.html#eq:master-diff">(2.1)</a>:</p>
+<p>With these approximations we can re-write the Equation <a href="random-walk-redux.html#eq:master-diff">(24.1)</a>:</p>
 <p><span class="math display" id="eq:new-master-diff">\[\begin{equation}
-\Delta t \cdot p_{t} = \frac{1}{2} (\Delta x)^{2} p_{xx} \rightarrow  p_{t} = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t} \cdot p_{xx} \tag{2.2}
+\Delta t \cdot p_{t} = \frac{1}{2} (\Delta x)^{2} p_{xx} \rightarrow  p_{t} = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t} \cdot p_{xx} \tag{24.2}
 \end{equation}\]</span></p>
-<p>Equation <a href="random-walk-redux.html#eq:new-master-diff">(2.2)</a> is called a partial differential equation - a differential equation with derivatives that depend on two variables. This particular equation is the <strong>diffusion equation</strong>. Cool! We can also simplify Equation <a href="random-walk-redux.html#eq:new-master-diff">(2.2)</a> even more by defining <span class="math inline">\(\displaystyle D = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<p>Determining an exact solution to the diffusion equation requires more study in techniques of partial differential equations, so we will leave that for another time. However, the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(2.2)</a> is given by Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a>:
+<p>Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is called a partial differential equation - a differential equation with derivatives that depend on two variables. This particular equation is the <strong>diffusion equation</strong>. Cool! We can also simplify Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> even more by defining <span class="math inline">\(\displaystyle D = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}\)</span>.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
+<p>Determining an exact solution to the diffusion equation requires more study in techniques of partial differential equations, so we will leave that for another time. However, the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is given by Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a>:
 <span class="math display" id="eq:diff-eq-soln">\[\begin{equation}
- p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \tag{2.3}
+ p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \tag{24.3}
  \end{equation}\]</span></p>
 <p>What this equation represents is the probability that the particle is at the position <span class="math inline">\(x\)</span> at time <span class="math inline">\(t\)</span>.</p>
-<p>Figure <a href="random-walk-redux.html#fig:diffusion-profile">2.1</a> shows plots for <span class="math inline">\(p(x,t)\)</span> when <span class="math inline">\(D=0.5\)</span> (we will call these plots profiles) for different values of <span class="math inline">\(t\)</span>:</p>
+<p>Figure <a href="random-walk-redux.html#fig:diffusion-profile">24.1</a> shows plots for <span class="math inline">\(p(x,t)\)</span> when <span class="math inline">\(D=0.5\)</span> (we will call these plots profiles) for different values of <span class="math inline">\(t\)</span>:</p>
 <div class="figure" style="text-align: center"><span id="fig:diffusion-profile"></span>
 <img src="series_files/figure-html/diffusion-profile-1.png" alt="Profiles of Equation \@ref(eq:diff-eq-soln) for different values of $t$ with $D = 0.5$." width="384" />
 <p class="caption">
-Figure 2.1: Profiles of Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a> for different values of <span class="math inline">\(t\)</span> with <span class="math inline">\(D = 0.5\)</span>.
+Figure 24.1: Profiles of Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> for different values of <span class="math inline">\(t\)</span> with <span class="math inline">\(D = 0.5\)</span>.
 </p>
 </div>
 <p>As you can see that as time increases the graph of <span class="math inline">\(p(x,t)\)</span> gets flatter - or more uniform. What this tells you is that the longer <span class="math inline">\(t\)</span> increases it is less likely to find the particle at the origin.</p>
-<div id="verifying-the-solution-to-the-diffusion-equation" class="section level3" number="2.1.1">
-<h3><span class="header-section-number">2.1.1</span> Verifying the solution to the diffusion equation</h3>
-<p>Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a> is the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(2.2)</a> is a good review of your multivariable calculus skills! As a first step to verifying this solution, let’s take the partial derivative with respect to <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>.</p>
+<div id="verifying-the-solution-to-the-diffusion-equation" class="section level3" number="24.1.1">
+<h3><span class="header-section-number">24.1.1</span> Verifying the solution to the diffusion equation</h3>
+<p>Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is a good review of your multivariable calculus skills! As a first step to verifying this solution, let’s take the partial derivative with respect to <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>.</p>
 <p>First we will compute <span class="math inline">\(\displaystyle \frac{\partial p}{\partial x}\)</span>, which we will denote as <span class="math inline">\(p_{x}\)</span>:
 <span class="math display">\[\begin{align*}
 p_{x} &amp;= \frac{\partial }{\partial x} \left( \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \right) \\
@@ -170,14 +446,14 @@ p_{t} &amp;= f&#39;(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g&#39;(t) \\
 &amp;= \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \left( -\frac{1}{2t} +  \frac{x^{2}}{4Dt^{2}} \right) \\
 &amp;= p(x,t)  \left( -\frac{1}{2t} +  \frac{x^{2}}{4Dt^{2}} \right)
 \end{align*}\]</span></p>
-<p>Wow. Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a> is a solution to the diffusion equation is getting complicated, but also notice that through algebraic simplification, <span class="math inline">\(\displaystyle p_{t} = p(x,t) \left(\frac{x^{2}-2Dt}{4Dt^{2}} \right)\)</span>. If we compare <span class="math inline">\(p_{t}\)</span> to <span class="math inline">\(D p_{xx}\)</span>, they are equal!</p>
-<p>The connections between diffusion and probability are so strong. Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a> is related to the formula for a normal probability density function (you might want to refer back to Section <a href="#likelihood-09"><strong>??</strong></a>)! In this case, the standard deviation in Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(2.3)</a> dependent on time (Exercise <a href="exercises.html#exr:normal-compare">2.2</a>). Even though we approached the random walk differently here compared to Section <a href="#random-walks-23"><strong>??</strong></a>, we also saw that the variance grew proportional to the time spent, so there is some consistency.</p>
+<p>Wow. Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is a solution to the diffusion equation is getting complicated, but also notice that through algebraic simplification, <span class="math inline">\(\displaystyle p_{t} = p(x,t) \left(\frac{x^{2}-2Dt}{4Dt^{2}} \right)\)</span>. If we compare <span class="math inline">\(p_{t}\)</span> to <span class="math inline">\(D p_{xx}\)</span>, they are equal!</p>
+<p>The connections between diffusion and probability are so strong. Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is related to the formula for a normal probability density function (you might want to refer back to Section <a href="likelihood-09.html#likelihood-09">9</a>)! In this case, the standard deviation in Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> dependent on time (Exercise <a href="exercises-23.html#exr:normal-compare">24.2</a>). Even though we approached the random walk differently here compared to Section <a href="random-walks-23.html#random-walks-23">23</a>, we also saw that the variance grew proportional to the time spent, so there is some consistency.</p>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>Other derivations of the diffusion equation let <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> in the limit, but to continue the physical aspect of this problem and connects back to our work on the random walk.<a href="random-walk-redux.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<ol start="12">
+<li id="fn12"><p>Other derivations of the diffusion equation let <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> in the limit, but to continue the physical aspect of this problem and connects back to our work on the random walk.<a href="random-walk-redux.html#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -186,7 +462,7 @@ p_{t} &amp;= f&#39;(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g&#39;(t) \\
         </div>
       </div>
 <a href="diffusion-24.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="concluding-thoughts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="concluding-thoughts-3.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -228,7 +504,7 @@ gitbook.start({
 "link": "https://jmzobitz.github.io/ModelingWithR/24-diffusion.Rmd",
 "text": null
 },
-"download": ["series.pdf"],
+"download": {},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
