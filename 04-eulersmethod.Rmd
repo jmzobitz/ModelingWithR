@@ -1,5 +1,5 @@
-# Euler's method {#euler-04}
-The focus of this section is on *approximation* of solutions to a differential equation via a numerical method.  Typically a first numerical methods one might learn to tackle this problem is *Euler's method*, which is so fundamental it was popularized in the movie [Hidden Figures.](https://www.youtube.com/watch?v=v-pbGAts_Fg)
+# Euler's Method {#euler-04}
+The focus of this section is on *approximation* of solutions to a differential equation via a numerical method.  Typically a first numerical method one might learn to tackle this problem is *Euler's method*, which is so fundamental it was popularized in the movie [Hidden Figures.](https://www.youtube.com/watch?v=v-pbGAts_Fg)
 
 
 The way we are going to do this is through expansion of the idea of a _locally linear approximation_ to the tangent line.  Let's start with an example.
@@ -11,7 +11,7 @@ The rate of change of the flu through a population is given by the number of peo
 ```
 &nbsp;
 
-```{remark}
+```{solution}
 In order to solve this problem, we know that the locally linear approximation is to $I(t)$ at $t=0$ is $L(t) = I(0) + I'(0) \cdot (t-0)$.  Here, $I(0)=10$ and $I'(0)=3$, so $$L(t) = 10 +3t$$.  Using $L(t) \approx I(t)$, we have $L(1)=10 + 3 = 13$.  So our model predicts there will be 13 people sick.
 ```
 
@@ -19,7 +19,7 @@ In order to solve this problem, we know that the locally linear approximation is
 
 Notice in Example \@ref(exm:flu-linear) we used two pieces of information: the (given) value of the function at $t=0$ and the estimate of the derivative from the rate of change.
 
-It may be helpful to compare our prediction from $L(1)$ to the actual value.  The solution to the differential equation in Example \@ref(exm:flu-linear) is $I(t) = 130-120e^{-.025t}$ (you should verify this is the case by differentation). Let's compare in the following table:
+It may be helpful to compare our prediction from $L(1)$ to the actual value.  The solution to the differential equation in Example \@ref(exm:flu-linear) is $I(t) = 130-120e^{-.025t}$ (you should verify this is the case by differentation). Let's also our approximation to the actual solution in the following table:
 
 $t$ | Linear approximation | Actual Solution
 ------------- | ------------- | -------------
@@ -30,35 +30,39 @@ $t$ | Linear approximation | Actual Solution
 Not too bad, huh? Our approximation at $L(1)$ is an *overestimate*, mainly because the actual solution is concave down, but it isn't that far off.
 
 
-Let's build this solution out a little more by computing the rate of change at $t=1$, assuming that thirteen people is a pretty close estimate of the $I$ at $t=1$.  What we could do is to build _another_ linear approximation using the differential equation. So the locally linear approximation is to $I(t)$ at $t=1$ is 
+Let's build this solution out a little more by computing the rate of change at $t=1$, assuming that thirteen people is a pretty close estimate for the number infected ($I$) at $t=1$.  What we could do is to build _another_ linear approximation using the differential equation. Let's call this linear approximation $L_{1}(t)$ to distinguish it from $L(t)$. The formula for $L_{1}(t)$ (the locally linear approximation is to $I(t)$ at $t=1$) is 
 
-$$ L(t) = I(1) + I'(1) \cdot (t-1) $$.  
+$$ L_{1}(t) = I(1) + I'(1) \cdot (t-1) $$.  
 
 Here, $I(1)=13$ and $I'(1)=2.92$, and $L(t) = 13 +2.92(t-1).$
 
-Assuming that $L(t) \approx I(t)$, we can evaluate $L(t)$ at $t=2$ *as an approximation* for $I(2)$: have $L(2)=13 + 2.92 = 15.92$.  Comparing this to the actual solution at $t=2$, we have $I(2)=15.85$.  Again, not too bad of a solution.
+Assuming that $L_{1}(t) \approx I(t)$, we can evaluate $L_{1}(t)$ at $t=2$ *as an approximation* for $I(2)$: have $L(2)=13 + 2.92 = 15.92$.  Comparing this to the actual solution at $t=2$, we have $I(2)=15.85$.  Again, not too bad of a solution.
 
 We can continue to build out the solution from there.  Figure \@ref(fig:eulers_ver1) shows what we would have for a solution if we continued to build out this approach:
 
 
-```{r eulers_ver1,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Approximation of a solution using local linearity', fig.width=4,fig.height=3}
-tibble(t=c(0,1,2),
-       i_approx=c(10,13,15.92),
-       i_soln=c(10,12.96,15.85)) %>%
-  pivot_longer(cols=c("i_approx","i_soln"),names_to="solution",values_to="value") %>%
-  ggplot(aes(x=t,y=value,color=solution,shape=solution)) +
-  geom_point(size=2) +
+```{r, label="eulers_ver1",warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Approximation of a solution using local linearity', fig.width=4,fig.height=3}
+tibble(
+  t = c(0, 1, 2),
+  i_approx = c(10, 13, 15.92),
+  i_soln = c(10, 12.96, 15.85)
+) %>%
+  pivot_longer(cols = c("i_approx", "i_soln"), names_to = "solution", values_to = "value") %>%
+  ggplot(aes(x = t, y = value, color = solution, shape = solution)) +
+  geom_point(size = 2) +
   geom_line() +
-  theme(legend.position="bottom",
-        legend.text=element_text(size=14),
-        axis.title.x=element_text(size=18),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y=element_text(size=18)) +
-  labs(x = "Time",y = "Solutions") +
-  theme(legend.title=element_blank()) +
-  scale_shape_discrete(labels=c("Approximation", "Solution")) +
-  scale_color_discrete(labels=c("Approximation", "Solution"))
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  ) +
+  labs(x = "Time", y = "Solutions") +
+  theme(legend.title = element_blank()) +
+  scale_shape_discrete(labels = c("Approximation", "Solution")) +
+  scale_color_discrete(labels = c("Approximation", "Solution"))
 ```
 
 When you plot them they do look indistinguishable from each other by eye.  It looks like we are onto something here!
@@ -75,13 +79,13 @@ If we continue on in this way, let's take a look at how our approximation would 
 ```{r warning=FALSE,message=FALSE,echo=FALSE}
 
 dt <- 1
-t <- seq(0,100,by=dt)
-i_soln <- 130-120*exp(-.025*t)
-didt = 3*exp(-0.025*t)  # We are multiplying by dt
-i_approx <- array(0,dim=length(t))
+t <- seq(0, 100, by = dt)
+i_soln <- 130 - 120 * exp(-.025 * t)
+didt <- 3 * exp(-0.025 * t) # We are multiplying by dt
+i_approx <- array(0, dim = length(t))
 i_approx[1] <- 10
-for(i in 2:length(t)) {
-  i_approx[i] <- i_approx[i-1] + didt[i-1]*dt
+for (i in 2:length(t)) {
+  i_approx[i] <- i_approx[i - 1] + didt[i - 1] * dt
 }
 ```
 
@@ -102,7 +106,7 @@ $t$ | $I$ | $\displaystyle \frac{dI}{dt}$ | $\displaystyle \frac{dI}{dt} \cdot \
 2 | = 14.38 + 1.44 = 15.82 |  | 
 
 
-Notice how we have started to build up a way to organize how to compute the solution.  Each column is a ``step'' of the method, computing the solution at a new timestep based on our step size $\Delta t$.  The third column just computes the value of the derivative for a particular time and $I$, and then the fourth column is the *increment* size, or the amount we are forecasting the solution will grow by to the next timestep.  (There are other ways to think about this, but if you have a *rate of change * multiplied by a time increment this will give you an approximation to the net change in a function.)
+Notice how we have started to build up a way to organize how to compute the solution.  Each column is a "step" of the method, computing the solution at a new timestep based on our step size $\Delta t$.  The third column just computes the value of the derivative for a particular time and $I$, and then the fourth column is the *increment* size, or the amount we are forecasting the solution will grow by to the next timestep.  (There are other ways to think about this, but if you have a *rate of change * multiplied by a time increment this will give you an approximation to the net change in a function.)
 
 
 This idea of *approximate, forecast, repeat* is the heart of many [numerical methods](https://en.wikipedia.org/wiki/Numerical_methods_for_ordinary_differential_equations) that approximate solutions to differential equations. The particular method that we have developed here is called _Euler's Method_.  We display the results from additional steps in Figure \@ref(fig:eulers-ver2).
@@ -112,47 +116,45 @@ This idea of *approximate, forecast, repeat* is the heart of many [numerical met
 # Let's clean this up somewhat
 t_end <- 200
 # Solution
-t_soln <- seq(0,t_end,by=0.05)
-i_soln <- 130-120*exp(-.025*t_soln)
+t_soln <- seq(0, t_end, by = 0.05)
+i_soln <- 130 - 120 * exp(-.025 * t_soln)
 
 # First timesteps
 dt <- 1
-t_1 <- seq(0,t_end,by=dt)
+t_1 <- seq(0, t_end, by = dt)
 
-didt = 3*exp(-0.025*t_1)  # We are multiplying by dt
-i_approx <- array(0,dim=length(t_1))
+didt <- 3 * exp(-0.025 * t_1) # We are multiplying by dt
+i_approx <- array(0, dim = length(t_1))
 i_approx[1] <- 10
-for(i in 2:length(t_1)) {
-  i_approx[i] <- i_approx[i-1] + didt[i-1]*dt
+for (i in 2:length(t_1)) {
+  i_approx[i] <- i_approx[i - 1] + didt[i - 1] * dt
 }
 
 # Smaller timestep
 dt <- 0.5
-t_2 <- seq(0,t_end,by=dt)
-didt = 3*exp(-0.025*t_2)  # We are multiplying by dt
-i_approx_2 <- array(0,dim=length(t_2))
+t_2 <- seq(0, t_end, by = dt)
+didt <- 3 * exp(-0.025 * t_2) # We are multiplying by dt
+i_approx_2 <- array(0, dim = length(t_2))
 i_approx_2[1] <- 10
-for(i in 2:length(t_2)) {
-  i_approx_2[i] <- i_approx_2[i-1] + didt[i-1]*dt
+for (i in 2:length(t_2)) {
+  i_approx_2[i] <- i_approx_2[i - 1] + didt[i - 1] * dt
 }
 
 
-solution <- tibble(t_soln,i_soln)
+solution <- tibble(t_soln, i_soln)
 euler_1 <- tibble(t_1, i_approx)
 euler_2 <- tibble(t_2, i_approx_2)
 
 ggplot() +
-  geom_line(data=solution, aes(x=t_soln,y=i_soln)) +
-  geom_point(data=euler_1, aes(x=t_1,y=i_approx),color='blue',size=1.5) +
-  geom_line(data=euler_1, aes(x=t_1,y=i_approx),color='blue') +
-  geom_point(data=euler_2, aes(x=t_2,y=i_approx_2),color='red',size=1.5) +
-  geom_line(data=euler_2, aes(x=t_2,y=i_approx_2),color='red') +
-  labs(x="Time (days)",y="Infected people")
-  
-
+  geom_line(data = solution, aes(x = t_soln, y = i_soln)) +
+  geom_point(data = euler_1, aes(x = t_1, y = i_approx), color = "blue", size = 1.5) +
+  geom_line(data = euler_1, aes(x = t_1, y = i_approx), color = "blue") +
+  geom_point(data = euler_2, aes(x = t_2, y = i_approx_2), color = "red", size = 1.5) +
+  geom_line(data = euler_2, aes(x = t_2, y = i_approx_2), color = "red") +
+  labs(x = "Time (days)", y = "Infected people")
 ```
 
-You may notice that the approximation in Figure \@ref(fig:eulers_ver2) compares very favorably to the actual solution function.  At the end, we have the following comparisons:
+You may notice that the approximation in Figure \@ref(fig:eulers-ver2) compares very favorably to the actual solution function.  At the end, we have the following comparisons:
 
 
 $t$ | Euler's Method ($\Delta t = 1$) | Euler's Method ($\Delta t = 0.5$) |Actual Solution
@@ -165,9 +167,7 @@ $t$ | Euler's Method ($\Delta t = 1$) | Euler's Method ($\Delta t = 0.5$) |Actua
 There is a tradeoff here - the smaller stepsizes you have the more work it will take to compute you solution.  You may have seen a similar tradeoff in Calculus when you explored numerical integration and Riemann sums.
 
 ## Building an iterative method
-Now that we have worked on an example, let's carefully formulate Euler's method with another example.  Consider the following differential equation:
-
-Consider the following equation that describes the rate of change of the spread of a disease (such as Ebola, as we covered in the first section):
+Now that we have worked on an example, let's carefully formulate Euler's method with another example.  Consider the following equation that describes the rate of change of the spread of a disease (such as Ebola, as we covered in the first section):
 
 $$ \frac{dI}{dt} = 0.003 I \cdot (4000-I)  $$
 
@@ -185,13 +185,13 @@ I(t+\Delta t) &= I(t) + 0.003 I \cdot (4000-I)  \cdot \Delta t
 \end{align*} 
 
 
-The last equation $I(t+\Delta t) = I(t) + 0.03 I \cdot (4000-I)  \cdot \Delta t  = f(I) \cdot \Delta t$ is a reasonable way to define an iterative system, especially if we have a spreadsheet program.  Here is some code in `R` that can define a for loop to do this in an iterative way and then plot the solution with `plotData`:
+The last equation $I(t+\Delta t) = I(t) + 0.03 I \cdot (4000-I)  \cdot \Delta t  = f(I) \cdot \Delta t$ is a reasonable way to define an iterative system, especially if we have a spreadsheet program.  Here is some code in `R` that can define a `for` loop to do this iteratively and then plot the solution:
 
-```{r,label="my-iterative-method",warning=FALSE,message=FALSE,fig.cap='An iterative method', fig.width=4,fig.height=3}
+```{r, fig.width=4,fig.height=3,results='hide'}
 
 # Define your timestep and time vector
 deltaT <- 0.1
-t <- seq(0,2,by=deltaT)
+t <- seq(0, 2, by = deltaT)
 
 # Define the number of steps we take.  This is equal to 10 / dt (why?)
 N <- length(t)
@@ -200,28 +200,40 @@ N <- length(t)
 i_approx <- 10
 
 # Define a vector for your solution:the derivative equation
-for(i in 2:N) {  # We start this at 2 because the first value is 10
-  didt <- .003 * i_approx[i-1] * (4000-i_approx[i-1])
-  i_approx[i] <- i_approx[i-1] + didt*deltaT
+for (i in 2:N) { # We start this at 2 because the first value is 10
+  didt <- .003 * i_approx[i - 1] * (4000 - i_approx[i - 1])
+  i_approx[i] <- i_approx[i - 1] + didt * deltaT
 }
 
 
 # Define your data for the solution into a tibble:
-solution_data <- tibble(time =t,
-                        infected = i_approx)
+solution_data <- tibble(
+  time = t,
+  infected = i_approx
+)
+
+```
+
+Next we will plot our solution in Figure \@ref(fig:my-iterative-method).
+```{r my-iterative-method,fig.cap="An iterative method", fig.width=4,fig.height=3,results='hide'}
 
 # Now plot your solution:
 ggplot(data = solution_data) +
-  geom_line(aes(x=time,y=infected)) 
-  labs(x='Time',
-         y='Infected')
+  geom_line(aes(x = time, y = infected)) +
+labs(
+  x = "Time",
+  y = "Infected"
+)
 
 ```
-Ok, let's discuss the different aspects of this code:
+
+
+
+Ok, let's break this code down step by step:
 
 - `deltaT <- 0.1` and `t <- seq(0,2,by=deltaT)` define the timesteps ($\Delta t$) and the output time vector `t`.  We also define `N <- length(t)` so we know how many steps we take.
 - `i_approx <- 10` defines the initial condition to the system, in other words $I(0)=10$.
-- The for loop goes through this system - first computing the value of $\displaystyle \frac{dI}{dt}$ and then forecasing out the next timestep $I(t+\Delta t) = f(I) \cdot \Delta t$
+- The `for` loop goes through this system - first computing the value of $\displaystyle \frac{dI}{dt}$ and then forecasing out the next timestep $I(t+\Delta t) = f(I) \cdot \Delta t$
 - The remaining code plots the dataframe, like we learned in Section \@ref(r-intro-02).
 
 Let's recap what we've learned to summarize Euler's method.  The most general form of a differential equation is: 
@@ -234,36 +246,43 @@ At a given initial condition, Euler's method applies locally linear approximatio
 $$ \vec{y}_{n+1} = y_{n} + f(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \Delta t $$
 
 
-To generate Figure \@ref(fig:my-iterative-method) we created the solution directly in R - but you don't want to copy and paste the code.  I've created a function called `euler` that does the same process to generate the output solution:
+To generate Figure \@ref(fig:my-iterative-method) we created the solution directly in `R` - but you don't want to copy and paste the code.  The `demodeler` package has a function called `euler` that does the same process to generate the output solution:
 
 ```{r,warning=FALSE,fig.cap="Euler\\'s method solution", fig.width=4,fig.height=3,warning=FALSE,message=FALSE}
 
+library(demodelr)
+
 # Define the rate equation:
-system_eq <- c(didt ~ .003 * i * (4000-i))
+infection_eq <- c(didt ~ .003 * i * (4000 - i))
 
 # Define the initial condition (as a named vector)
-init_cond <- c(i=10)
+infection_init <- c(i = 10)
 
 # Define deltaT and the time steps:
-deltaT = 0.2
+deltaT <- 0.2
 n_steps <- 10
 
 # Compute the solution via Euler's method:
-out_solution <- euler(system_eq,initial_condition=init_cond,deltaT=deltaT,n_steps = n_steps)
+out_solution <- euler(system_eq = infection_eq,
+                      initial_condition = infection_init,
+                      deltaT = deltaT, 
+                      n_steps = n_steps
+                      )
 
 
 # Now plot your solution:
 ggplot(data = out_solution) +
-  geom_line(aes(x=t,y=i)) 
-  labs(x='Time',
-         y='Infected')
-
+  geom_line(aes(x = t, y = i)) +
+labs(
+  x = "Time",
+  y = "Infected"
+)
 ```
 
 Let's talk through the steps of this code as well:
 
-- The line `system_eq <- c(didt ~ .003 * i * (4000-i))` represents the differential equation, written in formula notation.  So $\displaystyle \frac{dI}{dt} \rightarrow$ `didt` and $f(I) \rightarrow$ `.003 * i * (4000-i))`, with the variable `i`.
-- The initial condition $I(0)=10$ is written as a **named vector:** `init_cond <- c(i=10)`.  Make sure the name of the variable is consistent with your differential equation.
+- The line `infection_eq <- c(didt ~ .003 * i * (4000-i))` represents the differential equation, written in formula notation.  So $\displaystyle \frac{dI}{dt} \rightarrow$ `didt` and $f(I) \rightarrow$ `.003 * i * (4000-i))`, with the variable `i`.
+- The initial condition $I(0)=10$ is written as a **named vector:** `infection_init <- c(i=10)`.  Make sure the name of the variable is consistent with your differential equation.
 - As before we need to identify $\Delta t$ and the number of steps $N$.
 
 The command `euler` then computes the solution applying Euler's method, returning a data frame so we can plot the results.  Note the columns of the data frame are the variables $t$ and $i$ that have been named in our equations.
@@ -273,13 +292,13 @@ The command `euler` then computes the solution applying Euler's method, returnin
 
 
 ## Euler's method applied to systems
-Here is a sample code that shows the dynamics for the Lotka-Volterra equations, as studied in Section \@ref(modeling-rates-03):
+Now that we have some experience with Euler's method, let's see how we can apply the function `euler` to a system of differential equations. Here is a sample code that shows the dynamics for the Lotka-Volterra equations, as studied in Section \@ref(modeling-rates-03):
 
 \begin{equation}
 \begin{split} 
-\frac{dH}{dt} &= r H - bHL \\  (\#eq:lynx-hare-04)
+\frac{dH}{dt} &= r H - bHL \\  
 \frac{dL}{dt} &= e  b  H L - dL
-\end{split}
+\end{split} (\#eq:lynx-hare-04)
 \end{equation}
 
 We are going to use Euler's method to solve this differential equation. Similar to the previous example we will need to determine the f
@@ -287,115 +306,126 @@ We are going to use Euler's method to solve this differential equation. Similar 
 ```{r,warning=FALSE,fig.cap="Euler\\'s method solution for Lynx-Hare system", fig.width=4,fig.height=3}
 
 # Define the rate equation:
-system_eq <- c(dHdt ~ r*H-b*H*L,
-               dLdt ~ e*b*H*L-d*L)
+lynx_hare_eq <- c(
+  dHdt ~ r * H - b * H * L,
+  dLdt ~ e * b * H * L - d * L
+)
 
 
 # Define the parameters (as a named vector)
-lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1)   # parameters: a named vector
+lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1) # parameters: a named vector
 
 # Define the initial condition (as a named vector)
-init_cond <- c(H=1, L=3)
+lynx_hare_init <- c(H = 1, L = 3)
 
 # Define deltaT and the time steps:
-deltaT <- 0.05    # timestep length
-timeSteps <- 200   # must be a number greater than 1
+deltaT <- 0.05 # timestep length
+timeSteps <- 200 # must be a number greater than 1
 
 # Compute the solution via Euler's method:
-out_solution <- euler(system_eq,
+out_solution <- euler(system_eq = lynx_hare_eq,
                       parameters = lynx_hare_params,
-                      initial_condition=init_cond,
-                      deltaT=deltaT,
-                      n_steps = n_steps)
+                      initial_condition = lynx_hare_init,
+                      deltaT = deltaT,
+                      n_steps = n_steps
+                      )
 
 # Make a plot of the solution, using different colors for lynx or hares.
 ggplot(data = out_solution) +
-  geom_line(aes(x=t,y=H),color='red') +
-  geom_line(aes(x=t,y=L),color='blue') +
-labs(x='Time',
-     y='Lynx (red) or Hares (blue)')
-
-
+  geom_line(aes(x = t, y = H), color = "red") +
+  geom_line(aes(x = t, y = L), color = "blue") +
+  labs(
+    x = "Time",
+    y = "Lynx (red) or Hares (blue)"
+  )
 ```
 
 This example is structured similarly as a single variable differential equation, with some key changes:
 
-- The variable `system_eq` is now a vector, with each entry one of the rate equations.
+- The variable `lynx_hare_eq` is now a vector, with each entry one of the rate equations.
 - We need to identify both variables in their initial condition.
-- Most importantly, Equation \@ref(eq:lynx-hare-04) has parameters, which we define as a named vector `lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1)` that we pass through to the command `euler` with the option `parameters`.  If your equation does not have any parameters you do not need to worry about it.
+- Most importantly, Equation \@ref(eq:lynx-hare-04) has parameters, which we define as a named vector `lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1)` that we pass through to the command `euler` with the option `parameters`.  If your equation does not have any parameters you do not need to worry about specifying this input.
 - We plot both solutions together at the end, or you can make two separate plots.  Remember that you can choose the color in your plot.
 
-Thankfully the code is pretty easy to adapt for systems of equations!
+Thankfully the `euler` code is pretty easy to adapt for systems of equations!
 
 
 ## More refined numerical solvers
 Perhaps in the course of working with Euler's method you encounter a differential equation that produces some nonsensible results.  Take for example the following which is the implementation of our quarantine model:
 
 ```{r,fig.width=4,fig.height=3,fig.cap="Surprising results with Euler's method."}
-system_eq <- c(dSdt ~ -k*S*I,
-               dIdt ~ k*S*I-beta*I)
+quarantine_eq <- c(
+  dSdt ~ -k * S * I,
+  dIdt ~ k * S * I - beta * I
+)
 
 
-deltaT <- .1    # timestep length
-timeSteps <- 15   # must be a number greater than 1
+deltaT <- .1 # timestep length
+timeSteps <- 15 # must be a number greater than 1
 
-quarantine_parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+quarantine_parameters <- c(k = .05, beta = .2) # parameters: a named vector
 
-init_cond <- c(S=300, I=1)  # Be sure you have enough conditions as you do variables.
+quarantine_init <- c(S = 300, I = 1) # Be sure you have enough conditions as you do variables.
 
 # Compute the solution via Euler's method:
-out_solution <- euler(system_eq,
+out_solution <- euler(system_eq = quarantine_eq,
                       parameters = quarantine_parameters,
-                      initial_condition=init_cond,
-                      deltaT=deltaT,
-                      n_steps = n_steps)
+                      initial_condition = quarantine_init,
+                      deltaT = deltaT,
+                      n_steps = n_steps
+                      )
 
 
 ggplot(data = out_solution) +
-  geom_line(aes(x=t,y=S),color='red') +
-  geom_line(aes(x=t,y=I),color='blue') +
-  labs(x='Time',
-       y='Susceptible (red) or Infected (blue)')
-
-
+  geom_line(aes(x = t, y = S), color = "red") +
+  geom_line(aes(x = t, y = I), color = "blue") +
+  labs(
+    x = "Time",
+    y = "Susceptible (red) or Infected (blue)"
+  )
 ```
 
 You may notice the solution for $S$ wiggles around $t=0.75$ and is negative.  This is concerning because we know there can't be negative people!  This requires a little more investigation.
 
-If we take a look at $t=0.75$ the value for $S \approx 1$ and the value for $I \approx 280$.  If we let $k=0.05$ and $\beta=0.2$, this means that $\displaystyle \frac{dS}{dt}=-14$ and $\displaystyle \frac{dI}{dt}=-42$.  The values of $S$ and $I$ are both decreasing!  We know that our Euler's method update is one where the new value is the old value plus any change.  So the new value for $S = 1 -14\cdot 0.1 = -0.4$.  Mathematically Euler's method is doing nothing incorrect, but we know realistically this cannot happen.
+If we take a look at $t=0.75$ the value for $S \approx 1$ and the value for $I \approx 280$.  If we let $k=0.05$ and $\beta=0.2$, this means that $\displaystyle \frac{dS}{dt}=-14$ and $\displaystyle \frac{dI}{dt}=-42$.  The values of $S$ and $I$ are both decreasing!  We know that our Euler's method update is one where the new value is the old value plus any change.  So the new value for $S = 1 -14\cdot 0.1 = -0.4$.  Mathematically, Euler's method working correctly, but we know realistically that neither $S$ or $I$ can be negative.
 
-In turns out that this can easily be overcome.  While Euler's method is useful, it does quite poorly in cases where the solution is changing rapidly - or we might need to make some smaller step sizes.  How we remedy this is to use a *higher order solver*, and one such method is called the [Runge-Kutta Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods).  If you take a course in numerical analysis you might study these, but for the moment you see the difference between the twoa Runge-Kutta solver implemented in the `demodelr` package, which by all intents and purposes is replaces the command `euler` with `rk4`:
+In turns out that this can easily be overcome.  While Euler's method is useful, it does quite poorly in cases where the solution is changing rapidly - or we might need to make some smaller step sizes.
+
+Another way to remedy this is to use a *higher order solver*, and one such method is called the [Runge-Kutta Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods).  If you take a course in numerical analysis you might study these, but for the moment you see the difference between the Runge-Kutta solver implemented in the `demodelr` package, which by all intents and purposes is replaces the command `euler` with `rk4`:
 
 ```{r,fig.width=4,fig.height=3,fig.cap="Better results with the Runge-Kutta method."}
-system_eq <- c(dSdt ~ -k*S*I,
-               dIdt ~ k*S*I-beta*I)
+quarantine_eq <- c(
+  dSdt ~ -k * S * I,
+  dIdt ~ k * S * I - beta * I
+)
 
 
-deltaT <- .1    # timestep length
-timeSteps <- 15   # must be a number greater than 1
+deltaT <- .1 # timestep length
+timeSteps <- 15 # must be a number greater than 1
 
-quarantine_parameters <- c(k=.05, beta=.2)   # parameters: a named vector
+quarantine_parameters <- c(k = .05, beta = .2) # parameters: a named vector
 
-init_cond <- c(S=300, I=1)  # Be sure you have enough conditions as you do variables.
+quarantine_init <- c(S = 300, I = 1) # Be sure you have enough conditions as you do variables.
 
 # Compute the solution via a Runge-Kutta method:
-out_solution <- rk4(system_eq,
-                      parameters = quarantine_parameters,
-                      initial_condition=init_cond,
-                      deltaT=deltaT,
-                      n_steps = n_steps)
+out_solution <- rk4(system_eq = quarantine_eq,
+                    parameters = quarantine_parameters,
+                    initial_condition = quarantine_init,
+                    deltaT = deltaT,
+                    n_steps = n_steps
+                    )
 
 
 ggplot(data = out_solution) +
-  geom_line(aes(x=t,y=S),color='red') +
-  geom_line(aes(x=t,y=I),color='blue') +
-  labs(x='Time',
-       y='Susceptible (red) or Infected (blue)')
-
-
+  geom_line(aes(x = t, y = S), color = "red") +
+  geom_line(aes(x = t, y = I), color = "blue") +
+  labs(
+    x = "Time",
+    y = "Susceptible (red) or Infected (blue)"
+  )
 ```
 
-So what is going on here? Briefly, the differences between the two methods have to do with the error in the numerical method.  The error is quantified as the difference between the actual solution and the numerical solution.  Euler's method has an error on the order of the stepsize $\Delta t$, whereas the Runge-Kutta method has an error of $(\Delta t)^4$.  For this example $\Delta t = .1$, so $(\Delta t)^{4} =.0001$ - that is a noticeable difference!  We can improve Euler's method by taking a smaller timestep - BUT that means we need a larger number of steps $N$ - which may take more computational time.
+So what is going on here? Briefly, the differences between the two methods have to do with the error in the numerical method.  The error is quantified as the difference between the actual solution and the numerical solution.  Euler's method has an error on the order of the stepsize $\Delta t$, whereas the Runge-Kutta method has an error of $(\Delta t)^4$.  For this example, the error in Euler's method is 0.1 ($\Delta t = .1$), but for the Runge-Kutta method it is 0.0001 ($(\Delta t)^{4} =.0001$). The error is noticeably different! While we can improve Euler's method by taking a smaller timestep - BUT that means we need a larger number of steps $N$ - which may take more computational time.
 
 Does this discussion sound familiar?  Perhaps you examined similar when you took calculus and studied Riemann sums to approximate the area underneath a curve (left sum, right sum, trapezoid, midpoint).  It turns out that these two problems are closely related.  Numerical analysis is a great field of study to examine these topics and others!
 
@@ -422,18 +452,18 @@ Apply the `rk4` solver with $\Delta t = 0.1$ with $N=10$ to the initial value pr
 
 ```{exercise}
 The following exercise will help you explore the relationships between stepsize, ending points, and number of steps needed.  You may assume that we will start at $t=0$ in all parts.
-\begin{enumerate}[label=\alph*.]
-\item If we wish to do an Euler's method solution with step size 1 second and ending at $t=5$ seconds, how many steps will we take?
-\item If we wish to do an Euler's method solution with step size 0.5 seconds and ending at $t=5$ seconds, how many steps will we take?
-\item If we wish to do an Euler's method solution with step size 0.1 seconds and ending at $t=5$ seconds, how many steps will we take?
-\item If we wish to do an Euler's method solution with step size $\Delta t$ and go to ending value of $T$, what is an expression that relates the number steps $N$ as a function of $\Delta t$ and $T$?
-\end{enumerate}
+
+a. If we wish to do an Euler's method solution with step size 1 second and ending at $t=5$ seconds, how many steps will we take?
+b. If we wish to do an Euler's method solution with step size 0.5 seconds and ending at $t=5$ seconds, how many steps will we take? 
+c. If we wish to do an Euler's method solution with step size 0.1 seconds and ending at $t=5$ seconds, how many steps will we take?
+d. If we wish to do an Euler's method solution with step size $\Delta t$ and go to ending value of $T$, what is an expression that relates the number steps $N$ as a function of $\Delta t$ and $T$?
+  
 ```
 
 
 &nbsp;
 
-```{exercise}
+```{exercise euler-rk4}
 To get a rough approximation between error and step size, let's say for a particular differential equation that we are starting at $t=0$ and going to $t=2$, with $\Delta t = 0.2$.  We know that the Runge-Kutta error will be on the order of $(\Delta t)^{4} =0.0016$. If we want to use Euler's method with the same order of error, we could say $\Delta t = .0001$.  For that case, how many steps will we need to take?
 
 ```
@@ -443,11 +473,11 @@ To get a rough approximation between error and step size, let's say for a partic
 ```{exercise euler-solve}
 For each of the following differential equations, apply Euler's method to generate a numerical solution to the differential equation and plot your solution.  The stepsize ($\Delta t$) and number of iterations ($N$) are listed.
 
-\begin{enumerate}[label=\alph*.]
-\item Differential equation: $\displaystyle \frac{dS}{dt} =3-S$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 0.5$, $S(0) = 5$.
-\item Differential Equation: $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$. Set $\Delta t = 0.01$, $N = 30$. Initial conditions:  $S(0) = 0.5$, $S(0) = 2$.
-\item Differential equation: $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 3$, $S(0) = 10$.
-\end{enumerate}
+
+a. Differential equation: $\displaystyle \frac{dS}{dt} =3-S$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 0.5$, $S(0) = 5$.
+b. Differential Equation: $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$. Set $\Delta t = 0.01$, $N = 30$. Initial conditions:  $S(0) = 0.5$, $S(0) = 2$.
+c. Differential equation: $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 3$, $S(0) = 10$.
+
 ```
 
 &nbsp;
@@ -456,16 +486,50 @@ For each of the following differential equations, apply Euler's method to genera
 ```{exercise}
 For each of the following differential equations, apply the Runge-Kutta method method to generate a numerical solution to the differential equation and plot your solution.  The stepsize ($\Delta t$) and number of iterations ($N$) are listed.  Contrast your answers with Exercise \@ref(exr:euler-solve).
 
-\begin{enumerate}[label=\alph*.]
-\item Differential equation: $\displaystyle \frac{dS}{dt} =3-S$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 0.5$, $S(0) = 5$.
-\item Differential Equation: $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$. Set $\Delta t = 0.01$, $N = 30$. Initial conditions:  $S(0) = 0.5$, $S(0) = 2$.
-\item Differential equation: $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 3$, $S(0) = 10$.
-\end{enumerate}
+
+a. Differential equation: $\displaystyle \frac{dS}{dt} =3-S$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 0.5$, $S(0) = 5$.
+b. Differential Equation: $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$. Set $\Delta t = 0.01$, $N = 30$. Initial conditions:  $S(0) = 0.5$, $S(0) = 2$.
+c. Differential equation: $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 3$, $S(0) = 10$.
+
 ```
 
 &nbsp;
 
 
+```{exercise}
+Complete the following steps:
+  
+a. Apply the code `euler` to generate a numerical solution to the differential equation:
+
+- Differential equation: $\displaystyle \frac{dS}{dt} = r \cdot S \cdot (K-S)$.
+- Set $r=1.2$ and $K=3$.
+- Set $\Delta t = 0.1$, $N = 50$.
+- Initial conditions (three different ones): $S(0) = 1$, $S(0) = 3$, $S(0) = 5$. 
+
+b. Plot your Euler's method solutions with the three initial conditions on the same plot.  What do you notice when you do plot them together?
+c. Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.
+
+```
+
+&nbsp;
+
+```{exercise}
+Complete the following steps:
+  
+a. Apply the code `euler` to generate a numerical solution to the differential equation:
+  
+- Differential equation: $\displaystyle \frac{dS}{dt} =K-S$.
+- Set $K=2$.
+- Set $\Delta t = 0.1$, $N = 50$.
+- Initial conditions (three different ones): $S(0) = 0$, $S(0) = 2$, $S(0) = 5$. 
+
+b. Plot your Euler's method solutions with the three initial conditions on the same plot.  What do you notice when you do plot them together?
+c. Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.
+
+
+
+```
+ &nbsp;
 
 ```{exercise}
 Let's do some more work with Euler's method for $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)$.  This time set $S(0)=15$, $\Delta t = 0.1$, $N = 10$. 
@@ -481,7 +545,7 @@ Let's do some more work with Euler's method for $\displaystyle \frac{dS}{dt} =\f
 &nbsp;
 
 ```{exercise rk-ftbu}
-Similar to Exercise \@ref(exr:euler-ftbu), let's apply the `rk4` method for $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$.  This time set $S(0)=1.5$, $\Delta t = 0.1$, $N = 10$ and also $S(0)=1.5$, $\Delta t = 0.01$, $N = 100$.  Between these two solutions, what has changed? Does this numerical solver do a better job in computing solutions compared to the Euler method?  (*note: this differential equation is an example of finite time blow up*)
+Similar to Exercise \@ref(exr:euler-ftbu), let's apply the `rk4` method for $\displaystyle \frac{dS}{dt} =\frac{1}{1-S}$.  This time set $S(0)=1.5$, $\Delta t = 0.1$, $N = 10$ and also $S(0)=1.5$, $\Delta t = 0.01$, $N = 100$.  Between these two solutions, what has changed? Does this numerical solver do a better job in computing solutions compared to the Euler method?
 ```
 
 &nbsp;
@@ -490,11 +554,10 @@ Similar to Exercise \@ref(exr:euler-ftbu), let's apply the `rk4` method for $\di
 ```{exercise}
 One way to model the growth rate hares is with $\displaystyle f(H) = \frac{r H}{1+kH}$, where $r$ and $k$ are parameters.  This is in constrast to exponential growth, which assumes $f(H) = rH$.
 
-\begin{enumerate}[label=\alph*.]
-\item First evaluate $\displaystyle \lim_{H \rightarrow \infty} rH$.
-\item Then $\displaystyle \lim_{H \rightarrow \infty} \frac{r H}{1+kH}$.
-\item Compare your two answers. Discuss how the growth rate $\displaystyle f(H) = \frac{r H}{1+kH}$ seems to be a more realistic model.
-\end{enumerate}
+a. First evaluate $\displaystyle \lim_{H \rightarrow \infty} rH$.
+b. Then $\displaystyle \lim_{H \rightarrow \infty} \frac{r H}{1+kH}$.
+c. Compare your two answers. Discuss how the growth rate $\displaystyle f(H) = \frac{r H}{1+kH}$ seems to be a more realistic model.
+
 ```
 
 &nbsp;
@@ -512,50 +575,23 @@ Set the number of timesteps to be 2000. Apply Euler's method to numerically solv
 ```
 &nbsp;
 
-For the following differential equations use the code `euler` to generate a numerical solution to the differential equation and plot your solution.  The stepsize ($\Delta t$) and number of iterations ($N$) are listed.  After your Euler's method solution is determined, explain why you would expect the behavior in the solution that you see. 
-
-```{exercise}
-Consider the following:
-\begin{itemize}
-\item Differential equation: $\displaystyle \frac{dS}{dt} = r \cdot S \cdot (K-S) $.
-\item Set $r=1.2$ and $K=3$.
-\item Set $\Delta t = 0.1$, $N = 50$.
-\end{itemize}
-
-\begin{enumerate}[label=\alph*.]
-\item Use the code `euler` to generate a numerical solution to the differential equation for the following initial conditions:  $S(0) = 1$, $S(0) = 3$, $S(0) = 5$. 
-\item Plot your Euler's method solutions with the three initial conditions on the same plot.  What do you notice when you do plot them together?
-\item Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.
-\end{enumerate}
-```
-
-&nbsp;
-
-```{exercise}
-Consider the following:
-\begin{itemize}
-\item Differential equation: $\displaystyle \frac{dS}{dt} =K-S $.
-\item Set $K=2$.
-\item Set $\Delta t = 0.1$, $N = 50$.
-\end{itemize}
-
-\begin{enumerate}[label=\alph*.]
-\item Use the code `euler` to generate a numerical solution to the differential equation for the following initial conditions:  $S(0) = 0$, $S(0) = 2$, $S(0) = 5$. 
-\item Plot your Euler's method solutions with the three initial conditions on the same plot.  What do you notice when you do plot them together?
-\item Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.
-\end{enumerate}
-
-
-```
 
 ```{exercise}
 Consider the differential equation $\displaystyle \frac{dS}{dt} = \frac{1}{1-S}$.  Notice that at $S=1$ the rate $\displaystyle \frac{dS}{dt}$ is not defined.
 
-\begin{enumerate}[label=\alph*.]
-\item If you applied Euler's method solution with initial condition $S(0)=0.9$, what do you think your solution would approach as the number of timesteps increased?
-\item If you applied Euler's method solution with initial condition $S(0)=1.1$, what do you think your solution would approach as the number of timesteps increased?
-\item Explain how you could come to the same conclusion as the previous two problems if you graphed $\displaystyle f(S) = \frac{1}{1-S}$.
-\end{enumerate}
+
+a. If you applied Euler's method solution with initial condition $S(0)=0.9$, what do you think your solution would approach as the number of timesteps increased?
+b. If you applied Euler's method solution with initial condition $S(0)=1.1$, what do you think your solution would approach as the number of timesteps increased?
+c.  Explain how you could come to the same conclusion as the previous two problems if you graphed $\displaystyle f(S) = \frac{1}{1-S}$.
+
 ```
 
 &nbsp;
+
+```{exercise}
+Building on Exercise \@ref(exr:euler-rk4), let's say for a particular differential equation we have $N$ steps from $0 \leq t \leq b$. An error of $\epsilon$ is desired. 
+
+a. What is the ratio $\displaystyle \frac{N_{E}}{N_{RK4}}$, where $N_{RK4}$ represents the number of steps needed for the Runge-Kutta method, and $N_{E}$ the number of steps for Euler's method?
+b. Make a plot of the ratio $\displaystyle \frac{N_{E}}{N_{RK4}}$ for $0 \leq \epsilon \leq 1$. How many more steps does Euler's method need to do to achieve the same level of error, compared to the Runge-Kutta method?
+
+```

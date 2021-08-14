@@ -1,6 +1,6 @@
 # (PART) Parameterizing Models with Data {-} 
 
-# Linear Regression & Curve Fitting {#linear-regression-08}
+# Linear Regression and Curve Fitting {#linear-regression-08}
 
 
 ## What is parameter estimation?
@@ -13,30 +13,30 @@ Over the next several sections we will examine aspects of _parameter estimation_
 The function $f(x)=ax+b$ has parameters $a$ and $b$.  In our notation above, $\displaystyle \vec{\alpha} = [a \; b]^{T}$.  Usually these parameters can be determined through a set of measurements $(\vec{x},\vec{y})$ (in other words a scatterplot).
 ```
 
-In Example \@ref(exm:linear-eq), is an example of a _linear parameter estimation_ problem.  I did use matrix notation to denote the $\vec{\alpha}$ - although I will say matrix notation might be a little more formal for our purposes to start.  To solve this problem we can address it from several different mathematical areas: _calculus_  (optimization), _statistics_ (likelihood functions), and _linear algebra_ (systems of linear equations).
+Example \@ref(exm:linear-eq) is an example of a _linear parameter estimation_ problem.  I did use matrix notation to denote the $\vec{\alpha}$ - although I will say matrix notation might be a little more formal for our purposes to start.  To solve this problem we can address it from several different mathematical areas: _calculus_  (optimization), _statistics_ (likelihood functions), and _linear algebra_ (systems of linear equations).
 
 
-In this section I will show you how to apply `R` to determine the unknown parameters and interpret the results. A few section later we will explore *how* to approach the parameter estimation problem with likelihood and cost functions.  We will `R` a lot in this section to make plots - so please visit Section \@ref(r-intro-02) if you need some reminders on plotting in R.
+In this section I will show you how to apply `R` to determine the unknown parameters and interpret the results. A few section later we will explore *how* to approach the parameter estimation problem with likelihood and cost functions.  We will use `R` a lot in this section to make plots - so please visit Section \@ref(r-intro-02) if you need some reminders on plotting in R.
 
 ## Fitting temperature data
-Let's take a look at a specific example.  Consider the following dataset of average global temperature over time:  
-```{r echo=FALSE, results= 'asis'}
+Let's take a look at a specific example.  Consider the following dataset of average global temperature over time (Table \@ref(tab:temp-table):  
+
+```{r temp-table, results= 'asis'}
 library(tidyverse)
 library(demodelr)
 
-kable(global_temperature[1:20,], caption = 'Global Temperature from 1880')
-
+kable(global_temperature[1:20, ], caption = "Global Temperature from 1880")
 ```
 
 (This dataset can be found in the `demodelr` package with the name `global_temperature`.) To name our variables let $Y=\mbox{ Year since 1880 }$ and $T= \mbox{ Temperature }$. First let's visualize the data, with time on the horizontal axis and temperature on the vertical axis:
 
 ```{r,fig.width=4,fig.height=3,fig.cap="Scatterplot of global temperature data. The variable $Y$ represents the Year since 1880 and $T$ the temperature in degrees Celsius."}
-ggplot(data = global_temperature,) +
-  geom_point(aes(x=yearSince1880,y=globalTemp),
-             color='red',
-             size=2) + 
-  labs(x='Y', y='T')
-
+ggplot(data = global_temperature, ) +
+  geom_point(aes(x = yearSince1880, y = globalTemp),
+    color = "red",
+    size = 2
+  ) +
+  labs(x = "Y", y = "T")
 ```
 
 
@@ -50,21 +50,20 @@ We will be working with these data to fit a function $f(Y,\vec{\alpha})=T$.  In 
 That's it!  So if we need to do a linear regression of global temperature against year since 1880 the code to do this is the following:
 
 ```{r,fig.width=5,fig.height=4}
-regression_formula <-  globalTemp ~ 1 + yearSince1880
+regression_formula <- globalTemp ~ 1 + yearSince1880
 
-linear_fit <- lm(regression_formula,data=global_temperature)
+linear_fit <- lm(regression_formula, data = global_temperature)
 
 summary(linear_fit)
-
 ```
 
 
-What is printed on the console is the summary of the fit results. This summary contains a of interesting things that you would study in advanced courses in statistics, but here is what we will focus on:
+What is printed on the console is the summary of the fit results. This summary contains several interesting things that you would study in advanced courses in statistics, but here is what we will focus on:
 
-- The estimated *coefficients* of the linear regression.  The column `Estimate` lists the constants in front of our regression formula $y=a+bx$. What follows is the error on that estimate by formulas from statistics.  The other additional things are statistical tests that show significance of the estimate.
-- One helpful thing to look at is the **Residual standard error**, which represents the overall, total effect of the differences between the model predicted values of $\vec{y}$ and the measured values of $\vec{y}$.  The goal of linear regression is to minimize this model-data difference.
+- The estimated **coefficients** (`Coefficients:`) of the linear regression.  The column `Estimate` lists the constants in front of our regression formula $y=a+bx$. What follows is the error on that estimate by formulas from statistics.  The other additional columns concern statistical tests that show significance of the estimate.
+- One helpful thing to look at is the **Residual standard error** (`Residual standard error`), which represents the overall, total effect of the differences between the model predicted values of $\vec{y}$ and the measured values of $\vec{y}$.  The goal of linear regression is to minimize this model-data difference.
 
-To plot the fitted equation with the regression coefficients we are going to borrow from another package called `broom`, which helps produce model output in what is called "tidy" data format.  You can read more about broom [here](https://broom.tidymodels.org/index.html).
+To plot the fitted equation with the regression coefficients we are going to borrow from another package called `broom`, which helps produce model output in what is called "tidy" data format.  You can read more about `broom` [here](https://broom.tidymodels.org/index.html).
 
 Since we are only going to use one or two functions from this package, I am going to refer to the functions I need with the syntax `PACKAGE_NAME::FUNCTION`. 
 
@@ -75,7 +74,6 @@ First we will make a data frame with the predicted coefficients from our linear 
 global_temperature_model <- broom::augment(linear_fit, data = global_temperature)
 
 glimpse(global_temperature_model)
-
 ```
 
 Notice how the augment command takes the results from `linear_fit` with the data `global_temperature`.  I like appending `_model` to the original name of the data frame to signify that there are modeled components here to work with.  There is a lot to unpack with this new data frame, but the important ones are the columns `yearSince1880` (the independent variable) and `.fitted`, which represents the fitted coefficients.
@@ -84,14 +82,18 @@ Now we are ready to graph the data along with the fitted regression line.
 
 ```{r,fig.width=4,fig.height=3}
 ggplot(data = global_temperature) +
-  geom_point(aes(x=yearSince1880,y=globalTemp),
-             color='red',
-             size=2) +
-  geom_line(data = global_temperature_model,
-            aes(x=yearSince1880,y=.fitted)) +
-  labs(x='Year Since 1880',
-         y='Temperature (Celsius)')
-
+  geom_point(aes(x = yearSince1880, y = globalTemp),
+    color = "red",
+    size = 2
+  ) +
+  geom_line(
+    data = global_temperature_model,
+    aes(x = yearSince1880, y = .fitted)
+  ) +
+  labs(
+    x = "Year Since 1880",
+    y = "Temperature (Celsius)"
+  )
 ```
 
 
@@ -112,7 +114,7 @@ $y = a + bx + cx^{2} + dx^{3} ...$  (estimated parameters $a$, $b$, $c$, $d$, ..
 Note: the structure `I(..)` is needed for `R` to signify a factor of the form $x^{n}$.
 
 ## Can you linearize your model?
-We can also plot nonlinear models, or models that can be made linear.  While the equation $y=ae^{bx}$ non linear with respect to the parameters, it can be made linear by a *logarithmic transformation*  of the data:
+We can also fit and plot nonlinear models in cases where the function can be transformed mathematically to a linear equation. Here is one example: while the equation $y=ae^{bx}$ non linear with respect to the parameters, it can be made linear by a *logarithmic transformation*  of the data:
 \begin{equation}
 \ln(y) = \ln(ae^{bx}) = \ln(a) + \ln (e^{bx}) = \ln(a) + bx
 \end{equation}
@@ -152,67 +154,83 @@ First thing that we will need to do is to define a data frame (`tibble`) of thes
 
 ```{r}
 enzyme_data <- tibble(
-  s = c(0.1,0.2,0.5,1.0,2.0,3.5,5.0),
-  V = c(0.04,0.08,0.17,0.24,0.32,0.39,0.42) )
+  s = c(0.1, 0.2, 0.5, 1.0, 2.0, 3.5, 5.0),
+  V = c(0.04, 0.08, 0.17, 0.24, 0.32, 0.39, 0.42)
+)
 ```
 
 Next let's do some exploratory data analysis:
 
 ```{r,fig.width=4,fig.height=3}
 ggplot(data = enzyme_data) +
-  geom_point(aes(x=s,y=V),
-             color='red',
-             size=2) +
-  labs(x = 's (mM)',
-       y= 'V (mM / s)')
-
+  geom_point(aes(x = s, y = V),
+    color = "red",
+    size = 2
+  ) +
+  labs(
+    x = "s (mM)",
+    y = "V (mM / s)"
+  )
 ```
 
 Definitely looks non-linear.  But take a look at what happens if we plot the reciprocal of $s$ and the reciprocal of $V$:
 
-```{r,fig.width=4,fig.height=3}
+```{r enzyme-plot-point-08,fig.width=4,fig.height=3,fig.cap="A plot of the transformed enzyme data."}
 ggplot(data = enzyme_data) +
-  geom_point(aes(x=1/s,y=1/V),
-             color='red',
-             size=2) +
-  labs(x = '1/s (1/mM)',
-       y= '1/V (s / mM)')
-
+  geom_point(aes(x = 1 / s, y = 1 / V),
+    color = "red",
+    size = 2
+  ) +
+  labs(
+    x = "1/s (1/mM)",
+    y = "1/V (s / mM)"
+  )
 ```
-That looks really linear!  Notice how easy it was to do that data transformation in our plot command. In order to do a linear fit to the transformed data we will use the regression formulas defined above and the handy structure `I(VARIABLE)`:
+
+Figure \@ref(fig:enzyme-plot-point-08) really looks linear!  Notice how easy it was to do that data transformation inside the `ggplot` command. In order to do a linear fit to the transformed data we will use the regression formulas defined above and the handy structure `I(VARIABLE)`:
 
 
 ```{r,fig.width=4,fig.height=3}
-enzyme_fit <- lm(I(1/V) ~ 1+ I(1/s), 
-              data = enzyme_data)
+enzyme_fit <- lm(I(1 / V) ~ 1 + I(1 / s),
+  data = enzyme_data
+)
 
 
 summary(enzyme_fit)
 
-enzyme_data_model <- broom::augment(enzyme_fit,data=enzyme_data)
+enzyme_data_model <- broom::augment(enzyme_fit, data = enzyme_data)
 
 ggplot(data = enzyme_data) +
-  geom_point(aes(x=1/s,y=1/V),
-             color='red',
-             size=2) +
-  geom_line(data = enzyme_data_model,
-            aes(x=1/s,y=.fitted)) +
-  labs(x = '1/s (1/mM)',
-       y= '1/V (s / mM)')
-
+  geom_point(aes(x = 1 / s, y = 1 / V),
+    color = "red",
+    size = 2
+  ) +
+  geom_line(
+    data = enzyme_data_model,
+    aes(x = 1 / s, y = .fitted)
+  ) +
+  labs(
+    x = "1/s (1/mM)",
+    y = "1/V (s / mM)"
+  )
 ```
 
 Notice when plotting the fitted model we didn't need to take the reciprocal of `.fitted` because the linear model already did the inverse.  However if we wanted to plot the model with the original data, then we need to take the reciprocal (confusing - I know!)
 
 ```{r,fig.width=4,fig.height=3}
 ggplot(data = enzyme_data) +
-  geom_point(aes(x=s,y=V),
-             color='red',
-             size=2) +
-  geom_line(data = enzyme_data_model,
-            aes(x=s,y=1/.fitted)) +
-  labs(x = 's (mM)',
-       y= 'V (mM / s)')
+  geom_point(aes(x = s, y = V),
+    color = "red",
+    size = 2
+  ) +
+  geom_line(
+    data = enzyme_data_model,
+    aes(x = s, y = 1 / .fitted)
+  ) +
+  labs(
+    x = "s (mM)",
+    y = "V (mM / s)"
+  )
 ```
 
 
@@ -230,13 +248,13 @@ where we have the parameters $a$, $b$, and $c$. Notice how $W$ is a function of 
 
 ```{r,fig.width=4,fig.height=3}
 
-nonlinear_fit <- nls(mass ~ a-b*exp(c*days), 
-              data = wilson, 
-              start = list(a = 75, b = 30,c = -0.01))
+nonlinear_fit <- nls(mass ~ a - b * exp(c * days),
+  data = wilson,
+  start = list(a = 75, b = 30, c = -0.01)
+)
 
 
 summary(nonlinear_fit)
-  
 ```
 
 The tricky part for a nonlinear model is that you need a starting value for the parameters (it is an iterative method).  This can be tricky and takes some trial and error.
@@ -247,13 +265,18 @@ However once you have your fitted model, you can still plot the fitted values wi
 wilson_model <- broom::augment(nonlinear_fit, data = wilson)
 
 ggplot(data = wilson) +
-  geom_point(aes(x=days,y=mass),
-             color='red',
-             size=2) +
-  geom_line(data = wilson_model,
-            aes(x=days,y=.fitted)) +
-  labs(x='Days since birth',
-         y='Weight (pounds)')
+  geom_point(aes(x = days, y = mass),
+    color = "red",
+    size = 2
+  ) +
+  geom_line(
+    data = wilson_model,
+    aes(x = days, y = .fitted)
+  ) +
+  labs(
+    x = "Days since birth",
+    y = "Weight (pounds)"
+  )
 ```
 
 We will revisit these data later when we are making likelihood functions.
@@ -265,14 +288,14 @@ We will revisit these data later when we are making likelihood functions.
 ```{exercise}
 Determine if the following equations are linear with respect to the parameters.  For the purposes of this problem we assume that $y$ is a function of $x$.
 
-\begin{enumerate}[label=\alph*.]
-\item $y=a + bx+cx^{2}+dx^{3}$
-\item $y=a \sin (x) + b \cos (x)$
-\item $y = a \sin(bx) + c \cos(dx)$
-\item $y = a + bx + a\cdot b x^{2}$
-\item $y = a e^{-x} + b e^{x}$
-\item $y = a e^{-bx} + c e^{-dx}$
-\end{enumerate}
+
+a. $y=a + bx+cx^{2}+dx^{3}$
+b. $y=a \sin (x) + b \cos (x)$
+c. $y = a \sin(bx) + c \cos(dx)$
+d. $y = a + bx + a\cdot b x^{2}$
+e. $y = a e^{-x} + b e^{x}$
+f. $y = a e^{-bx} + c e^{-dx}$
+
 
 ```
 &nbsp;
@@ -280,12 +303,12 @@ Determine if the following equations are linear with respect to the parameters. 
 ```{exercise}
 Each of the following equations can be written as linear with respect to the parameters, through applying some elementary transformations to the data.  Write each equation as a linear function with respect to the parameters.
 
-\begin{enumerate}[label=\alph*.]
-\item $y=ae^{-bx}$
-\item $y=(a+bx)^{2}$
-\item $\displaystyle y =  \frac{1}{a+bx}$
-\item $y = c x^{n}$
-\end{enumerate}
+
+a. $y=ae^{-bx}$
+b. $y=(a+bx)^{2}$
+c. $\displaystyle y =  \frac{1}{a+bx}$
+d. $y = c x^{n}$
+
 
 ```
 
@@ -296,8 +319,8 @@ Each of the following equations can be written as linear with respect to the par
 ```{exercise}
 Use the dataset `global_temperature` and the function `lm` to answer the following questions:
 
-\begin{enumerate}[label=\alph*.]
-\item Complete the following table, which represents various regression fits to global temperature $T$ (in degrees Celsius) and years since 1880 (denoted by $Y$). In the table \textbf{Coeffiicients} represent the values of the parameters $a$, $b$, $c$, etc from your fitted equation; \textbf{P} =  number of parameters; \textbf{RSE} = Residual standard error.
+
+a. Complete the following table, which represents various regression fits to global temperature $T$ (in degrees Celsius) and years since 1880 (denoted by $Y$). In the table \textbf{Coeffiicients} represent the values of the parameters $a$, $b$, $c$, etc from your fitted equation; \textbf{P} =  number of parameters; \textbf{RSE} = Residual standard error.
 
 \begin{tabular}{l|c|c|c}
 \textbf{Equation} & \textbf{Coefficients} & \textbf{P} & \textbf{RSE} \\ \hline
@@ -309,11 +332,8 @@ Use the dataset `global_temperature` and the function `lm` to answer the followi
       $T=a+bY+cY^{2}+dY^{3}+eY^{4}+fY^{5}+gY^{6}$ &&&
 \end{tabular}
 
-\item After making this table, choose the polynomial of the function that you believe fits the data best.  Provide reasoning and explanation why you chose the polynomial that you did.
-\item Finally show the plot of your selected polynomial with the data.
-\end{enumerate}
-
-  
+b. After making this table, choose the polynomial of the function that you believe fits the data best.  Provide reasoning and explanation why you chose the polynomial that you did.
+c. Finally show the plot of your selected polynomial with the data.
 
 
 ```
@@ -322,11 +342,11 @@ Use the dataset `global_temperature` and the function `lm` to answer the followi
 ```{exercise log-linear-08}
 An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta},$ where $\theta \geq 1$ and $c$ are both constants is a constant.
 
-\begin{enumerate}[label=\alph*.]
-\item Show that you can write this equation as linear equation by applying a logarithm to both sides and simplifying.
-\item Use the dataset `phosphorous` to determine a linear regression fit for your new linear equation.
-\item Determine the value of $c$ and $\theta$ in the original equation with the parameters from the linear fit.
-\end{enumerate}
+
+a. Show that you can write this equation as linear equation by applying a logarithm to both sides and simplifying.
+b. Use the dataset `phosphorous` to determine a linear regression fit for your new linear equation.
+c. Determine the value of $c$ and $\theta$ in the original equation with the parameters from the linear fit.
+
 
 
 ```
@@ -363,11 +383,11 @@ Say you have the following data:
     5.0 |  0.42
     
     
-\begin{enumerate}[label=\alph*.]
-\item Using algebra, show that this equation can be written as $\displaystyle \frac{1}{V} = \frac{1}{V_{max}} + \frac{K_{m}}{V_{max}} \cdot \frac{1}{s}$
-\item  The text determined the fitted coefficients for these transformed data.  Determine values of $K_{m}$ and $V_{max}$.
-\item Make a plot of the actual data to the fitted model curve you found.
-\end{enumerate}
+
+a. Using algebra, show that this equation can be written as $\displaystyle \frac{1}{V} = \frac{1}{V_{max}} + \frac{K_{m}}{V_{max}} \cdot \frac{1}{s}$
+b. The text determined the fitted coefficients for these transformed data.  Determine values of $K_{m}$ and $V_{max}$.
+c. Make a plot of the actual data to the fitted model curve you found.
+
     
 *Note:* The process outlined here is a *Lineweaver-Burk* plot.
 ```
@@ -384,10 +404,9 @@ V = \frac{V_{max} s}{s+K_{m}},
 where $s$ is the amount of substrate, $K_{m}$ is half-saturation constant, and $V_{max}$ the maximum reaction rate.
     
     
-\begin{enumerate}[label=\alph*.]
-\item Determine a non-linear least squares fit to the data for the given equation.  You may use the values of $K_{m}$ and $V_{max}$ that you determined in the last exercise.
-\item Make a plot of the actual data to the fitted model curve you found.
-\end{enumerate}
+a. Determine a non-linear least squares fit to the data for the given equation.  You may use the values of $K_{m}$ and $V_{max}$ that you determined in the last exercise.
+b. Make a plot of the actual data to the fitted model curve you found.
+
 
 ```
  &nbsp;
@@ -405,12 +424,12 @@ Consider the following data which represents the temperature over the course of 
  68& 66& 67& 63& 60& 59& 57& 56& 53& 52& 54& 53 & \\ \hline
 \end{tabular}
 
-\begin{enumerate}[label=\alph*.]
-\item Make a scatterplot of these data, with the variable \textbf{Hour} on the horizontal axis.
-\item A function that describes these data is $\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)$, where $H$ is the hour and $T$ is the temperature.  Explain why this equation is linear for the parameters $A$, $B$, and $C$.
-\item Define a \texttt{tibble} that include the variables $T$, $\displaystyle \sin \left( \frac{\pi}{12} \cdot H \right)$ $\displaystyle \cos \left( \frac{\pi}{12} \cdot H \right)$.
-\item Do a linear fit on your new data frame to report the values of $A$, $B$, and $C$.
-\item Add your fitted curve to the scatterplot.
-\end{enumerate}
+
+a. Make a scatterplot of these data, with the variable \textbf{Hour} on the horizontal axis.
+b. A function that describes these data is $\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)$, where $H$ is the hour and $T$ is the temperature.  Explain why this equation is linear for the parameters $A$, $B$, and $C$.
+c. Define a `tibble` that include the variables $T$, $\displaystyle \sin \left( \frac{\pi}{12} \cdot H \right)$ $\displaystyle \cos \left( \frac{\pi}{12} \cdot H \right)$.
+d. Do a linear fit on your new data frame to report the values of $A$, $B$, and $C$.
+e. Add your fitted curve to the scatterplot.
+
 
 ```

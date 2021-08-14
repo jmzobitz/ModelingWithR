@@ -10,7 +10,7 @@ output:
 
 ## Rates of change in the world: a model is born
 
-The focus of this textbook is understanding _rates of change_ and how you can apply them to model real-world phenomena. In addition this textbook focuses on _using_ equations with data, building both your competence and confidence to construct a mathematical model from data and a context. 
+The focus of this textbook is understanding _rates of change_ and how you can apply them to model real-world phenomena. Additionally, this textbook focuses on _using_ equations with data, building both your competence and confidence to construct a mathematical model from data and a context. 
 
 Perhaps you analyzed rates of change in calculus course when answering the following types of questions:
 
@@ -18,37 +18,42 @@ Perhaps you analyzed rates of change in calculus course when answering the follo
 - If $y = xe^{-x}$, what is the derivative function $f'(x)$?
 - What is the equation of the tangent line to $y=x^{3}-x$ at $a=1$?
 - Where is the graph of $\sin(x)$ increasing at an increasing rate?
-- What is the largest area that can be enclosed with 100 feet of fencing to enclose, with one side being along a wall?
+- What is the largest area that can be enclosed with 100 feet of fencing, with one side being along a wall?
 - If you release a ball from the top of a skyscraper 500 meters above the ground, what is its speed when it impacts the ground?
 
-The first three questions do not appear to be connected in a real-world context - but the last two questions do.  For the fencing problem, perhaps a person raises chickens and wants to care for their well-being. Perhaps a rectangular pen is more aesthetically pleasing than a circular pen.  In the last example the ball falling off the skyscraper assumes that acceleration of the ball is constant.
+The first three questions do not appear to be connected in a real-world context - but the last two questions *do* have some context.  For the fencing problem, perhaps a person raises chickens and wants to care for their well-being, with a rectangular pen more aesthetically pleasing than a circular pen.  In the last example the ball falling off the skyscraper assumes that acceleration of the ball is constant.
 
-In both of these last two cases the context may reveal underlying assumptions or physical principles, which are the starting point to build a mathematical model. For the chicken coop problem the next step is to use the assumed geometry (rectangle) with the 100 feet of fencing to develop a function for the area. For the ball problem, the velocity (or the antiderivative of acceleration) can be found, from which the position function can be calculated through antidifferentiation.
+The context may reveal underlying assumptions or physical principles, which are the starting point to build a mathematical model. For the chicken coop problem the next step is to use the assumed geometry (rectangle) with the 100 feet of fencing to develop a function for the area as a function of the length of one of the sides of the pen. For the ball problem, the velocity (or the antiderivative of acceleration) can be found, from which the position function can be calculated through antidifferentiation.
 
-Here is another approach.  Let's say we have observational data and several different (perhaps conflicting) assumptions. These assumptions describe models that involve rates of change. Which model is the best one to approximate the data?  The short answer: it depends. To understand why, let's take a look at a problem in context.
+Let's say we have observational data and several different (perhaps conflicting) assumptions about the context at hand, and these assumptions describe models that involve rates of change. Which model is the best one to approximate the data?  The short answer: it depends. To understand why, let's take a look at a problem in context.
 
 
 ## Modeling in context: the spread of a disease
-Consider the data in Figure \@ref(fig:sierra-leone), which come from an [Ebola outbreak](https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/index.html) in Sierra Leone in 2014. Ebola is a fatal disease so we can also consider the vertical axis in Figure \@ref(fig:sierra-leone) to represent total *infections* due to Ebola.
+Consider the data in Figure \@ref(fig:sierra-leone-01), which come from an [Ebola outbreak](https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/index.html) in Sierra Leone in 2014. Ebola is a fatal disease so we can also consider the vertical axis in Figure \@ref(fig:sierra-leone-01) to represent total *infections* due to Ebola.
 
 ```{r sierra-leone-01,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='An Ebola outbreak in Sierra Leone', fig.width=4,fig.height=3}
 ebola <- read_csv("data/ebola.csv") %>%
   mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) %>%
-  select(-c(1,3,5)) %>%
-  gather(key=nation, value=deaths,
-         1:3) %>%
+  select(-c(1, 3, 5)) %>%
+  gather(
+    key = nation, value = deaths,
+    1:3
+  ) %>%
   mutate(monitor_days = as.numeric(date) - min(as.numeric(date)) + 1)
 
-ebola %>% filter(nation=="Deaths Sierra Leone") %>%
+ebola %>%
+  filter(nation == "Deaths Sierra Leone") %>%
   ggplot() +
-  geom_point(aes(x=monitor_days,y=deaths),size=2) +
-  theme(legend.position="bottom",
-        legend.text=element_text(size=14),
-        axis.title.x=element_text(size=18),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y=element_text(size=18)) +
-  labs(x = "Monitoring Days",y = "Ebola deaths")
+  geom_point(aes(x = monitor_days, y = deaths), size = 2) +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  ) +
+  labs(x = "Monitoring Days", y = "Ebola deaths")
 ```
 
 Constructing a model from disease dynamics is part of the field of [mathematical epidemiology](https://en.wikipedia.org/wiki/Mathematical_modelling_of_infectious_disease). How we construct a mathematical model of the spread of this outbreak largely depends on the assumptions underlying the dynamics of the disease, such as considering the rate of spread of Ebola. For our purposes here we focus on the population level (person to person) spread of Ebola.  Other types of models could focus on the immune response in a single person - perhaps with a goal to design effective types of treatments to reduce the severity of infection.
@@ -70,15 +75,15 @@ The first assumption states that the infection rate is proportional to the numbe
 
 In Equation \@ref(eq:00infected) $k$ can be thought of as a proportionality constant, with units of time$^{-1}$ for consistency.  Equation \@ref(eq:00infected) is an example of a *differential equation*, which is just a mathematical equation with rates of change.
 
-The *solution* to a differential equation is a function $I(t)$. ^[You may be used to working with *algebraic equations* (e.g. solve $x^{2}-4=0$ for $x$).  In that case the solution can be points (for our example, $x=\pm2$).]  When we ``solve'' a differential equation we determine the family of functions consistent with our rate equation.  There are a lot of techniques we can use to do that, and we will examine a few later.
+The *solution* to a differential equation is a function $I(t)$. ^[You may be used to working with *algebraic equations* (e.g. solve $x^{2}-4=0$ for $x$) rather than differential equations.  For algebraic equations the solution can be points (for our example, $x=\pm2$).]  When we ``solve'' a differential equation we determine the family of functions consistent with our rate equation.  There are a lot of techniques we can use to do that, and we will examine a few later.
 
 Back to this proportionality constant $k$ - another term for it is a *parameter*.  We can always try to solve an equation without specifying the parameter - and then if we wanted to plot a solution the parameter would also be specified.  In some situations we may not be as concerned with the particular _value_ of the parameter but rather its influence on the long-term behavior of the system (this is one aspect of [bifurcation theory](https://en.wikipedia.org/wiki/Bifurcation_theory)).  Otherwise we can use the collected data shown above with the given model to determine the value for $k$.  This combination of a mathematical model with data is called *data assimilation* or *model-data fusion*.
 
 
-Before we think about possible solutions let's try to reason out if the first model would be plausible.  This model states that the rate of change (the amount of increase) gets larger the more people that are sick.  While this may seem reasonable initially, but perhaps grows quickly unreasonable.  In the case of Ebola or any other infectious disease, stringent public health measures would be enacted if the number of people infected become too large^[The COVID-19 pandemic that began in 2020 is an example of the heroic efforts of public health officials.].  Following public health measures we would expect that the rate of infection would decrease and the number of deaths to slow.  So perhaps the second model might be a little more plausible.  At some point the number of people who are *not* sick will reach zero, making the rate of infection be zero (or no increase).
+Before we think about possible solutions to our differential equation, let's try to reason if the first model would be plausible.  The first model assumptions states that the rate of change (the amount of increase) gets larger with the more sick people there are.  While this may seem reasonable initially, it could grows quickly unreasonable when the pandemic spreads.  In the case of Ebola or any other infectious disease, stringent public health measures would be enacted if the number of people infected become too large^[The COVID-19 pandemic that began in 2020 is an example of the heroic efforts of public health officials.].  Following public health measures we would expect that the rate of infection would decrease and the number of deaths to slow.  So perhaps the second model might be a little more plausible.  At some point the number of people who are *not* sick will reach zero, making the rate of infection be zero (or no increase).
 
 ### Model 2:  Infection rate proportional to number NOT infected.
-In this description notice how we are talking about people who are sick (which we have denoted as $I$) and people who are *not* sick.  This looks like we might need to introduce another variable for the ``not sick'' people, which we will call $S$, or susceptible.  So the differential equation we would write down would be:
+In this description notice how we are talking about people who are sick (which we have denoted as $I$) and people who are *not* sick.  This looks like we might need to introduce another variable for the ``not sick" people, which we will call $S$, or susceptible.  So the differential equation we would write down would be:
 
 \begin{equation} 
 \frac{dI}{dt} = kS  (\#eq:01notinfected)
@@ -97,7 +102,7 @@ We are still using the parameter $k$ as with the previous model.  Also note we i
 \end{tikzpicture}
 ```
 
-There are three reasons why I like to use diagrams like Figure \@ref(fig:initial-si): (1) they help organize my thinking about a mathematical model (2) any assumed parameters are listed, and (3) they help me to see that rates can be conserved.  If I enter into the box for $I$, then someone is leaving $S$.  So then the rate of change equation for $S$ is $\displaystyle \frac{dS}{dt} = -kS$. Together with the differentail equation for $I$ I have the following:
+There are three reasons why I like to use diagrams like Figure \@ref(fig:initial-si): (1) they help organize my thinking about a mathematical model (2) any assumed parameters ($k$) are listed, and (3) they help me to see that rates can be conserved.  If I enter into the box for $I$, then someone is leaving $S$.  So then the rate of change equation for $S$ is $\displaystyle \frac{dS}{dt} = -kS$. Together with the differentail equation for $I$ I have the following:
 
 \begin{equation}
 \begin{split}
@@ -108,10 +113,10 @@ There are three reasons why I like to use diagrams like Figure \@ref(fig:initial
 \end{equation}
 
 
-Equation \@ref(eq:02coupled) is an example of a *coupled differential equation*.  In order to ``solve'' the system we need to determine functions for $S$ and $I$.  This coupled set of equations looks a little clunky, but there is something interest going on if we add the rates $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ together.  Algebriacally we have:
+Equation \@ref(eq:02coupled) is an example of a *coupled differential equation*.  In order to ``solve" the system we need to determine functions for $S$ and $I$.  This coupled set of equations looks a little clunky, but there is something interest going on if we add the rates $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ together.  Algebraically we have:
 
 \begin{equation} 
-\frac{dS}{dt} +  \frac{dI}{dt} = \frac{d(S+I)}{dt} = 0
+\frac{dS}{dt} +  \frac{dI}{dt} = \frac{d(S+I)}{dt} = 0 (\#eq:single-02)
 \end{equation}
 
 Recall from calculus that if a rate of change equals zero then the function is constant.  In this case, the variable $S+I$ is constant, or we can also call $S+I=N$, the number of people in the population.  This means that $S=N-I$, so we can re-write Equation \@ref(eq:02coupled) with a single equation:
@@ -124,9 +129,9 @@ Recall from calculus that if a rate of change equals zero then the function is c
 This second model does have some limiting behavior to this model as well.  As the number of infected people reaches $N$ (the total population size), the values of $\displaystyle \frac{dI}{dt}$ approaches zero, meaning $I$ doesn't change.  There is one caveat to this - if there are no infected people around ($I=0$) *the disease can still be transmitted*, which might make not good biological sense. 
 
 ### Model 3: Infection rate proportional to infected meeting not infected.
-The third model rectifies some of the shortcomings of the second model (which rectified the shortcomings of the first model).  This model states that the rate of infection is due to those who are sick, actually infecting those who are not sick.  This would sort of scenario would also make some sense, as it focused on that *transmission* of the disease are between susceptibles and infected people. So if nobody is sick ($I=0$) then the disease is not spread.  Likewise if there are no susceptibles ($S=0$), the disease is not spread as well.
+The third model rectifies some of the shortcomings of the second model (which rectified the shortcomings of the first model).  The third model states that the rate of infection is due to those who are sick infecting those who are not sick.  This would sort of scenario would also make some sense, as it focuses on the *transmission* of the disease between susceptibles and infected people. So if nobody is sick ($I=0$) then the disease is not spread.  Likewise if there are no susceptibles ($S=0$), the disease is not spread as well.
 
-In this case the diagram outlining this approach looks something like this:
+In this case the diagram outlining the third model looks something like this:
 
 ```{tikz, logistic-scheme,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap = "Schematic diagram for Model 3"}
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -152,29 +157,31 @@ Just like before for Model 2 we can combine the two equations to yield a single 
 \frac{dI}{dt} = k\cdot I \cdot (N-I)
 \end{equation}
 
-Look's pretty similar to model 2, doesn't it?  In this case notice the variable $I$ outside the expression.  Notice this seems to be appropriate - if $I=0$, then there is no increase in infection.  If $I=N$ (the total population size) then there is no increase in the infection.
+Look's pretty similar to Model 2, doesn't it?  In this case notice the variable $I$ outside the expression, which this seems to be appropriate - if $I=0$, then there is no increase in infection.  If $I=N$ (the total population size) then there is no increase in the infection.
 
 
 Let's compare these two different models graphically. For both models let's plot $\displaystyle \frac{dI}{dt}$ versus $I$, and just so we can plot let's $k=1$ and $N=10$ respectively.  Plots of these functions are shown in Figure \@ref(fig:threeRates-01).
 
 ```{r threeRates-01,message=FALSE,echo=FALSE,fig.cap='Comparing rates of change for three models',warning=FALSE,fig.width=4,fig.height=3}
-x <- seq(0,12,length.out=100)
+x <- seq(0, 12, length.out = 100)
 n <- 10
 
-data.frame(x,m1=x,m2=(n-x),m3=x*(n-x)) %>%
-  gather(key=model,value=rate,m1,m2,m3) %>%
-  ggplot(aes(x=x,y=rate,color=model)) +
-  geom_line(size=1) + xlab("I") + ylab("dI/dt") +
-  scale_color_discrete(labels=c("Model 1","Model 2","Model 3"),name=NULL) +
-  theme(legend.position="bottom",
-        legend.text=element_text(size=14),
-        axis.title.x=element_text(size=18),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y=element_text(size=18)) +
+data.frame(x, m1 = x, m2 = (n - x), m3 = x * (n - x)) %>%
+  gather(key = model, value = rate, m1, m2, m3) %>%
+  ggplot(aes(x = x, y = rate, color = model)) +
+  geom_line(size = 1) +
+  xlab("I") +
+  ylab("dI/dt") +
+  scale_color_discrete(labels = c("Model 1", "Model 2", "Model 3"), name = NULL) +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  ) +
   geom_hline(yintercept = 0)
-  
-
 ```
 
 Figure \@ref(fig:threeRates-01) has a lot to unpack, but we can use some of our understanding of rates of change in calculus to compare the three models. Notice how the sign of $\displaystyle \frac{dI}{dt}$ is always positive for Model 1, indicating that the solution ($I$) is always increasing.  For Models 2 and 3, $\displaystyle \frac{dI}{dt}$ equals zero when $I=10$, which also is the value for $N$  After that case, $\displaystyle \frac{dI}{dt}$ turns negative, meaning that $I$ is decreasing.
@@ -196,25 +203,27 @@ With that assumption, we can (and will solve later!) the following solutions for
 Notice how I assigned the names to each model (Exponential, Saturating, and Logistic).  That may not mean much at the moment, but Figure \@ref(fig:three-soln) plots the three functions $I(t)$ together when $I_{0}=5$, $k=0.03$, and $N=4000$.
 
 ```{r three-soln,message=FALSE,echo=FALSE,fig.cap='Three models compared',fig.width=4,fig.height=3,message=FALSE,warning=FALSE}
-x <- seq(0,600,length.out=100)
+x <- seq(0, 600, length.out = 100)
 n <- 4000
 k <- 0.03
 i0 <- 5
 
-data.frame(x,m1=i0*exp(k*x),m2=n-(n-i0)*exp(-k*x),m3=n*i0/(i0 + (n-i0)*exp(-k*x))) %>%
-  gather(key=model,value=rate,m1,m2,m3) %>%
-  ggplot(aes(x=x,y=rate,color=model)) +
-  geom_line(size=2) + xlab("t") + ylab("I") +
-  scale_color_discrete(labels=c("Model 1","Model 2","Model 3"),name=NULL) +
-  theme(legend.position="bottom",
-        legend.text=element_text(size=14),
-        axis.title.x=element_text(size=18),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y=element_text(size=18)) +
-   ylim(c(0,4010))
-  
-
+data.frame(x, m1 = i0 * exp(k * x), m2 = n - (n - i0) * exp(-k * x), m3 = n * i0 / (i0 + (n - i0) * exp(-k * x))) %>%
+  gather(key = model, value = rate, m1, m2, m3) %>%
+  ggplot(aes(x = x, y = rate, color = model)) +
+  geom_line(size = 2) +
+  xlab("t") +
+  ylab("I") +
+  scale_color_discrete(labels = c("Model 1", "Model 2", "Model 3"), name = NULL) +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  ) +
+  ylim(c(0, 4010))
 ```
 
 Notice how in Figure \@ref(fig:three-soln) Model 1 increases quickly - it actually grows without bound off the chart!  Model 2 and Model 3 have saturating behavior, but it looks like Model 3 might be the one that actually captures the trend of the data.  
@@ -228,16 +237,15 @@ All three of these scenarios describe different modeling scenarios. With the sat
 - (For timeseries data) are the trends accurately represented?
 - Is the model easy to use?
 - How will model outputs compare with newly collected measurements?
-Here is a list of several things that go into a model:
-- The model complexity - how many equations do we have?
-- The number of parameters - a few or many?
+- Regarding model complexity - how many equations do we have?
+- Are the number of model parameters too few or to many?
 
 
-We will also address that question later on in this textbook when we discuss *model selection* (Chapter \@ref(information-criteria)).  Model selection is one key part of the modeling hypothesis - where we investigate the implications of a particular model analyzed.  If we don't do this, we don't have an opportunity to test out what is plausible and what is believeable in our models.
+We will address several of these critera later on in this textbook when we discuss *model selection* (Section \@ref(information-criteria-14)).  Model selection is one key part of the modeling hypothesis - where we investigate the implications of a particular model analyzed.  If we don't do this, we don't have an opportunity to test out what is plausible and what is believeable in our models.
 
 
 ## Start here
-In summary, it turns out that even with some initial assumptions we can very quickly build up a mathematical model to explain data.  We have a lot more to uncover:
+In summary, it turns out that even with some initial assumptions we can very quickly build up a mathematical model to explain data.  Even with these first steps we have a lot more to uncover:
 
 - How would you determine the parameters $k$ and $N$ with the collected data?
 - Are there other more complicated models?
@@ -262,11 +270,11 @@ Solutions to an outbreak model of the flu are the following:
 where $t$ is in days. Use these two functions to answer the following questions:
   
 
-\begin{enumerate}[label=\alph*.]
-  \item Plot the saturating and logistic models when $0 \leq t \leq 100$.  
-\item For both models, how would you describe the growth of the outbreak as $t$ increases?  How many people will be infected overall?  
-  \item Finally, for both models evaluate $\lim_{t \rightarrow \infty} I(t)$. How do these results compare to values found on your graph?
-  \end{enumerate}
+
+a. Plot the saturating and logistic models when $0 \leq t \leq 100$.  
+b. For both models, how would you describe the growth of the outbreak as $t$ increases?  How many people will be infected overall?  
+c. Finally, for both models evaluate $\lim_{t \rightarrow \infty} I(t)$. How do these results compare to values found on your graph?
+
 ```
 &nbsp;
 
@@ -274,21 +282,26 @@ where $t$ is in days. Use these two functions to answer the following questions:
 ```{r, label="liberia-01",warning=FALSE,message=FALSE,echo=FALSE,fig.cap='An Ebola outbreak in Liberia in 2014',fig.width=4,fig.height=3,fig.pos='center'}
 ebola <- read_csv("data/ebola.csv") %>%
   mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) %>%
-  select(-c(1,3,5)) %>%
-  gather(key=nation, value=deaths,
-         1:3) %>%
+  select(-c(1, 3, 5)) %>%
+  gather(
+    key = nation, value = deaths,
+    1:3
+  ) %>%
   mutate(monitor_days = as.numeric(date) - min(as.numeric(date)) + 1)
 
-ebola %>% filter(nation=="Deaths Liberia") %>%
+ebola %>%
+  filter(nation == "Deaths Liberia") %>%
   ggplot() +
-  geom_point(aes(x=monitor_days,y=deaths),size=2) +
-  theme(legend.position="bottom",
-        legend.text=element_text(size=14),
-        axis.title.x=element_text(size=18),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y=element_text(size=18)) +
-  labs(x = "Monitoring Days",y = "Ebola deaths")
+  geom_point(aes(x = monitor_days, y = deaths), size = 2) +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  ) +
+  labs(x = "Monitoring Days", y = "Ebola deaths")
 ```
 
 &nbsp;
@@ -325,14 +338,13 @@ A model that describes the growth of sales of a product in response to advertisi
   $$\frac{dS}{dt} = .55\sqrt{1-S}-S, $$
   where $S$ is the product's share of the market (scaled between 0 and 1).  Use this information to answer the following questions:
   
-  \begin{enumerate}[label=\alph*.]
-  \item Make a plot of the function $f(S)=.55\sqrt{1-S}-S$. for $0 \leq S \leq 1$.
-  \item Interpret your plot to predict when the market share will be increasing and decreasing.  At what value is $\displaystyle \frac{dS}{dt}=0$?  (This is called the \emph{steady-state} value.).
-  \item  A second campaign is has the following differential equation:
-  $$\frac{dS}{dt} = .2\sqrt{1-S}-S $$
 
-What is the steady-state value and how does it compare to the previous one?
-\end{enumerate}
+a. Make a plot of the function $f(S)=.55\sqrt{1-S}-S$. for $0 \leq S \leq 1$.
+b. Interpret your plot to predict when the market share will be increasing and decreasing.  At what value is $\displaystyle \frac{dS}{dt}=0$?  (This is called the *steady-state* value.).
+c.  A second campaign is has the following differential equation:
+  $$\frac{dS}{dt} = .2\sqrt{1-S}-S $$
+d. What is the steady-state value and how does it compare to the previous one?
+
 ```
 &nbsp;
 
@@ -345,26 +357,27 @@ A more general form of the advertising model is
 
 where $S$ is the product's share of the market (scaled between 0 and 1). The parameter $r$ is related to the effectiveness of the advertising (between 0 and 1).
   
-\begin{enumerate}[label=\alph*.]
-  \item Solve $\displaystyle \frac{dS}{dt} = r\sqrt{1-S}-S$ for the steady state value (where $\displaystyle \frac{dS}{dt}=0$).  Your final answer should be expressed as a function $S(r)$.
-  \item Make a plot of the steady state value as a function of $r$, where $0 \leq r \leq 1$.
-  \item Based on your plot, what can you conclude about the steady state value as the effectiveness of the advertising increases?
-  \end{enumerate}
+
+a. Solve $\displaystyle \frac{dS}{dt} = r\sqrt{1-S}-S$ for the steady state value (where $\displaystyle \frac{dS}{dt}=0$).  Your final answer should be expressed as a function $S(r)$.
+b. Make a plot of the steady state value as a function of $r$, where $0 \leq r \leq 1$.
+c. Based on your plot, what can you conclude about the steady state value as the effectiveness of the advertising increases?
+
   
 ```
 &nbsp;
 
 ```{exercise}
-A common saying is ``You are what you eat.''  This saying is mostly true and can be related in a mathematical model! Here's how: an equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by:
+A common saying is ``You are what you eat.""  This saying is mostly true and can be related in a mathematical model! Here's how: an equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by:
 \begin{equation}
  y = c x^{1/\theta},
 \end{equation}
 where $\theta \geq 1$ and $c$ are both constants is a constant. Units on $x$ and $y$ are expressed as a proportion of a given nutrient (such as nitrogen or carbon). Let's start with an example when $c=1$ and $\theta = 1$.  Our function then is $y=x$.  In this case the point $(0.05,0.05)$ would say that if an animal ate food that was 5% nitrogen, their body composition would be 5% as well.
-    \begin{enumerate}[label=\alph*.]
-\item  Now assume that $c=1$. How does the nutrient content of the consumer compare to the food when $\theta=2$?  Draw a sample curve and interpret it, contrasting it to when $\theta = 1$.
-\item Now assume that $c=1$. How does the nutrient content of the consumer compare to the food when $\theta=5$?  Draw a sample curve and interpret it, contrasting this curve to the previous two.
-\item What do you think will happen when $\theta \rightarrow \infty$? Draw some sample curves to help illustrate your findings.
-\end{enumerate}
+
+
+a.  Now assume that $c=1$. How does the nutrient content of the consumer compare to the food when $\theta=2$?  Draw a sample curve and interpret it, contrasting it to when $\theta = 1$.
+b. Now assume that $c=1$. How does the nutrient content of the consumer compare to the food when $\theta=5$?  Draw a sample curve and interpret it, contrasting this curve to the previous two.
+c. What do you think will happen when $\theta \rightarrow \infty$? Draw some sample curves to help illustrate your findings.
+
 ```
 &nbsp;
 
@@ -375,7 +388,7 @@ A model for the outbreak of a cold virus assumes that the rate people get infect
 
 
 ```{exercise}
-A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3.  However people also account for recovering from the flu, denoted with the variable $R$.  Assume that the rate of recovery is proportional to the number of infected people with parameter $\beta$.  Construct a diagram like Model 3 for this scenario and also write down what you think the system of differential equations would be.
+A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3.  However people also account for recovering from the flu, denoted with the variable $R$.  Assume that the rate of recovery is proportional to the number of infected people with parameter $\beta$.  Construct a diagram similar to Figure \@ref(fig:logistic-scheme) for this scenario and also write down what you think the system of differential equations would be.
 ```
 &nbsp;
  <!-- Van den Berg page 19 -->
@@ -386,32 +399,33 @@ $$\frac{dS}{dt} = I + p \cdot (W - S), $$
 
 where the parameter $I$ represents the active uptake of salt, $p$ is the permeability of the skin, and $W$ is the salinity in the water. Use this information to answer the following questions:
   
-  \begin{enumerate}[label=\alph*.]
-  \item What is that value of $S$ at \emph{steady state}, or when $\displaystyle \frac{dS}{dt} = 0$?  Your final answer should be a function $S(I,p,W)$.
-  \item Witn the steady state solution, Use your what parameters ($I$, $p$, or $W$) cause the steady state value $S$ to increase?
-  \end{enumerate}
+
+a. What is that value of $S$ at *steady state*, or when $\displaystyle \frac{dS}{dt} = 0$?  Your final answer should be a function $S(I,p,W)$.
+b. Witn the steady state solution, Use your what parameters ($I$, $p$, or $W$) cause the steady state value $S$ to increase?
+
 ```
 &nbsp;
 
 
 <!-- From LW -->
 ```{exercise}
-The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island.  Further, the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate.  The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
-\begin{enumerate}[label=\alph*.]
-\item Make representative plots of the of the immigration and the extinction rates as a function of $S$.  You may set $I_{m}$, $P$, and $E$ all equal to 1.
-\item Determine the number of species for which the net growth rate is zero, or the number of species is in equilibrium.  Express your answer as $S$ as a function of $I_{m}$, $P$, and $E$.
-\item Suppose that two islands of the same size are at different distances from the mainland. Birds arrive from the source pool and they have the same extinction rate on each island.  However the maximum immigration rate is larger for the island farther away.  Which of the two islands will have the larger number of species at equilibrium?
-\end{enumerate}
+The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island.  Additionally the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate.  The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
+
+
+a. Make representative plots of the of the immigration and the extinction rates as a function of $S$.  You may set $I_{m}$, $P$, and $E$ all equal to 1.
+b. Determine the number of species for which the net growth rate is zero, or the number of species is in equilibrium.  Express your answer as $S$ as a function of $I_{m}$, $P$, and $E$.
+c. Suppose that two islands of the same size are at different distances from the mainland. Birds arrive from the source pool and they have the same extinction rate on each island.  However the maximum immigration rate is larger for the island farther away.  Which of the two islands will have the larger number of species at equilibrium?
+
 ```
 &nbsp;
 
 ```{exercise}
 This problem relates to animal size and volume. Assume that an animal assimilates nutrients at a rate $R$ proportional to its surface area.  Also assume that it uses nutrients at a rate proportional to its volume. You may assume that the size of the animal is implicitly a function of the nutrient intake and usage. Determine the size of the animal if its intake and use rates were in balance (meaning $R$ is set to zero), assuming the animal is the following shapes:
 
-\begin{enumerate}[label=\alph*.]
-\item A sphere (assume size is measured with radius $r$) \emph{Note:} first determine the geometric formulas for surface area and volume.
-\item A cube (assume size is measured with length $l$)
-\end{enumerate}
+
+a. A sphere (assume size is measured with radius $r$) *Note:* first determine the geometric formulas for surface area and volume.
+b. A cube (assume size is measured with length $l$)
+
 
 *Hint:* For both of these problems your goal is to determine a numeric value of $r$ and $l$.
 ```

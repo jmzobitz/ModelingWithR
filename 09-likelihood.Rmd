@@ -5,9 +5,9 @@ The problem we examined in the last chapter was the following:
 > Determine the set of parameters $\vec{\alpha}$ that minimize the difference between data $\vec{y}$ and the output of the function $f(\vec{x}, \vec{\alpha})$ and measured error $\vec{\sigma}$.
 
 
-We are going to examine the linear regression problem again using a smaller dataset. Ohe to the linear regression problem is through _likelihood functions_, which is a topic from probability and statistics.
+We are going to examine the linear regression problem again using a smaller dataset by applying _likelihood functions_, which is a topic from probability and statistics.
 
-This section will introduce likelihood functions but also discuss some interesting visualization techniques of multivariable functions and contour plots.  We will also see a technique to evaluate a continuous function.  We are starting to build out some R skills and techniques that you can apply in other context.  Let's get started!
+This section will introduce likelihood functions but also discuss some interesting visualization techniques of multivariable functions and contour plots.  We will also see a technique to evaluate a continuous function.  We are starting to build out some `R` skills and techniques that you can apply in other context.  Let's get started!
 
 
 ## Linear regression, part 2
@@ -21,41 +21,45 @@ Assume we have the following (limited) number of points where we wish to fit a f
 | 4 | 10 |
 
 
-For this example we are forcing the intercept term $a$ to equal zero - for most cases you will just fit the linear equation. See Exercise \@ref(exr:full-linear). Figure \@ref(fig:quick-scatter-07) displays a quick scatterplot of these data:
+For this example we are forcing the intercept term $a$ to equal zero - for most cases you will just fit the linear equation (see Exercise \@ref(exr:full-linear) where you will consider the intercept $a$). Figure \@ref(fig:quick-scatter-07) displays a quick scatterplot of these data:
 
 ```{r quick-scatter-07,warning=FALSE,message=FALSE,echo=FALSE, fig.width=3,fig.height=2,fig.cap="A scatterplot of a small dataset."}
-data.frame(x =c(1,2,4,6),y =c(3,5,4,10) ) %>%
-ggplot(aes(x=x, y=y)) +
- geom_point(size=2,color='red') +
-  xlim(c(0,10)) +
-  ylim(c(0,15))
-
+data.frame(x = c(1, 2, 4, 6), y = c(3, 5, 4, 10)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2, color = "red") +
+  xlim(c(0, 10)) +
+  ylim(c(0, 15))
 ```
 
-The goal here is to work to determine the value of $b$ that is most *likely* (in other words, consistent) with the data. In order to do this, we need to take a quick excursion into probability distributions. Let's go!
+The goal here is to work to determine the value of $b$ that is most *likely* (in other words, consistent) with the data. However, before we tackle this further we need to understand how to quantify _more likely_ in a mathematical sense. In order to do this, we need to take a quick excursion into probability distributions. Let's go!
 
 ## Probability
-In order to understand likelihood functions, first I am going to review very essential information about probability and probability distributions. Probability is the association of a set of observable events to a quantitative scale between 0 to 1.  (Zero means that event is not possible, 1 means that it definitely can happen).  This definition could be refined somewhat [@devore_modern_2021].  You can consider discrete events (think counting or combinatorial problems) or continuous events.  Here we are only going to consider continuous events, specifically in this case the probability of a parameter obtaining a particular value.
+In order to understand likelihood functions, first I am going to review very essential information about probability and probability distributions. Probability is the association of a set of observable events to a quantitative scale between 0 to 1.  (Zero means that event is not possible, 1 means that it definitely can happen).  This definition could be refined somewhat [@devore_modern_2021].  Events can be considered as discrete events (think counting or combinatorial problems) or continuous events.  For our purposes we are only going to consider continuous events, specifically in this case the probability of a parameter obtaining a particular value.
 
 Consider this graphic, which may be familiar to you as the normal distribution or the bell curve:
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The normal distribution', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(-5,5,length=200),y_val=dnorm(seq(-5,5,length=200))),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
+  geom_area(
+    data = data.frame(x_val = seq(-5, 5, length = 200), y_val = dnorm(seq(-5, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
   xlab("x") +
   ylab("f(x)")
-
 ```
 
 We tend to think of the plot and the associated function $f(x)$ as something with input and output (such as $f(0)=$ `r round(dnorm(0),digits=4)`).  However because it is a probability density function, the *area* between two points gives yields the probability of an event to fall within two values:
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The area between two values, normally distributed', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(-5,5,length=200),y_val=dnorm(seq(-5,5,length=200))),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
-geom_area(data=data.frame(x_val=seq(-0.1,0.1,length=20),y_val=dnorm(seq(-0.1,0.1,length=20))),
-          aes(x=x_val,y=y_val),alpha=.8, fill="#000CCC") +
+  geom_area(
+    data = data.frame(x_val = seq(-5, 5, length = 200), y_val = dnorm(seq(-5, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  geom_area(
+    data = data.frame(x_val = seq(-0.1, 0.1, length = 20), y_val = dnorm(seq(-0.1, 0.1, length = 20))),
+    aes(x = x_val, y = y_val), alpha = .8, fill = "#000CCC"
+  ) +
   xlab("x") +
   ylab("f(x)")
 ```
@@ -69,7 +73,7 @@ The basic idea is that we can assign values to an outcomes as a way of displayin
 - $f(x) \geq 0$ (this means that probability density functions are positive values)
 - Area integrates to one (in probability, this means we have accounted for all of our outcomes)
 
-The formula for the normal distribution is 
+Probability density functions also have formulas.  For example, the formula for the normal distribution is 
 \begin{equation}
 f(x)=\frac{1}{\sqrt{2 \pi} \sigma } e^{-(x-\mu)^{2}/(2 \sigma^{2})}
 \end{equation}
@@ -83,13 +87,14 @@ Beyond the normal distribution some of the more common ones we utilize in the pa
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The uniform distribution', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(-5,5,length=200),y_val=dunif(seq(-5,5,length=200),min = -5,max=5)),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
+  geom_area(
+    data = data.frame(x_val = seq(-5, 5, length = 200), y_val = dunif(seq(-5, 5, length = 200), min = -5, max = 5)),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
   xlab("x") +
   ylab("f(x)") +
-  ylim(c(0,0.5)) +
-  ggtitle('Uniform Probability Distribution')
-
+  ylim(c(0, 0.5)) +
+  ggtitle("Uniform Probability Distribution")
 ```
 
 The formula for the uniform distribution is 
@@ -103,13 +108,14 @@ f(x)=\frac{1}{b-a} \mbox{ for } a \leq x \leq b
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The exponential distribution', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(0,5,length=200),y_val=dexp(seq(0,5,length=200))),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200), y_val = dexp(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
   xlab("x") +
   ylab("f(x)") +
-  ylim(c(0,0.5)) +
-  ggtitle('Exponential Probability Distribution')
-
+  ylim(c(0, 0.5)) +
+  ggtitle("Exponential Probability Distribution")
 ```
 
 The formula for the exponential distribution is 
@@ -123,12 +129,13 @@ where $\lambda$ is the rate parameter
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The lognormal distribution', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(0,5,length=200),y_val=dlnorm(seq(0,5,length=200))),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200), y_val = dlnorm(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
   xlab("x") +
   ylab("f(x)") +
-  ggtitle('Lognormal Probability Distribution')
-
+  ggtitle("Lognormal Probability Distribution")
 ```
 
 
@@ -139,7 +146,7 @@ f(x)=\frac{1}{\sqrt{2 \pi} \sigma x } e^{-(\ln(x)-\mu)^{2}/(2 \sigma^{2})} \mbox
 \end{equation}
 
 
-### Computing probabilities in R
+### Computing and graphic probabilities in R
 Here is the good news with `R`: the commands to generate densities and cumulative distributions are already included!  There are a variety of implementations: both for the density, cumulative distribution, random number generation, and lognormal distributions from these.  For the moment, Table \ref{table:prob-dist} summarizes some common probability distributions in `R`.
 
 \begin{table}
@@ -158,61 +165,62 @@ Normal & $\mu \rightarrow$ \texttt{meanlog}, $\sigma \rightarrow$ \texttt{sdlog}
 To make the graphs of these density functions in `R` we use the prefix `d + ` the name (`norm`, `exp`) etc of the distribution we wish to specify, including any of the key parameters.  If we don't include any of the parameters then it will just use the defaults (which you can see by typing `?NAME` where `NAME` is the name of the command (i.e. `?dnorm`).
 
 
-Here is some sample code to plot the lognormal distribution:
-
 ```{example}
 Make a graph of the lognormal density function with $\mu=0$ and $\sigma=1$ from $0 \leq x \leq 5$.
 ```
 
-```{remark}
+```{solution}
 For this case we are using the defaults of the lognormal distribution.  The code is the following, and plotted in Figure \@ref(fig:log-norm-plot).
 ```
 
 ```{r log-norm-plot,fig.cap='Code to plot the lognormal distribution', fig.width=4,fig.height=3}
 
-x <- seq(0,5,length=200)
-y <- dlnorm(x)  # Just use the mean defaults 
+x <- seq(0, 5, length = 200)
+y <- dlnorm(x) # Just use the mean defaults
 
-lognormal_data <- tibble(x,y)
+# Define your data frame to plot
+lognormal_data <- tibble(x, y)
 
 ggplot() +
-  geom_line(data = lognormal_data,
-             aes(x=x,y=y)) +
-  labs(x = 'x', y= 'Lognormal density')
-
-
+  geom_line(
+    data = lognormal_data,
+    aes(x = x, y = y)
+  ) +
+  labs(x = "x", y = "Lognormal density")
 ```
 
 
-To find the area between two values in a density function we use the prefix `p`.
+To determine the area between two values in a density function we use the prefix `p`.
 
 
 ```{example exp-area}
 Use `R` to evaluate $\displaystyle \int_{1}^{2} e^{-x} \; dx$.
 ```
 
-```{remark}
-The function $e^{-x}$ is the exponential probability distribution with $\lambda=1$. For this example if we wanted to find the area between two values in the exponential density in the shaded graph we would type `pexp(2)-pexp(1)` at the `R` console, which would give the value of `r round(pexp(2)-pexp(1),digits=3)`.  A visual representation of this area is shown in Figure \@ref(fig:exp-area-plot).
+```{solution}
+The function $e^{-x}$ is the exponential probability distribution with $\lambda=1$. For this example if we wanted to find the area between two values in the exponential density in the shaded graph we would type `pexp(2)-pexp(1)` at the `R` console, which would give the value of 0.233.  A visual representation of this area is shown in Figure \@ref(fig:exp-area-plot).
 ```
 
 
 ```{r exp-area-plot,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The area for the exponential distribution', fig.width=4,fig.height=3}
 ggplot() +
-geom_area(data=data.frame(x_val=seq(0,5,length=200),y_val=dexp(seq(0,5,length=200))),
-          aes(x=x_val,y=y_val),alpha=.6, fill="#FF6666") +
-geom_area(data=data.frame(x_val=seq(1,2,length=20),y_val=dexp(seq(1,2,length=20))),
-          aes(x=x_val,y=y_val),alpha=.8, fill="#000CCC") +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200), y_val = dexp(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  geom_area(
+    data = data.frame(x_val = seq(1, 2, length = 20), y_val = dexp(seq(1, 2, length = 20))),
+    aes(x = x_val, y = y_val), alpha = .8, fill = "#000CCC"
+  ) +
   xlab("x") +
   ylab("f(x)") +
   annotate("text", x = 1.5, y = 0.5, label = "Area of region: 0.233")
-
-
 ```
 
 
 
 
-## Connecting to linear regression
+## Connecting probabilities to linear regression
 Now that we have made that small excursion into probablity, let's start to return back to the linear regression problem.  Another way to phrase this the linear regression problem studied in the last chapter is to examine the probability distribution of the model-data residual $\epsilon$:
 
 \begin{equation}
@@ -225,7 +233,7 @@ The approach with likelihood functions assumes a particular probability distribu
 L(\epsilon_{i}) = \frac{1}{\sqrt{2 \pi} \sigma} e^{-\epsilon_{i}^{2} / 2 \sigma^{2} },
 \end{equation}
 
-To extend this further across all measurement, we use the idea of *independent, identically distributed* measurements so the joint likelihood of **all** the residuals is the product of the likelihoods
+To extend this further across all measurement, we use the idea of *independent, identically distributed* measurements so the joint likelihood of **all** the residuals is the product of the likelihoods. The assumption of independent, identically distributed is is a common one. As a note of caution you should always evaluate if this is a valid assumption for more advanced applications.
 
 \begin{equation}
 L(\vec{\epsilon}) = \prod_{i=1}^{N} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\epsilon_{i}^{2} / 2 \sigma^{2} },
@@ -241,8 +249,7 @@ L(\vec{\alpha} | \vec{x},\vec{y} )= \prod_{i=1}^{N}  \frac{1}{\sqrt{2 \pi} \sigm
 
 Now we have a function where the best parameter estimate is the one that optimizes the likelihood.
 
-
-To get back to our original linear regression problem.  As a reminder we wanted to fit the function $y=bx$ to the following set of points:
+To return to our original linear regression problem (Figure \@ref(fig:quick-scatter-07), as a reminder we wanted to fit the function $y=bx$ to the following set of points:
 
 | *x* | *y*  | 
 |:------:|:-----:|
@@ -257,26 +264,22 @@ The likelihood $L(\epsilon_{i}) ~ N(0,\sigma)$ characterizing these data are the
 L(b) = \left( \frac{1}{\sqrt{2 \pi} \sigma}\right)^{4} e^{-\frac{(3-b)^{2}}{2\sigma}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma}} (\#eq:small-data-likely)
 \end{equation}
 
-For the purposes of our argument here, we will assume $\sigma=1$. Let's also make a plot of this likelihood function:
+For the purposes of our argument here, we will assume $\sigma=1$. Figure \@ref(fig:small-likelihood-plot) shows a plot of the likelihood function $L(b)$.
 
 ```{r small-likelihood-plot,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The likelihood function for the small dataset', fig.width=4,fig.height=3}
-b=seq(0,5,0.01)
-new_data<-data.frame(x =c(1,2,4,4),y =c(3,5,4,10) )
-lb = map(.x=b,.f=~(1/(2*pi)^length(new_data$y))*exp(-sum((new_data$y-.x*new_data$x)^2)/4)) %>% as.numeric()
+b <- seq(0, 5, 0.01)
+new_data <- data.frame(x = c(1, 2, 4, 4), y = c(3, 5, 4, 10))
+lb <- map(.x = b, .f = ~ (1 / (2 * pi)^length(new_data$y)) * exp(-sum((new_data$y - .x * new_data$x)^2) / 4)) %>% as.numeric()
 
-data.frame(b,lb) %>%
-  ggplot(aes(x=b,y=lb)) +
+data.frame(b, lb) %>%
+  ggplot(aes(x = b, y = lb)) +
   geom_line() +
-  geom_vline(xintercept = b[which.max(lb)],color='red') +
-  ylab('L(b)')
-
+  geom_vline(xintercept = b[which.max(lb)], color = "red") +
+  ylab("L(b)")
 ```
 
 
-Note that although the $y$ values of the likelihood function are really small, the likelihood function is maximized at $b=1.86$.
-
-
-Notice how in the plot of our likelihood function we had really small values of $L(b)$.  It is also common to use the log likelihood (Equation \@ref(eq:loglikely):
+Note that in Figure \@ref(fig:small-likelihood-plot) the $y$ values of $L(b)$ are really small (this may be the case), the likelihood function is maximized at $b=1.86$.  An alternative to the small numbers in $L(b)$ is to use the log likelihood (Equation \@ref(eq:loglikely)):
 
 \begin{equation}
 \begin{split}
@@ -287,82 +290,76 @@ Notice how in the plot of our likelihood function we had really small values of 
 
 In the homework you will be working on how to transform the likelihood function $L(b)$ to the log-likelihood $\ln(L(b))$.
 
-For our purposes here we are going to assume independent, identical, normally distributed errors with a mean 0 for the likelihood functions.  This is a commonly used assumption for this approach, but you should always think about the errors in more advanced applications.
+
 
 
 ## Plotting likelihood surfaces
-Ok, we are going to examine a second example from @gause_experimental_1932 which modeled the growing of yeast in solution.  This classic paper examines the biological principal of *competitive exclusion*, how one species can out compete another one for resources. For our purposes here we are going to examine a model for one species growing without competition.
+Ok, we are going to examine a second example from @gause_experimental_1932 which modeled the growing of yeast in solution.  This classic paper examines the biological principal of *competitive exclusion*, how one species can out compete another one for resources. The data from @gause_experimental_1932 is encoded in the data frame `yeast` in the `demodelr` package. For this example we are going to examine a model for one species growing without competition. Figure \@ref(fig:yeast-quick-09) shows a scatterplot of the `yeast` data.
 
-First let's make a quick plot of the function:
-```{r, fig.show='hold', fig.width=4,fig.height=3}
+
+```{r yeast-quick-09, fig.show='hold', fig.width=4,fig.height=3,fig.cap="Scatterplot of *Sacchromyces* volume growing by itself in a container."}
 ### Make a quick ggplot of the data
 
 ggplot() +
-  geom_point(data = yeast,
-             aes(x=time,y=volume),
-             color='red',
-             size=2) +
-  labs(x = 'Time', y= 'Volume')
-
+  geom_point(
+    data = yeast,
+    aes(x = time, y = volume),
+    color = "red",
+    size = 2
+  ) +
+  labs(x = "Time", y = "Volume")
 ```
 
 We are going to assume the population of yeast (represented with the measurement of volume) over time changes according to the equation:
 
 \begin{equation}
-\frac{dy}{dt} = -by \frac{(K-y)}{K},
+\frac{dy}{dt} = -by \frac{(K-y)}{K}, (\#eq:gause-09)
 \end{equation}
 
 where $y$ is the population of the yeast and $b$ represents the growth rate and $K$ is the carrying capacity of the population. It can be shown that the solution to this differential equation is $\displaystyle y = \frac{K}{1+e^{a-bt}}$, where the additional parameter $a$ can be found through application of the initial condition $y_{0}$.  In @gause_experimental_1932 the value of $a$ was determined by solving the initial value problem $y(0)=0.45$. In Exercise \@ref(exr:solve-gause) you will show that $\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)$.
 
 
-Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters $K$ and $b$ using the function `compute_likelihood`.
-
-Inputs to the `compute_likelihood` function are the following:
+Equation \@ref(eq:gause-09) has two parameters: $K$ and $b$. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters $K$ and $b$ using the function `compute_likelihood`. Inputs to the `compute_likelihood` function are the following:
 
 - A function $y=f(x,\vec{\alpha})$
 - A dataset $(x,y)$
 - Ranges of your parameters $\vec{\alpha}$. 
 
-The `compute_likelihood` function also has an optional input that allows you to specify if you want to compute the likelihood or the log likelihood.
+The `compute_likelihood` function also has an optional input `logLikely` that allows you to specify if you want to compute the likelihood or the log likelihood. The default is that `logLikely` is `FALSE`, meaning that the normal likelihoods are plotted.
 
 
-
-
-
-We are going to plot the likelihood equation surface for the `yeast` dataset, contained in the data frame `yeast`.  Recall the function that we fit to determine is $\displaystyle y = \frac{K}{1+e^{a-bt}}$.
-
-
-Next we will define the equation used to compare our model in the likelihood.  As with the functions `euler` or `systems` we need to define this function:
+First we will define the equation used to compute our model in the likelihood.  As with the functions `euler` or `systems` we need to define this function:
 ```{r, fig.show='hold'}
 library(demodelr)
 
 # Gause model equation
-gause_model <- volume ~ k/(1+exp(log(k/0.45-1)-b*time))
+gause_model <- volume ~ K / (1 + exp(log(k / 0.45 - 1) - b * time))
 
 
 # Identify the ranges of the parameters that we wish to investigate
-kParam <- seq(5,20,length.out=100)
-bParam <- seq(0,1,length.out=100)
+kParam <- seq(5, 20, length.out = 100)
+bParam <- seq(0, 1, length.out = 100)
 
 
 # Allow for all the possible combinations of parameters
-gause_parameters <- expand.grid(k=kParam,b=bParam)
- 
+gause_parameters <- expand.grid(K = kParam, b = bParam)
 
-gause_likelihood <- compute_likelihood(model = gause_model,
-                                        data = yeast,
-                                        parameters = gause_parameters,
-                                        logLikely=FALSE) 
-
+# Now compute the likelihood
+gause_likelihood <- compute_likelihood(
+  model = gause_model,
+  data = yeast,
+  parameters = gause_parameters,
+  logLikely = FALSE
+  )
 ```
 
 Ok, let's break this code down step by step:
 
-- The line `gause_model <- volume ~ k/(1+exp(log(k/0.45-1)-b*time))` identifies the formula that relates the variables `time` to `volume`.
+- The line `gause_model <- volume ~ K/(1+exp(log(k/0.45-1)-b*time))` identifies the formula that relates the variables `time` to `volume`.
 - We define the ranges (minimum and maximum values) for our parameters by defining a sequence.  Because we want to look at *all possible combinations* of these parameters we use the command `expand.grid`.
-- The input `logLikely` to `compute_likelihood` reports back log likelihood values.
+- The input `logLikely = FALSE` to `compute_likelihood` reports back likelihood values.
 
-Some care is needed in defining the number of points that we want to evaluate - we will have $100^{2}$ different combinations of $k$ and $b$, which do take time to evaluate.
+Some care is needed in defining the number of points that we want to evaluate - we will have $100^{2}$ different combinations of $K$ and $b$, which do take time to evaluate.
 
 
 The output to `compute_likelihood` is a list - this is a flexible data structure.  You can think of this as a collection of items.  In this case, what gets returned are two data frames: `likelihood`, which is a data frame of likelihood values for each of the parameters and `opt_value`, which reports back the values of the parameters that optimize the likelihood function.  Note that the optimum value is *an approximation*, as it is just the optimum from the input values.  Let's take a look at the reported optimum values, which we can do with the syntax `LIST_NAME$VARIABLE_NAME`, where the dollar sign ($) helps identify which variable from the list you are investigating.
@@ -370,10 +367,9 @@ The output to `compute_likelihood` is a list - this is a flexible data structure
 ```{r, fig.show='hold'}
 
 gause_likelihood$opt_value
-
 ```
 
-It is also important to visualize this likelihood function.  For this dataset we have the two parameters $k$ and $b$, so the likelihood function will be a likelihood surface.  The code to generate the plot looks a little different:
+It is also important to visualize this likelihood function.  For this dataset we have the two parameters $K$ and $b$, so the likelihood function will be a likelihood surface.  The code to generate the plot looks a little different from previous plots we have used previously:
 
 ```{r gause-likely-plot,fig.cap="Likelihood surface and contour lines for the Gause dataset."}
 
@@ -382,9 +378,8 @@ my_likelihood <- gause_likelihood$likelihood
 
 # Make a contour plot
 ggplot(data = my_likelihood) +
-  geom_tile(aes(x = k,y = b,fill = l_hood)) + 
-  stat_contour(aes(x = k, y = b, z = l_hood))
-
+  geom_tile(aes(x = K, y = b, fill = l_hood)) +
+  stat_contour(aes(x = K, y = b, z = l_hood))
 ```
 
 Similar to before, let's take this step by step:
@@ -399,22 +394,24 @@ I chose some broad parameter ranges at first, so let's make a likelihood plot, e
 ```{r revised-gause-likelihood, fig.show='hold',fig.cap="Revised likelihood surface. The computed location of the optimum value is shown as a red point."}
 
 # Gause model equation
-gause_model <- volume ~ k/(1+exp(log(k/0.45-1)-b*time))
+gause_model <- volume ~ K / (1 + exp(log(K / 0.45 - 1) - b * time))
 
 
 # Identify the (new) ranges of the parameters that we wish to investigate
-kParam <- seq(11,14,length.out=100)
-bParam <- seq(0.1,0.3,length.out=100)
+kParam <- seq(11, 14, length.out = 100)
+bParam <- seq(0.1, 0.3, length.out = 100)
 
 
 # Allow for all the possible combinations of parameters
-gause_parameters_rev <- expand.grid(k=kParam,b=bParam)
- 
+gause_parameters_rev <- expand.grid(K = kParam, b = bParam)
 
-gause_likelihood_rev <- compute_likelihood(model = gause_model,
-                                        data = yeast,
-                                        parameters = gause_parameters_rev,
-                                        logLikely=FALSE) 
+
+gause_likelihood_rev <- compute_likelihood(
+  model = gause_model,
+  data = yeast,
+  parameters = gause_parameters_rev,
+  logLikely = FALSE
+  )
 
 # Report out the optimum values
 opt_value_rev <- gause_likelihood_rev$opt_value
@@ -427,34 +424,32 @@ my_likelihood_rev <- gause_likelihood_rev$likelihood
 
 # Make a contour plot
 ggplot(data = my_likelihood_rev) +
-  geom_tile(aes(x = k,y = b,fill = l_hood)) + 
-  stat_contour(aes(x = k, y = b, z = l_hood)) +
-  geom_point(data=opt_value_rev,aes(x=k,y=b),color='red')
-
-
+  geom_tile(aes(x = K, y = b, fill = l_hood)) +
+  stat_contour(aes(x = K, y = b, z = l_hood)) +
+  geom_point(data = opt_value_rev, aes(x = K, y = b), color = "red")
 ```
 
-The reported values for $k$ and $b$ may be close to what was reported from the first time.  Notice that I also added in the location of the optimum point with the code `geom_point(data=opt_value_rev,aes(x=k,y=b),color='red')`.
+The reported values for $K$ (12.8) and $b$ (0.241) may be close to what was reported from Figure \@ref(fig:gause-likely-plot).  Notice that in Figure \@ref(fig:revised-gause-likelihood) I also added in the location of the optimum point with the code `geom_point(data=opt_value_rev,aes(x=k,y=b),color='red')`.
 
 
-Finally we can use the optimized parameters to compare the function against the data:
+Finally we can use the optimized parameters to compare the function against the data (Figure \@ref(fig:gause-model-data-09).
 
 
-```{r, fig.show='hold', fig.width=4,fig.height=3,fig.cap="Model and data comparison from maximum likelihood estimation."}
+```{r gause-model-data-09, fig.show='hold', fig.width=4,fig.height=3,fig.cap="Model and data comparison of the `yeast` dataset from maximum likelihood estimation."}
 
 # Define the parameters and the times that you will evaluate the equation
 my_params <- gause_likelihood_rev$opt_value
-time=seq(0,60,length.out=100)
+time <- seq(0, 60, length.out = 100)
 
 # Get the right hand side of your equations
 new_eq <- gause_model %>%
   formula.tools::rhs()
 
 # This collects the parameters and data into a list
-in_list <- c(my_params,time) %>% as.list()
+in_list <- c(my_params, time) %>% as.list()
 
 # The eval command evaluates your model
-out_model <- eval(new_eq,envir=in_list)
+out_model <- eval(new_eq, envir = in_list)
 
 
 # Now collect everything into a dataframe:
@@ -462,16 +457,17 @@ my_prediction <- tibble(time = time, volume = out_model)
 
 
 ggplot() +
- geom_point(data = yeast,
-            aes(x=time,y=volume),
-            color='red',
-            size=2) +
- geom_line(data = my_prediction,
-           aes(x=time,y=volume)) +
- labs(x = 'Time', y= 'Volume')
-
-
-
+  geom_point(
+    data = yeast,
+    aes(x = time, y = volume),
+    color = "red",
+    size = 2
+  ) +
+  geom_line(
+    data = my_prediction,
+    aes(x = time, y = volume)
+  ) +
+  labs(x = "Time", y = "Volume")
 ```
 
 All right, this code block has some new commands and techniques that need explaining.  Once we have the parameter estimates we need to compute the modeled values.
@@ -483,12 +479,6 @@ All right, this code block has some new commands and techniques that need explai
 - In order to plot we make a data frame `my_prediction`
 
 And the rest of the plotting commands you should be used to.
-
-### Single / more than two parameter parameter
-Are you able use the `compute_likelihood` function if you have one or more than two parameters?  Why yes you can!
-
-For a single parameter likelihood function then you will just use `geom_line` rather than `geom_tile` to plot the surface.
-
 
 
 \newpage
@@ -502,14 +492,14 @@ Algebraically solve the equation $\displaystyle 0.45 = \frac{K}{1+e^{a}}$ for $K
 &nbsp;
 
 ```{exercise}
-Evaluate $\displaystyle \int_{0}^{5} 2 e^{-2x} \; dx$ by hand.  Then Use `R` to compute the value of $\int_{0}^{5} 2 e^{-2x} \; dx$.  Does your computed answer match with what you found in `R`?
+Evaluate $\displaystyle \int_{0}^{5} 2 e^{-2x} \; dx$ by hand.  Then use `R` to compute the value of $\displaystyle \int_{0}^{5} 2 e^{-2x} \; dx$.  Does your computed answer match with what you found in `R`?
 ```
 
 &nbsp;  
 
 
 ```{exercise}
-Make a plot of the normal density distribution with $mu=2$ and $\sigma=0.1$ for $0 \leq x \leq 4$.  Then use `R` to compute the following integral: $\displaystyle f(x)=\frac{1}{\sqrt{2 \pi} 0.1} e^{-(x-2)^{2}/(2\cdot 0.1^{2})}$
+Make a plot of the normal density distribution with $\mu=2$ and $\sigma=0.1$ for $0 \leq x \leq 4$.  Then use `R` to compute the following integral: $\displaystyle \int_{0}^{4} f(x) \; dx$, where $f(x)$ is the normal density function.
 ```
 
 &nbsp;
@@ -525,11 +515,11 @@ Visualize the likelihood function for the `yeast` dataset, but in this case repo
 ```{exercise}
 When we generated our plot of the likelihood function in Figure \@ref(fig:small-likelihood-plot) we assumed that $\sigma=1$ in Equation \@ref(eq:small-data-likely).  For this exercise you will explore what happens in Equation \@ref(eq:small-data-likely) as $\sigma$ increases or decreases.
 
-\begin{enumerate}[label=\alph*.]
-\item Use desmos to generate a plot of Equation \@ref(eq:small-data-likely), but let $\sigma$ be a slider.  What happens to the shape of the likelihood function as $\sigma$ increases?
-\item How does the estimate of $b$ change as $\sigma$ changes?
-\item The spread of the distribution (in terms of it being more peaked or less peaked)is a measure of uncertainty of a parameter estimate. How does the resulting parameter uncertainty change as $\sigma$ changes?
-\end{enumerate}
+
+a. Use desmos to generate a plot of Equation \@ref(eq:small-data-likely), but let $\sigma$ be a slider.  What happens to the shape of the likelihood function as $\sigma$ increases?
+b. How does the estimate of $b$ change as $\sigma$ changes?
+c. The spread of the distribution (in terms of it being more peaked or less peaked)is a measure of uncertainty of a parameter estimate. How does the resulting parameter uncertainty change as $\sigma$ changes?
+
 ```
 
 &nbsp;
@@ -538,12 +528,12 @@ When we generated our plot of the likelihood function in Figure \@ref(fig:small-
 ```{exercise}
 Using Equation \@ref(eq:small-data-likely) with $\sigma = 1$:
 
-  \begin{enumerate}[label=\alph*.]
-  \item Apply the natural logarithm to both sides of this expression.
-  \item Using properties of logarithms, show that the loglikelihood function $\ln(L(b)) =-2 \ln(2) - 2 \ln (\pi) -(3-b)^{2}-(5-2b)^{2}-(4-4b)^{2}-(10-4b)^{2}$.
+
+a. Apply the natural logarithm to both sides of this expression.
+b. Using properties of logarithms, show that the loglikelihood function $\ln(L(b)) =-2 \ln(2) - 2 \ln (\pi) -(3-b)^{2}-(5-2b)^{2}-(4-4b)^{2}-(10-4b)^{2}$.
 \item Make a plot of the log likelihood function (in desmos or R).  Where is this function optimized?  Is it a maximum or a minimum value?
-  \item Compare this likelihood estimate for $b$ to what was found in Figure \@ref(fig:small-likelihood-plot). 
-  \end{enumerate}
+c. Compare this likelihood estimate for $b$ to what was found in Figure \@ref(fig:small-likelihood-plot). 
+
 ```
 
 &nbsp;
@@ -560,11 +550,11 @@ Consider the linear model $y=a+bx$ for the following dataset:
 | 4 | 4 |
 | 4 | 10 |
 
-\begin{enumerate}[label=\alph*.]
-\item With the function \texttt{compute\_likelihood}, generate a contour plot of both the likelihood and log-likelihood functions.
-\item Make a scatterplot of these data with the equation $y=a+bx$ with your maximum likelihood parameter estimates.
-\item Earlier when we fit $y=bx$ we found $b=1.86$. How does adding $a$ as a model parameter affect your estimate of $b$?
-\end{enumerate}
+
+a. With the function `compute_likelihood`, generate a contour plot of both the likelihood and log-likelihood functions.
+b. Make a scatterplot of these data with the equation $y=a+bx$ with your maximum likelihood parameter estimates.
+c. Earlier when we fit $y=bx$ we found $b=1.86$. How does adding $a$ as a model parameter affect your estimate of $b$?
+
 ```
 
 &nbsp;
@@ -579,7 +569,7 @@ For the function $\displaystyle P(t)=\frac{K}{1+e^{a+bt}}$, with $P(0)=P_{0}$, d
 
 
 ```{exercise}
-The values of returned by the maximum likelihood estimate were a little different from those reported in @gause_experimental_1932:
+The values returned by the maximum likelihood estimate for Equation \@ref(eq:gause-09) were a little different from those reported in @gause_experimental_1932:
 
 
 **Parameter** | **Maximum Likelihood Estimate**  | **@gause_experimental_1932** 
@@ -596,11 +586,11 @@ Make of plot of the function $\displaystyle y = \frac{K}{1+e^{a-bt}}$ with $\dis
 ```{exercise}
 An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c$ are both constants.
 
-\begin{enumerate}[label=\alph*.]
-\item Use the dataset `phosphrous` make a scatter plot with the variable `algae` on the horizontal axis, `daphnia` on the vertical axis.
-\item Generate a contour plot for the likelihood function for these data. You may assume $1 \leq \theta \leq 20$ and $0 \leq c \leq 5$.  What are the values of $\theta$ and $c$ that optimize the likelihood? \emph{Hint:} for the dataset `phosphorous` be sure to use the variables $x=$\texttt{algae} and $y=$\texttt{daphnia}.
-\item With your values of $c$ and $\theta$ add the function $W$ to your scatterplot and compare the fitted curve to the data.
-\end{enumerate}
+
+a. Use the dataset `phosphrous` make a scatter plot with the variable `algae` on the horizontal axis, `daphnia` on the vertical axis.
+b. Generate a contour plot for the likelihood function for these data. You may assume $1 \leq \theta \leq 20$ and $0 \leq c \leq 5$.  What are the values of $\theta$ and $c$ that optimize the likelihood? *Hint:* for the dataset `phosphorous` be sure to use the variables $x=$`algae` and $y=$`daphnia`.
+c. With your values of $c$ and $\theta$ add the function $W$ to your scatterplot and compare the fitted curve to the data.
+
 ```
 
 &nbsp;
@@ -610,18 +600,18 @@ A dog's weight $W$ (pounds) changes over $D$ days according to the following fun
 \begin{equation}
 W =f(D,p_{1},p_{2})= \frac{p_{1}}{1+e^{2.462-p_{2}D}}
 \end{equation}
-where we have the parameters $p_{1}$ and $p_{2}$. The dataset `wilson` shows how the weight of a dog (named Wilson changes adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/).  
+where we have the parameters $p_{1}$ and $p_{2}$. The dataset `wilson` shows how the weight of a dog named Wilson (adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/)).  
 
-\begin{enumerate}[label=\alph*.]
-\item Make a scatterplot with the `wilson` data.  What is the long term weight of the dog? 
-\item Generate a contour plot for the likelihood function for these data.  What are the values of $p_{1}$ and $p_{2}$ that optimize the likelihood?  \emph{You may assume that $p_{1}$ and $p_{2}$ are both positive.}
-\item With your values of $p_{1}$ and $p_{2}$ add the function $W$ to your scatterplot and compare the fitted curve to the data.
-\end{enumerate}
+
+a. Make a scatterplot with the `wilson` data.  What is the long term weight of the dog? 
+b. Generate a contour plot for the likelihood function for these data.  What are the values of $p_{1}$ and $p_{2}$ that optimize the likelihood?  *You may assume that $p_{1}$ and $p_{2}$ are both positive.*
+c. With your values of $p_{1}$ and $p_{2}$ add the function $W$ to your scatterplot and compare the fitted curve to the data.
+
 ```
 
 &nbsp;
 
-  <!-- See rScripts file for code -->
+  <!-- Fit in desmos. A:60.35, B:1.09, C:7.79 -->
 ```{exercise}
 
 Consider the following data which represents the temperature over the course of a day:
@@ -634,7 +624,7 @@ Consider the following data which represents the temperature over the course of 
  68& 66& 67& 63& 60& 59& 57& 56& 53& 52& 54& 53 & \\ \hline
 \end{tabular}
 
-A function that describes these data is $\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)$, where $H$ is the hour and $T$ is the temperature.  Use the function `compute_likelihood` to determine maximum likelihood parameter estimates for $A$, $B$, and $C$.
+A function that describes these data is $\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) - C \cos \left( \frac{\pi}{12} \cdot H \right)$, where $H$ is the hour and $T$ is the temperature.  Use the function `compute_likelihood` to determine maximum likelihood parameter estimates for $A$, $B$, and $C$.  The values of $A$, $B$, and $C$ are all positive.
 
 
 ```
