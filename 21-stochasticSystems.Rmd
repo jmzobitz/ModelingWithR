@@ -2,10 +2,10 @@
 
 # Stochastic Biological Systems {#stoch-sys-21}
 
-So far in this course we have studied *deterministic* differential equations.  Given information about the solution or certain values of the parameters we could characterize the long term behavior of the system.  In this part we will study *stochastic* differential equations (or SDEs for short) - which means that the differential equation is subject to randomness - either in the parameters (which may cause a change in the stability for a time) or in the variables themselves.
+So far in this course we have studied *deterministic* differential equations.  We use the word deterministic because given an initial condition and parameters, the solution trajectory is determined. Now we are going to study *stochastic* differential equations (or SDEs for short) - which means that the differential equation is subject to randomness - either in the parameters (which may cause a change in the stability for a time) or in the variables themselves. Hopefully the previous sections in the textbook imparted a sense (1) that parameter values may change according to the data used to estimate them (parameter estimation) and (2) changing a parameter may drastically alter the long-term dynamics of a system (bifurcation). Learning about stochastic differential equations will extend your knowledge.
 
-Stochastic differential equations are a neat field of study because the field can be studied using computational approaches with some interesting mathematical approaches. In this part we will give you a taste of how to incorporate stochastics into your differential equation and focus on some solution techniques. Some of the ideas we will learn can be applied in other contexts.  For example, Brownian motion is the foundation to modern physics or can be applied to modeling changes in the stock market.  
-Hopefully the previous sections in the textbook imparted a sense (1) that parameter values may change according to the data used to estimate them (parameter estimation) and (2) changing a parameter may drastically alter the long-term dynamics of a system (bifurcation). Learning about stochastic differential equations will extend your knowledge.
+Stochastic differential equations are a neat field of study that can be studied using computational approaches. We will give you an introduction to SDEs with some focus on solution techniques. The ideas we will learn can be applied in other contexts.  For example, Brownian motion is the foundation to modern physics or can be applied to modeling changes in the stock market.  
+
 
 Understanding how to model SDEs requires learning some new mathematics as well as ways to numerically simulate this mathematics. A lot of SDEs rely on numerical simulation, so we will build up our understanding of some of the results of numerical simulation first.
 
@@ -30,50 +30,53 @@ This discrete dynamical system is a little bit different from a continuous dynam
 
 ```{r}
 
-M0 <- 3000  # Initial population of moose
-N <- 5  # Number of years we simulate
+M0 <- 3000 # Initial population of moose
+N <- 5 # Number of years we simulate
 
 moose <- function(r) {
-  out_moose <- array(M0,dim=N)
-  for (i in 1:(N-1)) {
-    out_moose[i+1] <- r*out_moose[i]
+  out_moose <- array(M0, dim = N)
+  for (i in 1:(N - 1)) {
+    out_moose[i + 1] <- r * out_moose[i]
   }
   return(out_moose)
 }
-
 ```
 
-Notice how the function `moose` returns the current population of moose after $N$ years with the net birth rate $r$.  Let's take a look at the results for different values of $r$:
-```{r,fig.width=4,fig.height=3,fig.align='center',fig.cap="Simulation of the moose population with different birth rates."}
+Notice how the function `moose` returns the current population of moose after $N$ years with the net birth rate $r$.  Let's take a look at the results for different values of $r$ (Figure \@ref(fig:moose-det-21)).
 
-moose_rates <- tibble( years = 1:N,
-                     r0.4 = moose(0.4),
-                     r0.8 = moose(0.8),
-                     r1.1 = moose(1.1))
+```{r moose-det-21,fig.width=4,fig.height=3,fig.align='center',fig.cap="Simulation of the moose population with different birth rates."}
+
+moose_rates <- tibble(
+  years = 1:N,
+  r0.4 = moose(0.4),
+  r0.8 = moose(0.8),
+  r1.1 = moose(1.1)
+)
 
 
 ggplot(data = moose_rates) +
-  geom_line(aes(x=years,y=r0.4),color='red') +
-  geom_line(aes(x=years,y=r0.8),color='blue') +
-  geom_line(aes(x=years,y=r1.1),color='green') +
-  labs(x='Years',
-         y='Moose')
-
+  geom_line(aes(x = years, y = r0.4), color = "red") +
+  geom_line(aes(x = years, y = r0.8), color = "blue") +
+  geom_line(aes(x = years, y = r1.1), color = "green") +
+  labs(
+    x = "Years",
+    y = "Moose"
+  )
 ```
 Let's remind ourselves of what is going on in the code.
 
-- `out_moose <- tibble...` creates a data frame that we can use for plotting.  We call several different instances of the `moose` code for different net birth rates.  I've decided to label each of those instances with the value of the birth rate *r* for reference.
+- `out_moose <- tibble...` creates a data frame that we can use for plotting.  We call several different instances of the `moose` code for different net birth rates.  I've decided to label each of those instances with the value of the birth rate `r` for reference.
 - The command `geom_line` makes a line plot.  Remember that we need to specify both the x (horizontal) and y (vertical) axes.  I specified the different colors to distinguish the different birth rates.
 
 Notice how for some values of $r$ the population starts to decline, stay the same, or increase.  Let's analyze this system a little more.  Just like with a continuous differential equation we want to look for solutions that are in steady state, or ones were the population is staying the same.  In other words this means that $M_{t+1}=M_{t}$, or $M_{t}=rM_{t}$.  If we simplify this expression this means that $M_{t}-r M_{t}=0$, or $(r-1)M_{t}=0$.  Assuming that $M_{t}$ is not equal to zero, then this equation is consistent only when $r=1$.  This makes sense: we know $r=1-b-d$, so the only way this can be one is if $b=d$, or the births balance out the deaths.
 
-Ok, so we found our equilibrium solution.  What is the general form of this solution? Just like when we were solving continuous systems and we assumed an exponential solution we will do the same here, but this time we represent the solution as $M_{t}=A\cdot v^{t}$, which is an exponential equation.  Since we have $M_{0}=3000$, then $A=3000$.  Plugging this expression into our equation we have:
+Ok, so we found our equilibrium solution.  However what is the general form of this solution to Equation \@ref(eq:moose)? Just like when we were solving continuous differential equations (Section \@ref(exact-solns-07) a starting point was that the solution was exponential. For discrete systems we will do the same, but this time we represent the solution as $M_{t}=A\cdot v^{t}$, which is an exponential equation.  Since we have $M_{0}=3000$, then $A=3000$.  Using these values of $M_{0}$ and $A$ for Equation \@ref(eq:moose) we obtain the following:
 
 \begin{equation}
 100 \cdot v^{t+1} = r 3000 \cdot v^{t}
 \end{equation}
 
-Our goal is to figure out a value for $v$ that is consistent with this expression.  Just like we did with the equilibrium solution we can arrange to the following equation, using the fact that $v^{t+1}=v^{t}\cdot v$:
+Our goal is to figure out a value for $v$ that is consistent with this expression.  Just like we did with continuous differential equations we can arrange the following equation, using the fact that $v^{t+1}=v^{t}\cdot v$:
 
 \begin{equation}
 3000 v^{t} (v-r) = 0
@@ -85,33 +88,30 @@ Since we assume $v\neq 0$, the only possibility is if $v=r$.  Aha!  Our general 
 M_{t}=3000 r^{t}
 \end{equation}
 
-We know that if $r>1$ we have exponential growth and $r<1$ exponential decay, consistent with our results above.
+We know that if $r>1$ we have exponential growth exponential decay when $r<1$ exponential decay, consistent with our results above.
 
-There is some comfort here: just like in continuous systems we find the eigenvalues that determine the stability of the equilibrium solution.  For discrete systems the stability is based on the value relative to one (not zero) - so it is good to be aware of what type of system you are looking at!
-
-Now that we have an understanding of how this system works we can begin to look at stochasticity.
+There is some comfort here: just like in continuous systems we find the eigenvalues that determine the stability of the equilibrium solution.  For discrete systems the stability is based on the eigenvalue relative to 1 (not 0) - so it is good to be aware of what type of system (discrete or continuous) you determining eigenvalues for!  Now that we have an understanding of how this system works we can begin to look at stochasticity.
 
 ## Environmental Stochasticity
-It may be the case that environmental effects drastically change the net birth rate from one year to the next.  For example it is known that in snowy winters the net birth rate changes because it is difficult to find food \@ref(carroll_modeling_2013). For our puruposes, let's say that in snowy winters $r$ changes from $1.1$ to $0.7$.  This would be a pretty drastic effect on the system - as one case is associated with exponential growth and the other exponential decay.
+It may be the case that environmental effects drastically change the net birth rate from one year to the next.  For example it is known that in snowy winters the net birth rate changes because it is difficult to find food [@carroll_modeling_2013]. For our purposes, let's say that in snowy winters $r$ changes from $1.1$ to $0.7$.  This would be a pretty drastic effect on the system - as one case is associated with exponential growth and the other exponential decay.
 
-Because the years when this snowfall could occur is random we need to account for this in our model.  One way is to create a conditional statement based on the probability of the moose to adjust to a deep snowpack. We will define this probability to be on a scale from 0 to 1, where 0 means the moose cannot adjust to a deep snowpack, and 1 they are able to adjust to a deep snowpack. How we implement that is writing a function that draws a uniform random number each year and adjusting the birth rate:
+Because the years when snowy winters occur is random, we need to account for this in our model.  One way is to create a conditional statement based on the probability of the moose to adjust to a deep snowpack in a given year. We will define this probability to be on a scale from 0 to 1, where 0 means the moose cannot adjust to a deep snowpack, and 1 they are able to adjust to a deep snowpack. How we implement that is writing a function that draws a uniform random number each year and adjusting the birth rate:
 
 
 ```{r}
 # We use the snowfall_rate  as an input variable
 
 moose_snow <- function(snowfall_prob) {
-    out_moose <- array(M0,dim=N)
-      for (i in 1:(N-1)) {
-        r = 1.1  # Normal net birth rate
-        if (runif(1)>snowfall_prob) {
-          r = 0.7   # Decreased birth rate
-        }
-        out_moose[i+1] <- r*out_moose[i]
-      }
-  return(out_moose)
+  out_moose <- array(M0, dim = N)
+  for (i in 1:(N - 1)) {
+    r <- 1.1 # Normal net birth rate
+    if (runif(1) > snowfall_prob) {
+      r <- 0.7 # Decreased birth rate
+    }
+    out_moose[i + 1] <- r * out_moose[i]
   }
-
+  return(out_moose)
+}
 ```
 
 
@@ -120,25 +120,26 @@ Let's take a look at some solutions for different realizations of the moose popu
 
 ```{r,echo=FALSE,fig.width=4,fig.height=3,fig.align='center',fig.cap= "Moose populations with different probability of adjusting to deep snowpacks."}
 
-M0 <- 100  # Initial population of moose
-N <- 10  # Number of years we simulate
+M0 <- 100 # Initial population of moose
+N <- 10 # Number of years we simulate
 
 # We use the probability of adjusting to snow as a variable
-moose_snow_pop <- tibble( years = 1:N,
-                     p0.25 = moose_snow(0.25),
-                     p0.5 = moose_snow(0.5),
-                     p0.75 = moose_snow(0.75)
-                     )
+moose_snow_pop <- tibble(
+  years = 1:N,
+  p0.25 = moose_snow(0.25),
+  p0.5 = moose_snow(0.5),
+  p0.75 = moose_snow(0.75)
+)
 
 
 ggplot(data = moose_snow_pop) +
-  geom_line(aes(x=years,y=p0.25),color='red') +
-  geom_line(aes(x=years,y=p0.5),color='blue') +
-  geom_line(aes(x=years,y=p0.75),color='green') +
-  labs(x='Years',
-         y='Moose')
-
-
+  geom_line(aes(x = years, y = p0.25), color = "red") +
+  geom_line(aes(x = years, y = p0.5), color = "blue") +
+  geom_line(aes(x = years, y = p0.75), color = "green") +
+  labs(
+    x = "Years",
+    y = "Moose"
+  )
 ```
 
 Run the above code on your computer. Do you obtain the same result? I hope not! We are drawing random numbers for each year, so you should have different trajectories.  While this may seem like a problem, one key thing that we will learn in Section \@ref(stoch-sim-22) is when we compute *multiple* simulations and then compute an ensemble average we see patterns in the results.
@@ -149,13 +150,13 @@ The moose example introduced how random effects into the dynamical system.  Both
 
 
 ## Discrete systems of equations
-Finally, one way that we can extend the moose model is to account for both adult and juvenile moose populations.  Here is one possible model:
+Finally, one way that we can extend the moose model is to account for both adult and juvenile moose populations, as with the following model:
 
 \begin{equation}
-\begin{cases}
+\begin{split}
 J_{t+1} &=F_{M} \cdot M_{t} \\
-M_{t+1} &= G_{J} \cdot J_{t} + P_{M} \cdot M_{t}, (\#eq:moose-juvenile)
-\end{cases}
+M_{t+1} &= G_{J} \cdot J_{t} + P_{M} \cdot M_{t}
+\end{split} (\#eq:moose-juvenile)
 \end{equation}
 
 Equation \@ref(eq:moose-juvenile) is a little different from \@ref(eq:moose) because it includes juvenile and adult moose populations, which has the following parameters:
@@ -164,52 +165,54 @@ Equation \@ref(eq:moose-juvenile) is a little different from \@ref(eq:moose) bec
 - $G_{J}$: represents the maturation rate of juvenile moose
 - $P_{M}$: represents the survival probability of adult moose
 
-We can code up this model in the following way:
+We can code up this model using `R` in the following way:
 
 ```{r}
 
-M0 <- 900  # Initial population of adult moose
-J0 <- 100  # Initial population of juvenile moose
+M0 <- 900 # Initial population of adult moose
+J0 <- 100 # Initial population of juvenile moose
 
-N <- 10    # Number of years we run the simulation
-moose_two_stage <- function(f,g,p) {
-  
+N <- 10 # Number of years we run the simulation
+moose_two_stage <- function(f, g, p) {
+
   # f: birth rate of new juvenile moose
   # g: maturation rate of juvenile moose
   # p: survival probability of adult moose
-  
+
   # Create a data frame of moose to return
-  out_moose <- tibble(years = 1:N,
-                      adult = array(M0,dim=N),
-                      juvenile = array(J0,dim=N)
+  out_moose <- tibble(
+    years = 1:N,
+    adult = array(M0, dim = N),
+    juvenile = array(J0, dim = N)
   )
 
   # And now the dynamics
-  for (i in 1:(N-1)) {
-    out_moose$juvenile[i+1] <- f*out_moose$adult[i]
-    out_moose$adult[i+1] <- g*out_moose$juvenile[i] + p*out_moose$adult[i]
+  for (i in 1:(N - 1)) {
+    out_moose$juvenile[i + 1] <- f * out_moose$adult[i]
+    out_moose$adult[i + 1] <- g * out_moose$juvenile[i] + p * out_moose$adult[i]
   }
-  
+
   return(out_moose)
 }
-
 ```
 
 To simulate the dynamics we just call the function `moose_two_stage` and plot:
 
 ```{r moose-2-21,fig.width=4,fig.height=3,fig.align='center',fig.cap="Simulation of a two stage moose population model. Adults are in red, juveniles in blue."}
 
-moose_two_stage_rates <- moose_two_stage(f = 0.5,
-                                         g = 0.6,
-                                         p = 0.7
-                                         )
+moose_two_stage_rates <- moose_two_stage(
+  f = 0.5,
+  g = 0.6,
+  p = 0.7
+)
 
-ggplot(data=moose_two_stage_rates) +
-  geom_line(aes(x=years,y=adult),color='red') +
-  geom_line(aes(x=years,y=juvenile),color='blue') +
-  labs(x='Years',
-     y='Moose')
-
+ggplot(data = moose_two_stage_rates) +
+  geom_line(aes(x = years, y = adult), color = "red") +
+  geom_line(aes(x = years, y = juvenile), color = "blue") +
+  labs(
+    x = "Years",
+    y = "Moose"
+  )
 ```
 
 Looking at Figure \@ref(fig:moose-2-21), it seems like both populations stabilize after a few years. We could further analyze this model for stable population states (in fact, it would be similar to determining eigenvalues as in Section \@ref(eigenvalues-18)).
@@ -227,18 +230,18 @@ Re-run the moose population model with probabilities of adjusting to the deep sn
 ```{exercise}
 Modify the two stage moose population model (Equation \@ref(eq:moose-juvenile)) with the following parameters and plot the resulting adult and juvenile populations:
   
-  \begin{enumerate}[label=\alph*.]
-\item $f = 0.6$, $g = 0.6 $, $p = 0.7$
-  \item $f = 0.5$, $g = 0.6 $, $p = 0.4$
-  \item $f = 0.3$, $g = 0.6 $, $p = 0.5$
-\end{enumerate}
+
+a. $f = 0.6$, $g = 0.6$, $p = 0.7$
+b. $f = 0.5$, $g = 0.6$, $p = 0.4$
+c. $f = 0.3$, $g = 0.6$, $p = 0.5$
+
   
 ```
 
 &nbsp;
 <!-- LW pg 318 -->
 ```{exercise}
-An animal reproduces two, one, or no offspring.  The chance it produces one offspring is 0.50, two offspring 0.25, and no offspring 0.25.  This animal does not survive after reproducing.  Use the function `population` in the `MAT 369Code` library to produce 1000 realizations of this stochastic process over 20 generations.  Assume the initial population size is 10 individuals.  Comment on the long term dynamics of the population.
+(Inspired by @logan_mathematical_2009) An animal reproduces two, one, or no offspring.  The chance it produces one offspring is 0.50, two offspring 0.25, and no offspring 0.25.  This animal does not survive after reproducing.  Use the function `population` in the `demodeler` library to produce 1000 realizations of this stochastic process over 20 generations.  Assume the initial population size is 10 individuals.  Comment on the long term dynamics of the population.
 ```
 
 &nbsp;
@@ -246,7 +249,7 @@ An animal reproduces two, one, or no offspring.  The chance it produces one offs
 
 <!-- LW pg 318 -->
 ```{exercise}
-You are playing a casino game.  If you win the game earn a dollar.  If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.  You play the game 200 times.  Use the function `casino` in the `demodelr` library to produce 1000 realizations of this stochastic process. Comment on the long term dynamics of your earnings. Then assuming the house win probability is 0.52 figure out how long the game, on average, runs before you are broke.  Finally, adjusting the house win probability, hypothesize a function of the length of game as a function of the house win probability.
+(Inspired by @logan_mathematical_2009) You are playing a casino game.  If you win the game earn a dollar.  If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.  You play the game 200 times.  Use the function `casino` in the `demodelr` library to produce 1000 realizations of this stochastic process. Comment on the long term dynamics of your earnings. Then assuming the house win probability is 0.52 figure out how long the game, on average, runs before you are broke.  Finally, adjusting the house win probability, hypothesize a function of the length of game as a function of the house win probability.
 ```
 
 &nbsp;
@@ -257,23 +260,23 @@ Modify the two stage moose population model (Equation \@ref(eq:moose-juvenile)) 
 &nbsp;
 ```{exercise}
 A population grows according the the growth law $x_{t+1}=r_{t}x_{t}$.
-\begin{enumerate}[label=\alph*.]
-\item Determine the general solution to this discrete dynamical system.
-\item Plot a sample growth curve with $r_{t}=0.86$ and $r_{t}=1.16$, with $x_{0}=100$. Show your solution for $t=50$ generations.
-\item Now consider a model where $r_{t}=0.86$ with probability 1/2 and $r_{t}=1.16$ with probability 1/2.  Write a function that will predict the population after $t=50$.  Show three or four different realizations of this stochastic process.
-\end{enumerate}
+
+a. Determine the general solution to this discrete dynamical system.
+b. Plot a sample growth curve with $r_{t}=0.86$ and $r_{t}=1.16$, with $x_{0}=100$. Show your solution for $t=50$ generations.
+c. Now consider a model where $r_{t}=0.86$ with probability 1/2 and $r_{t}=1.16$ with probability 1/2.  Write a function that will predict the population after $t=50$.  Show three or four different realizations of this stochastic process.
+
 ```
 
 &nbsp;
  <!-- %LW #2 page 317 -->
 ```{exercise}
-A ``patch'' has area $a$, perimeter $s$, and a strip (band) of width $w$ inside the boundary of $a$ from which the animals disperse.  Only those in the strip disperse.  Let $u_{t}$ be the number of animals in $a$ at any time $t$.  The growth rate of all the animals in $a$ is $r$.  The rate at which animals disperse from the strip is proportional to the fraction of the animals in the strip, with proportionality constant $\epsilon$, which is the emigration rate for those in the strip.
+(Inspired by @logan_mathematical_2009) A "patch" has area $a$, perimeter $s$, and a strip (band) of width $w$ inside the boundary of $a$ from which the animals disperse.  Only those in the strip disperse.  Let $u_{t}$ be the number of animals in $a$ at any time $t$.  The growth rate of all the animals in $a$ is $r$.  The rate at which animals disperse from the strip is proportional to the fraction of the animals in the strip, with proportionality constant $\epsilon$, which is the emigration rate for those in the strip.
 
-\begin{enumerate}[label=\alph*.]
-\item Draw a picture of the situation described above.
-\item Explain why the equation that describes the dynamics is $$ u_{t+1}=ru_{t} - \epsilon \left( \frac{w \cdot s}{a} u_{t} \right) $$
-\item Determine conditions on the parameters $r$, $w$, $s$, $\epsilon$, and $a$ under which the population is growing.
-\end{enumerate}
+
+a. Draw a picture of the situation described above.
+b. Explain why the equation that describes the dynamics is $$ u_{t+1}=ru_{t} - \epsilon \left( \frac{w \cdot s}{a} u_{t} \right) $$
+c. Determine conditions on the parameters $r$, $w$, $s$, $\epsilon$, and $a$ under which the population is growing.
+
 ```
 
 

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>References | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="References | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="exercises-26.html"/>
 
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -380,50 +405,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="references" class="section level1 unnumbered">
 <h1>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-akaike_new_1974" class="csl-entry">
+<div class="csl-entry">
 Akaike, Hirotugu. 1974. <span>“A New Look at the Statistical Model Identification.”</span> <em>IEEE Transactions on Automatic Control</em> 19 (6): 716–23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
 </div>
-<div id="ref-berg_mathematical_2011" class="csl-entry">
+<div class="csl-entry">
+Berg, Howard. 1993. <em>Random <span>Walks</span> in <span>Biology</span></em>. <span>Princeton University Press</span>.
+</div>
+<div class="csl-entry">
 Berg, Hugo van den. 2011. <em>Mathematical <span>Models</span> of <span>Biological Systems</span></em>. Illustrated edition. <span>Oxford ; New York</span>: <span>Oxford University Press</span>.
 </div>
-<div id="ref-beven_equifinality_2001" class="csl-entry">
+<div class="csl-entry">
 Beven, Keith, and Jim Freer. 2001. <span>“Equifinality, Data Assimilation, and Uncertainty Estimation in Mechanistic Modelling of Complex Environmental Systems Using the <span>GLUE</span> Methodology.”</span> <em>Journal of Hydrology</em> 249 (1-4): 11–29. <a href="https://doi.org/10.1016/S0022-1694(01)00421-8">https://doi.org/10.1016/S0022-1694(01)00421-8</a>.
 </div>
-<div id="ref-burnham_model_2002" class="csl-entry">
+<div class="csl-entry">
 Burnham, Kenneth P., and David R. Anderson, eds. 2002. <em>Model <span>Selection</span> and <span>Multimodel Inference</span></em>. <span>New York, NY</span>: <span>Springer New York</span>.
 </div>
-<div id="ref-devore_modern_2021" class="csl-entry">
+<div class="csl-entry">
+Carroll, Cameron Jewett. 2013. <span>“Modeling <span>Winter Severity</span> and <span>Harvest</span> of <span>Moose</span>: <span>Impacts</span> of <span>Nutrition</span> and <span>Predation</span>.”</span> PhD thesis, <span>Fairbanks, Alaska</span>: University of Alaska Fairbanks.
+</div>
+<div class="csl-entry">
 Devore, Jay L., Kenneth N. Berk, and Matthew A. Carlton. 2021. <em>Modern <span>Mathematical Statistics</span> with <span>Applications</span></em>. Third. Springer <span>Texts</span> in <span>Statistics</span>. <span>Springer International Publishing</span>. <a href="https://doi.org/10.1007/978-3-030-55156-8">https://doi.org/10.1007/978-3-030-55156-8</a>.
 </div>
-<div id="ref-gause_experimental_1932" class="csl-entry">
+<div class="csl-entry">
+Gardiner, C W. 2004. <em>Handbook of <span>Stochastic Methods</span> for <span>Physics</span>, <span>Chemistry</span>, and the <span>Natural Sciences</span></em>. 3rd ed. springer.
+</div>
+<div class="csl-entry">
 Gause, G. F. 1932. <span>“Experimental <span>Studies</span> on the <span>Struggle</span> for <span>Existence</span>: <span>I</span>. <span>Mixed Population</span> of <span>Two Species</span> of <span>Yeast</span>.”</span> <em>Journal of Experimental Biology</em> 9 (4): 389–402.
 </div>
-<div id="ref-logan_mathematical_2009" class="csl-entry">
-Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1 edition. <span>Hoboken, N.J</span>: wiley.
+<div class="csl-entry">
+Keener, James, James Sneyd, S. S. Antman, J. E. Marsden, and L. Sirovich, eds. 2009. <em>Mathematical <span>Physiology</span></em>. Vol. 8/1. Interdisciplinary <span>Applied Mathematics</span>. <span>New York, NY</span>: <span>Springer New York</span>. <a href="https://doi.org/10.1007/978-0-387-75847-3">https://doi.org/10.1007/978-0-387-75847-3</a>.
 </div>
-<div id="ref-richey_evolution_2010" class="csl-entry">
+<div class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+<div class="csl-entry">
 Richey, Matthew. 2010. <span>“The Evolution of <span>Markov</span> Chain <span>Monte Carlo</span> Methods.”</span> <em>The American Mathematical Monthly</em> 117 (5): 383–413.
 </div>
-<div id="ref-scholz_first-order_2014" class="csl-entry">
+<div class="csl-entry">
 Scholz, Gudrun, and Fritz Scholz. 2014. <span>“First-Order Differential Equations in Chemistry.”</span> <em>Chemtexts</em> 1 (1): 1. <a href="https://doi.org/10.1007/s40828-014-0001-x">https://doi.org/10.1007/s40828-014-0001-x</a>.
 </div>
-<div id="ref-schwartz_estimating_1978" class="csl-entry">
+<div class="csl-entry">
 Schwartz, G. 1978. <span>“Estimating the Dimensions of a Model.”</span> <em>Annals of Statistics</em> 6 (2): 461–64.
 </div>
-<div id="ref-sinay_simple_2006" class="csl-entry">
+<div class="csl-entry">
 Sinay, Laura, and Leon Sinay. 2006. <span>“A <span>Simple Mathematical Model</span> for the <span>Effects</span> of the <span>Growth</span> of <span>Tourism</span> on <span>Environment</span>.”</span>
 </div>
-<div id="ref-stenseth_population_1997" class="csl-entry">
+<div class="csl-entry">
+Smith?, Robert J., ed. 2014. <em>Mathematical Modelling of Zombies</em>. <span>Ottawa</span>: <span>University of Ottawa Press</span>.
+</div>
+<div class="csl-entry">
 Stenseth, Nils Chr, Wilhelm Falck, Ottar N. Bjørnstad, and Charles J. Krebs. 1997. <span>“Population Regulation in Snowshoe Hare and <span>Canadian</span> Lynx: <span>Asymmetric</span> Food Web Configurations Between Hare and Lynx.”</span> <em>Proceedings of the National Academy of Sciences</em> 94 (10): 5147–52. <a href="https://doi.org/10.1073/pnas.94.10.5147">https://doi.org/10.1073/pnas.94.10.5147</a>.
 </div>
-<div id="ref-thornley_plant_1990" class="csl-entry">
+<div class="csl-entry">
 Thornley, John H M, and Ian R Johnson. 1990. <em>Plant and <span>Crop Modelling</span>: <span>A Mathematical Approach</span> to <span>Plant</span> and <span>Crop Physiology</span></em>. <span>Oxford Science Publications</span>.
 </div>
 </div>
 
 </div>
-
-
 
 
 
@@ -469,6 +507,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

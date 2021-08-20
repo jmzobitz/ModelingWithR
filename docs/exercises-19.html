@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>20.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="20.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="limit-cycles-and-bifurcations-with-systems-of-equations.html"/>
 <link rel="next" href="stoch-sys-21.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,7 +406,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">20.4</span> Exercises</h2>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-292" class="exercise"><strong>Exercise 20.1  </strong></span>Apply local linearization to classify stability of the following differential equations:
+<p><span id="exr:unnamed-chunk-292" class="exercise"><strong>Exercise 20.1  </strong></span>Apply local linearization to classify stability of the following differential equations:</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = x-x^{2}\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x^{2}\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x-x^{2}\)</span></li>
+</ol>
 </div>
  
 
@@ -396,7 +426,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-295" class="exercise"><strong>Exercise 20.4  </strong></span> Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the system
+<p><span id="exr:unnamed-chunk-295" class="exercise"><strong>Exercise 20.4  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the following system:</p>
 <span class="math display">\[\begin{equation}
  \frac{\vec{x}}{dt} = \begin{pmatrix} 3 &amp; b \\ b &amp; 1 \end{pmatrix} \vec{x}.
  \end{equation}\]</span>
@@ -405,52 +435,85 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- LW pg 164 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-296" class="exercise"><strong>Exercise 20.5  </strong></span>Consider the linear system of equations:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-296" class="exercise"><strong>Exercise 20.5  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Consider the linear system of equations:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dx}{dt}&amp;=-ax-y \\
 \frac{dy}{dt} &amp;= -x-ay
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 <p>Construct a bifurcation diagram for this system of equations.</p>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:limit-transform-20" class="exercise"><strong>Exercise 20.6  </strong></span> Consider the following highly nonlinear system:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:limit-transform-20" class="exercise"><strong>Exercise 20.6  </strong></span> Consider the following highly nonlinear system:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dx}{dt} =-y-x(x^2+y^2-1) \\
 \frac{dy}{dt}=x-y(x^2+y^2-1)
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 <p>We are going to transform the system by defining new variables <span class="math inline">\(x=r \cos \theta\)</span> and <span class="math inline">\(y=r \sin \theta\)</span>. Observe that <span class="math inline">\(r^2=x^2+y^2\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Consider the equation <span class="math inline">\(r^2=x^2+y^2\)</span>, where <span class="math inline">\(r\)</span>, <span class="math inline">\(x\)</span>, and <span class="math inline">\(y\)</span> are all functions of time. Apply implicit differentiation to determine a differential equation for <span class="math inline">\(\displaystyle \frac{d(r^{2})}{dt}\)</span>, expressed in terms of <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, <span class="math inline">\(\displaystyle \frac{dx}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dy}{dt}\)</span>.</li>
+<li>Multiply <span class="math inline">\(\displaystyle \frac{dx}{dt}\)</span> by <span class="math inline">\(2x\)</span> and <span class="math inline">\(\displaystyle \frac{dy}{dt}\)</span> by <span class="math inline">\(2y\)</span> on both sides of the equation. Then add the two equations together. You should get an expression for <span class="math inline">\(\displaystyle \frac{d(r^{2})}{dt}\)</span> in terms of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</li>
+<li>Re-write the equation for the right hand side of <span class="math inline">\(\displaystyle \frac{d(r^{2})}{dt}\)</span> in terms of <span class="math inline">\(r^{2}\)</span>.</li>
+<li>Use your equation that you found to verify that
+<span class="math display">\[\begin{equation}
+\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}
+\end{equation}\]</span></li>
+<li>Verify that <span class="math inline">\(X=1\)</span> is a stable node and <span class="math inline">\(X=0\)</span> is unstable.</li>
+<li>As discussed in this section this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is a unstable limit cycle? Justify your work.</li>
+</ol>
 </div>
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-297" class="exercise"><strong>Exercise 20.7  </strong></span>Construct a bifurcation diagram for <span class="math inline">\(\displaystyle \frac{dX}{dt} = - X(X-\mu)\)</span>, <span class="math inline">\(\mu\)</span> is a parameter. Explain how you can apply that result to understanding the bifurcation diagram of the system</p>
-<p><span class="math display">\[\begin{align*}
+<p><span id="exr:hopf-20" class="exercise"><strong>Exercise 20.7  </strong></span>Construct a bifurcation diagram for <span class="math inline">\(\displaystyle \frac{dX}{dt} = - X(X-\mu)\)</span>, <span class="math inline">\(\mu\)</span> is a parameter. Explain how you can apply that result to understanding the bifurcation diagram of the system:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dx}{dt} =-y- x(x^2+y^2-\mu) \\
 \frac{dy}{dt}=x- y(x^2+y^2-\mu)
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 This system is an example of a .
 </div>
 <p> </p>
 <!-- adapted LW pg 183 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-298" class="exercise"><strong>Exercise 20.8  </strong></span>Consider following predator-prey model:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-297" class="exercise"><strong>Exercise 20.8  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Consider following predator-prey model:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dx}{dt}&amp;=\frac{2}{3}x\left(1 - \frac{x}{4} \right) - \frac{xy}{1+x} \\
 \frac{dy}{dt} &amp;= ry\left(1 - \frac{y}{x} \right)
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Explain the various terms in this model and their biological meaning.</li>
+<li>Determine the equilibrium solutions.</li>
+<li>Evaluate the Jacobian at each of the equilibrium solutions.</li>
+<li>Construct a bifurcation diagram (with the parameter <span class="math inline">\(r\)</span>) for each of the equilibrium solutions.</li>
+</ol>
 </div>
  
 <!-- adapted LW pg 185, get some more citations in here -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-299" class="exercise"><strong>Exercise 20.9  </strong></span>The immune response to HIV has been described with differential equations. In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where <span class="math inline">\(v\)</span> is the virus load and <span class="math inline">\(x\)</span> the immune response:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-298" class="exercise"><strong>Exercise 20.9  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) The immune response to HIV has been described with differential equations. In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where <span class="math inline">\(v\)</span> is the virus load and <span class="math inline">\(x\)</span> the immune response:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dv}{dt}&amp;=rv - pxv \\
 \frac{dx}{dt} &amp;= cv-bx
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Explain the various terms in this model and their biological meaning.</li>
+<li>Determine the equilibrium solutions.</li>
+<li>Evaluate the Jacobian at each of the equilibrium solutions.</li>
+<li>Construct a bifurcation diagram for each of the equilibrium solutions.</li>
+</ol>
 </div>
 
 </div>
@@ -458,6 +521,12 @@ This system is an example of a .
 
 
 
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -487,6 +556,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

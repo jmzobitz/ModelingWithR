@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>27.1 Meet the Fokker-Planck Equation | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="27.1 Meet the Fokker-Planck Equation | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="solvingSDEs-27.html"/>
 <link rel="next" href="exercises-26.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -396,17 +421,20 @@ Our goal is to have a function that describes the evolution of <span class="math
 <p>We can write this equation in shorthand, dropping the dependence of <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span> for <span class="math inline">\(f(x,t)\)</span>, <span class="math inline">\(a(x,t)\)</span> and <span class="math inline">\(b(x,t)\)</span>: <span class="math inline">\(\displaystyle f_{t} = - (f \cdot a)_{x} + \frac{1}{2} (f \cdot b^{2})_{xx}\)</span>.</p>
 
 <div class="example">
-<span id="exm:unnamed-chunk-350" class="example"><strong>Example 27.1  </strong></span>Consider the SDE <span class="math inline">\(dx = dW(t)\)</span> and apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>.
+<span id="exm:unnamed-chunk-352" class="example"><strong>Example 27.1  </strong></span>Consider the SDE <span class="math inline">\(dx = dW(t)\)</span> and apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>.
 </div>
 
-<div class="remark">
-<p> <span class="remark"><em>Remark. </em></span> In this case <span class="math inline">\(a(x,t)=0\)</span> and <span class="math inline">\(b(x,t)=1\)</span>, so the Fokker-Planck Equation is:</p>
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> In this case <span class="math inline">\(a(x,t)=0\)</span> and <span class="math inline">\(b(x,t)=1\)</span>, so the Fokker-Planck Equation is:</p>
 <p><span class="math display">\[\begin{equation*}
 f_{t} = \frac{\sigma^{2}}{2} f_{xx}.
 \end{equation*}\]</span></p>
-<p>This equation should look familiar - it is the partial differential equation for diffusion!<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> The solution to the Fokker-Planck equation is <span class="math inline">\(\displaystyle f(x,t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-x^{2}/(2 \sigma^{2} t)}\)</span>.</p>
+<p>This equation should look familiar - it is the partial differential equation for diffusion!<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> The solution to this SDE is given by Equation <a href="meet-the-fokker-planck-equation.html#eq:diffuse-sde-27">(27.1)</a>.</p>
+<p><span class="math display" id="eq:diffuse-sde-27">\[\begin{equation}
+f(x,t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-x^{2}/(2 \sigma^{2} t)} \tag{27.1}
+\end{equation}\]</span></p>
 </div>
-<p>I didn’t mention the initial condition to the SDE - in this case it is <span class="math inline">\(f(x,0)=\delta(x)\)</span>. The function <span class="math inline">\(\delta(x)\)</span> is called the <a href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta Function</a>. This function is a special type of probability density function, which you may study in a courses such as Functional Analysis (or Analysis). We can plot the evolution of this solution in Figure <a href="meet-the-fokker-planck-equation.html#fig:dirac-delta">27.1</a>:</p>
+<p>I didn’t mention the initial condition for Equation <a href="meet-the-fokker-planck-equation.html#eq:diffuse-sde-27">(27.1)</a>. For this SDE the initial condition is a special function called the <a href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta Function</a>. We denote the Diract delta function as <span class="math inline">\(\delta(x)\)</span>. This function is a special type of probability density function, which you may study in a courses such as Functional Analysis (or Analysis). We can plot the evolution of this solution in Figure <a href="meet-the-fokker-planck-equation.html#fig:dirac-delta">27.1</a>:</p>
 <div class="figure" style="text-align: center"><span id="fig:dirac-delta"></span>
 <img src="series_files/figure-html/dirac-delta-1.png" alt="The solution to SDE $dx = dW(t)$." width="384" />
 <p class="caption">
@@ -418,8 +446,12 @@ Figure 27.1: The solution to SDE <span class="math inline">\(dx = dW(t)\)</span>
 <div id="another-fokker-planck-equation" class="section level3" number="27.1.1">
 <h3><span class="header-section-number">27.1.1</span> Another Fokker-Planck Equation</h3>
 <p>Consider the SDE <span class="math inline">\(dx = r \; dt + \sigma \; dW(t)\)</span>, where r and <span class="math inline">\(\sigma\)</span> are constants. As a first step, let’s take a look at the deterministic equation: <span class="math inline">\(dx = r \; dt\)</span>. This is the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = r\)</span>, which has a linear function <span class="math inline">\(x(t) = rt + x_{0}\)</span> as its solution.</p>
-<p>We will apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>. In this case, the Fokker-Planck equation is <span class="math inline">\(\displaystyle f_{t} = -r f_{x}+ \frac{\sigma^{2}}{2} f_{xx}\)</span>. The partial differential equation is an example of a <em>diffusion-advection equation</em>. Amazingly this equation can be reduced to a diffusion equation through a change of variables and application of the multivariable change of variables. Let’s get to work to figure this out.</p>
-<p>First, let <span class="math inline">\(z=x-rt\)</span>. This change of variables may seem odd, but our goal here is to write <span class="math inline">\(f(x,t)=f(z)\)</span> and to develop expressions for <span class="math inline">\(f_{t}\)</span> <span class="math inline">\(f_{x}\)</span>, and <span class="math inline">\(f_{xx}\)</span> with this change of variables. But in order to do that, we will need to apply the <em>multivariate chain rule</em> (see Figure <a href="meet-the-fokker-planck-equation.html#fig:chain-rule">27.2</a>).</p>
+<p>We will apply the Fokker-Planck equation to characterize the solution <span class="math inline">\(f(x,t)\)</span>. In this case, the Fokker-Planck equation is</p>
+<p><span class="math display" id="eq:diffuse-advect-sde-27">\[\begin{equation}
+f_{t} = -r f_{x}+ \frac{\sigma^{2}}{2} f_{xx} \tag{27.2}
+\end{equation}\]</span></p>
+<p>Equation <a href="meet-the-fokker-planck-equation.html#eq:diffuse-advect-sde-27">(27.2)</a> is an example of a <em>diffusion-advection equation</em>. Amazingly this equation can be reduced to a diffusion equation through a change of variables and application of the multivariable change of variables. Let’s get to work to figure this out.</p>
+<p>First, let <span class="math inline">\(z=x-rt\)</span> and <span class="math inline">\(\tau = t\)</span>. This change of variables may seem odd, but our goal here is to write <span class="math inline">\(f(x,t)=f(z,\tau)\)</span> and to develop expressions for <span class="math inline">\(f_{t}\)</span> <span class="math inline">\(f_{x}\)</span>, and <span class="math inline">\(f_{xx}\)</span> with this change of variables. But in order to do that, we will need to apply the <em>multivariate chain rule</em> (see Figure <a href="meet-the-fokker-planck-equation.html#fig:chain-rule">27.2</a>).</p>
 <div class="figure"><span id="fig:chain-rule"></span>
 <img src="series_files/figure-html/chain-rule-1.png" alt="Multivariable chain rule" width="672" />
 <p class="caption">
@@ -431,10 +463,12 @@ Figure 27.2: Multivariable chain rule
 \frac{\partial f}{\partial t} &amp; = \frac{\partial f}{\partial \tau} \cdot \frac{ \partial \tau}{\partial t} + \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial t}  \\
 \frac{\partial f}{\partial x} &amp; = \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial x}
 \end{align*}\]</span></p>
-<p>Now let’s consider the partial derivatives <span class="math inline">\(\displaystyle \frac{ \partial \tau}{\partial t}\)</span>, <span class="math inline">\(\displaystyle \frac{ \partial z}{\partial t}\)</span>, and <span class="math inline">\(\displaystyle \frac{ \partial z}{\partial x}\)</span> We will define <span class="math inline">\(z=x-r\tau\)</span>. By direct differentiation <span class="math inline">\(z_{\tau} = -r\)</span>, <span class="math inline">\(z_{x} = 1\)</span>. Also since <span class="math inline">\(\tau=t\)</span>, <span class="math inline">\(\tau_{t}=1\)</span>. These expressions help: since <span class="math inline">\(f_{z}=f_{x}\)</span>, then <span class="math inline">\(f_{zz} = f_{xx}\)</span>. With these substitutions, we can now re-write <span class="math inline">\(f_{t}\)</span> and <span class="math inline">\(f_{xx}\)</span>:</p>
+<p>Now let’s consider the partial derivatives <span class="math inline">\(\displaystyle \frac{ \partial \tau}{\partial t}\)</span>, <span class="math inline">\(\displaystyle \frac{ \partial z}{\partial t}\)</span>, and <span class="math inline">\(\displaystyle \frac{ \partial z}{\partial x}\)</span>.</p>
+<p>Remember that <span class="math inline">\(z=x-r\tau\)</span>. By direct differentiation <span class="math inline">\(z_{\tau} = -r\)</span> and <span class="math inline">\(z_{x} = 1\)</span>. Also since <span class="math inline">\(\tau=t\)</span> then <span class="math inline">\(\tau_{t}=1\)</span>. With these substitutions, we can now re-write <span class="math inline">\(f_{t}\)</span> and <span class="math inline">\(f_{xx}\)</span>:</p>
 <p><span class="math display">\[\begin{align*}
 \frac{\partial f}{\partial t} &amp; = \frac{\partial f}{\partial \tau} \cdot \frac{ \partial \tau}{\partial t} + \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial t}  = \frac{\partial f}{\partial \tau} -r \frac{\partial f}{\partial z} \\
-\frac{\partial f}{\partial xx} &amp; = \frac{\partial^{2} f}{\partial z^{2}} 
+\frac{\partial f}{\partial x} &amp; = \frac{\partial f}{\partial z} \rightarrow
+\frac{\partial^{2} f}{\partial x^{2}} = \frac{\partial^{2} f}{\partial z^{2}} 
 \end{align*}\]</span></p>
 <p>So if we re-write our original Fokker-Planck equation with the variables <span class="math inline">\(z\)</span> and <span class="math inline">\(\tau\)</span> we have:</p>
 <p><span class="math display">\[\begin{align*}
@@ -446,7 +480,7 @@ f_{\tau} &amp;=  \frac{\sigma^{2}}{2} f_{zz}
 <p><span class="math display">\[\begin{equation}
 f(x, t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-(x-rt)^{2}/(2 \sigma^{2} t)}
 \end{equation}\]</span></p>
-<p>Now that we have an equation, next let’s visualize the solution. Let’s take a look at some representative plots:</p>
+<p>Now that we have an equation, next let’s visualize the solution. Let’s take a look at some representative plots in Figure <a href="meet-the-fokker-planck-equation.html#fig:diff-advec">27.3</a>:</p>
 <div class="figure" style="text-align: center"><span id="fig:diff-advec"></span>
 <img src="series_files/figure-html/diff-advec-1.png" alt="Representative plots for the solution to the SDE $dx = r \; dt + \sigma \; dW(t)$." width="384" />
 <p class="caption">
@@ -454,15 +488,15 @@ Figure 27.3: Representative plots for the solution to the SDE <span class="math 
 </p>
 </div>
 <p>Based on what we know of this distribution is that it should look like a normal distribution with mean <span class="math inline">\(\mu = rt\)</span> and variance <span class="math inline">\(\sigma^{2} t\)</span>. What the mean and variance tells us that the mean is shifting and growing more diffuse as time increases. Remember that our solution to the deterministic equation was linear, and the mean of our distribution grows linearly as well!</p>
-<p>Also notice in Figure <a href="meet-the-fokker-planck-equation.html#fig:diff-advec">27.3</a> as <span class="math inline">\(t\)</span> increases the solution shifts (‘’advects’’) to the right. The differential equation is an example of a <em>diffusion-advection</em> equation, or a solution that drifts as time increases.</p>
+<p>Also notice in Figure <a href="meet-the-fokker-planck-equation.html#fig:diff-advec">27.3</a> as <span class="math inline">\(t\)</span> increases the solution shifts (“advects”) to the right. The differential equation is an example of a <em>diffusion-advection</em> equation, or a solution that drifts as time increases.</p>
 <p>The examples we study here are just a few examples of how to build a deeper understanding of stochastic processes and differential equations. There is a lot of power in understanding the theoretical distribution for some test cases. Stochastic differential equations is a fascinating field of study with a lot of interesting mathematics - I hope what you learned here will make you want to study it further!</p>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="13">
-<li id="fn13"><p>To remind you, the solution to <span class="math inline">\(p_{t} = D p_{xx}\)</span> is <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}\)</span>. So in this case <span class="math inline">\(D = \sigma^{2}/2\)</span>.<a href="meet-the-fokker-planck-equation.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<ol start="11">
+<li id="fn11"><p>To remind you, the solution to <span class="math inline">\(p_{t} = D p_{xx}\)</span> is <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}\)</span>. So in this case <span class="math inline">\(D = \sigma^{2}/2\)</span>.<a href="meet-the-fokker-planck-equation.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -494,6 +528,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

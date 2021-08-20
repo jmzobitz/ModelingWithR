@@ -1,23 +1,21 @@
 # Local Linearization and the Jacobian {#jacobian-17}
 
-In the previous few sections we focused on systems of equations and the types of behaviors we should expect when analyzing the stability of the equilibrium solution.  In this section we will extend that concept to nonlinear systems of equations.  We will analyze stability of a nonlinear system through the concept of *local linearization*.
+In Sections \@ref(linearsystems-15) and \@ref(nonlinear-16) we focused on systems of differential equations and the types of behaviors we should expect when analyzing the stability of the equilibrium solution.  In this section we will analyze stability of a nonlinear system through the concept of *local linearization*, beginning to build a bridge between nonlinear and linear systems of equations.
 
 ## A first example
 Let's take a look at the following phase plane to this non-linear system:
 
 \begin{equation}
 \begin{split} 
-\frac{dx}{dt} &= y-1 \\  (\#eq:ex1-ch17)
+\frac{dx}{dt} &= y-1 \\  
 \frac{dy}{dt} &= x^{2}-1 
-\end{split}
+\end{split} (\#eq:ex1-ch17)
 \end{equation}
 
 The nullclines for this system are $y=1$ and $x=\pm1$, leading two two equilibrium solutions when we create the phaseplane:
 
-```{r ex1-phaseplane,fig.width=4,fig.height=3,echo=FALSE,fig.cap="Phaseplane for Equation \\ref{eq:ex1-ch17}."  }
+```{r ex1-phaseplane,fig.width=4,fig.height=3,echo=FALSE,fig.cap="Phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
 # Define the range we wish to evaluate this vector field
-
-
 system_eq <- c(dx ~ y-1,
                dy ~ x^2-1)
 
@@ -39,9 +37,9 @@ Let's take a look at another familiar example.  Consider the following nonlinear
 
 \begin{equation}
 \begin{split}
-\frac{dH}{dt} &= .3 H - .1 HL \\  (\#eq:lynx-hare-17)
+\frac{dH}{dt} &= .3 H - .1 HL \\  
 \frac{dL}{dt} &=.05HL -.2L
-\end{split}
+\end{split} (\#eq:lynx-hare-17)
 \end{equation}
 
 
@@ -97,16 +95,18 @@ f_{L} = -.1H & \rightarrow f_{L}(0,0)=0
 \end{equation}
 
 With this information we are able to take this and then write down the locally linear approximation for $f(H,L)$:
+
 \begin{equation}
 f(H,L) \approx 0 + .3 \cdot (H-0) - 0 \cdot (L-0) = .3H
 \end{equation}
-.05*H*L -.2*L
+
+
 Likewise if we consider $g(H,L)= .05HL -.2L$, then we have:
 
 \begin{equation}
 \begin{split}
-g_{H} = .05L-.2L & \rightarrow g_{H}(0,0)=0 \\
-g_{L} = .05H-.2 & \rightarrow f_{L}(0,0)=-.2
+g_{H} &= .05L-.2L  \rightarrow g_{H}(0,0)=0 \\
+g_{L} &= .05H-.2  \rightarrow f_{L}(0,0)=-.2
 \end{split}
 \end{equation}
 
@@ -117,64 +117,72 @@ With these results, our locally linear approximation for $g(H,L)$ is:
 g(H,L) \approx 0 + 0  \cdot (H-0) -.2 \cdot (L-0) = 0 - .2L.
 \end{equation}
 
-So, at the equilibrium solution, the system behaves like the following system of equations:
+So, at the equilibrium solution $(0,0)$, Equation \@ref(eq:lynx-hare-17)  behaves like the following system of equations:
 
 \begin{align}
 \frac{dH}{dt} &= .3H\\
-\frac{dL}{dt} &= - .2L
+\frac{dL}{dt} &= - .2L (\#eq:lynx-hare-17-00)
 \end{align}
 
 
-Notice how this the system is entirely decoupled linear system of equations, so we have for an initial condition $(H_{0},L_{0})$ that $H(t)=H_{0}e^{.3t}$ and $L(t)=L_{0}e^{-.2t}$.
+Notice how Equation \@ref(eq:lynx-hare-17-00) is an entirely decoupled linear system of equations that can be solved easily by separation of variables. For an initial condition $(H_{0},L_{0})$ Equation \@ref(eq:lynx-hare-17-00) has a solution $H(t)=H_{0}e^{.3t}$ and $L(t)=L_{0}e^{-.2t}$.
 
 ## The Jacobian matrix
-If we look at the last example before the solution we can write our system in matrix form:
+RevisitingEquation \@ref(eq:lynx-hare-17-00) we can write our system in matrix form:
 
 \begin{equation}
 \begin{pmatrix} H' \\ L' \end{pmatrix} =\begin{pmatrix} .3 & 0 \\ 0 &  -.2 \end{pmatrix} \begin{pmatrix} H \\ L \end{pmatrix}
 \end{equation}
 
-We define the matrix $\displaystyle J= \begin{pmatrix} .3 & 0 \\ 0 &  -.2 \end{pmatrix}$ as the Jacobian matrix.  This is a key matrix we will use to investigate stability of nonlinear systems.  While in the Lynx-Hare example we could easily solve the uncoupled system of equations, it may not be this case all the time. In that case we will need to understand a little bit more about analyzing them - which we will revisit the idea of straight line solutions and eigenvalues.
+We define the matrix $\displaystyle J= \begin{pmatrix} .3 & 0 \\ 0 &  -.2 \end{pmatrix}$ as the *Jacobian matrix*.  This matrix is key matrix to investigate stability of nonlinear systems.
 
 ## Predator prey with logistic growth
 Let's take a look at another model developed from the lynx-hare system.  We assumed that the hare grow exponentially (notice the term $rH$ in their equation.)  However we can modify their growth rate to be a logistic growth function with carrying capacity $K$:
 
-\begin{align}
+\begin{equation}
+\begin{split}
 \frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
 \frac{dL}{dt} &=ebHL -dL
-\end{align}
+\end{split} (\#eq:logistic-system-17)
+\end{equation}
 
-Through a rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
+Through a rescaling of Equation \@ref(eq:logistic-system-17) with the variables $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite Equation \@ref(eq:logistic-system-17) as:
 
-\begin{align}
+\begin{equation}
+\begin{split}
 \frac{dx}{d T} &= x(1-x) - xy \\
 \frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
-\end{align}
+\end{split} (\#eq:logistic-system-rev-17)
+\end{equation}
 
-In order to analyze the Jacobian matrix we will need to compute several partial derivatives:
+In order to analyze the Jacobian matrix for Equation \@ref(eq:logistic-system-rev-17) we will need to compute several partial derivatives:
 
-\begin{align}
+\begin{equation}
+\begin{split}
 \frac{\partial}{\partial x} \left( f(x,y) \right) &= \frac{\partial}{\partial x} \left( x(1-x) - xy \right) = 1-2x-y \\
 \frac{\partial}{\partial y} \left( f(x,y) \right) &= \frac{\partial}{\partial y} \left( x(1-x) - xy \right) = -x \\
 \frac{\partial}{\partial x} \left( g(x,y) \right) &= \frac{\partial}{\partial x} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}y  \\
 \frac{\partial}{\partial y} \left( g(x,y) \right) &= \frac{\partial}{\partial y} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}x -\frac{d}{r}
-\end{align}
+\end{split}
+\end{equation}
 
-So we can construct the Jacobian matrix, ready for evaluation at any $(x,y)$ equilibrium solution:
+So now we can construct the Jacobian matrix:
 
 \begin{equation}
 J_{(x,y)} = \begin{pmatrix} 1-2x-y & -x \\ \frac{ebK}{r}y & \frac{ebK}{r}x -\frac{d}{r} \end{pmatrix}
 \end{equation}
 
-Sometimes computing the Jacobian matrix is a good first step so then you are ready to compute the equilibrium solutions.  In the exercises you will determine equilibrium solutions and visualize the Jacobian matrix.
+The notation $J_{(x,y)}$ signifies the Jacobian matrix evaluated at the equilibrium solution $(x,y)$. Sometimes computing the Jacobian matrix is a good first step so then you are ready to compute the equilibrium solutions.  In the exercises you will determine equilibrium solutions and visualize the Jacobian matrix.
 
 ## Concluding thoughts
 To summarize, let's say we have the following system of equations
 
-\begin{align}
+\begin{equation}
+\begin{split}
 \frac{dx}{dt} &= f(x,y) \\
 \frac{dy}{dt} &= g(x,y)
-\end{align}
+\end{split}
+\end{equation}
 
 Assuming we have an equibrium solution at $(x,y)=(a,b)$, the Jacobian matrix at that solution is:
 
@@ -182,7 +190,7 @@ Assuming we have an equibrium solution at $(x,y)=(a,b)$, the Jacobian matrix at 
 J_{(a,b)} =\begin{pmatrix} f_{x}(a,b) & f_{y}(a,b) \\ g_{x}(a,b) &  g_{y}(a,b) \end{pmatrix}
 \end{equation}
 
-The Jacobian matrix also extends to higher order systems as well.
+While we don't discuss it here, the Jacobian matrix also extends to higher order systems as well.
 
 \newpage
 
@@ -197,11 +205,11 @@ Consider the following nonlinear system:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Verify that this system has equilibrium solutions at $(-1,1)$ and $(1,1)$.
-\item Construct the Jacobian matrix at the equilibrium solutions at $(-1,1)$ and $(1,1)$.
-\item With the Jacobian matrix, visualize a phaseplane at these equilbrium solutions to determine stability.
-\end{enumerate}
+
+a. Verify that this system has equilibrium solutions at $(-1,1)$ and $(1,1)$.
+b. Construct the Jacobian matrix at the equilibrium solutions at $(-1,1)$ and $(1,1)$.
+c. With the Jacobian matrix, visualize a phaseplane at these equilbrium solutions to determine stability.
+
 
 ```
 &nbsp;
@@ -229,11 +237,11 @@ Consider the following nonlinear system:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Verify that the point $(x,y)=(1,1)$ is an equilibrium solution.
-\item Construct the Jacobian matrix at this equilibrium solution.
-\item With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
-\end{enumerate}
+
+a. Verify that the point $(x,y)=(1,1)$ is an equilibrium solution.
+b. Construct the Jacobian matrix at this equilibrium solution.
+c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
+
 
 ```
 &nbsp;
@@ -247,11 +255,11 @@ Consider the nonlinear system
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Verify that the point (0,0) is an equilibrium solution.
-\item Determine the Jacobian matrix at this equilbrium solution.
-\item With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
-\end{enumerate}
+
+a. Verify that the point $(0,0)$ is an equilibrium solution.
+b. Determine the Jacobian matrix at this equilbrium solution.
+c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
+
 ```
 &nbsp;
 
@@ -265,12 +273,12 @@ Consider the following system:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Determine the equilibrium solution.
-\item Construct the Jacobian at the equilibrium solution.
-\item With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
-\item Use the fact that that $\displaystyle \frac{dy}{dx} / \frac{dy}{dt} = \frac{dy}{dx}$, which should yield a separable differential equation that will allow you to solve $y(x)$.  How does that solved differential equation compare to what you found by analyzing the Jacobian matrix?
-\end{enumerate}
+
+a. Determine the equilibrium solution.
+b. Construct the Jacobian at the equilibrium solution.
+c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
+d. Use the fact that that $\displaystyle \frac{dy}{dx} / \frac{dy}{dt} = \frac{dy}{dx}$, which should yield a separable differential equation that will allow you to solve $y(x)$.  How does that solved differential equation compare to what you found by analyzing the Jacobian matrix?
+
 ```
 
 &nbsp;
@@ -286,16 +294,17 @@ Consider the lynx-hare system with parameters $r$, $b$, $e$, and $d$:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Verify that the point $\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)$ is an equilibrium solution.
-\item Construct the Jacobian at the equilibrium solution. (Your final answer will include the parameters.)
-\end{enumerate}
+
+a. Verify that the point $\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)$ is an equilibrium solution.
+b. Construct the Jacobian at the equilibrium solution. (Your final answer will include the parameters.)
+
 ```
 
 &nbsp;
 
 ```{exercise}
 This problem revisits the modified lynx-hare system:
+
 \begin{equation}
 \begin{split}
 \frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
@@ -303,21 +312,19 @@ This problem revisits the modified lynx-hare system:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Verify that by rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
 
+a. Verify that by rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
 \begin{equation}
 \begin{split}
 \frac{dx}{d T} &= x(1-x) - xy \\
 \frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
 \end{split}
 \end{equation}
+b. Determine the three equilibrium solutions of this rescaled system.
+c. Evaluate the Jacobian at each of the equilibrium solutions.
+d. With your Jacobian, select reasonable values of the parameters to generate a phaseplane diagram and classify the stability of each equilibrium solution.
+e. How does this revised system compare to the stability of the regular lynx-hare model?
 
-\item Determine the three equilibrium solutions of this rescaled system.
-\item Evaluate the Jacobian at each of the equilibrium solutions.
-\item With your Jacobian, select reasonable values of the parameters to generate a phaseplane diagram and classify the stability of each equilibrium solution.
-\item How does this revised system compare to the stability of the regular lynx-hare model?
-  \end{enumerate}
 ```
 
 &nbsp;
@@ -326,7 +333,7 @@ This problem revisits the modified lynx-hare system:
 
 <!-- Adapted from LW pg 121 -->
 ```{exercise}
-A model for the spread of a disease where people recover is given by the following differential equation:
+(Inspired by @logan_mathematical_2009) A model for the spread of a disease where people recover is given by the following differential equation:
 
 \begin{equation}
 \begin{split}
@@ -336,11 +343,11 @@ A model for the spread of a disease where people recover is given by the followi
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Determine the equilibrium solutions for this system of equations.
-\item Construct the Jacobian for each of the equilibrium solutions.
-\item Let $\alpha=0.001$ and $\gamma = 0.2$. With the Jacobian matrix, generate the phase plane (using the equations for $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ only) for all of the equilibrium solutions and classify their stability.
-\end{enumerate}
+
+a. Determine the equilibrium solutions for this system of equations.
+b. Construct the Jacobian for each of the equilibrium solutions.
+c. Let $\alpha=0.001$ and $\gamma = 0.2$. With the Jacobian matrix, generate the phase plane (using the equations for $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ only) for all of the equilibrium solutions and classify their stability.
+
 
 ```
 
@@ -348,7 +355,7 @@ A model for the spread of a disease where people recover is given by the followi
 
 <!-- LW pg 157 158 #3 -->
 ```{exercise}
-A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish.  As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource.  However fish do have natural predators, which may also be harvested at the same time.  A model that describes this interaction is
+(Inspired by @logan_mathematical_2009) A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish.  As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource.  However fish do have natural predators, which may also be harvested at the same time.  A model that describes this interaction is
 
 \begin{equation}
 \begin{split}
@@ -359,12 +366,12 @@ A population of fish used as food is an example of a renewable resource. This po
 
 where $E$ is the fishing effort and $\rho$ and $\sigma$ are the catchability coefficients for the prey and predator.
 
-\begin{enumerate}[label=\alph*.]
-\item Determine all the equilibrium solutions for this model.
-\item Construct the Jacobian matrix for each of the the equilibrium solutions.
-\item Select different parameter values.  With the Jacobian, construct a phase plane diagram for each of the equilibrium solutions.
-\item In the absence of fishing $E=0$.  How do these equilibrium solutions compare to the ones from the previous part?
-\end{enumerate}
+
+a. Determine all the equilibrium solutions for this model.
+b. Construct the Jacobian matrix for each of the the equilibrium solutions.
+c. Select different parameter values.  With the Jacobian, construct a phase plane diagram for each of the equilibrium solutions.
+d. In the absence of fishing $E=0$.  How do these equilibrium solutions compare to the ones from the previous part?
+
 ```
 &nbsp;
 
@@ -406,7 +413,7 @@ where $E$ is the fishing effort and $\rho$ and $\sigma$ are the catchability coe
 
 <!-- Problem adapted from Keener pg 64 and 65 2.4.1 glucose transport -->
 ```{exercise}
-The chemical glucose is transported across the cell membrane using a carrier proteins.  These proteins can have different states (open or closed) that can be bound to a glucose substrate.  The schematic for this reaction is shown in Figure \@ref(fig:glucose).  The system of differential equations describing this reaction is:
+(Inspired by @keener_mathematical_2009) The chemical glucose is transported across the cell membrane using a carrier proteins.  These proteins can have different states (open or closed) that can be bound to a glucose substrate.  The schematic for this reaction is shown in Figure \@ref(fig:glucose).  The system of differential equations describing this reaction is:
   
 \begin{equation}
 \begin{split}
@@ -417,9 +424,9 @@ The chemical glucose is transported across the cell membrane using a carrier pro
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item We can reduce this to a system of three equations.  First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$.  Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
-\item Determine the equilibrium solutions for this new system of three equations.
-\item Construct the Jacobian matrix for each of these equilibrium solutions.
-\end{enumerate}
+
+a. We can reduce this to a system of three equations.  First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$.  Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
+b. Determine the equilibrium solutions for this new system of three equations.
+c. Construct the Jacobian matrix for each of these equilibrium solutions.
+
 ```

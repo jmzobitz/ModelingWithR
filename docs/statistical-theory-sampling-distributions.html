@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>11.2 Statistical theory: Sampling distributions | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="11.2 Statistical theory: Sampling distributions | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="plotting-histograms-in-r.html"/>
 <link rel="next" href="bootstapping-with-linear-regression.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -626,10 +651,10 @@ Minnetrista 3.9 SW
 <span id="cb70-3"><a href="statistical-theory-sampling-distributions.html#cb70-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(precip, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb70-4"><a href="statistical-theory-sampling-distributions.html#cb70-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(precip, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb70-5"><a href="statistical-theory-sampling-distributions.html#cb70-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##    mean    sd
 ##   &lt;dbl&gt; &lt;dbl&gt;
-## 1  2.93 0.775</code></pre>
+## 1  2.90 0.738</code></pre>
 <p>How this code works is to first to do the sampling, and then the summary. The command <code>summarize</code> is collapsing the <code>precipitation</code> data frame and computes the mean and the standard deviation <code>sd</code> of the column <code>precip</code>. We have the command <code>na.rm=TRUE</code> to remove any <code>NA</code> values that may affect the computation. If we want to run this multiple times we need some more powerful functionality here. The <code>purrr</code> package has the wonderful command <code>map</code>, which allows you to quickly iterate through a list quickly.</p>
 <div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="statistical-theory-sampling-distributions.html#cb72-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
 <span id="cb72-2"><a href="statistical-theory-sampling-distributions.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
@@ -641,19 +666,19 @@ Minnetrista 3.9 SW
 <span id="cb72-8"><a href="statistical-theory-sampling-distributions.html#cb72-8" aria-hidden="true" tabindex="-1"></a>      )</span>
 <span id="cb72-9"><a href="statistical-theory-sampling-distributions.html#cb72-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># Close off the tilde ~ ()</span></span>
 <span id="cb72-10"><a href="statistical-theory-sampling-distributions.html#cb72-10" aria-hidden="true" tabindex="-1"></a>) <span class="co"># Close off the map_df</span></span></code></pre></div>
-<pre><code>## # A tibble: 10 x 2
+<pre><code>## # A tibble: 10 × 2
 ##     mean    sd
 ##    &lt;dbl&gt; &lt;dbl&gt;
-##  1  2.98 0.792
-##  2  2.98 0.741
-##  3  3.02 0.811
-##  4  2.91 0.722
-##  5  2.79 0.794
-##  6  2.81 0.632
-##  7  3.06 0.735
-##  8  2.78 0.685
-##  9  2.89 0.842
-## 10  2.85 0.716</code></pre>
+##  1  2.86 0.657
+##  2  2.84 0.796
+##  3  2.89 0.687
+##  4  2.99 0.852
+##  5  2.86 0.737
+##  6  2.87 0.734
+##  7  2.74 0.707
+##  8  2.86 0.673
+##  9  2.90 0.701
+## 10  2.95 0.742</code></pre>
 <p>What should be returned is a dataframe with columns <code>mean</code> and <code>sd</code> that represents the mean and standard deviation of each bootstrap sample. The process of randomly sampling a dataset is called <em>bootstraping</em>.</p>
 <p>Let’s review this code bit by bit. Notice that I’ve written this on multiple lines to aid in reading.</p>
 <ul>
@@ -689,10 +714,10 @@ Minnetrista 3.9 SW
 <p>Here is how we would compute these different statistics using the <code>quantile</code> command, which we need to do separately for the mean and standard deviation:</p>
 <div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="statistical-theory-sampling-distributions.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(bootstrap_samples<span class="sc">$</span>mean, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, .<span class="dv">975</span>))</span></code></pre></div>
 <pre><code>##     2.5%      50%    97.5% 
-## 2.687949 2.882910 3.082226</code></pre>
+## 2.687598 2.894414 3.089496</code></pre>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="statistical-theory-sampling-distributions.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(bootstrap_samples<span class="sc">$</span>sd, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, .<span class="dv">975</span>))</span></code></pre></div>
 <pre><code>##      2.5%       50%     97.5% 
-## 0.6309796 0.7281198 0.8296817</code></pre>
+## 0.6306580 0.7309818 0.8290933</code></pre>
 <p>Notice how we using the <code>probs=c(0.025,0.5,.975)</code> command to compute the different quantiles - they need to be scaled between 0 and 1.</p>
 <p>This code works through the bootstrap for 100 samples.</p>
 </div>
@@ -726,6 +751,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>21.3 Discrete systems of equations | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="21.3 Discrete systems of equations | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="environmental-stochasticity.html"/>
 <link rel="next" href="exercises-20.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,12 +404,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="discrete-systems-of-equations" class="section level2" number="21.3">
 <h2><span class="header-section-number">21.3</span> Discrete systems of equations</h2>
-<p>Finally, one way that we can extend the moose model is to account for both adult and juvenile moose populations. Here is one possible model:</p>
+<p>Finally, one way that we can extend the moose model is to account for both adult and juvenile moose populations, as with the following model:</p>
 <p><span class="math display" id="eq:moose-juvenile">\[\begin{equation}
-\begin{cases}
+\begin{split}
 J_{t+1} &amp;=F_{M} \cdot M_{t} \\
-M_{t+1} &amp;= G_{J} \cdot J_{t} + P_{M} \cdot M_{t}, \tag{21.2}
-\end{cases}
+M_{t+1} &amp;= G_{J} \cdot J_{t} + P_{M} \cdot M_{t}
+\end{split} \tag{21.2}
 \end{equation}\]</span></p>
 <p>Equation <a href="discrete-systems-of-equations.html#eq:moose-juvenile">(21.2)</a> is a little different from <a href="a-discrete-system.html#eq:moose">(21.1)</a> because it includes juvenile and adult moose populations, which has the following parameters:</p>
 <ul>
@@ -392,42 +417,46 @@ M_{t+1} &amp;= G_{J} \cdot J_{t} + P_{M} \cdot M_{t}, \tag{21.2}
 <li><span class="math inline">\(G_{J}\)</span>: represents the maturation rate of juvenile moose</li>
 <li><span class="math inline">\(P_{M}\)</span>: represents the survival probability of adult moose</li>
 </ul>
-<p>We can code up this model in the following way:</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="discrete-systems-of-equations.html#cb128-1" aria-hidden="true" tabindex="-1"></a>M0 <span class="ot">&lt;-</span> <span class="dv">900</span>  <span class="co"># Initial population of adult moose</span></span>
-<span id="cb128-2"><a href="discrete-systems-of-equations.html#cb128-2" aria-hidden="true" tabindex="-1"></a>J0 <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># Initial population of juvenile moose</span></span>
-<span id="cb128-3"><a href="discrete-systems-of-equations.html#cb128-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb128-4"><a href="discrete-systems-of-equations.html#cb128-4" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span>    <span class="co"># Number of years we run the simulation</span></span>
-<span id="cb128-5"><a href="discrete-systems-of-equations.html#cb128-5" aria-hidden="true" tabindex="-1"></a>moose_two_stage <span class="ot">&lt;-</span> <span class="cf">function</span>(f,g,p) {</span>
-<span id="cb128-6"><a href="discrete-systems-of-equations.html#cb128-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb128-7"><a href="discrete-systems-of-equations.html#cb128-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># f: birth rate of new juvenile moose</span></span>
-<span id="cb128-8"><a href="discrete-systems-of-equations.html#cb128-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># g: maturation rate of juvenile moose</span></span>
-<span id="cb128-9"><a href="discrete-systems-of-equations.html#cb128-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># p: survival probability of adult moose</span></span>
-<span id="cb128-10"><a href="discrete-systems-of-equations.html#cb128-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb128-11"><a href="discrete-systems-of-equations.html#cb128-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a data frame of moose to return</span></span>
-<span id="cb128-12"><a href="discrete-systems-of-equations.html#cb128-12" aria-hidden="true" tabindex="-1"></a>  out_moose <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">years =</span> <span class="dv">1</span><span class="sc">:</span>N,</span>
-<span id="cb128-13"><a href="discrete-systems-of-equations.html#cb128-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">adult =</span> <span class="fu">array</span>(M0,<span class="at">dim=</span>N),</span>
-<span id="cb128-14"><a href="discrete-systems-of-equations.html#cb128-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">juvenile =</span> <span class="fu">array</span>(J0,<span class="at">dim=</span>N)</span>
-<span id="cb128-15"><a href="discrete-systems-of-equations.html#cb128-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb128-16"><a href="discrete-systems-of-equations.html#cb128-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb128-17"><a href="discrete-systems-of-equations.html#cb128-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># And now the dynamics</span></span>
-<span id="cb128-18"><a href="discrete-systems-of-equations.html#cb128-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(N<span class="dv">-1</span>)) {</span>
-<span id="cb128-19"><a href="discrete-systems-of-equations.html#cb128-19" aria-hidden="true" tabindex="-1"></a>    out_moose<span class="sc">$</span>juvenile[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> f<span class="sc">*</span>out_moose<span class="sc">$</span>adult[i]</span>
-<span id="cb128-20"><a href="discrete-systems-of-equations.html#cb128-20" aria-hidden="true" tabindex="-1"></a>    out_moose<span class="sc">$</span>adult[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> g<span class="sc">*</span>out_moose<span class="sc">$</span>juvenile[i] <span class="sc">+</span> p<span class="sc">*</span>out_moose<span class="sc">$</span>adult[i]</span>
-<span id="cb128-21"><a href="discrete-systems-of-equations.html#cb128-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb128-22"><a href="discrete-systems-of-equations.html#cb128-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb128-23"><a href="discrete-systems-of-equations.html#cb128-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_moose)</span>
-<span id="cb128-24"><a href="discrete-systems-of-equations.html#cb128-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can code up this model using <code>R</code> in the following way:</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="discrete-systems-of-equations.html#cb129-1" aria-hidden="true" tabindex="-1"></a>M0 <span class="ot">&lt;-</span> <span class="dv">900</span> <span class="co"># Initial population of adult moose</span></span>
+<span id="cb129-2"><a href="discrete-systems-of-equations.html#cb129-2" aria-hidden="true" tabindex="-1"></a>J0 <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># Initial population of juvenile moose</span></span>
+<span id="cb129-3"><a href="discrete-systems-of-equations.html#cb129-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-4"><a href="discrete-systems-of-equations.html#cb129-4" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># Number of years we run the simulation</span></span>
+<span id="cb129-5"><a href="discrete-systems-of-equations.html#cb129-5" aria-hidden="true" tabindex="-1"></a>moose_two_stage <span class="ot">&lt;-</span> <span class="cf">function</span>(f, g, p) {</span>
+<span id="cb129-6"><a href="discrete-systems-of-equations.html#cb129-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-7"><a href="discrete-systems-of-equations.html#cb129-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># f: birth rate of new juvenile moose</span></span>
+<span id="cb129-8"><a href="discrete-systems-of-equations.html#cb129-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># g: maturation rate of juvenile moose</span></span>
+<span id="cb129-9"><a href="discrete-systems-of-equations.html#cb129-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># p: survival probability of adult moose</span></span>
+<span id="cb129-10"><a href="discrete-systems-of-equations.html#cb129-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-11"><a href="discrete-systems-of-equations.html#cb129-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a data frame of moose to return</span></span>
+<span id="cb129-12"><a href="discrete-systems-of-equations.html#cb129-12" aria-hidden="true" tabindex="-1"></a>  out_moose <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb129-13"><a href="discrete-systems-of-equations.html#cb129-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">years =</span> <span class="dv">1</span><span class="sc">:</span>N,</span>
+<span id="cb129-14"><a href="discrete-systems-of-equations.html#cb129-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">adult =</span> <span class="fu">array</span>(M0, <span class="at">dim =</span> N),</span>
+<span id="cb129-15"><a href="discrete-systems-of-equations.html#cb129-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">juvenile =</span> <span class="fu">array</span>(J0, <span class="at">dim =</span> N)</span>
+<span id="cb129-16"><a href="discrete-systems-of-equations.html#cb129-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb129-17"><a href="discrete-systems-of-equations.html#cb129-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-18"><a href="discrete-systems-of-equations.html#cb129-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># And now the dynamics</span></span>
+<span id="cb129-19"><a href="discrete-systems-of-equations.html#cb129-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(N <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb129-20"><a href="discrete-systems-of-equations.html#cb129-20" aria-hidden="true" tabindex="-1"></a>    out_moose<span class="sc">$</span>juvenile[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> f <span class="sc">*</span> out_moose<span class="sc">$</span>adult[i]</span>
+<span id="cb129-21"><a href="discrete-systems-of-equations.html#cb129-21" aria-hidden="true" tabindex="-1"></a>    out_moose<span class="sc">$</span>adult[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> g <span class="sc">*</span> out_moose<span class="sc">$</span>juvenile[i] <span class="sc">+</span> p <span class="sc">*</span> out_moose<span class="sc">$</span>adult[i]</span>
+<span id="cb129-22"><a href="discrete-systems-of-equations.html#cb129-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb129-23"><a href="discrete-systems-of-equations.html#cb129-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-24"><a href="discrete-systems-of-equations.html#cb129-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_moose)</span>
+<span id="cb129-25"><a href="discrete-systems-of-equations.html#cb129-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>To simulate the dynamics we just call the function <code>moose_two_stage</code> and plot:</p>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="discrete-systems-of-equations.html#cb129-1" aria-hidden="true" tabindex="-1"></a>moose_two_stage_rates <span class="ot">&lt;-</span> <span class="fu">moose_two_stage</span>(<span class="at">f =</span> <span class="fl">0.5</span>,</span>
-<span id="cb129-2"><a href="discrete-systems-of-equations.html#cb129-2" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">g =</span> <span class="fl">0.6</span>,</span>
-<span id="cb129-3"><a href="discrete-systems-of-equations.html#cb129-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">p =</span> <span class="fl">0.7</span></span>
-<span id="cb129-4"><a href="discrete-systems-of-equations.html#cb129-4" aria-hidden="true" tabindex="-1"></a>                                         )</span>
-<span id="cb129-5"><a href="discrete-systems-of-equations.html#cb129-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb129-6"><a href="discrete-systems-of-equations.html#cb129-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>moose_two_stage_rates) <span class="sc">+</span></span>
-<span id="cb129-7"><a href="discrete-systems-of-equations.html#cb129-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>years,<span class="at">y=</span>adult),<span class="at">color=</span><span class="st">&#39;red&#39;</span>) <span class="sc">+</span></span>
-<span id="cb129-8"><a href="discrete-systems-of-equations.html#cb129-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>years,<span class="at">y=</span>juvenile),<span class="at">color=</span><span class="st">&#39;blue&#39;</span>) <span class="sc">+</span></span>
-<span id="cb129-9"><a href="discrete-systems-of-equations.html#cb129-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Years&#39;</span>,</span>
-<span id="cb129-10"><a href="discrete-systems-of-equations.html#cb129-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">y=</span><span class="st">&#39;Moose&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="discrete-systems-of-equations.html#cb130-1" aria-hidden="true" tabindex="-1"></a>moose_two_stage_rates <span class="ot">&lt;-</span> <span class="fu">moose_two_stage</span>(</span>
+<span id="cb130-2"><a href="discrete-systems-of-equations.html#cb130-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="fl">0.5</span>,</span>
+<span id="cb130-3"><a href="discrete-systems-of-equations.html#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">g =</span> <span class="fl">0.6</span>,</span>
+<span id="cb130-4"><a href="discrete-systems-of-equations.html#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.7</span></span>
+<span id="cb130-5"><a href="discrete-systems-of-equations.html#cb130-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb130-6"><a href="discrete-systems-of-equations.html#cb130-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb130-7"><a href="discrete-systems-of-equations.html#cb130-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> moose_two_stage_rates) <span class="sc">+</span></span>
+<span id="cb130-8"><a href="discrete-systems-of-equations.html#cb130-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> years, <span class="at">y =</span> adult), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb130-9"><a href="discrete-systems-of-equations.html#cb130-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> years, <span class="at">y =</span> juvenile), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb130-10"><a href="discrete-systems-of-equations.html#cb130-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb130-11"><a href="discrete-systems-of-equations.html#cb130-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Years&quot;</span>,</span>
+<span id="cb130-12"><a href="discrete-systems-of-equations.html#cb130-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Moose&quot;</span></span>
+<span id="cb130-13"><a href="discrete-systems-of-equations.html#cb130-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:moose-2-21"></span>
 <img src="series_files/figure-html/moose-2-21-1.png" alt="Simulation of a two stage moose population model. Adults are in red, juveniles in blue." width="384" />
 <p class="caption">
@@ -466,6 +495,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

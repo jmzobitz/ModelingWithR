@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>17.7 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="17.7 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="concluding-thoughts-1.html"/>
 <link rel="next" href="eigenvalues-18.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,18 +406,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">17.7</span> Exercises</h2>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-246" class="exercise"><strong>Exercise 17.1  </strong></span>Consider the following nonlinear system:</p>
+<p><span id="exr:unnamed-chunk-245" class="exercise"><strong>Exercise 17.1  </strong></span>Consider the following nonlinear system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split} 
 \frac{dx}{dt} &amp;= y-1 \\ 
 \frac{dy}{dt} &amp;= x^{2}-1 
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Verify that this system has equilibrium solutions at <span class="math inline">\((-1,1)\)</span> and <span class="math inline">\((1,1)\)</span>.</li>
+<li>Construct the Jacobian matrix at the equilibrium solutions at <span class="math inline">\((-1,1)\)</span> and <span class="math inline">\((1,1)\)</span>.</li>
+<li>With the Jacobian matrix, visualize a phaseplane at these equilbrium solutions to determine stability.</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-247" class="exercise"><strong>Exercise 17.2  </strong></span>By solving directly, show that <span class="math inline">\((H,L)=(0,0)\)</span> and <span class="math inline">\((4,3)\)</span> are equilibrium solutions to the following system of equations:</p>
+<p><span id="exr:unnamed-chunk-246" class="exercise"><strong>Exercise 17.2  </strong></span>By solving directly, show that <span class="math inline">\((H,L)=(0,0)\)</span> and <span class="math inline">\((4,3)\)</span> are equilibrium solutions to the following system of equations:</p>
 <span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dH}{dt} &amp;= .3 H - .1 HL \\
@@ -403,63 +433,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-248" class="exercise"><strong>Exercise 17.3  </strong></span>Consider the following nonlinear system:</p>
+<p><span id="exr:unnamed-chunk-247" class="exercise"><strong>Exercise 17.3  </strong></span>Consider the following nonlinear system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= x-y \\
 \frac{dy}{dt} &amp;=-y + \frac{5x^2}{4+x^{2}},
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Verify that the point <span class="math inline">\((x,y)=(1,1)\)</span> is an equilibrium solution.</li>
+<li>Construct the Jacobian matrix at this equilibrium solution.</li>
+<li>With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.</li>
+</ol>
 </div>
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-249" class="exercise"><strong>Exercise 17.4  </strong></span>Consider the nonlinear system</p>
+<p><span id="exr:unnamed-chunk-248" class="exercise"><strong>Exercise 17.4  </strong></span>Consider the nonlinear system</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= 2x+3y+xy \\
 \frac{dy}{dt} &amp;= -x + y - 2xy^{3},
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Verify that the point <span class="math inline">\((0,0)\)</span> is an equilibrium solution.</li>
+<li>Determine the Jacobian matrix at this equilbrium solution.</li>
+<li>With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-250" class="exercise"><strong>Exercise 17.5  </strong></span>Consider the following system:</p>
+<p><span id="exr:unnamed-chunk-249" class="exercise"><strong>Exercise 17.5  </strong></span>Consider the following system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= y^{2} \\
 \frac{dy}{dt} &amp;= -\frac{2}{3} x,
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine the equilibrium solution.</li>
+<li>Construct the Jacobian at the equilibrium solution.</li>
+<li>With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.</li>
+<li>Use the fact that that <span class="math inline">\(\displaystyle \frac{dy}{dx} / \frac{dy}{dt} = \frac{dy}{dx}\)</span>, which should yield a separable differential equation that will allow you to solve <span class="math inline">\(y(x)\)</span>. How does that solved differential equation compare to what you found by analyzing the Jacobian matrix?</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-251" class="exercise"><strong>Exercise 17.6  </strong></span>Consider the lynx-hare system with parameters <span class="math inline">\(r\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(e\)</span>, and <span class="math inline">\(d\)</span>:</p>
+<p><span id="exr:unnamed-chunk-250" class="exercise"><strong>Exercise 17.6  </strong></span>Consider the lynx-hare system with parameters <span class="math inline">\(r\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(e\)</span>, and <span class="math inline">\(d\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dH}{dt} &amp;= r H - b HL \\
 \frac{dL}{dt} &amp;=ebHL -dL
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Verify that the point <span class="math inline">\(\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)\)</span> is an equilibrium solution.</li>
+<li>Construct the Jacobian at the equilibrium solution. (Your final answer will include the parameters.)</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-252" class="exercise"><strong>Exercise 17.7  </strong></span>This problem revisits the modified lynx-hare system:
-<span class="math display">\[\begin{equation}
+<p><span id="exr:unnamed-chunk-251" class="exercise"><strong>Exercise 17.7  </strong></span>This problem revisits the modified lynx-hare system:</p>
+<p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dH}{dt} &amp;= r H \left( 1- \frac{H}{K} \right) - b HL \\
 \frac{dL}{dt} &amp;=ebHL -dL
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Verify that by rescaling of this system <span class="math inline">\(\displaystyle x=\frac{H}{K}\)</span>, <span class="math inline">\(\displaystyle y=\frac{L}{r/b}\)</span> and <span class="math inline">\(T = r t\)</span> we can rewrite this system as:
+<span class="math display">\[\begin{equation}
+\begin{split}
+\frac{dx}{d T} &amp;= x(1-x) - xy \\
+\frac{dy}{d T} &amp;=\frac{ebK}{r}xy -\frac{d}{r}y
+\end{split}
+\end{equation}\]</span></li>
+<li>Determine the three equilibrium solutions of this rescaled system.</li>
+<li>Evaluate the Jacobian at each of the equilibrium solutions.</li>
+<li>With your Jacobian, select reasonable values of the parameters to generate a phaseplane diagram and classify the stability of each equilibrium solution.</li>
+<li>How does this revised system compare to the stability of the regular lynx-hare model?</li>
+</ol>
 </div>
 <p> </p>
 <!-- Adapted from LW pg 121 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-253" class="exercise"><strong>Exercise 17.8  </strong></span>A model for the spread of a disease where people recover is given by the following differential equation:</p>
+<p><span id="exr:unnamed-chunk-252" class="exercise"><strong>Exercise 17.8  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) A model for the spread of a disease where people recover is given by the following differential equation:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dS}{dt} &amp;= -\alpha SI \\
@@ -467,12 +530,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \frac{dR}{dt} &amp;= \gamma I,
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine the equilibrium solutions for this system of equations.</li>
+<li>Construct the Jacobian for each of the equilibrium solutions.</li>
+<li>Let <span class="math inline">\(\alpha=0.001\)</span> and <span class="math inline">\(\gamma = 0.2\)</span>. With the Jacobian matrix, generate the phase plane (using the equations for <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> only) for all of the equilibrium solutions and classify their stability.</li>
+</ol>
 </div>
 <p> </p>
 <!-- LW pg 157 158 #3 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-254" class="exercise"><strong>Exercise 17.9  </strong></span>A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish. As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource. However fish do have natural predators, which may also be harvested at the same time. A model that describes this interaction is</p>
+<p><span id="exr:unnamed-chunk-253" class="exercise"><strong>Exercise 17.9  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish. As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource. However fish do have natural predators, which may also be harvested at the same time. A model that describes this interaction is</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dN}{dt} &amp;= rN - cNP - \rho E N \\
@@ -480,6 +548,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \end{split}
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(E\)</span> is the fishing effort and <span class="math inline">\(\rho\)</span> and <span class="math inline">\(\sigma\)</span> are the catchability coefficients for the prey and predator.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine all the equilibrium solutions for this model.</li>
+<li>Construct the Jacobian matrix for each of the the equilibrium solutions.</li>
+<li>Select different parameter values. With the Jacobian, construct a phase plane diagram for each of the equilibrium solutions.</li>
+<li>In the absence of fishing <span class="math inline">\(E=0\)</span>. How do these equilibrium solutions compare to the ones from the previous part?</li>
+</ol>
 </div>
 <p> </p>
 <div class="figure"><span id="fig:glucose"></span>
@@ -492,7 +566,7 @@ Figure 17.3: Glucose transporter reaction schemes.
 <!-- Problem adapted from Keener pg 64 and 65 2.4.1 glucose transport -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-255" class="exercise"><strong>Exercise 17.10  </strong></span>The chemical glucose is transported across the cell membrane using a carrier proteins. These proteins can have different states (open or closed) that can be bound to a glucose substrate. The schematic for this reaction is shown in Figure <a href="exercises-16.html#fig:glucose">17.3</a>. The system of differential equations describing this reaction is:</p>
+<p><span id="exr:unnamed-chunk-254" class="exercise"><strong>Exercise 17.10  </strong></span>(Inspired by <span class="citation"><a href="#ref-keener_mathematical_2009" role="doc-biblioref">Keener et al.</a> (<a href="#ref-keener_mathematical_2009" role="doc-biblioref">2009</a>)</span>) The chemical glucose is transported across the cell membrane using a carrier proteins. These proteins can have different states (open or closed) that can be bound to a glucose substrate. The schematic for this reaction is shown in Figure <a href="exercises-16.html#fig:glucose">17.3</a>. The system of differential equations describing this reaction is:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dp_{i}}{dt} &amp;= k p_{e} - k p_{i} + k_{+} s_{i}c_{i}-k_{i}p_{i} \\
@@ -501,10 +575,24 @@ Figure 17.3: Glucose transporter reaction schemes.
 \frac{dc_{e}}{dt} &amp;= k c_{i} - k c_{e} + k_{-} p_{e}-k_{+}s_{e}c_{e}
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>We can reduce this to a system of three equations. First show that <span class="math inline">\(\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0\)</span>. Given that <span class="math inline">\(p_{i}+p_{e}+c_{i}+c_{e}=C_{0}\)</span>, where <span class="math inline">\(C_{0}\)</span> is constant, use this equation to eliminate <span class="math inline">\(p_{i}\)</span> and write down a system of three equations.</li>
+<li>Determine the equilibrium solutions for this new system of three equations.</li>
+<li>Construct the Jacobian matrix for each of these equilibrium solutions.</li>
+</ol>
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-keener_mathematical_2009" class="csl-entry">
+Keener, James, James Sneyd, S. S. Antman, J. E. Marsden, and L. Sirovich, eds. 2009. <em>Mathematical <span>Physiology</span></em>. Vol. 8/1. Interdisciplinary <span>Applied Mathematics</span>. <span>New York, NY</span>: <span>Springer New York</span>. <a href="https://doi.org/10.1007/978-0-387-75847-3">https://doi.org/10.1007/978-0-387-75847-3</a>.
+</div>
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -534,6 +622,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

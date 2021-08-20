@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>23.1 Random walk on a number line | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="23.1 Random walk on a number line | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="random-walks-23.html"/>
 <link rel="next" href="more-realizatons.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,30 +404,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="random-walk-on-a-number-line" class="section level2" number="23.1">
 <h2><span class="header-section-number">23.1</span> Random walk on a number line</h2>
-<p>The conceptual idea of a random begins on a number line. Let’s begin at the origin (so at <span class="math inline">\(t=0\)</span> then <span class="math inline">\(x=0\)</span>). Based on this number line we can only to the left or the right, with equal probability. At a given time we decide to move in a direction based on a random number <span class="math inline">\(r\)</span> drawn between 0 and 1 (in <code>R</code> we do this with the command <code>runif(1)</code>). Figure <a href="#fig:random-walk"><strong>??</strong></a> conceptually illustrates this random walk</p>
-<p><img src="series_files/figure-html/random-walk-1.png" width="672" /></p>
+<p>The conceptual idea of a random walk begins on a number line. Let’s begin at the origin (so at <span class="math inline">\(t=0\)</span> then <span class="math inline">\(x=0\)</span>). Based on this number line we can only to the left or the right, with equal probability. At a given time we decide to move in a direction based on a random number <span class="math inline">\(r\)</span> drawn between 0 and 1 (in <code>R</code> we do this with the command <code>runif(1)</code>). Figure <a href="random-walk-on-a-number-line.html#fig:random-walk">23.1</a> conceptually illustrates this random walk</p>
+<div class="figure" style="text-align: center"><span id="fig:random-walk"></span>
+<img src="series_files/figure-html/random-walk-1.png" alt="Schematic diagram for one-dimensional random walk." width="672" />
+<p class="caption">
+Figure 23.1: Schematic diagram for one-dimensional random walk.
+</p>
+</div>
 <p>For each iteration of this process we will draw a random number using <code>runif(1)</code>. We can code this process using a <code>for</code> loop:</p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="random-walk-on-a-number-line.html#cb145-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">100</span>     <span class="do">### Number of times we run our simulation</span></span>
-<span id="cb145-2"><a href="random-walk-on-a-number-line.html#cb145-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-3"><a href="random-walk-on-a-number-line.html#cb145-3" aria-hidden="true" tabindex="-1"></a><span class="do">### Set up vector of results</span></span>
-<span id="cb145-4"><a href="random-walk-on-a-number-line.html#cb145-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>,<span class="at">dim=</span>number_steps)</span>
-<span id="cb145-5"><a href="random-walk-on-a-number-line.html#cb145-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-6"><a href="random-walk-on-a-number-line.html#cb145-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
-<span id="cb145-7"><a href="random-walk-on-a-number-line.html#cb145-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>)<span class="sc">&lt;</span> <span class="fl">0.5</span>) {x[i]<span class="ot">=</span>x[i<span class="dv">-1</span>]<span class="sc">-</span><span class="dv">1</span>}   <span class="co"># Move right</span></span>
-<span id="cb145-8"><a href="random-walk-on-a-number-line.html#cb145-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {x[i] <span class="ot">&lt;-</span> x[i<span class="dv">-1</span>]<span class="sc">+</span><span class="dv">1</span>}   <span class="co"># Move left</span></span>
-<span id="cb145-9"><a href="random-walk-on-a-number-line.html#cb145-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb145-10"><a href="random-walk-on-a-number-line.html#cb145-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-11"><a href="random-walk-on-a-number-line.html#cb145-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s take a peek at our result:</span></span>
-<span id="cb145-12"><a href="random-walk-on-a-number-line.html#cb145-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-13"><a href="random-walk-on-a-number-line.html#cb145-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x,<span class="at">type=</span><span class="st">&#39;l&#39;</span>)</span></code></pre></div>
-<p><img src="series_files/figure-html/unnamed-chunk-317-1.png" width="384" /></p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="random-walk-on-a-number-line.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(x))  <span class="co"># Where our average position was over the time interval</span></span></code></pre></div>
-<pre><code>## [1] -5.52</code></pre>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="random-walk-on-a-number-line.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sd</span>(x))  <span class="co"># Where our standard deviation was over the time interval</span></span></code></pre></div>
-<pre><code>## [1] 2.401515</code></pre>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="random-walk-on-a-number-line.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Number of steps our random walk takes</span></span>
+<span id="cb142-2"><a href="random-walk-on-a-number-line.html#cb142-2" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb142-3"><a href="random-walk-on-a-number-line.html#cb142-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-4"><a href="random-walk-on-a-number-line.html#cb142-4" aria-hidden="true" tabindex="-1"></a><span class="do">### Set up vector of results</span></span>
+<span id="cb142-5"><a href="random-walk-on-a-number-line.html#cb142-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="at">dim =</span> number_steps)</span>
+<span id="cb142-6"><a href="random-walk-on-a-number-line.html#cb142-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-7"><a href="random-walk-on-a-number-line.html#cb142-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
+<span id="cb142-8"><a href="random-walk-on-a-number-line.html#cb142-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">0.5</span>) {</span>
+<span id="cb142-9"><a href="random-walk-on-a-number-line.html#cb142-9" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb142-10"><a href="random-walk-on-a-number-line.html#cb142-10" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># Move right</span></span>
+<span id="cb142-11"><a href="random-walk-on-a-number-line.html#cb142-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb142-12"><a href="random-walk-on-a-number-line.html#cb142-12" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb142-13"><a href="random-walk-on-a-number-line.html#cb142-13" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># Move left</span></span>
+<span id="cb142-14"><a href="random-walk-on-a-number-line.html#cb142-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb142-15"><a href="random-walk-on-a-number-line.html#cb142-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-16"><a href="random-walk-on-a-number-line.html#cb142-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s take a peek at our result:</span></span>
+<span id="cb142-17"><a href="random-walk-on-a-number-line.html#cb142-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-18"><a href="random-walk-on-a-number-line.html#cb142-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>)</span></code></pre></div>
+<p><img src="series_files/figure-html/unnamed-chunk-318-1.png" width="384" /></p>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="random-walk-on-a-number-line.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(x)) <span class="co"># Where our average position was over the time interval</span></span></code></pre></div>
+<pre><code>## [1] 8.84</code></pre>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="random-walk-on-a-number-line.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sd</span>(x)) <span class="co"># Where our standard deviation was over the time interval</span></span></code></pre></div>
+<pre><code>## [1] 5.807901</code></pre>
 <p>Let’s remind ourselves what this code does:</p>
 <ul>
-<li><code>number_steps &lt;- 100</code>: The number of times we draw a random number, referred to this as steps.</li>
+<li><code>number_steps &lt;- 100</code>: The number of times we draw a random number, referred to <em>steps</em>.</li>
 <li><code>x &lt;- array(0,dim=number_steps)</code>: We are going to pre-allocate a vector (<code>array</code>) of our results. Values in this array are all set at 0 for convenience.</li>
 <li>The for loop starts at the second step and then either adds or subtracts one from the prevoius position <code>x[i-1]</code> and updates the result to <code>x[i]</code>.</li>
 <li><code>plot(x,type='l')</code> makes a simple line plot of the results.</li>
@@ -438,6 +473,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

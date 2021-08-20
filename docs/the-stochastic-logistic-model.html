@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>25.1 The stochastic logistic model | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="25.1 The stochastic logistic model | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="sdes-25.html"/>
 <link rel="next" href="the-euler-maruyama-method.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -383,12 +408,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display" id="eq:logistic-sde-25">\[\begin{equation}
 dx = rx \left(1 - \frac{x}{K} \right) \; dt + \mbox{ Noise } \; dt   \tag{25.1}
 \end{equation}\]</span></p>
-<p>It is helpful to identify the two different parts of this equation. The first part is called the <em>deterministic part</em>, and it does not involve the ``Noise’’ term: <span class="math inline">\(\displaystyle rx \left(1 - \frac{x}{K} \right) \; dt\)</span>. The second part is called the <em>stochastic part</em> and is (I bet you guessed it!) the term that contains <span class="math inline">\(\mbox{ Noise } \; dt\)</span> is the “stochastic part.”</p>
-<p>While just writing <span class="math inline">\(\mbox{ Noise } \; dt\)</span> doesn’t seem mathematical, its just a substitute for the type of stochastic process we have. For our purposes we are only going to consider random walks (a.k.a white noise a.k.a. Weiner processes), which we represent in shorthand with <span class="math inline">\(dW(t)\)</span>, so that <span class="math inline">\(dW(t)=\mbox{ Noise } \; dt\)</span>:</p>
+<p>It is helpful to identify the two different parts of Equation <a href="the-stochastic-logistic-model.html#eq:logistic-sde-25">(25.1)</a>. The first part is called the <em>deterministic part</em>, and it does not involve the “Noise” term: <span class="math inline">\(\displaystyle rx \left(1 - \frac{x}{K} \right) \; dt\)</span>. The second part is called the <em>stochastic part</em> and is (I bet you guessed it!) the term that contains <span class="math inline">\(\mbox{ Noise } \; dt\)</span> is the “stochastic part.”</p>
+<p>While just writing <span class="math inline">\(\mbox{ Noise } \; dt\)</span> doesn’t seem mathematical, its just a substitute for the type of stochastic process we have. For our purposes we are only going to consider random walks (a.k.a white noise a.k.a. Weiner processes), which we represent in shorthand with <span class="math inline">\(dW(t)\)</span>, so that <span class="math inline">\(dW(t)=\mbox{ Noise } \; dt\)</span>. This allows us to re-write Equation <a href="the-stochastic-logistic-model.html#eq:logistic-sde-25">(25.1)</a> as a more formal SDE (Equation <a href="the-stochastic-logistic-model.html#eq:logistic-stochastic-sde">(25.2)</a>).</p>
 <p><span class="math display" id="eq:logistic-stochastic-sde">\[\begin{equation}
 dx = rx \left(1 - \frac{x}{K} \right) \; dt + dW(t)   \tag{25.2}
 \end{equation}\]</span></p>
-<p>Just to be clear, here the term <span class="math inline">\(dW(t)\)</span> is short hand to the differential equation <span class="math inline">\(\displaystyle \frac{dW}{dt} = \mbox{ Noise }\)</span>, where <span class="math inline">\(W(t)\)</span> is the solution to a Weiner process. This white noise has the following characteristics:</p>
+<p>Just to be clear the term <span class="math inline">\(dW(t)\)</span> in Equation <a href="the-stochastic-logistic-model.html#eq:logistic-stochastic-sde">(25.2)</a> is short hand to the differential equation <span class="math inline">\(\displaystyle \frac{dW}{dt} = \mbox{ Noise }\)</span>, where <span class="math inline">\(W(t)\)</span> is the solution to a Weiner process. This white noise has the following characteristics:</p>
 <ul>
 <li><span class="math inline">\(W(t)\)</span> is continuous</li>
 <li><span class="math inline">\(W(0)=0\)</span></li>
@@ -402,7 +427,7 @@ dx = rx \left(1 - \frac{x}{K} \right) \; dt + dW(t)   \tag{25.2}
 \mbox{Stochastic part: } &amp; dW(t)
 \end{split}
 \end{equation*}\]</span></p>
-<p>Similar to non-stochastic (or <em>deterministic</em>) differential equations we are curious about equilibrium solutions. As a starting point, recall the equilibrium solutions to the logistic equation are <span class="math inline">\(x=0\)</span> (unstable) and <span class="math inline">\(x=K\)</span> (stable). How does the stochastic part of this differential equation change the solution trajectory? It turns out that the ``exact’’ solutions to problems like these are difficult (we will study a sample of them in <a href="solvingSDEs-27.html#solvingSDEs-27">27</a>). Rather than focus on an exact solution technique we are going to focus on how to apply a numerical method to simulate solution trajectories and then take the ensemble average each of the time points.</p>
+<p>How does the stochastic part of this differential equation change the solution trajectory? It turns out that the “exact” solutions to problems like these are difficult (we will study a sample of them in <a href="solvingSDEs-27.html#solvingSDEs-27">27</a>). Rather than focus on an exact solution technique we are going to focus on how to apply a numerical method to simulate solution trajectories and then take the ensemble average each of the time points.</p>
 </div>
             </section>
 
@@ -433,6 +458,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

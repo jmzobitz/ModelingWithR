@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>26.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="26.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="generalizing-the-approach-.html"/>
 <link rel="next" href="solvingSDEs-27.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,43 +406,90 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">26.4</span> Exercises</h2>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-341" class="exercise"><strong>Exercise 26.1  </strong></span>Return back to one simulation of the logistic differential equation. (Figure <a href="the-stochastic-logistic-model-redux.html#fig:log-sde-26">26.1</a>). For this plot we set <span class="math inline">\(\sigma = 1\)</span>. What happens to the resulting spaghetti and ensemble plots when <span class="math inline">\(\sigma =0, \; 0.01, \; .1, \; 10\)</span>?
+<span id="exr:unnamed-chunk-343" class="exercise"><strong>Exercise 26.1  </strong></span>Return back to one simulation of the logistic differential equation. (Figure <a href="the-stochastic-logistic-model-redux.html#fig:log-sde-26">26.1</a>). For this plot we set <span class="math inline">\(\sigma = 1\)</span>. What happens to the resulting spaghetti and ensemble plots when <span class="math inline">\(\sigma =0, \; 0.01, \; .1, \; 10\)</span>?
 </div>
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-342" class="exercise"><strong>Exercise 26.2  </strong></span>Return back to the example of one simulation of the stochastic predator prey (Figure <a href="a-stochastic-system-of-equations.html#fig:stoch-pred-prey-26">26.4</a>). For these plots we set <span class="math inline">\(\sigma = .1\)</span>. What happens to the resulting spaghetti and ensemble plots when <span class="math inline">\(\sigma =0, \; 0.01, \; 1, \; 10\)</span>?
+<span id="exr:unnamed-chunk-344" class="exercise"><strong>Exercise 26.2  </strong></span>Return back to the example of one simulation of the stochastic predator prey (Figure <a href="a-stochastic-system-of-equations.html#fig:stoch-pred-prey-26">26.4</a>). For these plots we set <span class="math inline">\(\sigma = .1\)</span>. What happens to the resulting spaghetti and ensemble plots when <span class="math inline">\(\sigma =0, \; 0.01, \; 1, \; 10\)</span>?
 </div>
  
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-343" class="exercise"><strong>Exercise 26.3  </strong></span>For the predatory-prey simulation of stochastic variables we used <code>group_by(name,t)</code> to begin summarizing our variables. Modify the code so you apply <code>group_by(t,name)</code> and generate the ensemble plot. Do you receive a similar result?
+<span id="exr:unnamed-chunk-345" class="exercise"><strong>Exercise 26.3  </strong></span>For the predatory-prey simulation of stochastic variables we used <code>group_by(name,t)</code> to begin summarizing our variables. Modify the code so you apply <code>group_by(t,name)</code> and generate the ensemble plot. Do you receive a similar result?
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-344" class="exercise"><strong>Exercise 26.4  </strong></span>For the logistic differential equation consider the following splitting of <span class="math inline">\(\alpha(x)\)</span> and <span class="math inline">\(\delta(x)\)</span>:</p>
-<p><span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-346" class="exercise"><strong>Exercise 26.4  </strong></span>For the logistic differential equation consider the following splitting of <span class="math inline">\(\alpha(x)\)</span> and <span class="math inline">\(\delta(x)\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \alpha(x) &amp;= rx + \frac{rx^{2}}{2K} \\
 \delta(x) &amp;=  \frac{rx^{2}}{2K}
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 <p>Simulate this SDE using the same values of parameters for the logistic example and compare your results.</p>
 </div>
 <p> </p>
 <!-- LW pg 346 #3 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-345" class="exercise"><strong>Exercise 26.5  </strong></span>Let <span class="math inline">\(R(t)\)</span> denote the rainfall at a location at time <span class="math inline">\(t\)</span>, which is a random process. Assume that probability of the change in rainfall from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
+<p><span id="exr:unnamed-chunk-347" class="exercise"><strong>Exercise 26.5  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Let <span class="math inline">\(R(t)\)</span> denote the rainfall at a location at time <span class="math inline">\(t\)</span>, which is a random process. Assume that probability of the change in rainfall from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">change</th>
+<th align="center">probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\Delta R = \rho\)</span></td>
+<td align="center"><span class="math inline">\(\lambda \Delta t\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\Delta R = 0\)</span></td>
+<td align="center"><span class="math inline">\(1- \lambda \Delta t\)</span></td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-alpha">
+<li>With this information, compute E[<span class="math inline">\(\Delta R\)</span>] and variance of <span class="math inline">\(\Delta R\)</span>.</li>
+<li>Simulate this stochastic process. Use <span class="math inline">\(R(0)=0\)</span> and run 500 simulations of this stochastic process. Set <span class="math inline">\(\lambda \rho = 18\)</span> and <span class="math inline">\(\sqrt{ \lambda \rho^{2}}=16\)</span>.</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-346" class="exercise"><strong>Exercise 26.6  </strong></span> Consider the model for zombie population dynamics:</p>
-<p><span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-348" class="exercise"><strong>Exercise 26.6  </strong></span> Consider the following model for zombie population dynamics <span class="citation">(<a href="#ref-smith_mathematical_2014" role="doc-biblioref">Smith? 2014</a>)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dS}{dt} &amp;=-\beta S Z - \delta S  \\
 \frac{dZ}{dt} &amp;= \beta S Z + \xi R - \alpha SZ \\
 \frac{dR}{dt} &amp;= \delta S+ \alpha SZ  - \xi R
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine the birth and death terms for the zombie model so that you could encode this as a birth/death process:</li>
+</ol>
+<ul>
+<li>Birth part for <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span>:</li>
+<li>Death part for <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span>:</li>
+<li>Birth part for <span class="math inline">\(\displaystyle \frac{dZ}{dt}\)</span>:</li>
+<li>Death part for <span class="math inline">\(\displaystyle\frac{dZ}{dt}\)</span>:</li>
+<li>Birth part for <span class="math inline">\(\displaystyle \frac{dR}{dt}\)</span>:</li>
+<li>Death part for <span class="math inline">\(\displaystyle \frac{dR}{dt}\)</span>:</li>
+</ul>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Use <code>birth_death_stochastic</code> to perform 500 simulations of this stochastic differential equation. Please assume the following values of the parameters and stochastic method:</li>
+</ol>
+<ul>
+<li><span class="math inline">\(\sigma = 0.004\)</span></li>
+<li><span class="math inline">\(\Delta t= 0.5\)</span>.</li>
+<li>Timesteps: 200.</li>
+<li><span class="math inline">\(\beta = 0.0095\)</span>, <span class="math inline">\(\delta = 0.0001\)</span> ,<span class="math inline">\(\xi = 0.1\)</span>, <span class="math inline">\(\alpha = 0.005\)</span>.</li>
+<li>Initial condition: <span class="math inline">\(S(0)=499\)</span>, <span class="math inline">\(Z(0)=1\)</span>, <span class="math inline">\(R(0)=0\)</span>.</li>
+</ul>
 </div>
 <p> </p>
 <div class="figure"><span id="fig:sis-bd"></span>
@@ -430,21 +502,25 @@ Figure 26.8: The <span class="math inline">\(SIS\)</span> model
 <!-- Ornstein uhlenbeck process -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-347" class="exercise"><strong>Exercise 26.7  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise. For this stochastic differential equation what is <span class="math inline">\(E[S]\)</span> and Var<span class="math inline">\((S)\)</span>?
+<span id="exr:unnamed-chunk-349" class="exercise"><strong>Exercise 26.7  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise. For this stochastic differential equation what is <span class="math inline">\(E[S]\)</span> and Var<span class="math inline">\((S)\)</span>?
 </div>
 <p> </p>
 <!-- Adapted from LW pg 346 #4 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-348" class="exercise"><strong>Exercise 26.8  </strong></span>An <span class="math inline">\(SIS\)</span> model is one where susceptibles <span class="math inline">\(S\)</span> become infected <span class="math inline">\(I\)</span>, and then after recovering from an illness, become susceptible again. The schematic representing this is shown in Figure <a href="exercises-25.html#fig:sis-bd">26.8</a>. While you can write this as a system of differential equations, assuming the population size is constant <span class="math inline">\(N\)</span> we have the following differential equation:</p>
+<p><span id="exr:unnamed-chunk-350" class="exercise"><strong>Exercise 26.8  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) An <span class="math inline">\(SIS\)</span> model is one where susceptibles <span class="math inline">\(S\)</span> become infected <span class="math inline">\(I\)</span>, and then after recovering from an illness, become susceptible again. The schematic representing this is shown in Figure <a href="exercises-25.html#fig:sis-bd">26.8</a>. While you can write this as a system of differential equations, assuming the population size is constant <span class="math inline">\(N\)</span> we have the following differential equation:</p>
 <p><span class="math display">\[\begin{equation}
 \frac{dI}{dt} = b(N-I) I - r I
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Identify <span class="math inline">\(\alpha(I)\)</span> and <span class="math inline">\(\delta(I)\)</span> for this model.</li>
+<li>Assuming <span class="math inline">\(N=1000\)</span>, <span class="math inline">\(r=0.01\)</span>, and <span class="math inline">\(b=0.005\)</span>, <span class="math inline">\(I(0)=1\)</span>, simulate this differential equation over two weeks with <span class="math inline">\(\Delta t = 0.1\)</span>. Show the plot of your result.</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-349" class="exercise"><strong>Exercise 26.9  </strong></span>Consider the equation
+<p><span id="exr:unnamed-chunk-351" class="exercise"><strong>Exercise 26.9  </strong></span>Consider the equation
 <span class="math display">\[\begin{equation*}
 \Delta x = \alpha(x) \; \Delta t - \delta(x) \; \Delta t
 \end{equation*}\]</span></p>
@@ -453,6 +529,15 @@ If we consider <span class="math inline">\(\Delta x\)</span> to be a random vari
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+<div id="ref-smith_mathematical_2014" class="csl-entry">
+Smith?, Robert J., ed. 2014. <em>Mathematical Modelling of Zombies</em>. <span>Ottawa</span>: <span>University of Ottawa Press</span>.
+</div>
+</div>
             </section>
 
           </div>
@@ -482,6 +567,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>25.2 The Euler-Maruyama Method | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="25.2 The Euler-Maruyama Method | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="the-stochastic-logistic-model.html"/>
 <link rel="next" href="adding-stochasticity-to-parameters.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -380,51 +405,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="the-euler-maruyama-method" class="section level2" number="25.2">
 <h2><span class="header-section-number">25.2</span> The Euler-Maruyama Method</h2>
 <p>The Euler-Maruyama method is a variation of Euler’s method that accounts for stochasticity and implements the random walk. We are going to build this up step by step.</p>
-<p>First we write the <span class="math inline">\(dx\)</span> term as a difference equation: <span class="math inline">\(dx = x_{n+1}-x_{n}\)</span>, where <span class="math inline">\(n\)</span> is the current step of Euler’s method. Likewise <span class="math inline">\(dW(t) = W_{n+1} - W_{n}\)</span>. This terms represents one step of the random walk. We are going to model this difference <span class="math inline">\(W_{n+1} - W_{n}\)</span> as a random walk, which we will approximate <span class="math inline">\(W_{n+1}-W_{n} = \sqrt{\Delta t} Z_{1}\)</span>, where <span class="math inline">\(Z_{1}\)</span> is a random number from the standard unit normal distribution and <span class="math inline">\(\Delta t\)</span> is the timestep length. We do this in <code>R</code> as <code>rnorm(1)</code>. When we put these together we have the following iterative method:</p>
+<p>First we write the <span class="math inline">\(dx\)</span> term as a difference equation: <span class="math inline">\(dx = x_{n+1}-x_{n}\)</span>, where <span class="math inline">\(n\)</span> is the current step of Euler’s method. Likewise <span class="math inline">\(dW(t) = W_{n+1} - W_{n}\)</span>, which represents one step of the random walk. We will approximate <span class="math inline">\(W_{n+1}-W_{n} = \sqrt{\Delta t} Z_{1}\)</span>, where <span class="math inline">\(Z_{1}\)</span> is a random number from the standard unit normal distribution (done in <code>R</code> as <code>rnorm(1)</code>) and <span class="math inline">\(\Delta t\)</span> is the timestep length. When we put these together we have the following iterative method:</p>
 <ul>
-<li>Given <span class="math inline">\(\Delta t\)</span> and starting value <span class="math inline">\(x_{0}\)</span>.</li>
-<li>Then compute the next step: <span class="math inline">\(\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} Z_{1}\)</span>, where <span class="math inline">\(Z_{1}\)</span> is a random number from the standard unit normal distribution. (<code>rnorm(1)</code> in <code>R</code>)</li>
-<li>Repeat to step <span class="math inline">\(n\)</span>: <span class="math inline">\(\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} Z_{1}\)</span></li>
+<li>Given <span class="math inline">\(\Delta t\)</span> and starting value <span class="math inline">\(x_{0}\)</span>,</li>
+<li>Then compute the next step: <span class="math inline">\(\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} \; Z_{1}\)</span></li>
+<li>Repeat to step <span class="math inline">\(n\)</span>: <span class="math inline">\(\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} \; Z_{1}\)</span></li>
 </ul>
-<p>That is it! We can run this through as many steps as we want. I have some defined code that will apply the simulation, but just like <code>euler</code> or <code>systems</code> there are some things that need to be set first. In order to apply the Euler-Maruyama method you will need to define six things:</p>
+<p>That is it! We can apply this numerical method for as many steps as we want. I have some defined code that will apply the simulation, but just like <code>euler</code> or <code>systems</code> there are some things that need to be set first. In order to apply the Euler-Maruyama method you will need to define six things:</p>
 <ul>
 <li>The size (<span class="math inline">\(\Delta t\)</span>) of your timesteps.</li>
 <li>The number of timesteps you wish to run the method. More timesteps means more computational time. If <span class="math inline">\(N\)</span> is the number of timesteps, <span class="math inline">\(\Delta t \cdot N\)</span> is the total time.</li>
-<li>A function that we have for our deterministic dynamics. For our example this equals <span class="math inline">\(\displaystyle rx \left(1 - \frac{x}{K} \right)\)</span>.</li>
-<li>A function that we have for our stochastic dynamics. For our example this equals 1.</li>
+<li>A function for our deterministic dynamics. For Equation <a href="the-stochastic-logistic-model.html#eq:logistic-stochastic-sde">(25.2)</a> this equals <span class="math inline">\(\displaystyle rx \left(1 - \frac{x}{K} \right)\)</span>.</li>
+<li>A function for our stochastic dynamics. For Equation <a href="the-stochastic-logistic-model.html#eq:logistic-stochastic-sde">(25.2)</a> this equals 1.</li>
 <li>The values of the vector of parameters <span class="math inline">\(\vec{\alpha}\)</span>. For the logistic differential equation we will take <span class="math inline">\(r=0.8\)</span> and <span class="math inline">\(K=100\)</span>.</li>
 <li>The standard deviation (<span class="math inline">\(\sigma\)</span>) of our normal distribution and random walk. Typically this is set to 1, but can be varied if needed.</li>
 </ul>
 <p>Sample code for this stochastic differential equation is shown below, with the resulting trajectory of the solution in Figure <a href="the-euler-maruyama-method.html#fig:log-sde">25.1</a>.</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="the-euler-maruyama-method.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the deterministic and stochastic parts of the DE:</span></span>
-<span id="cb153-2"><a href="the-euler-maruyama-method.html#cb153-2" aria-hidden="true" tabindex="-1"></a>deterministic_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
-<span id="cb153-3"><a href="the-euler-maruyama-method.html#cb153-3" aria-hidden="true" tabindex="-1"></a>stochastic_logistic <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> <span class="dv">1</span>)</span>
-<span id="cb153-4"><a href="the-euler-maruyama-method.html#cb153-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-5"><a href="the-euler-maruyama-method.html#cb153-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
-<span id="cb153-6"><a href="the-euler-maruyama-method.html#cb153-6" aria-hidden="true" tabindex="-1"></a>init_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
-<span id="cb153-7"><a href="the-euler-maruyama-method.html#cb153-7" aria-hidden="true" tabindex="-1"></a>logistic_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
-<span id="cb153-8"><a href="the-euler-maruyama-method.html#cb153-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-9"><a href="the-euler-maruyama-method.html#cb153-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
-<span id="cb153-10"><a href="the-euler-maruyama-method.html#cb153-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
-<span id="cb153-11"><a href="the-euler-maruyama-method.html#cb153-11" aria-hidden="true" tabindex="-1"></a>timeSteps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
-<span id="cb153-12"><a href="the-euler-maruyama-method.html#cb153-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-13"><a href="the-euler-maruyama-method.html#cb153-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
-<span id="cb153-14"><a href="the-euler-maruyama-method.html#cb153-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb153-15"><a href="the-euler-maruyama-method.html#cb153-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-16"><a href="the-euler-maruyama-method.html#cb153-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
-<span id="cb153-17"><a href="the-euler-maruyama-method.html#cb153-17" aria-hidden="true" tabindex="-1"></a>logistic_out <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic,</span>
-<span id="cb153-18"><a href="the-euler-maruyama-method.html#cb153-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic,</span>
-<span id="cb153-19"><a href="the-euler-maruyama-method.html#cb153-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
-<span id="cb153-20"><a href="the-euler-maruyama-method.html#cb153-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
-<span id="cb153-21"><a href="the-euler-maruyama-method.html#cb153-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb153-22"><a href="the-euler-maruyama-method.html#cb153-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
-<span id="cb153-23"><a href="the-euler-maruyama-method.html#cb153-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
-<span id="cb153-24"><a href="the-euler-maruyama-method.html#cb153-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb153-25"><a href="the-euler-maruyama-method.html#cb153-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
-<span id="cb153-26"><a href="the-euler-maruyama-method.html#cb153-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_out) <span class="sc">+</span></span>
-<span id="cb153-27"><a href="the-euler-maruyama-method.html#cb153-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="the-euler-maruyama-method.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the deterministic and stochastic parts of the DE:</span></span>
+<span id="cb151-2"><a href="the-euler-maruyama-method.html#cb151-2" aria-hidden="true" tabindex="-1"></a>deterministic_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
+<span id="cb151-3"><a href="the-euler-maruyama-method.html#cb151-3" aria-hidden="true" tabindex="-1"></a>stochastic_logistic <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> <span class="dv">1</span>)</span>
+<span id="cb151-4"><a href="the-euler-maruyama-method.html#cb151-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-5"><a href="the-euler-maruyama-method.html#cb151-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb151-6"><a href="the-euler-maruyama-method.html#cb151-6" aria-hidden="true" tabindex="-1"></a>init_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
+<span id="cb151-7"><a href="the-euler-maruyama-method.html#cb151-7" aria-hidden="true" tabindex="-1"></a>logistic_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
+<span id="cb151-8"><a href="the-euler-maruyama-method.html#cb151-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-9"><a href="the-euler-maruyama-method.html#cb151-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb151-10"><a href="the-euler-maruyama-method.html#cb151-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
+<span id="cb151-11"><a href="the-euler-maruyama-method.html#cb151-11" aria-hidden="true" tabindex="-1"></a>timeSteps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
+<span id="cb151-12"><a href="the-euler-maruyama-method.html#cb151-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-13"><a href="the-euler-maruyama-method.html#cb151-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
+<span id="cb151-14"><a href="the-euler-maruyama-method.html#cb151-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb151-15"><a href="the-euler-maruyama-method.html#cb151-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-16"><a href="the-euler-maruyama-method.html#cb151-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb151-17"><a href="the-euler-maruyama-method.html#cb151-17" aria-hidden="true" tabindex="-1"></a>logistic_out <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic,</span>
+<span id="cb151-18"><a href="the-euler-maruyama-method.html#cb151-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic,</span>
+<span id="cb151-19"><a href="the-euler-maruyama-method.html#cb151-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
+<span id="cb151-20"><a href="the-euler-maruyama-method.html#cb151-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
+<span id="cb151-21"><a href="the-euler-maruyama-method.html#cb151-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb151-22"><a href="the-euler-maruyama-method.html#cb151-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
+<span id="cb151-23"><a href="the-euler-maruyama-method.html#cb151-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
+<span id="cb151-24"><a href="the-euler-maruyama-method.html#cb151-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-25"><a href="the-euler-maruyama-method.html#cb151-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
+<span id="cb151-26"><a href="the-euler-maruyama-method.html#cb151-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_out) <span class="sc">+</span></span>
+<span id="cb151-27"><a href="the-euler-maruyama-method.html#cb151-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
 <div class="figure"><span id="fig:log-sde"></span>
-<img src="series_files/figure-html/log-sde-1.png" alt="One realization of Equation \@ref(eq:logistic-sde-25)" width="672" />
+<img src="series_files/figure-html/log-sde-1.png" alt="One realization of Equation \@ref(eq:logistic-sde-25)" width="384" />
 <p class="caption">
 Figure 25.1: One realization of Equation <a href="the-stochastic-logistic-model.html#eq:logistic-sde-25">(25.1)</a>
 </p>
@@ -436,52 +461,51 @@ Figure 25.1: One realization of Equation <a href="the-stochastic-logistic-model.
 <li>The standard deviation of the stochastic noise (<span class="math inline">\(\sigma\)</span>) is represented with <code>sigma_log</code>.</li>
 <li>The command <code>euler_stochastic</code> does one realization of the Euler-Maruyama method, returning a vector that we can then plot.</li>
 </ul>
-<p>Figure <a href="the-euler-maruyama-method.html#fig:log-sde">25.1</a> shows one sample trajectory of our solution. If you re-run this code several times and replot the solution you may see different trajectories plotted.</p>
 <div id="multiple-simulations" class="section level3" number="25.2.1">
 <h3><span class="header-section-number">25.2.1</span> Multiple simulations</h3>
-<p>In Section <a href="stoch-sim-22.html#stoch-sim-22">22</a> we discussed the idea of stochastic simulation and how to re-run code several times and compute the ensemble average. We can put those ideas to good use here:</p>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="the-euler-maruyama-method.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb154-2"><a href="the-euler-maruyama-method.html#cb154-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
-<span id="cb154-3"><a href="the-euler-maruyama-method.html#cb154-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb154-4"><a href="the-euler-maruyama-method.html#cb154-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb154-5"><a href="the-euler-maruyama-method.html#cb154-5" aria-hidden="true" tabindex="-1"></a>logistic_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb154-6"><a href="the-euler-maruyama-method.html#cb154-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb154-7"><a href="the-euler-maruyama-method.html#cb154-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic,</span>
-<span id="cb154-8"><a href="the-euler-maruyama-method.html#cb154-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic,</span>
-<span id="cb154-9"><a href="the-euler-maruyama-method.html#cb154-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
-<span id="cb154-10"><a href="the-euler-maruyama-method.html#cb154-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
-<span id="cb154-11"><a href="the-euler-maruyama-method.html#cb154-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb154-12"><a href="the-euler-maruyama-method.html#cb154-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
-<span id="cb154-13"><a href="the-euler-maruyama-method.html#cb154-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)) <span class="sc">%&gt;%</span></span>
-<span id="cb154-14"><a href="the-euler-maruyama-method.html#cb154-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb154-15"><a href="the-euler-maruyama-method.html#cb154-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb154-16"><a href="the-euler-maruyama-method.html#cb154-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb154-17"><a href="the-euler-maruyama-method.html#cb154-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
-<span id="cb154-18"><a href="the-euler-maruyama-method.html#cb154-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run) <span class="sc">+</span></span>
-<span id="cb154-19"><a href="the-euler-maruyama-method.html#cb154-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb154-20"><a href="the-euler-maruyama-method.html#cb154-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb154-21"><a href="the-euler-maruyama-method.html#cb154-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p>Figure <a href="the-euler-maruyama-method.html#fig:log-sde">25.1</a> shows one sample trajectory of our solution. If you re-run this code several times and replot the solution you may see different trajectories plotted. In Section <a href="stoch-sim-22.html#stoch-sim-22">22</a> we discussed the idea of stochastic simulation and how to re-run code several times and compute the ensemble average. We can put those ideas to good use here:</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="the-euler-maruyama-method.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb152-2"><a href="the-euler-maruyama-method.html#cb152-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
+<span id="cb152-3"><a href="the-euler-maruyama-method.html#cb152-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-4"><a href="the-euler-maruyama-method.html#cb152-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb152-5"><a href="the-euler-maruyama-method.html#cb152-5" aria-hidden="true" tabindex="-1"></a>logistic_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb152-6"><a href="the-euler-maruyama-method.html#cb152-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb152-7"><a href="the-euler-maruyama-method.html#cb152-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic,</span>
+<span id="cb152-8"><a href="the-euler-maruyama-method.html#cb152-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic,</span>
+<span id="cb152-9"><a href="the-euler-maruyama-method.html#cb152-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
+<span id="cb152-10"><a href="the-euler-maruyama-method.html#cb152-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
+<span id="cb152-11"><a href="the-euler-maruyama-method.html#cb152-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb152-12"><a href="the-euler-maruyama-method.html#cb152-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
+<span id="cb152-13"><a href="the-euler-maruyama-method.html#cb152-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)) <span class="sc">%&gt;%</span></span>
+<span id="cb152-14"><a href="the-euler-maruyama-method.html#cb152-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb152-15"><a href="the-euler-maruyama-method.html#cb152-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-16"><a href="the-euler-maruyama-method.html#cb152-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-17"><a href="the-euler-maruyama-method.html#cb152-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
+<span id="cb152-18"><a href="the-euler-maruyama-method.html#cb152-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run) <span class="sc">+</span></span>
+<span id="cb152-19"><a href="the-euler-maruyama-method.html#cb152-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb152-20"><a href="the-euler-maruyama-method.html#cb152-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb152-21"><a href="the-euler-maruyama-method.html#cb152-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti"></span>
-<img src="series_files/figure-html/spaghetti-1.png" alt="Several different realizations of the logistic SDE." width="672" />
+<img src="series_files/figure-html/spaghetti-1.png" alt="Several different realizations of the logistic SDE." width="384" />
 <p class="caption">
 Figure 25.2: Several different realizations of the logistic SDE.
 </p>
 </div>
 <p>As you may recall, the main engine of the code is contained in the <code>map( ~ euler_stochastic ... )</code> which re-runs the codes for the number of times specified in <code>n_sims</code>.</p>
 <p>Figure <a href="the-euler-maruyama-method.html#fig:logistic-ensemble">25.3</a> shows the ensemble average (median and 95% confidence interval) for the different simulations, recycling code from Section <a href="stoch-sim-22.html#stoch-sim-22">22</a>.</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="the-euler-maruyama-method.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Summarize the variables</span></span>
-<span id="cb155-2"><a href="the-euler-maruyama-method.html#cb155-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic <span class="ot">&lt;-</span> logistic_run <span class="sc">%&gt;%</span></span>
-<span id="cb155-3"><a href="the-euler-maruyama-method.html#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
-<span id="cb155-4"><a href="the-euler-maruyama-method.html#cb155-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb155-5"><a href="the-euler-maruyama-method.html#cb155-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="the-euler-maruyama-method.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Summarize the variables</span></span>
+<span id="cb153-2"><a href="the-euler-maruyama-method.html#cb153-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic <span class="ot">&lt;-</span> logistic_run <span class="sc">%&gt;%</span></span>
+<span id="cb153-3"><a href="the-euler-maruyama-method.html#cb153-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
+<span id="cb153-4"><a href="the-euler-maruyama-method.html#cb153-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb153-5"><a href="the-euler-maruyama-method.html#cb153-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
 <pre><code>## `summarise()` has grouped output by &#39;t&#39;. You can override using the `.groups` argument.</code></pre>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="the-euler-maruyama-method.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
-<span id="cb157-2"><a href="the-euler-maruyama-method.html#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic) <span class="sc">+</span></span>
-<span id="cb157-3"><a href="the-euler-maruyama-method.html#cb157-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb157-4"><a href="the-euler-maruyama-method.html#cb157-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb157-5"><a href="the-euler-maruyama-method.html#cb157-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="the-euler-maruyama-method.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
+<span id="cb155-2"><a href="the-euler-maruyama-method.html#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic) <span class="sc">+</span></span>
+<span id="cb155-3"><a href="the-euler-maruyama-method.html#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb155-4"><a href="the-euler-maruyama-method.html#cb155-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb155-5"><a href="the-euler-maruyama-method.html#cb155-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:logistic-ensemble"></span>
-<img src="series_files/figure-html/logistic-ensemble-1.png" alt="Ensemble average plot of the stochastic logistic SDE." width="672" />
+<img src="series_files/figure-html/logistic-ensemble-1.png" alt="Ensemble average plot of the stochastic logistic SDE." width="384" />
 <p class="caption">
 Figure 25.3: Ensemble average plot of the stochastic logistic SDE.
 </p>
@@ -518,6 +542,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

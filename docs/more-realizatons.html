@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>23.2 More realizatons | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="23.2 More realizatons | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="random-walk-on-a-number-line.html"/>
 <link rel="next" href="random-walk-mathematics.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,22 +404,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="more-realizatons" class="section level2" number="23.2">
 <h2><span class="header-section-number">23.2</span> More realizatons</h2>
-<p>Similar to section on stochastic simulation, One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations. The code <code>randomWalk</code> can help us do that:</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="more-realizatons.html#cb150-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span>  <span class="co"># How long we run our random walk</span></span>
-<span id="cb150-2"><a href="more-realizatons.html#cb150-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># How many separate realizations we do</span></span>
-<span id="cb150-3"><a href="more-realizatons.html#cb150-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb150-4"><a href="more-realizatons.html#cb150-4" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(number_steps,number_realizations)</span></code></pre></div>
-<p><img src="series_files/figure-html/unnamed-chunk-318-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-318-2.png" width="384" />
-You will notice two plots get produced: (1) A <strong>spaghetti plot</strong> that plots all the different sample paths for this realization, and (2) a <strong>ensemble plot</strong> that takes the median and 95% confidence interval of the results.</p>
-<p>Something interesting looks like it is going on here. The ensemble plot looks like a sideways parabola, but let’s check to make sure that is the case. Perhaps rerun <code>random_walk</code> but set <code>number_realizations</code> to be 100:</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="more-realizatons.html#cb151-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb151-2"><a href="more-realizatons.html#cb151-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb151-3"><a href="more-realizatons.html#cb151-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb151-4"><a href="more-realizatons.html#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(number_steps,number_realizations)</span></code></pre></div>
+<p>Similar to section on stochastic simulation, One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations. The code <code>random_walk</code> can help us do that:</p>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="more-realizatons.html#cb147-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="co"># How long we run our random walk</span></span>
+<span id="cb147-2"><a href="more-realizatons.html#cb147-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># How many separate realizations we do</span></span>
+<span id="cb147-3"><a href="more-realizatons.html#cb147-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb147-4"><a href="more-realizatons.html#cb147-4" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(number_steps, number_realizations)</span></code></pre></div>
 <p><img src="series_files/figure-html/unnamed-chunk-319-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-319-2.png" width="384" /></p>
-<p>As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on <em>average</em> you go nowhere (in other words, the average position is <span class="math inline">\(x=0\)</span>), but as the number of steps increase, you are very likely to be <em>somewhere</em> (in other words, the confidence interval increases as the number of steps increase). The more realizations we can do the more robust this pattern becomes. Figure @(fig:high-steps-random) shows the spaghetti and ensemble plots when the number of realizations is 1000:</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="more-realizatons.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(<span class="dv">2000</span>,<span class="dv">1000</span>)</span></code></pre></div>
-<p><img src="series_files/figure-html/high-steps-random-1.png" width="384" /><img src="series_files/figure-html/high-steps-random-2.png" width="384" /></p>
+<p>You will notice two plots get produced: (1) A <strong>spaghetti plot</strong> that plots all the different sample paths for this realization, and (2) a <strong>ensemble plot</strong> that takes the median and 95% confidence interval of the results. (While we learned how to visualize spaghetti plots and compute ensemble averages in the Section <a href="stoch-sim-22.html#stoch-sim-22">22</a>, for ease of use this code does it all in one.)</p>
+<p>Something interesting looks like it is going on here. The ensemble plot looks like a sideways parabola, but let’s check to make sure that is the case. Perhaps rerun <code>random_walk</code> but set <code>number_realizations</code> to be 100:</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="more-realizatons.html#cb148-1" aria-hidden="true" tabindex="-1"></a>number_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb148-2"><a href="more-realizatons.html#cb148-2" aria-hidden="true" tabindex="-1"></a>number_realizations <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb148-3"><a href="more-realizatons.html#cb148-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb148-4"><a href="more-realizatons.html#cb148-4" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(number_steps, number_realizations)</span></code></pre></div>
+<p><img src="series_files/figure-html/unnamed-chunk-320-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-320-2.png" width="384" /></p>
+<p>As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on <em>average</em> you go nowhere (in other words, the average position is <span class="math inline">\(x=0\)</span>), but as the number of steps increase, you are very likely to be <em>somewhere</em> (in other words, the confidence interval increases as the number of steps increase). The more realizations we can do the more robust this pattern becomes. Consider what occurs to the spaghetti and ensemble plots when the number of realizations is 1000:</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="more-realizatons.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">random_walk</span>(<span class="dv">2000</span>, <span class="dv">1000</span>)</span></code></pre></div>
+<p><img src="series_files/figure-html/unnamed-chunk-321-1.png" width="384" /><img src="series_files/figure-html/unnamed-chunk-321-2.png" width="384" /></p>
 <p>Let’s investigate our observations a little more mathematically.</p>
 </div>
             </section>
@@ -426,6 +451,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

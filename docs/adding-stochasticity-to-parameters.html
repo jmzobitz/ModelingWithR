@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>25.3 Adding stochasticity to parameters | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="25.3 Adding stochasticity to parameters | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="the-euler-maruyama-method.html"/>
 <link rel="next" href="concluding-thoughts-4.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,7 +406,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">25.3</span> Adding stochasticity to parameters</h2>
 <p>Now that we have seen an example in adding stochasticity to the logistic equation, we can also parameters of the differential equation to be stochastic. For example, let’s say that the growth rate <span class="math inline">\(r\)</span> in the logistic equation is subject to stochastic effects. How we would implement this by replacing <span class="math inline">\(r\)</span> with <span class="math inline">\(r + \mbox{ Noise }\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
-dx = (r + \mbox{ Noise } )x \left(1 - \frac{x}{K} \right) \; dt,
+dx = (r + \mbox{ Noise } ) \; x \left(1 - \frac{x}{K} \right) \; dt,
 \end{equation}\]</span></p>
 <p>Now what we do is separate out the terms that are multiplied by “Noise” - they will form the stochastic part of the differential equation. The terms that aren’t multipled by “Noise” form the deterministic part of the differential equation:</p>
 <p><span class="math display">\[\begin{equation}
@@ -393,81 +418,81 @@ dx = r  x \left(1 - \frac{x}{K} \right) \; dt + x \left(1 - \frac{x}{K} \right) 
 \mbox{Stochastic part: } &amp; x \left(1 - \frac{x}{K} \right) dW(t)
 \end{align*}\]</span></p>
 <p>There are a few things to notice here. First, the deterministic part of the differential equation is what we would expect without noise added. Second, notice how the stochastic part of the differential equation changed. Let’s take a look at the simulations with the Euler-Maruyama method, denoting the deterministic and stochastic parts as <code>deterministic_logistic_r</code> and <code>stochastic_logistic_r</code> respectively:</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="adding-stochasticity-to-parameters.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the deterministic and stochastic parts of the DE:</span></span>
-<span id="cb158-2"><a href="adding-stochasticity-to-parameters.html#cb158-2" aria-hidden="true" tabindex="-1"></a>deterministic_logistic_r <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
-<span id="cb158-3"><a href="adding-stochasticity-to-parameters.html#cb158-3" aria-hidden="true" tabindex="-1"></a>stochastic_logistic_r <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
-<span id="cb158-4"><a href="adding-stochasticity-to-parameters.html#cb158-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-5"><a href="adding-stochasticity-to-parameters.html#cb158-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
-<span id="cb158-6"><a href="adding-stochasticity-to-parameters.html#cb158-6" aria-hidden="true" tabindex="-1"></a>init_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
-<span id="cb158-7"><a href="adding-stochasticity-to-parameters.html#cb158-7" aria-hidden="true" tabindex="-1"></a>logistic_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
-<span id="cb158-8"><a href="adding-stochasticity-to-parameters.html#cb158-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-9"><a href="adding-stochasticity-to-parameters.html#cb158-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
-<span id="cb158-10"><a href="adding-stochasticity-to-parameters.html#cb158-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
-<span id="cb158-11"><a href="adding-stochasticity-to-parameters.html#cb158-11" aria-hidden="true" tabindex="-1"></a>timeSteps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
-<span id="cb158-12"><a href="adding-stochasticity-to-parameters.html#cb158-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-13"><a href="adding-stochasticity-to-parameters.html#cb158-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
-<span id="cb158-14"><a href="adding-stochasticity-to-parameters.html#cb158-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb158-15"><a href="adding-stochasticity-to-parameters.html#cb158-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-16"><a href="adding-stochasticity-to-parameters.html#cb158-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
-<span id="cb158-17"><a href="adding-stochasticity-to-parameters.html#cb158-17" aria-hidden="true" tabindex="-1"></a>logistic_out <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
-<span id="cb158-18"><a href="adding-stochasticity-to-parameters.html#cb158-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
-<span id="cb158-19"><a href="adding-stochasticity-to-parameters.html#cb158-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
-<span id="cb158-20"><a href="adding-stochasticity-to-parameters.html#cb158-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
-<span id="cb158-21"><a href="adding-stochasticity-to-parameters.html#cb158-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb158-22"><a href="adding-stochasticity-to-parameters.html#cb158-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
-<span id="cb158-23"><a href="adding-stochasticity-to-parameters.html#cb158-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
-<span id="cb158-24"><a href="adding-stochasticity-to-parameters.html#cb158-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-25"><a href="adding-stochasticity-to-parameters.html#cb158-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
-<span id="cb158-26"><a href="adding-stochasticity-to-parameters.html#cb158-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_out) <span class="sc">+</span></span>
-<span id="cb158-27"><a href="adding-stochasticity-to-parameters.html#cb158-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="adding-stochasticity-to-parameters.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the deterministic and stochastic parts of the DE:</span></span>
+<span id="cb156-2"><a href="adding-stochasticity-to-parameters.html#cb156-2" aria-hidden="true" tabindex="-1"></a>deterministic_logistic_r <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
+<span id="cb156-3"><a href="adding-stochasticity-to-parameters.html#cb156-3" aria-hidden="true" tabindex="-1"></a>stochastic_logistic_r <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))</span>
+<span id="cb156-4"><a href="adding-stochasticity-to-parameters.html#cb156-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-5"><a href="adding-stochasticity-to-parameters.html#cb156-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb156-6"><a href="adding-stochasticity-to-parameters.html#cb156-6" aria-hidden="true" tabindex="-1"></a>init_logistic <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
+<span id="cb156-7"><a href="adding-stochasticity-to-parameters.html#cb156-7" aria-hidden="true" tabindex="-1"></a>logistic_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
+<span id="cb156-8"><a href="adding-stochasticity-to-parameters.html#cb156-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-9"><a href="adding-stochasticity-to-parameters.html#cb156-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb156-10"><a href="adding-stochasticity-to-parameters.html#cb156-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
+<span id="cb156-11"><a href="adding-stochasticity-to-parameters.html#cb156-11" aria-hidden="true" tabindex="-1"></a>timeSteps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
+<span id="cb156-12"><a href="adding-stochasticity-to-parameters.html#cb156-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-13"><a href="adding-stochasticity-to-parameters.html#cb156-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
+<span id="cb156-14"><a href="adding-stochasticity-to-parameters.html#cb156-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb156-15"><a href="adding-stochasticity-to-parameters.html#cb156-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-16"><a href="adding-stochasticity-to-parameters.html#cb156-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb156-17"><a href="adding-stochasticity-to-parameters.html#cb156-17" aria-hidden="true" tabindex="-1"></a>logistic_out <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
+<span id="cb156-18"><a href="adding-stochasticity-to-parameters.html#cb156-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
+<span id="cb156-19"><a href="adding-stochasticity-to-parameters.html#cb156-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
+<span id="cb156-20"><a href="adding-stochasticity-to-parameters.html#cb156-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
+<span id="cb156-21"><a href="adding-stochasticity-to-parameters.html#cb156-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb156-22"><a href="adding-stochasticity-to-parameters.html#cb156-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
+<span id="cb156-23"><a href="adding-stochasticity-to-parameters.html#cb156-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
+<span id="cb156-24"><a href="adding-stochasticity-to-parameters.html#cb156-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-25"><a href="adding-stochasticity-to-parameters.html#cb156-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
+<span id="cb156-26"><a href="adding-stochasticity-to-parameters.html#cb156-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_out) <span class="sc">+</span></span>
+<span id="cb156-27"><a href="adding-stochasticity-to-parameters.html#cb156-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
 <div class="figure"><span id="fig:log-sde-r"></span>
-<img src="series_files/figure-html/log-sde-r-1.png" alt="One realization of the logistic differential equation with stochasticity in the parameter *r*." width="672" />
+<img src="series_files/figure-html/log-sde-r-1.png" alt="One realization of the logistic differential equation with stochasticity in the parameter *r*." width="384" />
 <p class="caption">
 Figure 25.4: One realization of the logistic differential equation with stochasticity in the parameter <em>r</em>.
 </p>
 </div>
-<p>As we did before, we can run multiple iterations of this stochastic process. We will also compute and plot the ensemble average in Figure <a href="#fig:spaghetti-r"><strong>??</strong></a>.</p>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="adding-stochasticity-to-parameters.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb159-2"><a href="adding-stochasticity-to-parameters.html#cb159-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
-<span id="cb159-3"><a href="adding-stochasticity-to-parameters.html#cb159-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-4"><a href="adding-stochasticity-to-parameters.html#cb159-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb159-5"><a href="adding-stochasticity-to-parameters.html#cb159-5" aria-hidden="true" tabindex="-1"></a>logistic_run_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb159-6"><a href="adding-stochasticity-to-parameters.html#cb159-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb159-7"><a href="adding-stochasticity-to-parameters.html#cb159-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
-<span id="cb159-8"><a href="adding-stochasticity-to-parameters.html#cb159-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
-<span id="cb159-9"><a href="adding-stochasticity-to-parameters.html#cb159-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
-<span id="cb159-10"><a href="adding-stochasticity-to-parameters.html#cb159-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
-<span id="cb159-11"><a href="adding-stochasticity-to-parameters.html#cb159-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb159-12"><a href="adding-stochasticity-to-parameters.html#cb159-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
-<span id="cb159-13"><a href="adding-stochasticity-to-parameters.html#cb159-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
-<span id="cb159-14"><a href="adding-stochasticity-to-parameters.html#cb159-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb159-15"><a href="adding-stochasticity-to-parameters.html#cb159-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb159-16"><a href="adding-stochasticity-to-parameters.html#cb159-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-17"><a href="adding-stochasticity-to-parameters.html#cb159-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb159-18"><a href="adding-stochasticity-to-parameters.html#cb159-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
-<span id="cb159-19"><a href="adding-stochasticity-to-parameters.html#cb159-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run_r) <span class="sc">+</span></span>
-<span id="cb159-20"><a href="adding-stochasticity-to-parameters.html#cb159-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb159-21"><a href="adding-stochasticity-to-parameters.html#cb159-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb159-22"><a href="adding-stochasticity-to-parameters.html#cb159-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p>As we did before, we can run multiple iterations of this stochastic process. We will also compute and plot the ensemble average.</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="adding-stochasticity-to-parameters.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb157-2"><a href="adding-stochasticity-to-parameters.html#cb157-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
+<span id="cb157-3"><a href="adding-stochasticity-to-parameters.html#cb157-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-4"><a href="adding-stochasticity-to-parameters.html#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb157-5"><a href="adding-stochasticity-to-parameters.html#cb157-5" aria-hidden="true" tabindex="-1"></a>logistic_run_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb157-6"><a href="adding-stochasticity-to-parameters.html#cb157-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb157-7"><a href="adding-stochasticity-to-parameters.html#cb157-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
+<span id="cb157-8"><a href="adding-stochasticity-to-parameters.html#cb157-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
+<span id="cb157-9"><a href="adding-stochasticity-to-parameters.html#cb157-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_logistic,</span>
+<span id="cb157-10"><a href="adding-stochasticity-to-parameters.html#cb157-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
+<span id="cb157-11"><a href="adding-stochasticity-to-parameters.html#cb157-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb157-12"><a href="adding-stochasticity-to-parameters.html#cb157-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> timeSteps_log,</span>
+<span id="cb157-13"><a href="adding-stochasticity-to-parameters.html#cb157-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
+<span id="cb157-14"><a href="adding-stochasticity-to-parameters.html#cb157-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb157-15"><a href="adding-stochasticity-to-parameters.html#cb157-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb157-16"><a href="adding-stochasticity-to-parameters.html#cb157-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-17"><a href="adding-stochasticity-to-parameters.html#cb157-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-18"><a href="adding-stochasticity-to-parameters.html#cb157-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
+<span id="cb157-19"><a href="adding-stochasticity-to-parameters.html#cb157-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run_r) <span class="sc">+</span></span>
+<span id="cb157-20"><a href="adding-stochasticity-to-parameters.html#cb157-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb157-21"><a href="adding-stochasticity-to-parameters.html#cb157-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb157-22"><a href="adding-stochasticity-to-parameters.html#cb157-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-r-1"></span>
-<img src="series_files/figure-html/spaghetti-r-1.png" alt="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot." width="672" />
+<img src="series_files/figure-html/spaghetti-r-1.png" alt="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot." width="384" />
 <p class="caption">
 Figure 25.5: Several different realizations of the logistic SDE with stochasticity in the parameter <em>r</em>, along with the ensemble average plot.
 </p>
 </div>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="adding-stochasticity-to-parameters.html#cb160-1" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Summarize the variables</span></span>
-<span id="cb160-2"><a href="adding-stochasticity-to-parameters.html#cb160-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic_r <span class="ot">&lt;-</span> logistic_run_r <span class="sc">%&gt;%</span></span>
-<span id="cb160-3"><a href="adding-stochasticity-to-parameters.html#cb160-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
-<span id="cb160-4"><a href="adding-stochasticity-to-parameters.html#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb160-5"><a href="adding-stochasticity-to-parameters.html#cb160-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="adding-stochasticity-to-parameters.html#cb158-1" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Summarize the variables</span></span>
+<span id="cb158-2"><a href="adding-stochasticity-to-parameters.html#cb158-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic_r <span class="ot">&lt;-</span> logistic_run_r <span class="sc">%&gt;%</span></span>
+<span id="cb158-3"><a href="adding-stochasticity-to-parameters.html#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
+<span id="cb158-4"><a href="adding-stochasticity-to-parameters.html#cb158-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb158-5"><a href="adding-stochasticity-to-parameters.html#cb158-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
 <pre><code>## `summarise()` has grouped output by &#39;t&#39;. You can override using the `.groups` argument.</code></pre>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="adding-stochasticity-to-parameters.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
-<span id="cb162-2"><a href="adding-stochasticity-to-parameters.html#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic_r) <span class="sc">+</span></span>
-<span id="cb162-3"><a href="adding-stochasticity-to-parameters.html#cb162-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb162-4"><a href="adding-stochasticity-to-parameters.html#cb162-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb162-5"><a href="adding-stochasticity-to-parameters.html#cb162-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="adding-stochasticity-to-parameters.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
+<span id="cb160-2"><a href="adding-stochasticity-to-parameters.html#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic_r) <span class="sc">+</span></span>
+<span id="cb160-3"><a href="adding-stochasticity-to-parameters.html#cb160-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb160-4"><a href="adding-stochasticity-to-parameters.html#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb160-5"><a href="adding-stochasticity-to-parameters.html#cb160-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-r-2"></span>
-<img src="series_files/figure-html/spaghetti-r-2.png" alt="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot." width="672" />
+<img src="series_files/figure-html/spaghetti-r-2.png" alt="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot." width="384" />
 <p class="caption">
 Figure 25.6: Several different realizations of the logistic SDE with stochasticity in the parameter <em>r</em>, along with the ensemble average plot.
 </p>
@@ -503,6 +528,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

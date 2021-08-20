@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>13.2 MCMC Parameter Estimation with a Differential Equation Model | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="13.2 MCMC Parameter Estimation with a Differential Equation Model | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="mcmc-parameter-estimation-with-an-empirical-model.html"/>
 <link rel="next" href="timing-your-code.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -380,7 +405,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="mcmc-parameter-estimation-with-a-differential-equation-model" class="section level2" number="13.2">
 <h2><span class="header-section-number">13.2</span> MCMC Parameter Estimation with a Differential Equation Model</h2>
 <p>Next let’s try parameter estimation with a differential equation model. What is different for this case is that we are given information about rate of change, so we need to first numerically solve the differential equation for a given parameter set and then compute the likelihood.</p>
-<p>The example that we are going to use relates to land use management, in particular a coupled system between a resource (such as a national park) and the amount of visitors it receives <span class="citation">(<a href="references.html#ref-sinay_simple_2006" role="doc-biblioref">Sinay and Sinay 2006</a>)</span>. The tourism model relies on two non-dimensonal scaled variables, <span class="math inline">\(R\)</span> which is the amount of the resource (as a percentage) and <span class="math inline">\(V\)</span> the percentage of visitors that could visit (also as a percentage):</p>
+<p>The example that we are going to use relates to land use management, in particular a coupled system between a resource (such as a national park) and the amount of visitors it receives <span class="citation">(<a href="#ref-sinay_simple_2006" role="doc-biblioref">Sinay and Sinay 2006</a>)</span>. The tourism model relies on two non-dimensonal scaled variables, <span class="math inline">\(R\)</span> which is the amount of the resource (as a percentage) and <span class="math inline">\(V\)</span> the percentage of visitors that could visit (also as a percentage):</p>
 <p><span class="math display" id="eq:tourism-13">\[\begin{equation}
 \begin{split}
 \frac{dR}{dt}&amp;=R\cdot (1-R)-aV \\ 
@@ -388,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \end{split} \tag{13.2}
 \end{equation}\]</span></p>
 <p>Equation <a href="mcmc-parameter-estimation-with-a-differential-equation-model.html#eq:tourism-13">(13.2)</a> has two parameters <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, which relate to how the resource is used up as visitors come (<span class="math inline">\(a\)</span>) and how as the visitors increase, word of mouth leads to a negative effect of it being too crowded (<span class="math inline">\(b\)</span>).</p>
-For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park as reported in <span class="citation"><a href="references.html#ref-sinay_simple_2006" role="doc-biblioref">Sinay and Sinay</a> (<a href="references.html#ref-sinay_simple_2006" role="doc-biblioref">2006</a>)</span> (Table <a href="mcmc-parameter-estimation-with-a-differential-equation-model.html#tab:tourism-13">13.1</a>) and plotted in Figure <a href="mcmc-parameter-estimation-with-a-differential-equation-model.html#fig:park-data-13">13.3</a>
+For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park as reported in <span class="citation"><a href="#ref-sinay_simple_2006" role="doc-biblioref">Sinay and Sinay</a> (<a href="#ref-sinay_simple_2006" role="doc-biblioref">2006</a>)</span> (Table <a href="mcmc-parameter-estimation-with-a-differential-equation-model.html#tab:tourism-13">13.1</a>) and plotted in Figure <a href="mcmc-parameter-estimation-with-a-differential-equation-model.html#fig:park-data-13">13.3</a>
 <table>
 <caption>
 <span id="tab:tourism-13">Table 13.1: </span>Scaled data on visitors and resources to a national park.
@@ -562,6 +587,12 @@ Figure 13.5: Ensemble output results from the MCMC parameter estimation for Equa
 </p>
 </div>
 </div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-sinay_simple_2006" class="csl-entry">
+Sinay, Laura, and Leon Sinay. 2006. <span>“A <span>Simple Mathematical Model</span> for the <span>Effects</span> of the <span>Growth</span> of <span>Tourism</span> on <span>Environment</span>.”</span>
+</div>
+</div>
             </section>
 
           </div>
@@ -591,6 +622,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

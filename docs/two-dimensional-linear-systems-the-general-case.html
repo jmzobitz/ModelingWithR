@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>19.1 Two dimensional linear systems: the general case | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="19.1 Two dimensional linear systems: the general case | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="stability-19.html"/>
 <link rel="next" href="sensitivity-to-parameters-with-the-trace-determinant.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -383,29 +408,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display">\[\begin{equation}
 \begin{pmatrix} \frac{dx}{dt} \\ \frac{dy}{dt} \end{pmatrix} =  \begin{pmatrix} ax+by \\ cx+dy \end{pmatrix} =  \begin{pmatrix} a &amp; b \\ c &amp;  d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
 \end{equation}\]</span></p>
-<p>Eigenvalues are found by solving <span class="math inline">\(\displaystyle \det (A - \lambda I ) =0\)</span>, as a reminder we need to compute the following:</p>
-<p><span class="math display">\[\begin{equation}
-\det \begin{pmatrix} a - \lambda &amp; b \\ c &amp; d-\lambda \end{pmatrix} = (a-\lambda)(d-\lambda) - bc
+<p>Recall that eigenvalues are found by solving <span class="math inline">\(\displaystyle \det (A - \lambda I ) =0\)</span>, which <span class="math inline">\(\displaystyle \det (A - \lambda I )\)</span> is computed in Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:det-eq-19">(19.1)</a>.</p>
+<p><span class="math display" id="eq:det-eq-19">\[\begin{equation}
+\det \begin{pmatrix} a - \lambda &amp; b \\ c &amp; d-\lambda \end{pmatrix} = (a-\lambda)(d-\lambda) - bc \tag{19.1}
 \end{equation}\]</span></p>
-<p>If we factor out this expression we obtain the characteristic equation:</p>
-<p><span class="math display">\[\begin{equation}
-\lambda^{2} - (a+d) \lambda + ad - bc = 0
+<p>If we multiply out Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:det-eq-19">(19.1)</a> we obtain the characteristic equation:</p>
+<p><span class="math display" id="eq:ch-eq-19">\[\begin{equation}
+\lambda^{2} - (a+d) \lambda + ad - bc = 0 \tag{19.2}
 \end{equation}\]</span></p>
-<p>What is cool about this equation is that the roots can be expressed as functions of the entries of the matrix <span class="math inline">\(A\)</span>. In fact, in linear algebra the term <span class="math inline">\(a+d\)</span> is the sum of the diagonal entries, which is known as the <strong>trace</strong> of a matrix, or <span class="math inline">\(\mbox{tr}(A)\)</span>. And you may recognize that <span class="math inline">\(ad-bc\)</span> is the same as <span class="math inline">\(\det(A)\)</span>. So our characteristic equation is can be rewritten as solving Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.1)</a>:</p>
+<p>What is cool about Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:ch-eq-19">(19.2)</a> is that the roots can be expressed as functions of the entries of the matrix <span class="math inline">\(A\)</span> (<span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>, <span class="math inline">\(d\)</span>). In fact, in linear algebra the term <span class="math inline">\(a+d\)</span> is the sum of the diagonal entries, also known as the <strong>trace</strong> of a matrix. The trace of a matrix can be expressed as <span class="math inline">\(\mbox{tr}(A)\)</span>. And you may recognize that <span class="math inline">\(ad-bc\)</span> is the same as <span class="math inline">\(\det(A)\)</span>. So our characteristic equation is can be rewritten as solving Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.3)</a>:</p>
 <span class="math display" id="eq:tr-det-19">\[\begin{equation}
-\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0 \tag{19.1}
+\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0 \tag{19.3}
 \end{equation}\]</span>
 
 <div class="example">
-<span id="exm:unnamed-chunk-277" class="example"><strong>Example 19.1  </strong></span>Write down the characteristic equation for the system <span class="math inline">\(\vec{x}&#39;=Ax\)</span> where <span class="math inline">\(\displaystyle A= \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span> and classify the stability of the equilibrium solution.
+<span id="exm:unnamed-chunk-278" class="example"><strong>Example 19.1  </strong></span>Write down the characteristic equation for the system <span class="math inline">\(\vec{x}&#39;=Ax\)</span> where <span class="math inline">\(\displaystyle A= \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span> and classify the stability of the equilibrium solution.
 </div>
  
 
-<div class="remark">
- <span class="remark"><em>Remark. </em></span> We can see that <span class="math inline">\(\det(A)= -1(3) - 0(1) = -3\)</span> and tr<span class="math inline">\((A)=2\)</span>, so our characteristic equation is <span class="math inline">\(\lambda^{2}-2\lambda -3\)</span>. If we solve <span class="math inline">\(\lambda^{2}-2\lambda -3=0\)</span> we have <span class="math inline">\((\lambda-3)(\lambda+1)=0\)</span>, so our eigenvalues are <span class="math inline">\(\lambda=3\)</span> and <span class="math inline">\(\lambda=-1\)</span>. Since one eigenvalue is positive and the other one is negative, the equilibrium solution is a saddle node.
+<div class="solution">
+ <span class="solution"><em>Solution. </em></span> We can see that <span class="math inline">\(\det(A)= -1(3) - 0(1) = -3\)</span> and tr<span class="math inline">\((A)=2\)</span>, so our characteristic equation is <span class="math inline">\(\lambda^{2}-2\lambda -3\)</span>. If we solve <span class="math inline">\(\lambda^{2}-2\lambda -3=0\)</span> we have <span class="math inline">\((\lambda-3)(\lambda+1)=0\)</span>, so our eigenvalues are <span class="math inline">\(\lambda=3\)</span> and <span class="math inline">\(\lambda=-1\)</span>. Since one eigenvalue is positive and the other one is negative, the equilibrium solution is a saddle node.
 </div>
-<p>Solving Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.1)</a> might be a computationally easier way to compute the eigenvalues, especially if you have a known parameter. We can also exploit this relationship even more.</p>
-<p>Let’s say we have two eigenvalues <span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span>. We make no assumptions on if they are real or imaginary or equal. But if they are eigenvalues, then they are roots of the characteristic polynomial. This means that <span class="math inline">\((\lambda-\lambda_{1})(\lambda-\lambda_{2})=0\)</span>. If we multiply out this equation we have <span class="math inline">\(\lambda^{2}-(\lambda_{1}+\lambda_{2}) \lambda + \lambda_{1} \lambda_{2}=0\)</span>. Hmmm. If we compare this equation with Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.1)</a> we have:</p>
+<p>Solving Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.3)</a> might be a computationally easier way to compute the eigenvalues, especially if you have a known parameter. We can also exploit this relationship even more.</p>
+<p>Let’s say we have two eigenvalues <span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span>. We make no assumptions on if they are real or imaginary or equal. But if they are eigenvalues, then they are roots of the characteristic polynomial. This means that <span class="math inline">\((\lambda-\lambda_{1})(\lambda-\lambda_{2})=0\)</span>. If we multiply out this equation we have <span class="math inline">\(\lambda^{2}-(\lambda_{1}+\lambda_{2}) \lambda + \lambda_{1} \lambda_{2}=0\)</span>. Hmmm. If we compare this equation with Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.3)</a> we have:</p>
 <p><span class="math display">\[\begin{equation}
 \lambda^{2}-(\lambda_{1}+\lambda_{2}) \lambda + \lambda_{1} \lambda_{2} = \lambda^{2} - \mbox{tr}(A)\lambda + \det(A)
 \end{equation}\]</span></p>
@@ -466,33 +491,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 
 <div class="example">
-<span id="exm:unnamed-chunk-279" class="example"><strong>Example 19.2  </strong></span>Use the trace and determinant relationships to classify the stability of the equilibrium solution for the linear system <span class="math inline">\(\vec{x}&#39;=Ax\)</span> where <span class="math inline">\(\displaystyle A= \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>.
+<span id="exm:unnamed-chunk-280" class="example"><strong>Example 19.2  </strong></span>Use the trace and determinant relationships to classify the stability of the equilibrium solution for the linear system <span class="math inline">\(\vec{x}&#39;=A\vec{x}\)</span> where <span class="math inline">\(\displaystyle A= \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>.
 </div>
  
 
-<div class="remark">
- <span class="remark"><em>Remark. </em></span> We can see that <span class="math inline">\(\det(A)= -1(3) - 0(1) = -3\)</span> and tr<span class="math inline">\((A)=2\)</span>. Since the determinant is negative, the equilibrium solution must be a saddle node.
+<div class="solution">
+ <span class="solution"><em>Solution. </em></span> We can see that <span class="math inline">\(\det(A)= -1(3) - 0(1) = -3\)</span> and tr<span class="math inline">\((A)=2\)</span>. Since the determinant is negative, the equilibrium solution must be a saddle node.
 </div>
 <p> 
-Knowing the relationships between the trace and determinant is a pretty quick and easy way to investigate stability of equilibrium solutions! Another way to graphically represent the stability of solutions is with the <em>trace-determinant plane</em> (shown in Figure <a href="#tab:trace-det-18"><strong>??</strong></a>), with tr<span class="math inline">\((A)\)</span> on the horizontal axis and det<span class="math inline">\((A)\)</span> on the vertical axis:</p>
+Knowing the relationships between the trace and determinant for a two-dimensional system of equations is a pretty quick and easy way to investigate stability of equilibrium solutions!</p>
+<p>Another way to graphically represent the stability of solutions is with the <em>trace-determinant plane</em> (shown in Figure <a href="two-dimensional-linear-systems-the-general-case.html#fig:trace-det-18">19.1</a>), with tr<span class="math inline">\((A)\)</span> on the horizontal axis and det<span class="math inline">\((A)\)</span> on the vertical axis:</p>
 <div class="figure"><span id="fig:trace-det-18"></span>
 <img src="series_files/figure-html/trace-det-18-1.png" alt="The trace-determinant plane" width="672" />
 <p class="caption">
 Figure 19.1: The trace-determinant plane
 </p>
 </div>
-<p>It also turns out that we can extend this diagram to the imaginary and nonzero cases for the roots of the characteristic equation. Using the quadratic formula we can solve directly for the eigenvalues as a function of the trace and determinant:</p>
-<p><span class="math display">\[\begin{equation}\label{eq:roots}
-\lambda_{1,2}= \frac{\mbox{tr}(A)}{2} \pm \frac{\sqrt{ (\mbox{tr}(A))^2-4 \det(A)}}{2}
+<p>It also turns out that we can extend Figure <a href="two-dimensional-linear-systems-the-general-case.html#fig:trace-det-18">19.1</a> even more to include the imaginary and nonzero cases for the roots of the characteristic equation.</p>
+<p>Firt we will apply the quadratic formula to Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-19">(19.3)</a> to solve directly for the eigenvalues as a function of the trace and determinant:</p>
+<p><span class="math display" id="eq:tr-det-soln-19">\[\begin{equation}
+\lambda_{1,2}= \frac{\mbox{tr}(A)}{2} \pm \frac{\sqrt{ (\mbox{tr}(A))^2-4 \det(A)}}{2} \tag{19.4}
 \end{equation}\]</span></p>
-<p>This seems like a more complicated expression, but it can be shown to be consistent with our above work. Moving to our quadratic equation allows us to see what happens when we have imaginary eigenvalues - which can be a stable or unstable spiral depending on its location in the trace-determinant plane (Figure <a href="#tab:trace-det-ref"><strong>??</strong></a>).</p>
+<p>While Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-soln-19">(19.4)</a> seems like a more complicated expression, it can be shown to be consistent with our above work. Imaginary eigenvalues can be a stable or unstable spiral depending on its location in the trace-determinant plane (Figure <a href="two-dimensional-linear-systems-the-general-case.html#fig:trace-det-ref">19.2</a>).</p>
 <div class="figure"><span id="fig:trace-det-ref"></span>
 <img src="series_files/figure-html/trace-det-ref-1.png" alt="Revised trace-determinant plane." width="672" />
 <p class="caption">
 Figure 19.2: Revised trace-determinant plane.
 </p>
 </div>
-<p>If the discriminant (the part inside the square root, which is <span class="math inline">\((\mbox{tr}(A))^2-4 \det(A)\)</span>) of the eigenvalue expression is negative then we have a spiral source or spiral sink depending on the positivity of the tr<span class="math inline">\((A)\)</span>.</p>
+<p>If the discriminant (the part inside the square root for Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-soln-19">(19.4)</a>, which is <span class="math inline">\((\mbox{tr}(A))^2-4 \det(A)\)</span>) of the eigenvalue expression is negative then we have a spiral source or spiral sink depending on the positivity of the tr<span class="math inline">\((A)\)</span>.</p>
 <p>Finally the <em>center</em> equilibrium occurs when the trace is exactly zero and the determinant is positive. This graphic of the trace-determinant plane is a quick way to analyze stability of a solution without a lot of algebraic analysis.</p>
 </div>
             </section>
@@ -524,6 +551,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

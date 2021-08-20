@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>20.1 A series of equations | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="20.1 A series of equations | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="bifurcation-20.html"/>
 <link rel="next" href="bifurcations-with-systems-of-equations.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,24 +404,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="a-series-of-equations" class="section level2" number="20.1">
 <h2><span class="header-section-number">20.1</span> A series of equations</h2>
-<p>First let’s consider the differential equations <span class="math inline">\(\displaystyle \frac{dx}{dt} = 1-x^{2}\)</span>. This equation has an equibrium solution at <span class="math inline">\(x=\pm 1\)</span>. To classify the stability of the equilibrium solutions we apply the following test (developed in Section <a href="phase-05.html#phase-05">5</a>):</p>
+<p>First let’s consider the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = 1-x^{2}\)</span>. This equation has an equibrium solution at <span class="math inline">\(x=\pm 1\)</span>. To classify the stability of the equilibrium solutions we apply the following test (developed in Section <a href="phase-05.html#phase-05">5</a>):</p>
 <ul>
 <li>If <span class="math inline">\(f&#39;(y_{*})’&gt;0\)</span> at an equilibrium solution, the equilibrium solution <span class="math inline">\(y=y_{*}\)</span> will be unstable.</li>
 <li>If <span class="math inline">\(f&#39;(y_{*}) &lt;0\)</span> at an equilibrium solution, the equilibrium solution <span class="math inline">\(y=y_{*}\)</span> will be stable.</li>
 <li>If <span class="math inline">\(f&#39;(y_{*}) = 0\)</span>, we cannot conclude anything about the stability of <span class="math inline">\(y=y_{*}\)</span>.</li>
 </ul>
 <p>Applying this test, we know <span class="math inline">\(f(x)=1-x^2\)</span> and <span class="math inline">\(f&#39;(x)=-2x\)</span>. Since <span class="math inline">\(f&#39;(1)=-2\)</span> and <span class="math inline">\(f&#39;(-1)=2\)</span>, then the equilibrium solution <span class="math inline">\(x=1\)</span> is stable and <span class="math inline">\(x=-1\)</span> unstable.</p>
-<p>Figure <a href="a-series-of-equations.html#fig:eq1-x2">20.1</a> shows a plot of the phase plane along with some solutions:</p>
+<p>Figure <a href="a-series-of-equations.html#fig:eq1-x2">20.1</a> shows a plot of the phase plane along with some solutions. Notice how the solutions seem to flow to <span class="math inline">\(x=1\)</span> and away from <span class="math inline">\(x=-1\)</span>.</p>
 <div class="figure"><span id="fig:eq1-x2"></span>
 <img src="series_files/figure-html/eq1-x2-1.png" alt="Phase plane of $x'=1-x^{2}$" width="480" />
 <p class="caption">
 Figure 20.1: Phase plane of <span class="math inline">\(x&#39;=1-x^{2}\)</span>
 </p>
 </div>
-<p>Let’s modify and extend this example further. Consider two more differential equations to consider:
-- <span class="math inline">\(\displaystyle \frac{dx}{dt} = -1-x^{2}\)</span>: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.
-- <span class="math inline">\(\displaystyle \frac{dx}{dt} = -x^{2}\)</span>: The stability of the second equation is a little more tricky. While it has an equilibrium solution at <span class="math inline">\(x=0\)</span>, the stability test cannot apply because <span class="math inline">\(f&#39;=-2x\)</span> and <span class="math inline">\(f&#39;(0)=0\)</span>. However investigating the sign of <span class="math inline">\(f(x)\)</span> to the left and right of <span class="math inline">\(x=0\)</span>, we see that this solution is constantly decreasing, so the equilibrium is unstable.</p>
-<p>So let’s also take a look at these phaseplanes along with the solution:</p>
+<p>Let’s modify and extend this example further. Consider two more differential equations:</p>
+<ul>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -1-x^{2}\)</span>: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.</li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x^{2}\)</span>: The stability of the second equation is a little more tricky. While it has an equilibrium solution at <span class="math inline">\(x=0\)</span>, the stability test cannot apply because <span class="math inline">\(f&#39;=-2x\)</span> and <span class="math inline">\(f&#39;(0)=0\)</span>. However investigating the sign of <span class="math inline">\(f(x)\)</span> to the left and right of <span class="math inline">\(x=0\)</span>, we see that this solution is constantly decreasing, so the equilibrium is unstable.</li>
+</ul>
+<p>So let’s also take a look at the phaseplanes for <span class="math inline">\(\displaystyle \frac{dx}{dt} = -1-x^{2}\)</span> and <span class="math inline">\(\displaystyle \frac{dx}{dt} = -x^{2}\)</span> along with the some solution curves (see also the accompanying figure).</p>
 <div class="figure"><span id="fig:eq1-x2-2-1"></span>
 <img src="series_files/figure-html/eq1-x2-2-1.png" alt="Phase plane of $x'=-1-x^{2}$ and $x'=-x^{2}$" width="336" />
 <p class="caption">
@@ -409,9 +436,11 @@ Figure 20.2: Phase plane of <span class="math inline">\(x&#39;=-1-x^{2}\)</span>
 Figure 20.3: Phase plane of <span class="math inline">\(x&#39;=-1-x^{2}\)</span> and <span class="math inline">\(x&#39;=-x^{2}\)</span>
 </p>
 </div>
-<p>There is an interesting pattern going on here. Let’s build on these three examples in a more general context. Consider the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = c-x^{2}\)</span> the value of <span class="math inline">\(c\)</span> influences whether or not we will have a stable equilibrium solution.</p>
-<p>Steady states to this differential equation are when <span class="math inline">\(x^{*}=\pm \sqrt{c}\)</span>. If <span class="math inline">\(c&gt;0\)</span> we have two steady states. If <span class="math inline">\(c=0\)</span> there is only one steady state, and if <span class="math inline">\(c&lt;0\)</span>, then there are no steady states.</p>
-<p>We can also test out the stability of our steady states using the stability test, with <span class="math inline">\(f(x)=c-x^{2}\)</span> and <span class="math inline">\(f&#39;(x)=-2x\)</span>:</p>
+<p>There is an interesting pattern going on here. Let’s build on these three examples in a more general context. Consider the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = c-x^{2}\)</span>. In our first example, <span class="math inline">\(c=1\)</span>. In the second example, <span class="math inline">\(c=-1\)</span>, and the third example <span class="math inline">\(c=0\)</span>. The phaseplanes from these examples illustrates how the value of <span class="math inline">\(c\)</span> influences the phase line and the resulting solution.</p>
+<p>Steady states to <span class="math inline">\(\displaystyle \frac{dx}{dt} = c-x^{2}\)</span> are at <span class="math inline">\(x^{*}=\pm \sqrt{c}\)</span>. We can also test out the stability of our steady states using the stability test, with <span class="math inline">\(f(x)=c-x^{2}\)</span> and <span class="math inline">\(f&#39;(x)=-2x\)</span>:</p>
+<ul>
+<li>If <span class="math inline">\(c&gt;0\)</span> we have two steady states, summarized in the following table:</li>
+</ul>
 <table>
 <thead>
 <tr class="header">
@@ -431,6 +460,21 @@ Figure 20.3: Phase plane of <span class="math inline">\(x&#39;=-1-x^{2}\)</span>
 <td><span class="math inline">\(2 \sqrt{c}\)</span></td>
 <td>Unstable</td>
 </tr>
+</tbody>
+</table>
+<p>(You should verify that the stability result we initially found when <span class="math inline">\(c=1\)</span> matches the table.)</p>
+<ul>
+<li>If <span class="math inline">\(c=0\)</span> there is only one steady state, summarized, in the following table:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Equilibrium solution</th>
+<th><span class="math inline">\(f&#39;(x^{*})\)</span></th>
+<th>Tendency of solution</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
 <td><span class="math inline">\(x^{*}=0\)</span></td>
 <td>0</td>
@@ -438,14 +482,19 @@ Figure 20.3: Phase plane of <span class="math inline">\(x&#39;=-1-x^{2}\)</span>
 </tr>
 </tbody>
 </table>
-<p>Even better, since we have a function dependence of <span class="math inline">\(x^{*}\)</span> on the value of <span class="math inline">\(c\)</span>, we can represent the different notions of stability encapsulated in the above table graphically in what is called a <em>bifurcation diagram</em>:</p>
-<div class="figure"><span id="fig:unnamed-chunk-291"></span>
-<img src="series_files/figure-html/unnamed-chunk-291-1.png" alt="A saddle-node bifurcation" width="672" />
+<p>Based on the phaseplane for <span class="math inline">\(x&#39;=-x^{2}\)</span>, the equilibrium solution <span class="math inline">\(x^{*}=0\)</span> is unstable. If the initial condition <span class="math inline">\(x(0)\)</span> is greater than 0, the solution flows towards <span class="math inline">\(x=0\)</span>, but if the initial condition is less than zero, the solution flows away from <span class="math inline">\(x=0\)</span>. This is similar to a one-dimensional analogue to a saddle node from Section <a href="stability-19.html#stability-19">19</a>.</p>
+<ul>
+<li>Finally, if <span class="math inline">\(c&lt;0\)</span>, then there are no steady states because <span class="math inline">\(\sqrt{c}\)</span> is does not have a real solution when <span class="math inline">\(c&lt;0\)</span>. (Note: eigenvalues can be imaginary, but equilibrium solutions for our contexts can only be real). We can also test out the stability of our steady states using the stability test, with <span class="math inline">\(f(x)=c-x^{2}\)</span> and <span class="math inline">\(f&#39;(x)=-2x\)</span>:</li>
+</ul>
+<p>Notice how different values of <span class="math inline">\(c\)</span> influence both the <em>value</em> <span class="math inline">\((x^{*}=\pm \sqrt{c})\)</span> and the <em>stability</em> of the equilibrium solution. Rather than making a series of tables, we can represent the dependence of the equilibrium solution and its stability in what is called a <em>bifurcation diagram</em> (Figure <a href="a-series-of-equations.html#fig:saddle-bifur-20">20.4</a>).</p>
+<div class="figure" style="text-align: center"><span id="fig:saddle-bifur-20"></span>
+<img src="series_files/figure-html/saddle-bifur-20-1.png" alt="A saddle-node bifurcation" width="672" />
 <p class="caption">
 Figure 20.4: A saddle-node bifurcation
 </p>
 </div>
-<p>For this particular example we have what is called a <em>saddle-node</em> bifurcation. It might be helpful to think of this <span class="math inline">\(c\)</span> like a tuning knob. As <span class="math inline">\(c&gt;0\)</span> we will always have two different equilibrium solutions that are symmetrical based on the value of <span class="math inline">\(c\)</span>. The positive one will be stable, the other unstable. As <span class="math inline">\(c\)</span> gets smaller these equilbrium solutions will collapse into one, which will be unstable. If <span class="math inline">\(c\)</span> is negative, the equilibrium solution disappears.</p>
+<p>Let’s talk about Figure <a href="a-series-of-equations.html#fig:saddle-bifur-20">20.4</a>. The graph represents the value of the equilibrium solution (<span class="math inline">\(x^{*}\)</span>, vertical axis) as a function of the parameter <span class="math inline">\(c\)</span> (horizontal axis). Since equilibrium solutions are characterized by <span class="math inline">\(x^{*}=\pm \sqrt{c}\)</span> we have the “sideways parabola,” traced in blue in Figure <a href="a-series-of-equations.html#fig:saddle-bifur-20">20.4</a>. When <span class="math inline">\(c&lt;0\)</span>, there is no equilibrium solution, (so nothing is plotted in the second and third quadrants of Figure <a href="a-series-of-equations.html#fig:saddle-bifur-20">20.4</a>). The difference between the solid and dashed lines in Figure <a href="a-series-of-equations.html#fig:saddle-bifur-20">20.4</a> is used to distinguish between a stable equilibrium solution (<span class="math inline">\(x^{*}=\sqrt{c}\)</span> when <span class="math inline">\(c&gt;0\)</span>) and unstable equilibrium solution (<span class="math inline">\(x^{*}=-\sqrt{c}\)</span> when <span class="math inline">\(c&gt;0\)</span>). That is so cool that <em>all</em> the information about the equilibrium solution and its stability is contained in this diagram!</p>
+<p>This particular example is called a <em>saddle-node</em> bifurcation. It might be helpful to think of this <span class="math inline">\(c\)</span> like a tuning knob. As <span class="math inline">\(c&gt;0\)</span> we will always have two different equilibrium solutions that are symmetrical based on the value of <span class="math inline">\(c\)</span>. The positive one will be stable, the other unstable. As <span class="math inline">\(c\)</span> gets smaller these equilbrium solutions will collapse into one, which will be unstable. If <span class="math inline">\(c\)</span> is negative, the equilibrium solution disappears.</p>
 </div>
             </section>
 
@@ -476,6 +525,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

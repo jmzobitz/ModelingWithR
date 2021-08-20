@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>18.3 What do eigenvalues tell us? | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="18.3 What do eigenvalues tell us? | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="computing-eigenvalues-and-eigenvectors.html"/>
 <link rel="next" href="concluding-thoughts-2.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,19 +404,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="what-do-eigenvalues-tell-us" class="section level2" number="18.3">
 <h2><span class="header-section-number">18.3</span> What do eigenvalues tell us?</h2>
-<p>Here the focus of the section changes a little bit from finding the solution of the differential equation (e.g. the formulas <span class="math inline">\(s_{1}(t)\)</span> and <span class="math inline">\(s_{2}(t)\)</span>) to understanding what the solutions would <em>look</em> like in the phaseplane. This is intentional: once we have found the eigenvalues, finding eigenvectors can seem rather mundane at times (perhaps heavy on the algebra), yet we know they will be a straight line through the origin. We know the general form of the solution is <span class="math inline">\(\vec{x}(t) = c_{1} e^{\lambda_{1}t} \cdot \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \cdot \vec{v}_{2}\)</span>, so what else is there?</p>
-<p>In fact, studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let’s think about the characteristic equation for a 2 by 2 matrix, simplifying things out:</p>
+<p>Here the focus of the section changes a little bit from finding the solution of the differential equation (e.g. the formulas <span class="math inline">\(s_{1}(t)\)</span> and <span class="math inline">\(s_{2}(t)\)</span>) to understanding what the solutions would <em>look</em> like in the phaseplane. This is intentional: once we have found the eigenvalues, finding eigenvectors can seem rather mundane at times (perhaps heavy on the algebra), yet we know they will be a straight line through the origin. So what else is there?</p>
+<p>Studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let’s think about the characteristic equation for a 2 by 2 matrix, simplifying things out:</p>
 <p><span class="math display">\[\begin{align*}
 \det(A - \lambda I) &amp;= 0 \\
 (a - \lambda)(d-\lambda)-bc &amp;= 0 \\
 \lambda^{2} - (a+d) \lambda + ad-bc &amp; = 0
 \end{align*}\]</span></p>
-<p>The last line of the above equation is a quadratic equation in <span class="math inline">\(\lambda\)</span>. Think about what you know about quadratic equations: there may be 2 distinct solutions, no solution (the solutions are imaginary) or 1 solution (repeated solutions). Also the solutions may be positive or negative. There are so many different combinations! In this case the solutions are referring to eigenvalues, so there is a phaseplane associated with each case. What types of phaseplanes do all those different types of eigenvalues produce? Let’s take a look at each of these cases, focusing our analysis on a two-dimensional system of equations (the results can be generalized to higher-dimensional systems).</p>
+<p>The last line of the above equation is a quadratic equation in <span class="math inline">\(\lambda\)</span>. Think about what you know about quadratic equations: there may be 2 distinct solutions, no solution (the solutions are imaginary) or 1 solution (repeated solutions). Also the solutions may be positive or negative. There are so many different combinations! What types of phaseplanes do all those different types of eigenvalues produce? Let’s take a look at each of these cases, focusing our analysis on a two-dimensional system of equations (the results can be generalized to higher-dimensional systems).</p>
 <div id="all-eigenvalues-positive-unstable-node" class="section level3" number="18.3.1">
 <h3><span class="header-section-number">18.3.1</span> All eigenvalues positive (unstable node)</h3>
 <p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 2 &amp; 0 \\ 1 &amp; 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
 <p>The eigenvalues are both positive:</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="what-do-eigenvalues-tell-us.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))  </span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="what-do-eigenvalues-tell-us.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
 <pre><code>## eigen() decomposition
 ## $values
 ## [1] 2 1
@@ -401,15 +426,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 1 0.7071068  0
 ## 2 0.7071068  1</code></pre>
 <p>The phase plane for this diagram is shown below:</p>
-<p><img src="series_files/figure-html/unnamed-chunk-261-1.png" width="336" /></p>
+<p><img src="series_files/figure-html/unnamed-chunk-263-1.png" width="336" /></p>
 <p>Notice how the phase plane diagram has all arrows pointing from the origin. In the phaseplane a solution would move <em>away</em>, so the origin is an unstable node.</p>
-<p>Plotting both solutions versus time shows that they increase in <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span></p>
+<p>Plotting both solutions versus time shows woudl show <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> increase in time.</p>
 </div>
 <div id="all-eigenvalues-negative-stable-node" class="section level3" number="18.3.2">
 <h3><span class="header-section-number">18.3.2</span> All eigenvalues negative (stable node)</h3>
 <p>Now consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} -2 &amp; 0 \\ 1 &amp; -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
 <p>(This is a <em>slight</em> modification from the previous example.) The eigenvalues are both positive:</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="what-do-eigenvalues-tell-us.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>))  </span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="what-do-eigenvalues-tell-us.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>))</span></code></pre></div>
 <pre><code>## eigen() decomposition
 ## $values
 ## [1] -2 -1
@@ -419,14 +444,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 1  0.7071068  0
 ## 2 -0.7071068  1</code></pre>
 <p>In this case the situation is reversed, with the phase plane having all arrows pointing to the origin.</p>
-<p><img src="series_files/figure-html/unnamed-chunk-263-1.png" width="336" /></p>
+<p><img src="series_files/figure-html/unnamed-chunk-265-1.png" width="336" /></p>
 <p>We say the equilibrium solution is a <em>stable node</em>. In the phaseplane a solution would eventually move towards the origin (asymptotically)</p>
 </div>
 <div id="one-positive-one-negative-eigenvalue" class="section level3" number="18.3.3">
 <h3><span class="header-section-number">18.3.3</span> One positive one negative eigenvalue</h3>
 <p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 3 &amp; -2 \\ 1 &amp; -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
 <p>The eigenvalues are both positive:</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="what-do-eigenvalues-tell-us.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="sc">-</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>))  </span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="what-do-eigenvalues-tell-us.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>))</span></code></pre></div>
 <pre><code>## eigen() decomposition
 ## $values
 ## [1]  2.4142136 -0.4142136
@@ -436,14 +461,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 1 0.9596830 0.5054495
 ## 2 0.2810846 0.8628562</code></pre>
 <p>This situation is called a saddle node, best explained with a phase diagram:</p>
-<p><img src="series_files/figure-html/unnamed-chunk-265-1.png" width="336" /></p>
+<p><img src="series_files/figure-html/unnamed-chunk-267-1.png" width="336" /></p>
 <p>This equilibrium solution is called a <em>saddle node</em>. From one direction (the horizontal) the arrows point away from the origin, but in the vertical direction the arrows point towards the origin. We will see that this behavior is due to the contradictory nature of the solution - one part of the solution (the one associated with the negative eigenvalue) decays asymptotically to zero. The other positive eigenvalue is associated with the asymptotically unstable, giving the solution trajectory the saddle shape.</p>
 </div>
 <div id="imaginary-eigenvalues" class="section level3" number="18.3.4">
 <h3><span class="header-section-number">18.3.4</span> Imaginary eigenvalues</h3>
 <p>Let’s consider the phase plane for the differential equation <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} -3 &amp; -8 \\ 4 &amp; -6 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
 <p>The eigenvalues are both positive:</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="what-do-eigenvalues-tell-us.html#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="sc">-</span><span class="dv">8</span>,<span class="dv">4</span>,<span class="sc">-</span><span class="dv">6</span>))  </span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="what-do-eigenvalues-tell-us.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">8</span>, <span class="dv">4</span>, <span class="sc">-</span><span class="dv">6</span>))</span></code></pre></div>
 <pre><code>## eigen() decomposition
 ## $values
 ## [1] -4.5+5.454356i -4.5-5.454356i
@@ -454,16 +479,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 2 0.1530931-0.5566829i 0.1530931+0.5566829i</code></pre>
 <p>There are two eigenvalues to this system: <span class="math inline">\(\lambda = -4.5+5.45i\)</span> and <span class="math inline">\(\lambda = -4.5 - 5.45i\)</span>. In this case the <span class="math inline">\(i\)</span> means the eigenvalues are imaginary. Notice how the eigenvalues are similar, but the signs on the second term differs. We say the eigenvalues are <em>complex conjugates</em> of each other, and write them in the form <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>.</p>
 <p>Let’s take a look at the phase plane for this system. When <span class="math inline">\(\alpha &lt; 0\)</span> the equilibrium solution is a spiral sink:</p>
-<p><img src="series_files/figure-html/unnamed-chunk-267-1.png" width="336" /></p>
-<p>This phaseplane has some spiraling motion to it. Why does that occur? Imaginary eigenvalues can occur when the solution to <span class="math inline">\(\det(A-\lambda I)=0\)</span> has imaginary solutions. More generally, we say <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>. Because the eigenvalues are complex, we would also expect the eigenvectors to be complex as well (i.e. <span class="math inline">\(\vec{v} \pm i \vec{w}\)</span>). Don’t let the term <em>imaginary</em> fool you: by using properties from complex analysis it can be shown that the complete solution is:</p>
-<p><span class="math display">\[\begin{equation}
-\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t))
-\end{equation}\]</span></p>
-<p>Notice the trigonometric terms in the solution - we should expect the solution to be periodic and to have some periodic behavior to it. In fact, When <span class="math inline">\(\alpha &lt; 0\)</span> we say the equilibrium solution is a <em>spiral sink</em> because the exponential terms in the solution decay asymptotically to zero.</p>
-<p>As you would expect, when <span class="math inline">\(\alpha &gt; 0\)</span> we classify a phaseplane as a spiral source, as we can see in the phase plane for <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 4 &amp; -5 \\ 3 &amp; 2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
-<p><img src="series_files/figure-html/unnamed-chunk-268-1.png" width="336" /></p>
-<p>The final case for imaginary eigenvalues is when <span class="math inline">\(\alpha = 0\)</span>, which is termed a <em>center</em> equilibrium. As an example, let’s examine the phaseplane for the system <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
 <p><img src="series_files/figure-html/unnamed-chunk-269-1.png" width="336" /></p>
+<p>This phaseplane has some spiraling motion to it. Why does that occur? Imaginary eigenvalues can occur when the solution to <span class="math inline">\(\det(A-\lambda I)=0\)</span> has imaginary solutions. More generally, we say <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>. Because the eigenvalues are complex, we would also expect the eigenvectors to be complex as well (i.e. <span class="math inline">\(\vec{v} \pm i \vec{w}\)</span>). Don’t let the term <em>imaginary</em> fool you: by using properties from complex analysis it can be shown that the complete solution is:</p>
+<p><span class="math display" id="eq:imag-eval-18">\[\begin{equation}
+\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t)) \tag{18.2}
+\end{equation}\]</span></p>
+<p>Notice the trigonometric terms in Equation <a href="what-do-eigenvalues-tell-us.html#eq:imag-eval-18">(18.2)</a> - we should expect the solution to be periodic and to have some periodic behavior to it. In fact, When <span class="math inline">\(\alpha &lt; 0\)</span> we say the equilibrium solution is a <em>spiral sink</em> because the exponential terms in the solution decay asymptotically to zero.</p>
+<p>As you would expect, when <span class="math inline">\(\alpha &gt; 0\)</span> we classify a phaseplane as a spiral source, as we can see in the phase plane for <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 4 &amp; -5 \\ 3 &amp; 2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p><img src="series_files/figure-html/unnamed-chunk-270-1.png" width="336" /></p>
+<p>The final case for imaginary eigenvalues is when <span class="math inline">\(\alpha = 0\)</span>, which is termed a <em>center</em> equilibrium. As an example, let’s examine the phaseplane for the system <span class="math inline">\(\displaystyle \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}\)</span></p>
+<p><img src="series_files/figure-html/unnamed-chunk-271-1.png" width="336" /></p>
 <p>Notice how the arrows don’t spin in (or out here) - but seem to point in a circle.</p>
 </div>
 <div id="repeated-eigenvalues" class="section level3" number="18.3.5">
@@ -503,6 +528,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

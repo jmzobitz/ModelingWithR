@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>19.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="19.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="higher-dimensional-stability.html"/>
 <link rel="next" href="bifurcation-20.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -382,33 +407,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- I think this is from LW -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-281" class="exercise"><strong>Exercise 19.1  </strong></span>Compute the trace and determinant for each of these linear systems. Use the trace-determinant condition to classify the stability of the equilibrium solutions. Verify your stability results are consistent when analyzing stability from calculating the eigenvalues.
+<p><span id="exr:unnamed-chunk-282" class="exercise"><strong>Exercise 19.1  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Compute the trace and determinant for each of these linear systems. Use the trace-determinant condition to classify the stability of the equilibrium solutions. Verify your stability results are consistent when analyzing stability from calculating the eigenvalues.</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x, \; \frac{dy}{dt} = -2y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 3x+y, \; \frac{dy}{dt} = 2x+4y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 8x-11y, \; \frac{dy}{dt} = 6x-9y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -2x-3y, \; \frac{dy}{dt} = 3x-2y\)</span></li>
+</ol>
 </div>
  
 <!-- LW pg 183 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-282" class="exercise"><strong>Exercise 19.2  </strong></span>The following equation can be applied to study cell differentiation:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-283" class="exercise"><strong>Exercise 19.2  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) The following equation can be applied to study cell differentiation:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \frac{dx}{dt}&amp;=y-x \\
 \frac{dy}{dt} &amp;= -y + \frac{5x^{2}}{4+x^{2}}
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Previously you verified that <span class="math inline">\((x,y)=(1,1)\)</span> is an equilibrium solution for this system. What is the Jacobian matrix at that equilibrium solution?</li>
+<li>What is tr<span class="math inline">\((J)\)</span> and det<span class="math inline">\((J)\)</span> at that equilibrium soltion?</li>
+<li>Evaluate the stability of the equilibrium solution solution using relationships between the trace and determinant.</li>
+</ol>
 </div>
 <p> </p>
 <!-- %LW #12 pg 183 Modified so algebraically easier (0,0) and (2,2) -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-283" class="exercise"><strong>Exercise 19.3  </strong></span> Consider the following predator-prey model, where the carrying capacity of the predator (<span class="math inline">\(y\)</span>) depends on the prey population (<span class="math inline">\(x\)</span>):
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-284" class="exercise"><strong>Exercise 19.3  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Consider the following predator-prey model, where the carrying capacity of the predator (<span class="math inline">\(y\)</span>) depends on the prey population (<span class="math inline">\(x\)</span>):</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 x&#39; &amp;= \frac{2}{3} x \cdot \left(1- \frac{x}{4} \right) - \frac{1}{6} xy \\
 y&#39; &amp;= 0.5y \cdot \left(1 - \frac{y}{x} \right),
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>There are two equilibrium solutions for this differential equation. What are they? <em>Hint:</em> first determine where <span class="math inline">\(y&#39;=0\)</span> and then substitute your solutions into <span class="math inline">\(x&#39;=0\)</span>.</li>
+<li>Use the command <em>phaseplane</em> to visualize this system of equations.</li>
+<li>Compute the Jacobian matrix for both equilibrium solutions.</li>
+<li>Use the trace-determinant relationships to evaluate the stability of the equilibrium solutions. Is that analysis consistent with your phaseplane?</li>
+</ol>
 </div>
 <p> </p>
 <!-- LW pg 164 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-284" class="exercise"><strong>Exercise 19.4  </strong></span>Consider the linear system of equations:
+<p><span id="exr:unnamed-chunk-285" class="exercise"><strong>Exercise 19.4  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Consider the linear system of equations:
 <span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt}&amp;=-ax-y \\
@@ -420,41 +467,89 @@ y&#39; &amp;= 0.5y \cdot \left(1 - \frac{y}{x} \right),
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-285" class="exercise"><strong>Exercise 19.5  </strong></span>All of the following systems have an equilibrium solution at the origin (0,0). Compute the Jacobian of these solutions and apply the trace and determinant conditions to analyze the stability. The stability will be a function of the parameter <span class="math inline">\(\mu\)</span>. In your stability analysis you only need to classify differences between a source, sink, or saddle.</p>
+<p><span id="exr:unnamed-chunk-286" class="exercise"><strong>Exercise 19.5  </strong></span>All of the following systems have an equilibrium solution at the origin (0,0). Compute the Jacobian of these solutions and apply the trace and determinant conditions to analyze the stability. The stability will be a function of the parameter <span class="math inline">\(\mu\)</span>. In your stability analysis you only need to classify differences between a source, sink, or saddle.</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+x&#39; &amp;=x+ \mu y \\
+y&#39; &amp;= \mu x -y,
+\end{split}
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+x&#39; &amp;=x+y\\
+y&#39; &amp;= \mu x +y,
+\end{split}
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+x&#39; &amp;= y \\
+y&#39; &amp;=x^{2}-x+\mu y,
+\end{split}
+\end{equation}\]</span></li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-286" class="exercise"><strong>Exercise 19.6  </strong></span>For the lynx-hare system equilibrium <span class="math inline">\(\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)\)</span>, determine conditions on the parameters where the system will be a spiral source and sprial sink.
+<span id="exr:unnamed-chunk-287" class="exercise"><strong>Exercise 19.6  </strong></span>For the lynx-hare system equilibrium <span class="math inline">\(\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)\)</span>, determine conditions on the parameters where the system will be a spiral source and sprial sink.
 </div>
  
 <!-- adapted LW pg 183 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-287" class="exercise"><strong>Exercise 19.7  </strong></span>Let <span class="math inline">\(C\)</span> be the amount of carbon in a forest ecosystem, with <span class="math inline">\(P\)</span> be the rate of increase due to photosynthesis. Herbivores <span class="math inline">\(H\)</span> consume carbon on the following predator-prey model:
-<span class="math display">\[\begin{align*}
+<p><span id="exr:unnamed-chunk-288" class="exercise"><strong>Exercise 19.7  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Let <span class="math inline">\(C\)</span> be the amount of carbon in a forest ecosystem, with <span class="math inline">\(P\)</span> be the rate of increase due to photosynthesis. Herbivores <span class="math inline">\(H\)</span> consume carbon on the following predator-prey model:</p>
+<p><span class="math display" id="eq:carbon-19">\[\begin{equation}
+\begin{split}
 \frac{dC}{dt}&amp;=P - aC - bHC \\
 \frac{dH}{dt} &amp;= ebHC-dC
-\end{align*}\]</span></p>
+\end{split}  \tag{19.5}
+\end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Equation <a href="exercises-18.html#eq:carbon-19">(19.5)</a> has two equilibrium solutions. What are they?</li>
+<li>Evaluate the Jacobian at each of the equilibrium solutions.</li>
+<li>Evaluate the stability of each equilibrium solution using relationships between the trace and determinant. Be sure to include cases where the system will be a spiral source or sink.</li>
+</ol>
 </div>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-288" class="exercise"><strong>Exercise 19.8  </strong></span>Apply the quadratic formula to <span class="math inline">\(\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0\)</span> obtain Equation 
+<span id="exr:unnamed-chunk-289" class="exercise"><strong>Exercise 19.8  </strong></span>Apply the quadratic formula to <span class="math inline">\(\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0\)</span> obtain Equation <a href="two-dimensional-linear-systems-the-general-case.html#eq:tr-det-soln-19">(19.4)</a>.
 </div>
 <p> </p>
 <!-- (x-(a+bi))(x-(a-bi)) = x^2 +(a+bi)(a-bi) -x(a+bi)-x(a-bi) = x^2 -2a x + (a^2+b^2)  -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-289" class="exercise"><strong>Exercise 19.9  </strong></span>Assume that you have two complex conjugate eigenvalues: <span class="math inline">\(\lambda_{1} = a \pm bi\)</span> and <span class="math inline">\(\lambda_{2} = a - bi\)</span>.</p>
+<p><span id="exr:unnamed-chunk-290" class="exercise"><strong>Exercise 19.9  </strong></span>Assume that you have two complex conjugate eigenvalues: <span class="math inline">\(\lambda_{1} = a \pm bi\)</span> and <span class="math inline">\(\lambda_{2} = a - bi\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>What is an expression for <span class="math inline">\(\lambda_{1} + \lambda_{2}\)</span>?</li>
+<li>What is an expression for <span class="math inline">\(\lambda_{1} \cdot \lambda_{2}\)</span>?</li>
+<li>Use your answers from the previous two results to show that tr<span class="math inline">\((A)=2a\)</span> and <span class="math inline">\(\det(A)=a^{2}+b^{2}\)</span>.</li>
+<li>If you were to have a system that is a spiral sink, what conditions on <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> need to hold?</li>
+<li>Create a linear two-dimensional system where the equilibrium solution is a spiral sink. Show your system and the corresponding phaseplane.</li>
+</ol>
 </div>
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-290" class="exercise"><strong>Exercise 19.10  </strong></span>Consider a two-dimensional system where tr<span class="math inline">\((A)=0\)</span> and det<span class="math inline">\((A)&gt;0\)</span>.</p>
+<p><span id="exr:unnamed-chunk-291" class="exercise"><strong>Exercise 19.10  </strong></span>Consider a two-dimensional system where tr<span class="math inline">\((A)=0\)</span> and det<span class="math inline">\((A)&gt;0\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Given those conditions, explain why <span class="math inline">\(\lambda_{1} + \lambda_{2}=0\)</span> and <span class="math inline">\(\lambda_{1} \cdot \lambda_{2}&gt;0\)</span>.</li>
+<li>What does <span class="math inline">\(\lambda_{1} + \lambda_{2}=0\)</span> tell you about the relationship between <span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span>?</li>
+<li>What does <span class="math inline">\(\lambda_{1} \cdot \lambda_{2}&gt;0\)</span> tell you about the relationship between <span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span>?</li>
+<li>Look back to your previous two responses. First explain why <span class="math inline">\(\lambda_{1}\)</span> and <span class="math inline">\(\lambda_{2}\)</span> must be imaginary eigenvalues (in other words, not real values). Then explain why <span class="math inline">\(\lambda_{1,2}= \pm bi\)</span>.</li>
+<li>Given these constraints, what would the phaseplane for this system be?</li>
+<li>Create a linear two-dimensional system where tr<span class="math inline">\((A)=0\)</span> and det<span class="math inline">\((A)&gt;0\)</span>. Show your system and the phaseplane.</li>
+</ol>
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -484,6 +579,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

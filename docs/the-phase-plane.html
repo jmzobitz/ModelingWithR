@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>15.2 The phase plane | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="15.2 The phase plane | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="equilibrium-solutions-1.html"/>
 <link rel="next" href="stability-of-solutions.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -383,11 +408,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="the-phase-plane.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:</span></span>
 <span id="cb108-2"><a href="the-phase-plane.html#cb108-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb108-3"><a href="the-phase-plane.html#cb108-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb108-4"><a href="the-phase-plane.html#cb108-4" aria-hidden="true" tabindex="-1"></a>systems_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dxdt <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x,</span>
-<span id="cb108-5"><a href="the-phase-plane.html#cb108-5" aria-hidden="true" tabindex="-1"></a>                dydt <span class="sc">~</span> x<span class="sc">+</span>y )</span>
-<span id="cb108-6"><a href="the-phase-plane.html#cb108-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb108-7"><a href="the-phase-plane.html#cb108-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we plot the solution. </span></span>
-<span id="cb108-8"><a href="the-phase-plane.html#cb108-8" aria-hidden="true" tabindex="-1"></a><span class="fu">phaseplane</span>(systems_eq,<span class="st">&#39;x&#39;</span>,<span class="st">&#39;y&#39;</span>)</span></code></pre></div>
+<span id="cb108-4"><a href="the-phase-plane.html#cb108-4" aria-hidden="true" tabindex="-1"></a>systems_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb108-5"><a href="the-phase-plane.html#cb108-5" aria-hidden="true" tabindex="-1"></a>  dxdt <span class="sc">~</span> <span class="dv">2</span> <span class="sc">*</span> x,</span>
+<span id="cb108-6"><a href="the-phase-plane.html#cb108-6" aria-hidden="true" tabindex="-1"></a>  dydt <span class="sc">~</span> x <span class="sc">+</span> y</span>
+<span id="cb108-7"><a href="the-phase-plane.html#cb108-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb108-8"><a href="the-phase-plane.html#cb108-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-9"><a href="the-phase-plane.html#cb108-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we plot the solution.</span></span>
+<span id="cb108-10"><a href="the-phase-plane.html#cb108-10" aria-hidden="true" tabindex="-1"></a><span class="fu">phaseplane</span>(systems_eq, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span></code></pre></div>
 <p><img src="series_files/figure-html/unnamed-chunk-224-1.png" width="480" /></p>
 <p>Let’s talk a little bit about each of the commands first.</p>
 <ul>
@@ -402,11 +429,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="the-phase-plane.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:</span></span>
 <span id="cb109-2"><a href="the-phase-plane.html#cb109-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb109-3"><a href="the-phase-plane.html#cb109-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb109-4"><a href="the-phase-plane.html#cb109-4" aria-hidden="true" tabindex="-1"></a>systems_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dt <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb109-5"><a href="the-phase-plane.html#cb109-5" aria-hidden="true" tabindex="-1"></a>                dx <span class="sc">~</span> <span class="sc">-</span><span class="dv">3</span><span class="sc">*</span>x )</span>
-<span id="cb109-6"><a href="the-phase-plane.html#cb109-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb109-7"><a href="the-phase-plane.html#cb109-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we plot the solution. </span></span>
-<span id="cb109-8"><a href="the-phase-plane.html#cb109-8" aria-hidden="true" tabindex="-1"></a><span class="fu">phaseplane</span>(systems_eq,<span class="st">&#39;t&#39;</span>,<span class="st">&#39;x&#39;</span>)</span></code></pre></div>
+<span id="cb109-4"><a href="the-phase-plane.html#cb109-4" aria-hidden="true" tabindex="-1"></a>systems_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb109-5"><a href="the-phase-plane.html#cb109-5" aria-hidden="true" tabindex="-1"></a>  dt <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb109-6"><a href="the-phase-plane.html#cb109-6" aria-hidden="true" tabindex="-1"></a>  dx <span class="sc">~</span> <span class="sc">-</span><span class="dv">3</span> <span class="sc">*</span> x</span>
+<span id="cb109-7"><a href="the-phase-plane.html#cb109-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb109-8"><a href="the-phase-plane.html#cb109-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-9"><a href="the-phase-plane.html#cb109-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we plot the solution.</span></span>
+<span id="cb109-10"><a href="the-phase-plane.html#cb109-10" aria-hidden="true" tabindex="-1"></a><span class="fu">phaseplane</span>(systems_eq, <span class="st">&quot;t&quot;</span>, <span class="st">&quot;x&quot;</span>)</span></code></pre></div>
 <p><img src="series_files/figure-html/unnamed-chunk-225-1.png" width="480" /></p>
 <p>This codes looks similar to the previous example, with one small modification. For the variable <code>systems_eq</code> we need <code>dt ~ 1</code> - which basically uses the horizontal axis as the time dependent variable - this basically says that the rate of change on the horizontal axis is constant (which yields the solution <span class="math inline">\(t\)</span>). You will work out the details for converting a one-dimensional equation into a system of equations in Exercise <a href="exercises-14.html#exr:reparam">15.5</a>.</p>
 </div>
@@ -440,6 +469,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

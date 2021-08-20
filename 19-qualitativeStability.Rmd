@@ -1,9 +1,9 @@
 # Qualitative Stability Analysis {#stability-19}
 
 
-In the previous sections we studied the connections between linear systems, the phaseplane, and how eigenvalues help determine the stability of an equilibrium solution.  You also learned how for a non-linear system to generate a locally linear approximation using the Jacobian, which in turn, helps determine the stability of an equilibrium solution.
+In the previous sections we studied the connections between linear systems, the phaseplane, and how eigenvalues help determine the stability of an equilibrium solution.  You also learned with a non-linear system of differential equations you can apply a locally linear approximation via the Jacobian to determine the stability of an equilibrium solution.
 
-Computing eigenvalues can be tricky  - but for a two-dimensional system some interesting results occur because the characteristic equation is a quadratic equation.  It turns out that we can analyze stability without necessarily solving a quadratic equation, but first we will need to understand some key relationships.
+Computing eigenvalues can be tricky  - but for a two-dimensional system of DEs some interesting results occur because the characteristic equation ends up being a quadratic function.  Because of this we can analyze stability for a two-dimensional system of equations without computing eigenvalues, but first we will need to understand some key relationships.
 
 
 ## Two dimensional linear systems: the general case
@@ -13,19 +13,19 @@ Consider the following two dimensional linear system, where $a$, $b$, $c$, and $
 \begin{pmatrix} \frac{dx}{dt} \\ \frac{dy}{dt} \end{pmatrix} =  \begin{pmatrix} ax+by \\ cx+dy \end{pmatrix} =  \begin{pmatrix} a & b \\ c &  d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
 \end{equation}
 
-Eigenvalues are found by solving $\displaystyle \det (A - \lambda I ) =0$, as a reminder we need to compute the following:
+Recall that eigenvalues are found by solving $\displaystyle \det (A - \lambda I ) =0$, which $\displaystyle \det (A - \lambda I )$ is computed in Equation \@ref(eq:det-eq-19).
 
 \begin{equation}
-\det \begin{pmatrix} a - \lambda & b \\ c & d-\lambda \end{pmatrix} = (a-\lambda)(d-\lambda) - bc
+\det \begin{pmatrix} a - \lambda & b \\ c & d-\lambda \end{pmatrix} = (a-\lambda)(d-\lambda) - bc (\#eq:det-eq-19)
 \end{equation}
 
-If we factor out this expression we obtain the characteristic equation:
+If we multiply out Equation \@ref(eq:det-eq-19) we obtain the characteristic equation:
 
 \begin{equation}
-\lambda^{2} - (a+d) \lambda + ad - bc = 0
+\lambda^{2} - (a+d) \lambda + ad - bc = 0 (\#eq:ch-eq-19)
 \end{equation}
 
-What is cool about this equation is that the roots can be expressed as functions of the entries of the matrix $A$.  In fact, in linear algebra the term $a+d$ is the sum of the diagonal entries, which is known as the **trace** of a matrix, or $\mbox{tr}(A)$.  And you may recognize that $ad-bc$ is the same as $\det(A)$.  So our characteristic equation is can be rewritten as solving Equation \@ref(eq:tr-det-19):
+What is cool about Equation \@ref(eq:ch-eq-19) is that the roots can be expressed as functions of the entries of the matrix $A$  ($a$, $b$, $c$, $d$).  In fact, in linear algebra the term $a+d$ is the sum of the diagonal entries, also known as the **trace** of a matrix. The trace of a matrix can be expressed as $\mbox{tr}(A)$.  And you may recognize that $ad-bc$ is the same as $\det(A)$.  So our characteristic equation is can be rewritten as solving Equation \@ref(eq:tr-det-19):
 
 \begin{equation}
 \lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0 (\#eq:tr-det-19)
@@ -34,7 +34,7 @@ What is cool about this equation is that the roots can be expressed as functions
 Write down the characteristic equation for the system $\vec{x}'=Ax$ where $\displaystyle A=  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix}$ and classify the stability of the equilibrium solution.
 ```
 &nbsp;
-```{remark}
+```{solution}
 We can see that $\det(A)= -1(3) - 0(1) = -3$ and tr$(A)=2$, so our characteristic equation is $\lambda^{2}-2\lambda -3$.  If we solve $\lambda^{2}-2\lambda -3=0$ we have $(\lambda-3)(\lambda+1)=0$, so our eigenvalues are $\lambda=3$ and $\lambda=-1$. Since one eigenvalue is positive and the other one is negative, the equilibrium solution is a saddle node.
 ```
 
@@ -62,15 +62,17 @@ For the moment we will only consider real non-zero values of the eigenvalues - m
 - If the determinant and trace are both *positive*, then the equilibrium solution is a *source*.
 
 ```{example}
-Use the trace and determinant relationships to classify the stability of the equilibrium solution for the linear system $\vec{x}'=Ax$ where $\displaystyle A=  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix}$.
+Use the trace and determinant relationships to classify the stability of the equilibrium solution for the linear system $\vec{x}'=A\vec{x}$ where $\displaystyle A=  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix}$.
 ```
 &nbsp;
-```{remark}
+```{solution}
 We can see that $\det(A)= -1(3) - 0(1) = -3$ and tr$(A)=2$.  Since the determinant is negative, the equilibrium solution must be a saddle node.
 ```
 
 &nbsp;
-Knowing the relationships between the trace and determinant is a pretty quick and easy way to investigate stability of equilibrium solutions! Another way to graphically represent the stability of solutions is with the _trace-determinant plane_ (shown in Figure \@ref(tab:trace-det-18)), with tr$(A)$ on the horizontal axis and det$(A)$ on the vertical axis:
+Knowing the relationships between the trace and determinant for a two-dimensional system of equations is a pretty quick and easy way to investigate stability of equilibrium solutions!
+
+Another way to graphically represent the stability of solutions is with the _trace-determinant plane_ (shown in Figure \@ref(fig:trace-det-18)), with tr$(A)$ on the horizontal axis and det$(A)$ on the vertical axis:
 
 ```{r trace-det-18,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The trace-determinant plane"}
 \begin{center}
@@ -87,13 +89,15 @@ Knowing the relationships between the trace and determinant is a pretty quick an
 ```
 
 
-It also turns out that we can extend this diagram to the imaginary and nonzero cases for the roots of the characteristic equation.  Using the quadratic formula we can solve directly for the eigenvalues as a function of the trace and determinant:
+It also turns out that we can extend Figure \@ref(fig:trace-det-18) even more to include the imaginary and nonzero cases for the roots of the characteristic equation.
 
-\begin{equation}\label{eq:roots}
-\lambda_{1,2}= \frac{\mbox{tr}(A)}{2} \pm \frac{\sqrt{ (\mbox{tr}(A))^2-4 \det(A)}}{2}
+Firt we will apply the quadratic formula to Equation \@ref(eq:tr-det-19) to solve directly for the eigenvalues as a function of the trace and determinant:
+
+\begin{equation}
+\lambda_{1,2}= \frac{\mbox{tr}(A)}{2} \pm \frac{\sqrt{ (\mbox{tr}(A))^2-4 \det(A)}}{2} (\#eq:tr-det-soln-19)
 \end{equation}
 
-This seems like a more complicated expression, but it can be shown to be consistent with our above work.  Moving to our quadratic equation allows us to see what happens when we have imaginary eigenvalues - which can be a stable or unstable spiral depending on its location in the trace-determinant plane (Figure \@ref(tab:trace-det-ref)).
+While Equation \@ref(eq:tr-det-soln-19) seems like a more complicated expression, it can be shown to be consistent with our above work. Imaginary eigenvalues can be a stable or unstable spiral depending on its location in the trace-determinant plane (Figure \@ref(fig:trace-det-ref)).
 
 ```{r trace-det-ref,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Revised trace-determinant plane."}
 \begin{center}
@@ -112,13 +116,13 @@ This seems like a more complicated expression, but it can be shown to be consist
 \end{center}
 ```
 
-If the discriminant (the part inside the square root, which is $(\mbox{tr}(A))^2-4 \det(A)$) of the eigenvalue expression is negative then we have a spiral source or spiral sink depending on the positivity of the tr$(A)$.
+If the discriminant (the part inside the square root for Equation \@ref(eq:tr-det-soln-19), which is $(\mbox{tr}(A))^2-4 \det(A)$) of the eigenvalue expression is negative then we have a spiral source or spiral sink depending on the positivity of the tr$(A)$.
 
 Finally the *center* equilibrium occurs when the trace is exactly zero and the determinant is positive.  This graphic of the trace-determinant plane is a quick way to analyze stability of a solution without a lot of algebraic analysis.
 
 
 ## Sensitivity to parameters with the trace-determinant
-Where the trace determinant plane is even more useful if your system consists of parameters that aren't specified.  Consider the following lynx - hare system:
+Figure \@ref(fig:trace-det-ref) is even more useful if your system consists of parameters that aren't specified.  Consider the following lynx - hare system:
 
 \begin{equation}
 \begin{split}
@@ -137,7 +141,6 @@ J_{(\frac{d}{eb}, \frac{r}{b})} &=\begin{pmatrix} r-\frac{d}{e} & -\frac{d}{e} \
 Let's analyze the Jacobian at each of the the equilibrium solutions.
 
 - $(0,0)$ equilibrium solution:  We have tr$(J)=r-d$ and $\det(J)=-rd$.  Since $r$ and $d$ are both positive parameters the determinant will always be negative, so no matter what the origin will be a saddle.
-
 - $\displaystyle (\frac{d}{eb}, \frac{r}{b})$ equilibrium solution: We have tr$\displaystyle (J)=r-\frac{d}{e}$ and $\det(J)=d$.  The determinant is positive, however we can see that the stability of this equilibrium solution will be dependent on the trace.  If the trace is positive, or $\displaystyle r > \frac{d}{e}$ than the equilibrium solution will be unstable.  If $\displaystyle r < \frac{d}{e}$ it will be stable.  You can derive even stronger boundaries between a spiral source or spiral sink as well.
 
 Notice how these relationships give you a sense for what you could expect in terms of a solution even before computing eigenvalues!
@@ -154,54 +157,59 @@ The conditions between the trace and determinant really describe the notion of e
 
 <!-- I think this is from LW -->
 ```{exercise}
-Compute the trace and determinant for each of these linear systems.  Use the trace-determinant condition to classify the stability of the equilibrium solutions. Verify your stability results are consistent when analyzing stability from calculating the eigenvalues.
-\begin{enumerate}[label=\alph*.]
-\item $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -2y$
-\item $\displaystyle \frac{dx}{dt} = 3x+y, \;  \frac{dy}{dt} = 2x+4y$
-\item $\displaystyle \frac{dx}{dt} = 8x-11y, \;  \frac{dy}{dt} = 6x-9y$
-\item $\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y$
-\item $\displaystyle \frac{dx}{dt} = -2x-3y, \;  \frac{dy}{dt} = 3x-2y$
-\end{enumerate}
+(Inspired by @logan_mathematical_2009) Compute the trace and determinant for each of these linear systems.  Use the trace-determinant condition to classify the stability of the equilibrium solutions. Verify your stability results are consistent when analyzing stability from calculating the eigenvalues.
+
+a. $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -2y$
+b. $\displaystyle \frac{dx}{dt} = 3x+y, \;  \frac{dy}{dt} = 2x+4y$
+c. $\displaystyle \frac{dx}{dt} = 8x-11y, \;  \frac{dy}{dt} = 6x-9y$
+d. $\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y$
+e. $\displaystyle \frac{dx}{dt} = -2x-3y, \;  \frac{dy}{dt} = 3x-2y$
+
 ```
 &nbsp;
 <!-- LW pg 183 -->
 ```{exercise}
-The following equation can be applied to study cell differentiation:
-  \begin{align*}
+(Inspired by @logan_mathematical_2009) The following equation can be applied to study cell differentiation:
+
+\begin{equation}
+\begin{split}
 \frac{dx}{dt}&=y-x \\
 \frac{dy}{dt} &= -y + \frac{5x^{2}}{4+x^{2}}
-\end{align*}
+\end{split}
+\end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Previously you verified that $(x,y)=(1,1)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
-  \item What is tr$(J)$ and det$(J)$ at that equilibrium soltion?
-\item Evaluate the stability of the equilibrium solution solution using relationships between the trace and determinant.
-\end{enumerate}
+a. Previously you verified that $(x,y)=(1,1)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
+b. What is tr$(J)$ and det$(J)$ at that equilibrium soltion?
+c. Evaluate the stability of the equilibrium solution solution using relationships between the trace and determinant.
+
 
 ```
 &nbsp;
 
 <!-- %LW #12 pg 183 Modified so algebraically easier (0,0) and (2,2) -->
 ```{exercise}
- Consider the following predator-prey model, where the carrying capacity of the predator ($y$) depends on the prey population ($x$):
-\begin{align*}
+(Inspired by @logan_mathematical_2009) Consider the following predator-prey model, where the carrying capacity of the predator ($y$) depends on the prey population ($x$):
+
+  \begin{equation}
+\begin{split}
 x' &= \frac{2}{3} x \cdot \left(1- \frac{x}{4} \right) - \frac{1}{6} xy \\
 y' &= 0.5y \cdot \left(1 - \frac{y}{x} \right),
-\end{align*}
+\end{split}
+\end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item There are two equilibrium solutions for this differential equation.  What are they? \emph{Hint:} first determine where $y'=0$ and then substitute your solutions into $x'=0$.
-\item Use the command \texttt{phaseplane} to visualize this system of equations. 
-\item Compute the Jacobian matrix for both equilibrium solutions.
-\item Use the trace-determinant relationships to evaluate the stability of the equilibrium solutions. Is that analysis consistent with your phaseplane?
-\end{enumerate}
+
+a. There are two equilibrium solutions for this differential equation.  What are they? *Hint:* first determine where $y'=0$ and then substitute your solutions into $x'=0$.
+b. Use the command *phaseplane* to visualize this system of equations. 
+c. Compute the Jacobian matrix for both equilibrium solutions.
+d. Use the trace-determinant relationships to evaluate the stability of the equilibrium solutions. Is that analysis consistent with your phaseplane?
+
 ```
 &nbsp;
 
 
 <!-- LW pg 164 -->
 ```{exercise}
-Consider the linear system of equations:
+(Inspired by @logan_mathematical_2009) Consider the linear system of equations:
 \begin{equation}
 \begin{split}
 \frac{dx}{dt}&=-ax-y \\
@@ -217,20 +225,26 @@ Apply the relationships between the trace and determinant to classify the stabil
 ```{exercise}
 All of the following systems have an equilibrium solution at the origin (0,0).  Compute the Jacobian of these solutions and apply the trace and determinant conditions to analyze the stability.  The stability will be a function of the parameter $\mu$.  In your stability analysis you only need to classify differences between a source, sink, or saddle.
 
-\begin{enumerate}[label=\alph*.]
-\item \begin{align*}
+
+a. \begin{equation}
+\begin{split}
 x' &=x+ \mu y \\
 y' &= \mu x -y,
-\end{align*}
-\item \begin{align*}
+\end{split}
+\end{equation}
+b. \begin{equation}
+\begin{split}
 x' &=x+y\\
 y' &= \mu x +y,
-\end{align*}
-\item \begin{align*}
+\end{split}
+\end{equation}
+c. \begin{equation}
+\begin{split}
 x' &= y \\
 y' &=x^{2}-x+\mu y,
-\end{align*}
-\end{enumerate}
+\end{split}
+\end{equation}
+
 ```
 &nbsp;
 
@@ -242,24 +256,26 @@ For the lynx-hare system equilibrium $\displaystyle \left( \frac{d}{eb}, \frac{r
 &nbsp;
 <!-- adapted LW pg 183 -->
 ```{exercise}
-Let $C$ be the amount of carbon in a forest ecosystem, with $P$ be the rate of increase due to photosynthesis.  Herbivores $H$ consume carbon on the following predator-prey model:
-    \begin{align*}
+(Inspired by @logan_mathematical_2009) Let $C$ be the amount of carbon in a forest ecosystem, with $P$ be the rate of increase due to photosynthesis.  Herbivores $H$ consume carbon on the following predator-prey model:
+
+\begin{equation}
+\begin{split}
 \frac{dC}{dt}&=P - aC - bHC \\
 \frac{dH}{dt} &= ebHC-dC
-\end{align*}
+\end{split}  (\#eq:carbon-19)
+\end{equation}
 
-\begin{enumerate}
-\item This system of equations has two equilibrium solutions.  What are they?
-\item Determine the equilibrium solutions.
-\item Evaluate the Jacobian at each of the equilibrium solutions.
-\item Evaluate the stability of each equilibrium solution using relationships between the trace and determinant. Be sure to include cases where the system will be a spiral source or sink.
-\end{enumerate}
+
+a. Equation \@ref(eq:carbon-19) has two equilibrium solutions.  What are they?
+b. Evaluate the Jacobian at each of the equilibrium solutions.
+c. Evaluate the stability of each equilibrium solution using relationships between the trace and determinant. Be sure to include cases where the system will be a spiral source or sink.
+
 ```
 
 
 
 ```{exercise}
-Apply the quadratic formula to $\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0$ obtain Equation \ref{eq:roots}
+Apply the quadratic formula to $\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0$ obtain Equation \@ref(eq:tr-det-soln-19).
 ```
 
 &nbsp;
@@ -268,13 +284,13 @@ Apply the quadratic formula to $\lambda^{2} - \mbox{tr}(A)\lambda + \det(A)=0$ o
 ```{exercise}
 Assume that you have two complex conjugate eigenvalues: $\lambda_{1} = a \pm bi$ and $\lambda_{2} = a - bi$.
 
-\begin{enumerate}[label=\alph*.]
-\item What is an expression for $\lambda_{1} + \lambda_{2}$?
-\item What is an expression for $\lambda_{1} \cdot \lambda_{2}$?
-\item Use your answers from the previous two results to show that tr$(A)=2a$ and $\det(A)=a^{2}+b^{2}$.
-\item If you were to have a system that is a spiral sink, what conditions on $a$ and $b$ need to hold?
-\item Create a linear two-dimensional system where the equilibrium solution is a spiral sink.  Show your system and the corresponding phaseplane. 
-\end{enumerate}
+
+a. What is an expression for $\lambda_{1} + \lambda_{2}$?
+b. What is an expression for $\lambda_{1} \cdot \lambda_{2}$?
+c. Use your answers from the previous two results to show that tr$(A)=2a$ and $\det(A)=a^{2}+b^{2}$.
+d. If you were to have a system that is a spiral sink, what conditions on $a$ and $b$ need to hold?
+e. Create a linear two-dimensional system where the equilibrium solution is a spiral sink.  Show your system and the corresponding phaseplane. 
+
 
 ```
 
@@ -283,14 +299,14 @@ Assume that you have two complex conjugate eigenvalues: $\lambda_{1} = a \pm bi$
 ```{exercise}
 Consider a two-dimensional system where tr$(A)=0$ and det$(A)>0$.
 
-\begin{enumerate}[label=\alph*.]
-\item Given those conditions, explain why $\lambda_{1} + \lambda_{2}=0$ and $\lambda_{1} \cdot \lambda_{2}>0$.
-\item What does $\lambda_{1} + \lambda_{2}=0$ tell you about the relationship between $\lambda_{1}$ and $\lambda_{2}$?
-\item What does $\lambda_{1} \cdot \lambda_{2}>0$ tell you about the relationship between $\lambda_{1}$ and $\lambda_{2}$?
-\item Look back to your previous two responses. First explain why $\lambda_{1}$ and $\lambda_{2}$ must be imaginary eigenvalues (in other words, not real values).  Then explain why $\lambda_{1,2}= \pm bi$.
-\item Given these constraints, what would the phaseplane for this system be?
-\item Create a linear two-dimensional system where tr$(A)=0$ and det$(A)>0$.  Show your system and the phaseplane. 
-\end{enumerate}
+
+a. Given those conditions, explain why $\lambda_{1} + \lambda_{2}=0$ and $\lambda_{1} \cdot \lambda_{2}>0$.
+b. What does $\lambda_{1} + \lambda_{2}=0$ tell you about the relationship between $\lambda_{1}$ and $\lambda_{2}$?
+c. What does $\lambda_{1} \cdot \lambda_{2}>0$ tell you about the relationship between $\lambda_{1}$ and $\lambda_{2}$?
+d. Look back to your previous two responses. First explain why $\lambda_{1}$ and $\lambda_{2}$ must be imaginary eigenvalues (in other words, not real values).  Then explain why $\lambda_{1,2}= \pm bi$.
+e. Given these constraints, what would the phaseplane for this system be?
+f. Create a linear two-dimensional system where tr$(A)=0$ and det$(A)>0$.  Show your system and the phaseplane. 
+
 
 ```
 

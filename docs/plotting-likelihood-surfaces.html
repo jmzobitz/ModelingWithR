@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>9.4 Plotting likelihood surfaces | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="9.4 Plotting likelihood surfaces | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="connecting-probabilities-to-linear-regression.html"/>
 <link rel="next" href="exercises-8.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,7 +404,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="plotting-likelihood-surfaces" class="section level2" number="9.4">
 <h2><span class="header-section-number">9.4</span> Plotting likelihood surfaces</h2>
-<p>Ok, we are going to examine a second example from <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> which modeled the growing of yeast in solution. This classic paper examines the biological principal of <em>competitive exclusion</em>, how one species can out compete another one for resources. The data from <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> is encoded in the data frame <code>yeast</code> in the <code>demodelr</code> package. For this example we are going to examine a model for one species growing without competition. Figure <a href="plotting-likelihood-surfaces.html#fig:yeast-quick-09">9.10</a> shows a scatterplot of the <code>yeast</code> data.</p>
+<p>Ok, we are going to examine a second example from <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> which modeled the growing of yeast in solution. This classic paper examines the biological principal of <em>competitive exclusion</em>, how one species can out compete another one for resources. The data from <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> is encoded in the data frame <code>yeast</code> in the <code>demodelr</code> package. For this example we are going to examine a model for one species growing without competition. Figure <a href="plotting-likelihood-surfaces.html#fig:yeast-quick-09">9.10</a> shows a scatterplot of the <code>yeast</code> data.</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="plotting-likelihood-surfaces.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make a quick ggplot of the data</span></span>
 <span id="cb51-2"><a href="plotting-likelihood-surfaces.html#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-3"><a href="plotting-likelihood-surfaces.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
@@ -400,7 +425,7 @@ Figure 9.10: Scatterplot of <em>Sacchromyces</em> volume growing by itself in a 
 <p><span class="math display" id="eq:gause-09">\[\begin{equation}
 \frac{dy}{dt} = -by \frac{(K-y)}{K}, \tag{9.3}
 \end{equation}\]</span></p>
-<p>where <span class="math inline">\(y\)</span> is the population of the yeast and <span class="math inline">\(b\)</span> represents the growth rate and <span class="math inline">\(K\)</span> is the carrying capacity of the population. It can be shown that the solution to this differential equation is <span class="math inline">\(\displaystyle y = \frac{K}{1+e^{a-bt}}\)</span>, where the additional parameter <span class="math inline">\(a\)</span> can be found through application of the initial condition <span class="math inline">\(y_{0}\)</span>. In <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> the value of <span class="math inline">\(a\)</span> was determined by solving the initial value problem <span class="math inline">\(y(0)=0.45\)</span>. In Exercise <a href="exercises-8.html#exr:solve-gause">9.1</a> you will show that <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>.</p>
+<p>where <span class="math inline">\(y\)</span> is the population of the yeast and <span class="math inline">\(b\)</span> represents the growth rate and <span class="math inline">\(K\)</span> is the carrying capacity of the population. It can be shown that the solution to this differential equation is <span class="math inline">\(\displaystyle y = \frac{K}{1+e^{a-bt}}\)</span>, where the additional parameter <span class="math inline">\(a\)</span> can be found through application of the initial condition <span class="math inline">\(y_{0}\)</span>. In <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> the value of <span class="math inline">\(a\)</span> was determined by solving the initial value problem <span class="math inline">\(y(0)=0.45\)</span>. In Exercise <a href="exercises-8.html#exr:solve-gause">9.1</a> you will show that <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>.</p>
 <p>Equation <a href="plotting-likelihood-surfaces.html#eq:gause-09">(9.3)</a> has two parameters: <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> using the function <code>compute_likelihood</code>. Inputs to the <code>compute_likelihood</code> function are the following:</p>
 <ul>
 <li>A function <span class="math inline">\(y=f(x,\vec{\alpha})\)</span></li>
@@ -439,7 +464,7 @@ Figure 9.10: Scatterplot of <em>Sacchromyces</em> volume growing by itself in a 
 <p>Some care is needed in defining the number of points that we want to evaluate - we will have <span class="math inline">\(100^{2}\)</span> different combinations of <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>, which do take time to evaluate.</p>
 <p>The output to <code>compute_likelihood</code> is a list - this is a flexible data structure. You can think of this as a collection of items. In this case, what gets returned are two data frames: <code>likelihood</code>, which is a data frame of likelihood values for each of the parameters and <code>opt_value</code>, which reports back the values of the parameters that optimize the likelihood function. Note that the optimum value is <em>an approximation</em>, as it is just the optimum from the input values. Let’s take a look at the reported optimum values, which we can do with the syntax <code>LIST_NAME$VARIABLE_NAME</code>, where the dollar sign ($) helps identify which variable from the list you are investigating.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="plotting-likelihood-surfaces.html#cb53-1" aria-hidden="true" tabindex="-1"></a>gause_likelihood<span class="sc">$</span>opt_value</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 4
+<pre><code>## # A tibble: 1 × 4
 ##       K      b       l_hood log_lik
 ##   &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;  
 ## 1  12.7 0.0707 0.0000000492 FALSE</code></pre>
@@ -489,7 +514,7 @@ Figure 9.11: Likelihood surface and contour lines for the Gause dataset.
 <span id="cb56-22"><a href="plotting-likelihood-surfaces.html#cb56-22" aria-hidden="true" tabindex="-1"></a>opt_value_rev <span class="ot">&lt;-</span> gause_likelihood_rev<span class="sc">$</span>opt_value</span>
 <span id="cb56-23"><a href="plotting-likelihood-surfaces.html#cb56-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb56-24"><a href="plotting-likelihood-surfaces.html#cb56-24" aria-hidden="true" tabindex="-1"></a>opt_value_rev</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 4
+<pre><code>## # A tibble: 1 × 4
 ##       K     b   l_hood log_lik
 ##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;  
 ## 1  12.8 0.241 0.000349 FALSE</code></pre>
@@ -557,6 +582,12 @@ Figure 9.13: Model and data comparison of the <code>yeast</code> dataset from ma
 <p>And the rest of the plotting commands you should be used to.</p>
 <div style="page-break-after: always;"></div>
 </div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gause_experimental_1932" class="csl-entry">
+Gause, G. F. 1932. <span>“Experimental <span>Studies</span> on the <span>Struggle</span> for <span>Existence</span>: <span>I</span>. <span>Mixed Population</span> of <span>Two Species</span> of <span>Yeast</span>.”</span> <em>Journal of Experimental Biology</em> 9 (4): 389–402.
+</div>
+</div>
             </section>
 
           </div>
@@ -586,6 +617,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>18.5 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="18.5 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="concluding-thoughts-2.html"/>
 <link rel="next" href="stability-19.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,7 +406,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">18.5</span> Exercises</h2>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-270" class="exercise"><strong>Exercise 18.1  </strong></span>Verify that <span class="math inline">\(\displaystyle \vec{s}_{1}(t) = \begin{pmatrix} 0 \\ e^{t} \end{pmatrix}\)</span> is a solution to the following system of equations:</p>
+<p><span id="exr:unnamed-chunk-272" class="exercise"><strong>Exercise 18.1  </strong></span>Verify that <span class="math inline">\(\displaystyle \vec{s}_{1}(t) = \begin{pmatrix} 0 \\ e^{t} \end{pmatrix}\)</span> is a solution to the following system of equations:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} =\begin{pmatrix} 2 &amp; 0 \\ 1 &amp;  1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
 \end{equation}\]</span></p>
@@ -390,54 +415,91 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- %\marginnote{Exercises a-c,e Based on Example 4.9 page 166 in \lw. d on 1c, pg 163 in lw}  -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-271" class="exercise"><strong>Exercise 18.2  </strong></span>Compute the eigenvalues and eigenvectors for the following linear systems. Based on the eigenvalues, classify if the equilibrium solution is stable or unstable. Finally write down the most general solution for the system of equations.</p>
+<p><span id="exr:unnamed-chunk-273" class="exercise"><strong>Exercise 18.2  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Compute the eigenvalues and eigenvectors for the following linear systems. Based on the eigenvalues, classify if the equilibrium solution is stable or unstable. Finally write down the most general solution for the system of equations.</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x, \; \frac{dy}{dt} = -y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 3x-2y, \; \frac{dy}{dt} = 2x-2y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -4x+2y, \; \frac{dy}{dt} = x-3y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt}= 4y, \; \frac{dy}{dt}=-9x\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = y, \; \frac{dy}{dt} = -x\)</span></li>
+</ol>
 </div>
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-272" class="exercise"><strong>Exercise 18.3  </strong></span>Consider the following nonlinear system:</p>
+<p><span id="exr:unnamed-chunk-274" class="exercise"><strong>Exercise 18.3  </strong></span>Consider the following nonlinear system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= y-x \\
 \frac{dy}{dt} &amp;=-y + \frac{5x^2}{4+x^{2}},
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Previously you verified that <span class="math inline">\((x,y)=(1,1)\)</span> is an equilibrium solution for this system. What is the Jacobian matrix at that equilibrium solution?</li>
+<li>Generate a phaseplane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
 </div>
  
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-273" class="exercise"><strong>Exercise 18.4  </strong></span>Consider the following nonlinear system:</p>
+<p><span id="exr:unnamed-chunk-275" class="exercise"><strong>Exercise 18.4  </strong></span>Consider the following nonlinear system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= 2x+3y+xy \\
 \frac{dy}{dt} &amp;= -x + y - 2xy^{3},
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Previously you verified that <span class="math inline">\((x,y)=(0,0)\)</span> is an equilibrium solution for this system. What is the Jacobian matrix at that equilibrium solution?</li>
+<li>Generate a phaseplane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-274" class="exercise"><strong>Exercise 18.5  </strong></span>Consider the following system:</p>
+<p><span id="exr:unnamed-chunk-276" class="exercise"><strong>Exercise 18.5  </strong></span>Consider the following system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= y^{2} \\
 \frac{dy}{dt} &amp;= -\frac{2}{3} x,
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>There is one equilibrium solution to this system of equations. What is it?</li>
+<li>What is the Jacobian matrix for this equilibrium solution?</li>
+<li>Generate a phaseplane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-275" class="exercise"><strong>Exercise 18.6  </strong></span>Consider the system <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}\)</span>.</p>
+<p><span id="exr:unnamed-chunk-277" class="exercise"><strong>Exercise 18.6  </strong></span>Consider the system <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Given the function <span class="math inline">\(\vec{s}(t)=e^{\lambda t} \vec{v}\)</span>, where <span class="math inline">\(\vec{v}\)</span> is a constant vector, what is an expression for <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{s}(t)\)</span>?</li>
+<li>Given the function <span class="math inline">\(\vec{s}(t)=e^{\lambda t} \vec{v}\)</span>, where <span class="math inline">\(\vec{v}\)</span> is a constant vector, what is an expression for <span class="math inline">\(A \vec{s}(t)\)</span>?</li>
+<li>Now use the previous results to compare <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{s}(t) = A \vec{s}(t)\)</span>. Explain why it must be the case that <span class="math inline">\(\lambda \vec{v} = A \vec{v}\)</span></li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-276" class="exercise"><strong>Exercise 18.7  </strong></span>In this section we learned that for a two dimensional matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span>, eigenvalues can be found by solving the characteristic equation <span class="math inline">\(\det(A-\lambda I)=0\)</span>, or <span class="math inline">\(\lambda^{2} - (a+d) \lambda + ad-bc = 0\)</span>. Use the quadratic formula to get an expression for the eigenvalues <span class="math inline">\(\lambda\)</span> in terms of <span class="math inline">\(a\)</span>,<span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>, and <span class="math inline">\(d\)</span>.
+<span id="exr:ch-eq-exr-18" class="exercise"><strong>Exercise 18.7  </strong></span>In this section we learned that for a two dimensional matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span>, eigenvalues can be found by solving the characteristic equation <span class="math inline">\(\det(A-\lambda I)=0\)</span>, or <span class="math inline">\(\lambda^{2} - (a+d) \lambda + ad-bc = 0\)</span>. Use the quadratic formula to get an expression for the eigenvalues <span class="math inline">\(\lambda\)</span> in terms of <span class="math inline">\(a\)</span>,<span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>, and <span class="math inline">\(d\)</span>.
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -467,6 +529,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>26.1 The stochastic logistic model redux | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="26.1 The stochastic logistic model redux | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="simul-stoch-26.html"/>
 <link rel="next" href="a-stochastic-system-of-equations.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -380,10 +405,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="the-stochastic-logistic-model-redux" class="section level2" number="26.1">
 <h2><span class="header-section-number">26.1</span> The stochastic logistic model redux</h2>
 <p>Let’s go back to the logistic population model but re-written in a specific way:</p>
-<p><span class="math display">\[\begin{equation}
-\frac{dx}{dt} = r x \left( 1 - \frac{x}{K} \right) = r x - \frac{rx^{2}}{K}
+<p><span class="math display" id="eq:log-sde-26">\[\begin{equation}
+\frac{dx}{dt} = r x \left( 1 - \frac{x}{K} \right) = r x - \frac{rx^{2}}{K} \tag{26.1}
 \end{equation}\]</span></p>
-<p>From our differential equation a change in the variable <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(\Delta x\)</span>) over <span class="math inline">\(\Delta t\)</span> units will arise from re-writing the differential equation in differential form <span class="math inline">\(\displaystyle \Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t\)</span>. This equation is separated into two terms - one that increases the variable <span class="math inline">\(x\)</span> (represented by <span class="math inline">\(r x \Delta t\)</span>, same units as <span class="math inline">\(x\)</span>) and one that decreases the variable (represented by <span class="math inline">\(\displaystyle \frac{rx^{2}}{K} \Delta t\)</span>, same units as <span class="math inline">\(x\)</span>). We will consider these changes as on a unit scale, organized via the following table:</p>
+<p>From Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-26">(26.1)</a>, we can obtain a change in the variable <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(\Delta x\)</span>) over <span class="math inline">\(\Delta t\)</span> units by re-writing the differential equation in differential form:</p>
+<p><span class="math display" id="eq:log-sde-diff-26">\[\begin{equation}
+\Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t \tag{26.2}
+\end{equation}\]</span></p>
+<p><span class="math inline">\(\displaystyle \Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t\)</span>. Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-diff-26">(26.2)</a> is separated into two terms - one that increases the variable <span class="math inline">\(x\)</span> (represented by <span class="math inline">\(r x \Delta t\)</span>, same units as <span class="math inline">\(x\)</span>) and one that decreases the variable (represented by <span class="math inline">\(\displaystyle \frac{rx^{2}}{K} \Delta t\)</span>, same units as <span class="math inline">\(x\)</span>). We will consider these changes as on a unit scale, organized via the following table:</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -412,24 +441,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 <p>It also may be helpful to think of these changes on a random walk number line:</p>
 <p><img src="series_files/figure-html/random-walk-stoch-1.png" width="672" /></p>
-<p>It may seem odd to think of the different outcomes (<span class="math inline">\(\Delta x\)</span> equals 1, -1, or 1) as probabilities. Part of the reason why that formulation is useful is to apply concepts from probability theory. Here is one useful result. Let <span class="math inline">\(Y\)</span> be a random variable with a finite number of finite outcomes <span class="math inline">\(\displaystyle y_{1},y_{2},\ldots ,y_{k}\)</span> with probabilities <span class="math inline">\(\displaystyle p_{1},p_{2},\ldots ,p_{k}\)</span>, respectively, then the expected value <span class="math inline">\(\mu\)</span> of <span class="math inline">\(Y\)</span> is:</p>
+<p>It may seem odd to think of the different outcomes (<span class="math inline">\(\Delta x\)</span> equals 1, -1, or 1) as probabilities. Part of the reason why that formulation is useful is to apply concepts from probability theory. Let <span class="math inline">\(Y\)</span> be a random variable with a finite number of finite outcomes <span class="math inline">\(\displaystyle y_{1},y_{2},\ldots ,y_{k}\)</span> with probabilities <span class="math inline">\(\displaystyle p_{1},p_{2},\ldots ,p_{k}\)</span>, respectively, then the expected value <span class="math inline">\(\mu\)</span> of <span class="math inline">\(Y\)</span> is:</p>
 <p><span class="math display">\[\begin{equation*}
 \mu = E[Y] = \sum_{i=1}^{k} y_{i}\,p_{i}=y_{1}p_{1}+y_{2}p_{2}+\cdots +y_{k}p_{k}.
 \end{equation*}\]</span></p>
 <p>If we apply this definition to the random variable <span class="math inline">\(\Delta x\)</span> we have:</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display" id="eq:log-sde-mu-26">\[\begin{equation}
+\begin{split}
 \mu = E[\Delta x] &amp;= (1) \cdot \mbox{Pr}(\Delta x = 1) + (- 1) \cdot \mbox{Pr}(\Delta x = -1)  + (0) \cdot \mbox{Pr}(\Delta x = 0) \\
 &amp;= (1) \cdot \left( r x \; \Delta t \right) + (-1)  \frac{rx^{2}}{K} \; \Delta t \\
 &amp;= r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t
-\end{align*}\]</span></p>
-<p>Note how <span class="math inline">\(\mu\)</span> the formula for <span class="math inline">\(\mu\)</span> is the same as the right hand side of the original differential equation!</p>
-<p>Next let’s also calculate the variance of <span class="math inline">\(\Delta x\)</span>, defined for a discrete random variable as <span class="math inline">\(\displaystyle \sigma^{2} = E[(Y - \mu)^{2}]\)</span>, or equivalently <span class="math inline">\(\sigma^{2}= E[Y^{2}] - (E[Y] )^{2}\)</span>.</p>
-<p><span class="math display">\[\begin{align*}
+\end{split} \tag{26.3}
+\end{equation}\]</span></p>
+<p>Notice that the right hand side of Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-mu-26">(26.3)</a> is the same as the right hand side of the original differential equation (Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-diff-26">(26.2)</a>))!</p>
+<p>Next let’s also calculate the variance of <span class="math inline">\(\Delta x\)</span>, defined for a discrete random variable:</p>
+<p><span class="math display">\[\begin{equation*}
+ \sigma^{2} = E[(Y - \mu)^{2}] = \sigma^{2}= E[Y^{2}] - (E[Y] )^{2}.
+\end{equation*}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \sigma^{2} = E[(\Delta x)^{2}] - (E[\Delta x] )^{2} &amp;= (1)^{2} \cdot \mbox{Pr}(\Delta x = 1) + (- 1)^{2} \cdot \mbox{Pr}(\Delta x = -1)  + (0)^{2} \cdot \mbox{Pr}(\Delta x = 0) - (E[\Delta x] )^{2} \\
 &amp;= (1) \cdot \left( r x \; \Delta t \right) + (1)  \frac{rx^{2}}{K} \; \Delta t  - \left( r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t \right)^{2}
-\end{align*}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 <p>Along with the computation of the variance, We are going to compute the variance to first order in <span class="math inline">\(\Delta t\)</span>. Because of that, we are going to assume that in <span class="math inline">\(\sigma^{2}\)</span> any terms involving <span class="math inline">\((\Delta t)^{2}\)</span> are small, or in effect negligible. While this is a huge simplifying assumption for the variance, but it is useful!</p>
-<p>So we have that <span class="math inline">\(\displaystyle \sigma^{2} = \left( r x \; \Delta t \right) + \frac{rx^{2}}{K} \; \Delta t\)</span>. Computing the mean and variance will help characterize the ensemble average. In addition the following random walk properties can be applied:</p>
+<p>Doing these calcuations we have that <span class="math inline">\(\displaystyle \sigma^{2} = \left( r x \; \Delta t \right) + \frac{rx^{2}}{K} \; \Delta t\)</span>. Computing the mean and variance will help characterize the ensemble average. In addition the following random walk properties can be applied:</p>
 <ul>
 <li>Since <span class="math inline">\(\Delta x\)</span> is the sum of many smaller changes we can apply the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem">central limit theorem</a> to characterize <span class="math inline">\(\Delta x\)</span> as a normal random variable.</li>
 <li>To first order, we assume that <span class="math inline">\(\Delta x\)</span> follows a probability distribution that is normal with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span>.</li>
@@ -438,93 +474,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Since <span class="math inline">\(\Delta x = x_{n+1}-x_{n}\)</span>, then we have <span class="math inline">\(x_{n+1} = x_{n} + \mu + \sigma Z\)</span>.</li>
 </ul>
 <p>Notice how the last step provides a way to generate a solution trajectory to our differential equation. Cool! To simulate this stochastic process we will use the function <code>birth_death_stochastic</code>, which is set up in a similar way to <code>euler_stochastic</code> from Section <a href="sdes-25.html#sdes-25">25</a>. I will append <code>_log</code> to denote “logistic” for each of the parts</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="the-stochastic-logistic-model-redux.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
-<span id="cb163-2"><a href="the-stochastic-logistic-model-redux.html#cb163-2" aria-hidden="true" tabindex="-1"></a>birth_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x)</span>
-<span id="cb163-3"><a href="the-stochastic-logistic-model-redux.html#cb163-3" aria-hidden="true" tabindex="-1"></a>death_rate_log <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>K)</span>
-<span id="cb163-4"><a href="the-stochastic-logistic-model-redux.html#cb163-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-5"><a href="the-stochastic-logistic-model-redux.html#cb163-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
-<span id="cb163-6"><a href="the-stochastic-logistic-model-redux.html#cb163-6" aria-hidden="true" tabindex="-1"></a>init_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
-<span id="cb163-7"><a href="the-stochastic-logistic-model-redux.html#cb163-7" aria-hidden="true" tabindex="-1"></a>parameters_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
-<span id="cb163-8"><a href="the-stochastic-logistic-model-redux.html#cb163-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-9"><a href="the-stochastic-logistic-model-redux.html#cb163-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
-<span id="cb163-10"><a href="the-stochastic-logistic-model-redux.html#cb163-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
-<span id="cb163-11"><a href="the-stochastic-logistic-model-redux.html#cb163-11" aria-hidden="true" tabindex="-1"></a>time_steps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
-<span id="cb163-12"><a href="the-stochastic-logistic-model-redux.html#cb163-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-13"><a href="the-stochastic-logistic-model-redux.html#cb163-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
-<span id="cb163-14"><a href="the-stochastic-logistic-model-redux.html#cb163-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb163-15"><a href="the-stochastic-logistic-model-redux.html#cb163-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-16"><a href="the-stochastic-logistic-model-redux.html#cb163-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
-<span id="cb163-17"><a href="the-stochastic-logistic-model-redux.html#cb163-17" aria-hidden="true" tabindex="-1"></a>out_log <span class="ot">&lt;-</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_log,</span>
-<span id="cb163-18"><a href="the-stochastic-logistic-model-redux.html#cb163-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">death_rate =</span> death_rate_log,</span>
-<span id="cb163-19"><a href="the-stochastic-logistic-model-redux.html#cb163-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_log,</span>
-<span id="cb163-20"><a href="the-stochastic-logistic-model-redux.html#cb163-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> parameters_log,</span>
-<span id="cb163-21"><a href="the-stochastic-logistic-model-redux.html#cb163-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb163-22"><a href="the-stochastic-logistic-model-redux.html#cb163-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> time_steps_log,</span>
-<span id="cb163-23"><a href="the-stochastic-logistic-model-redux.html#cb163-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
-<span id="cb163-24"><a href="the-stochastic-logistic-model-redux.html#cb163-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-25"><a href="the-stochastic-logistic-model-redux.html#cb163-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
-<span id="cb163-26"><a href="the-stochastic-logistic-model-redux.html#cb163-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_log) <span class="sc">+</span></span>
-<span id="cb163-27"><a href="the-stochastic-logistic-model-redux.html#cb163-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="the-stochastic-logistic-model-redux.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
+<span id="cb161-2"><a href="the-stochastic-logistic-model-redux.html#cb161-2" aria-hidden="true" tabindex="-1"></a>birth_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x)</span>
+<span id="cb161-3"><a href="the-stochastic-logistic-model-redux.html#cb161-3" aria-hidden="true" tabindex="-1"></a>death_rate_log <span class="ot">&lt;-</span>  <span class="fu">c</span>(dx <span class="sc">~</span> r<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>K)</span>
+<span id="cb161-4"><a href="the-stochastic-logistic-model-redux.html#cb161-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-5"><a href="the-stochastic-logistic-model-redux.html#cb161-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb161-6"><a href="the-stochastic-logistic-model-redux.html#cb161-6" aria-hidden="true" tabindex="-1"></a>init_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables. </span></span>
+<span id="cb161-7"><a href="the-stochastic-logistic-model-redux.html#cb161-7" aria-hidden="true" tabindex="-1"></a>parameters_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.8</span>, <span class="at">K=</span><span class="dv">100</span>)   <span class="co"># parameters: a named vector</span></span>
+<span id="cb161-8"><a href="the-stochastic-logistic-model-redux.html#cb161-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-9"><a href="the-stochastic-logistic-model-redux.html#cb161-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb161-10"><a href="the-stochastic-logistic-model-redux.html#cb161-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
+<span id="cb161-11"><a href="the-stochastic-logistic-model-redux.html#cb161-11" aria-hidden="true" tabindex="-1"></a>time_steps_log <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
+<span id="cb161-12"><a href="the-stochastic-logistic-model-redux.html#cb161-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-13"><a href="the-stochastic-logistic-model-redux.html#cb161-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
+<span id="cb161-14"><a href="the-stochastic-logistic-model-redux.html#cb161-14" aria-hidden="true" tabindex="-1"></a>sigma_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb161-15"><a href="the-stochastic-logistic-model-redux.html#cb161-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-16"><a href="the-stochastic-logistic-model-redux.html#cb161-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb161-17"><a href="the-stochastic-logistic-model-redux.html#cb161-17" aria-hidden="true" tabindex="-1"></a>out_log <span class="ot">&lt;-</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_log,</span>
+<span id="cb161-18"><a href="the-stochastic-logistic-model-redux.html#cb161-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">death_rate =</span> death_rate_log,</span>
+<span id="cb161-19"><a href="the-stochastic-logistic-model-redux.html#cb161-19" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_log,</span>
+<span id="cb161-20"><a href="the-stochastic-logistic-model-redux.html#cb161-20" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb161-21"><a href="the-stochastic-logistic-model-redux.html#cb161-21" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb161-22"><a href="the-stochastic-logistic-model-redux.html#cb161-22" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb161-23"><a href="the-stochastic-logistic-model-redux.html#cb161-23" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
+<span id="cb161-24"><a href="the-stochastic-logistic-model-redux.html#cb161-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb161-25"><a href="the-stochastic-logistic-model-redux.html#cb161-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
+<span id="cb161-26"><a href="the-stochastic-logistic-model-redux.html#cb161-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_log) <span class="sc">+</span></span>
+<span id="cb161-27"><a href="the-stochastic-logistic-model-redux.html#cb161-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>x))</span></code></pre></div>
 <div class="figure"><span id="fig:log-sde-26"></span>
-<img src="series_files/figure-html/log-sde-26-1.png" alt="One realization of the logistic differential equation with stochastic variables." width="672" />
+<img src="series_files/figure-html/log-sde-26-1.png" alt="One realization of the logistic differential equation with stochastic variables." width="384" />
 <p class="caption">
 Figure 26.1: One realization of the logistic differential equation with stochastic variables.
 </p>
 </div>
 <p>Notice how the resulting spaghetti plot shows variation in the variables.</p>
 <p>Making an ensemble average plot is also similar to how we computed them in Section <a href="sdes-25.html#sdes-25">25</a>:</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="the-stochastic-logistic-model-redux.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb164-2"><a href="the-stochastic-logistic-model-redux.html#cb164-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
-<span id="cb164-3"><a href="the-stochastic-logistic-model-redux.html#cb164-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb164-4"><a href="the-stochastic-logistic-model-redux.html#cb164-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb164-5"><a href="the-stochastic-logistic-model-redux.html#cb164-5" aria-hidden="true" tabindex="-1"></a>logistic_sim_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb164-6"><a href="the-stochastic-logistic-model-redux.html#cb164-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb164-7"><a href="the-stochastic-logistic-model-redux.html#cb164-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_log,</span>
-<span id="cb164-8"><a href="the-stochastic-logistic-model-redux.html#cb164-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">death_rate =</span> death_rate_log,</span>
-<span id="cb164-9"><a href="the-stochastic-logistic-model-redux.html#cb164-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_log,</span>
-<span id="cb164-10"><a href="the-stochastic-logistic-model-redux.html#cb164-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> parameters_log,</span>
-<span id="cb164-11"><a href="the-stochastic-logistic-model-redux.html#cb164-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb164-12"><a href="the-stochastic-logistic-model-redux.html#cb164-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> time_steps_log,</span>
-<span id="cb164-13"><a href="the-stochastic-logistic-model-redux.html#cb164-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
-<span id="cb164-14"><a href="the-stochastic-logistic-model-redux.html#cb164-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb164-15"><a href="the-stochastic-logistic-model-redux.html#cb164-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb164-16"><a href="the-stochastic-logistic-model-redux.html#cb164-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb164-17"><a href="the-stochastic-logistic-model-redux.html#cb164-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb164-18"><a href="the-stochastic-logistic-model-redux.html#cb164-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
-<span id="cb164-19"><a href="the-stochastic-logistic-model-redux.html#cb164-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_sim_r) <span class="sc">+</span></span>
-<span id="cb164-20"><a href="the-stochastic-logistic-model-redux.html#cb164-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb164-21"><a href="the-stochastic-logistic-model-redux.html#cb164-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb164-22"><a href="the-stochastic-logistic-model-redux.html#cb164-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="the-stochastic-logistic-model-redux.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb162-2"><a href="the-stochastic-logistic-model-redux.html#cb162-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
+<span id="cb162-3"><a href="the-stochastic-logistic-model-redux.html#cb162-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-4"><a href="the-stochastic-logistic-model-redux.html#cb162-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb162-5"><a href="the-stochastic-logistic-model-redux.html#cb162-5" aria-hidden="true" tabindex="-1"></a>logistic_sim_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb162-6"><a href="the-stochastic-logistic-model-redux.html#cb162-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb162-7"><a href="the-stochastic-logistic-model-redux.html#cb162-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_log,</span>
+<span id="cb162-8"><a href="the-stochastic-logistic-model-redux.html#cb162-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">death_rate =</span> death_rate_log,</span>
+<span id="cb162-9"><a href="the-stochastic-logistic-model-redux.html#cb162-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">init_cond =</span> init_log,</span>
+<span id="cb162-10"><a href="the-stochastic-logistic-model-redux.html#cb162-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb162-11"><a href="the-stochastic-logistic-model-redux.html#cb162-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb162-12"><a href="the-stochastic-logistic-model-redux.html#cb162-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb162-13"><a href="the-stochastic-logistic-model-redux.html#cb162-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">sigma =</span> sigma_log)</span>
+<span id="cb162-14"><a href="the-stochastic-logistic-model-redux.html#cb162-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb162-15"><a href="the-stochastic-logistic-model-redux.html#cb162-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb162-16"><a href="the-stochastic-logistic-model-redux.html#cb162-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-17"><a href="the-stochastic-logistic-model-redux.html#cb162-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-18"><a href="the-stochastic-logistic-model-redux.html#cb162-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
+<span id="cb162-19"><a href="the-stochastic-logistic-model-redux.html#cb162-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_sim_r) <span class="sc">+</span></span>
+<span id="cb162-20"><a href="the-stochastic-logistic-model-redux.html#cb162-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb162-21"><a href="the-stochastic-logistic-model-redux.html#cb162-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb162-22"><a href="the-stochastic-logistic-model-redux.html#cb162-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-r-26-1"></span>
-<img src="series_files/figure-html/spaghetti-r-26-1.png" alt="Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot." width="672" />
+<img src="series_files/figure-html/spaghetti-r-26-1.png" alt="Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot." width="384" />
 <p class="caption">
 Figure 26.2: Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot.
 </p>
 </div>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="the-stochastic-logistic-model-redux.html#cb165-1" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Summarize the variables</span></span>
-<span id="cb165-2"><a href="the-stochastic-logistic-model-redux.html#cb165-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic_sim_r <span class="ot">&lt;-</span> logistic_sim_r <span class="sc">%&gt;%</span></span>
-<span id="cb165-3"><a href="the-stochastic-logistic-model-redux.html#cb165-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
-<span id="cb165-4"><a href="the-stochastic-logistic-model-redux.html#cb165-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb165-5"><a href="the-stochastic-logistic-model-redux.html#cb165-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="the-stochastic-logistic-model-redux.html#cb163-1" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Summarize the variables</span></span>
+<span id="cb163-2"><a href="the-stochastic-logistic-model-redux.html#cb163-2" aria-hidden="true" tabindex="-1"></a>summarized_logistic_sim_r <span class="ot">&lt;-</span> logistic_sim_r <span class="sc">%&gt;%</span></span>
+<span id="cb163-3"><a href="the-stochastic-logistic-model-redux.html#cb163-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
+<span id="cb163-4"><a href="the-stochastic-logistic-model-redux.html#cb163-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">x =</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb163-5"><a href="the-stochastic-logistic-model-redux.html#cb163-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> x)</span></code></pre></div>
 <pre><code>## `summarise()` has grouped output by &#39;t&#39;. You can override using the `.groups` argument.</code></pre>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="the-stochastic-logistic-model-redux.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
-<span id="cb167-2"><a href="the-stochastic-logistic-model-redux.html#cb167-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic_sim_r) <span class="sc">+</span></span>
-<span id="cb167-3"><a href="the-stochastic-logistic-model-redux.html#cb167-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb167-4"><a href="the-stochastic-logistic-model-redux.html#cb167-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb167-5"><a href="the-stochastic-logistic-model-redux.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="the-stochastic-logistic-model-redux.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
+<span id="cb165-2"><a href="the-stochastic-logistic-model-redux.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic_sim_r) <span class="sc">+</span></span>
+<span id="cb165-3"><a href="the-stochastic-logistic-model-redux.html#cb165-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb165-4"><a href="the-stochastic-logistic-model-redux.html#cb165-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb165-5"><a href="the-stochastic-logistic-model-redux.html#cb165-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Ensemble average plot for the logistic SDE&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-r-26-2"></span>
-<img src="series_files/figure-html/spaghetti-r-26-2.png" alt="Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot." width="672" />
+<img src="series_files/figure-html/spaghetti-r-26-2.png" alt="Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot." width="384" />
 <p class="caption">
 Figure 26.3: Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot.
 </p>
 </div>
 <p>Notice that as before the spaghetti and ensemble average plots are generated. While there are some simulations that may always be zero, in the <em>ensemble</em> the median resembles the (deterministic) solution to the logistic differential equation.</p>
-<p>These types of stochastic processes are called “birth-death” processes. Here is another way to think about the stochastic differential equation:</p>
-<p><span class="math display">\[\begin{align*}
+<p>The types of stochastic processes we are describing in this section are called “birth-death” processes. Here is another way to think about Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-diff-26">(26.2)</a>:</p>
+<p><span class="math display" id="eq:birth-death-log-26">\[\begin{equation}
+\begin{split}
 r x \; \Delta t   &amp;= \alpha(x)  \mbox{ (birth) }\\
 \frac{rx^{2}}{K} \; \Delta t &amp;= \delta(x) \mbox{ (death) }
- \end{align*}\]</span></p>
-<p>In this way we think of <span class="math inline">\(\alpha(x)\)</span> as a “birth process” and <span class="math inline">\(\delta(x)\)</span> as a “death process.” When we computed the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> for the logistic differential equation we had <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span>. This relationship holds up for <em>any</em> differential equation where we have identified a birth or death process.</p>
+\end{split} \tag{26.4}
+\end{equation}\]</span></p>
+<p>In this way we think of <span class="math inline">\(\alpha(x)\)</span> in Equation <a href="the-stochastic-logistic-model-redux.html#eq:birth-death-log-26">(26.4)</a> as a “birth process” and <span class="math inline">\(\delta(x)\)</span> as a “death process.” When we computed the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> for Equation <a href="the-stochastic-logistic-model-redux.html#eq:log-sde-diff-26">(26.2)</a> we had <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span> (you should double check to make sure this is the case!). Here is an interesting fact: <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span> holds up for <em>any</em> differential equation where we have identified a birth or death process.</p>
 </div>
             </section>
 
@@ -555,6 +593,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

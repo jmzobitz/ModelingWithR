@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>23.3 Random walk mathematics | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="23.3 Random walk mathematics | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="more-realizatons.html"/>
 <link rel="next" href="continuous-random-walks-diffusion.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,66 +404,66 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="random-walk-mathematics" class="section level2" number="23.3">
 <h2><span class="header-section-number">23.3</span> Random walk mathematics</h2>
-<p>Call <span class="math inline">\(x^{i}\)</span> the position <span class="math inline">\(x\)</span> at step <span class="math inline">\(i\)</span> in a random walk. While we have set this up to be a unit walk, more generally <span class="math inline">\(x^{i}=x^{i-1}+r(p) \Delta x\)</span>, with <span class="math inline">\(\Delta x\)</span> being the jump size (in this case <span class="math inline">\(\Delta x=1\)</span>) and <span class="math inline">\(r(p)\)</span> being a random variable:</p>
-<p><span class="math display">\[\begin{equation}\label{eq:equal-prob}
-r(p)=\begin{cases} -1 &amp; 0 \leq p &lt; 0.5 \\
-1 &amp; 0.5 \leq p &lt; 1 \end{cases}
+<p>Call <span class="math inline">\(x^{i}\)</span> the position <span class="math inline">\(x\)</span> at step <span class="math inline">\(i\)</span> in a random walk. While we have set this up to be a unit walk, more generally <span class="math inline">\(x^{i}=x^{i-1}+p(r) \; \Delta x\)</span>, with <span class="math inline">\(\Delta x\)</span> being the jump size (in this case <span class="math inline">\(\Delta x=1\)</span>) and <span class="math inline">\(r\)</span> being a random variable:</p>
+<p><span class="math display" id="eq:equal-prob">\[\begin{equation}
+r=\begin{cases} -1 &amp; p(-1)=0.5 \\
+1 &amp; p(1)=0.5 \end{cases} \tag{23.1}
 \end{equation}\]</span></p>
-<p>Note that in the above equation <span class="math inline">\(p\)</span> is drawn from a uniform distribution.</p>
-<p>The equation <span class="math inline">\(x^{i}=x^{i-1}+r(p) \Delta x\)</span> is sometimes referred to as the <em>evolution equation</em>. If we have multiple simulations then <span class="math inline">\(x_{j}^{i}\)</span> is the position at step <span class="math inline">\(i\)</span> for simulation <span class="math inline">\(j\)</span>.</p>
+<p>Note that in Equation <a href="random-walk-mathematics.html#eq:equal-prob">(23.1)</a> <span class="math inline">\(r\)</span> is an example of a (<a href="https://en.wikipedia.org/wiki/Bernoulli_distribution" class="uri">https://en.wikipedia.org/wiki/Bernoulli_distribution</a>)[<em>Bernoulli Random Variable</em>] - it can be either 0 or 1, with equal probability. Equation <a href="random-walk-mathematics.html#eq:equal-prob">(23.1)</a> is sometimes referred to as the <em>evolution equation</em>. If we have multiple simulations then <span class="math inline">\(x_{j}^{i}\)</span> is the position at step <span class="math inline">\(i\)</span> for simulation <span class="math inline">\(j\)</span>.</p>
 <p>Let’s introduce some terminology to help us out here. <span class="math inline">\(\displaystyle \big \langle x^{i} \big \rangle = \frac{1}{n} \sum_{j=1}^{n} x_{j}^{i}\)</span> is the <em>expected value</em> of our position at step <span class="math inline">\(i\)</span>, summed over all of the simulations at that timestep. Notice the connection here to the ensemble average at a given point.</p>
 <p>You will learn in a probability theory class that the expected value is a linear operator. Because of this, we can compute the expected value of our evolution equation:</p>
 <p><span class="math display">\[\begin{equation}
-\big \langle x^{i} \big \rangle = \big \langle x^{i-1}+r(p) \;\Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r(p) \;  \Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r(p)  \big \rangle  \Delta x
+\big \langle x^{i} \big \rangle = \big \langle x^{i-1}+r \;\Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r \;  \Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r  \big \rangle \; \Delta x
 \end{equation}\]</span></p>
-<p>Let’s focus in particular on the second term of this expression: <span class="math inline">\(\big \langle r(p) \big \rangle\)</span>. Because <span class="math inline">\(r(p)\)</span> is a discrete random variable we can also compute its expected value as well. Let’s write Equation <a href="random-walk-mathematics.html#eq:equal-prob">(23.1)</a> a little differently:</p>
-<p><span class="math display" id="eq:equal-prob">\[\begin{equation}
-r_{i}=\begin{cases} -1 &amp; p_{1}=0.5 \\ \tag{23.1}
-1 &amp; p_{12} =0.5 \end{cases}
-\end{equation}\]</span></p>
-<p>Written in this way, <span class="math inline">\(r\)</span> has two possible outcomes: <span class="math inline">\(r_{1} = 1\)</span> with probability <span class="math inline">\(p_{1}=0.5\)</span> or <span class="math inline">\(r_{2}=-1\)</span> with probability <span class="math inline">\(p_{2}=0.5\)</span>. Note that <span class="math inline">\(p_{1}+p_{2}=1\)</span>.</p>
-<p>Now to calculate <span class="math inline">\(\langle r(p) \rangle\)</span> we adding up the possible outcomes for <span class="math inline">\(r\)</span> (either 1 or -1) when multiplied by their associated probabilities (either 1/2 or 1/2 - note how these probabilities sum to 1):<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
+<p>Let’s focus in particular on the second term of this expression: <span class="math inline">\(\big \langle r \big \rangle\)</span>. Because <span class="math inline">\(r\)</span> is a discrete random variable we can also compute its expected value as well. To calculate <span class="math inline">\(\langle r \rangle\)</span> we adding up the possible outcomes for <span class="math inline">\(r\)</span> (either 1 or -1) when multiplied by their associated probabilities (for this case 0.5 (<span class="math inline">\(r=1\)</span>) or 0.5 (<span class="math inline">\(r=-1\)</span>) - note how these probabilities sum to 1):<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
 <p><span class="math display">\[\begin{equation}
-\big \langle r(p) \big \rangle = 1 \cdot \frac{1}{2} - 1 \cdot \frac{1}{2} = 0
+\big \langle r \big \rangle = 1 \cdot 0.5 - 1 \cdot 0.5 = 0
 \end{equation}\]</span></p>
-<p>So, the expected value of the evolution equation is <span class="math inline">\(\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle\)</span>. This may not seem helpful, but let’s start thinking of this value from the beginning (that is when <span class="math inline">\(i=0\)</span>, or when we begin at <span class="math inline">\(x=0\)</span>).</p>
-<p>We assume for all of the simulations begin at <span class="math inline">\(x=0\)</span>, so <span class="math inline">\(\big \langle x^{0} \big \rangle = 0\)</span>. Let’s evolve to the next timestep. By what we found, then <span class="math inline">\(\big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle =0\)</span>. Connect these together: <span class="math inline">\(\big \langle x^{1} \big \rangle = 0\)</span> as well. What do you think happens at <span class="math inline">\(\big \langle x^{2} \big \rangle\)</span>? If you guessed 0, you are correct, because <span class="math inline">\(\big \langle x^{2} \big \rangle = \big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle = 0\)</span>. In fact, this pattern continues so that <span class="math inline">\(\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle=0\)</span>.</p>
+<p>So, the expected value of the evolution equation is <span class="math inline">\(\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle\)</span>. This may not seem helpful, but let’s start thinking of this value from the beginning (that is when <span class="math inline">\(i=0\)</span>, or when we begin at <span class="math inline">\(x=0\)</span>). Now let’s evolve to the next timestep. By what we found, then <span class="math inline">\(\big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle =0\)</span>. Connect these together: <span class="math inline">\(\big \langle x^{1} \big \rangle = 0\)</span> as well. What do you think happens at <span class="math inline">\(\big \langle x^{2} \big \rangle\)</span>? If you guessed 0, you are correct, because <span class="math inline">\(\big \langle x^{2} \big \rangle = \big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle = 0\)</span>. In fact, this pattern continues so that <span class="math inline">\(\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle=0\)</span>.</p>
 <p>What does this tell us? Between all of this notation, <span class="math inline">\(\big \langle x^{i} \big \rangle\)</span> is the expected value at each timestep, so we showed that <em>the expected value at any time</em> is zero. In other words, <em>random walk goes nowhere</em>!</p>
 <div id="random-walk-variance" class="section level3" number="23.3.1">
 <h3><span class="header-section-number">23.3.1</span> Random walk variance</h3>
 <p>Now that we have characterized the expected value or the average displacement let’s do the variance of this random walk. We calculate this by computing the mean square displacement, or <span class="math inline">\(\langle (x^{i})^{2} \rangle\)</span>. First we compute the square displacement using the evolution equation and multiplying out:</p>
 <p><span class="math display">\[\begin{equation}
-(x^{i})^{2} = (x^{i-1} + r(p) \Delta x)^2 = (x^{i-1})^{2} + 2 x^{i-1} r(p) \Delta x + r(p)^{2} \Delta x^{2} .
+(x^{i})^{2} = (x^{i-1} + r \; \Delta x)^2 = (x^{i-1})^{2} + 2 x^{i-1} \; r \; \Delta x + r^{2} \; \Delta x^{2} .
 \end{equation}\]</span></p>
 <p>Next what we will compute the expectation <span class="math inline">\(\langle (x^{i})^{2} \rangle\)</span> of our multiplied expression term by term:</p>
 <ul>
-<li><span class="math inline">\(\langle (x^{i-1})^{2} \rangle\)</span>: There is not much we can do with this term.</li>
-<li><span class="math inline">\(\langle 2 x^{i-1} r(p) \rangle\)</span>: This term is zero:</li>
-</ul>
+<li><p><span class="math inline">\(\langle (x^{i-1})^{2} \rangle\)</span>: There is not much we can do with this term.</p></li>
+<li><p><span class="math inline">\(\langle 2 x^{i-1} \; r \; \Delta x \rangle\)</span>: This term is zero from the expected value:
 <span class="math display">\[\begin{equation}
-= 2 x^{i-1} \langle r(p) \rangle = 2 x^{i-1} \cdot \frac{1}{2} - 2 x^{i-1} \cdot \frac{1}{2} = 0
+\langle 2 x^{i-1} \; r \; \Delta x \rangle = 2 x^{i-1} \; \Delta x \cdot 0.5 - 2 x^{i-1} \; \Delta x \cdot 0.5 = 0
+\end{equation}\]</span></p></li>
+<li><p><span class="math inline">\(\langle r^{2} \; (\Delta x)^{2} \rangle\)</span>: We know that <span class="math inline">\(r\)</span> be either <span class="math inline">\(-1\)</span> or <span class="math inline">\(1\)</span>, but we then square the value of <span class="math inline">\(r\)</span> in Equation <a href="random-walk-mathematics.html#eq:equal-prob">(23.1)</a>:
+<span class="math display" id="eq:equal-prob-square">\[\begin{equation}
+r^{2}=\begin{cases} -1 \rightarrow (-1)^{2}=1 &amp; p(-1)=0.5 \\
+1 \rightarrow (1)^{2}=1 &amp; p(1)=0.5 \end{cases} \tag{23.2}
 \end{equation}\]</span>
-<ul>
-<li><span class="math inline">\(\langle r(p)^{2} \Delta x^{2} \rangle\)</span>: Since <span class="math inline">\(r(p)\)</span> is either positive or negative 1 depending on <span class="math inline">\(p\)</span>, it must be the case that <span class="math inline">\(r(p)^{2}=1\)</span> for any value of <span class="math inline">\(p\)</span>. So in the expectation, the last term is just <span class="math inline">\(\Delta x^{2}\)</span>.</li>
+So when we compute the expected value of this term we obtain:
+<span class="math display">\[\begin{equation}
+\langle r^{2} \; (\Delta x)^{2} \rangle = 1 \; (\Delta x)^{2} \cdot 0.5 + 1 \; (\Delta x)^{2} \cdot 0.5 = (\Delta x)^{2}
+\end{equation}\]</span></p></li>
 </ul>
 <p>So the end result for the variance is:</p>
 <p><span class="math display">\[\begin{equation}
 \big \langle (x^{i})^{2} \big \rangle = \big \langle (x^{i-1})^{2}) \big \rangle +( \Delta x)^{2}
 \end{equation}\]</span></p>
 <p>In order to understand this let’s write out the first few terms of this recursive relationship:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[\begin{equation}
+\begin{split}
 \big \langle (x^{0})^{2} \big \rangle &amp;=0 \\
 \langle (x^{1})^{2} \big \rangle &amp;= \big \langle (x^{0})^{2}) \big \rangle + (\Delta x)^{2} = (\Delta x)^{2} \\
 \big \langle (x^{2})^{2} \big \rangle &amp;= \big \langle (x^{1})^{2}) \big \rangle + (\Delta x)^{2} = 2  (\Delta x)^{2} \\
 \big \langle (x^{3})^{2} \big \rangle &amp;= \big \langle (x^{2})^{2}) \big \rangle + (\Delta x)^{2} = 3  (\Delta x)^{2}
-\end{align}\]</span></p>
+\end{split}
+\end{equation}\]</span></p>
 <p>There is a pattern here, in fact <span class="math inline">\(\langle (x^{i})^{2} \rangle = i ( \Delta x)^{2}\)</span>. So the variance, or the mean square displacement grows, proportional to the step size. Another way to state this is that the standard deviation (the square root of the variance) is equal to <span class="math inline">\(\pm \sqrt{n} \; \Delta x\)</span>, where <span class="math inline">\(n\)</span> is the current step. This matches up with our graphs from earlier since <span class="math inline">\(\Delta x =1\)</span>! Informally this tells us that on <em>average</em> you go nowhere, but <em>eventually</em> you travel everywhere - how cool!</p>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="11">
-<li id="fn11"><p>Generally speaking for a discrete random variable <span class="math inline">\(x\)</span>, <span class="math inline">\(\displaystyle \langle x \rangle = \sum p_{i} \cdot x_{i}\)</span>, with <span class="math inline">\(\displaystyle \sum p_{i}=1\)</span>. <a href="random-walk-mathematics.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<ol start="10">
+<li id="fn10"><p>Generally speaking for a discrete random variable <span class="math inline">\(x\)</span>, <span class="math inline">\(\displaystyle \langle x \rangle = \sum p_{i} \cdot x_{i}\)</span>, with <span class="math inline">\(\displaystyle \sum p_{i}=1\)</span>. <a href="random-walk-mathematics.html#fnref10" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -470,6 +495,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

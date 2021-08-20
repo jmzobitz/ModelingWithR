@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>6.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="6.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="generating-a-phase-plane-in-r.html"/>
 <link rel="next" href="exact-solns-07.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -422,7 +447,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- %Thornley pg 80 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-103" class="exercise"><strong>Exercise 6.4  </strong></span>(Inspired by <span class="citation"><a href="references.html#ref-thornley_plant_1990" role="doc-biblioref">Thornley and Johnson</a> (<a href="references.html#ref-thornley_plant_1990" role="doc-biblioref">1990</a>)</span>) A plant grows propritional to its current length <span class="math inline">\(L\)</span>. Assume this proportionality constant is <span class="math inline">\(\mu\)</span>, whose rate also decreases proportional to its current value. The system of equations that models this plant growth is the following:
+<p><span id="exr:unnamed-chunk-103" class="exercise"><strong>Exercise 6.4  </strong></span>(Inspired by <span class="citation"><a href="#ref-thornley_plant_1990" role="doc-biblioref">Thornley and Johnson</a> (<a href="#ref-thornley_plant_1990" role="doc-biblioref">1990</a>)</span>) A plant grows propritional to its current length <span class="math inline">\(L\)</span>. Assume this proportionality constant is <span class="math inline">\(\mu\)</span>, whose rate also decreases proportional to its current value. The system of equations that models this plant growth is the following:
 <span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dL}{dt} &amp;= \mu L \\ 
@@ -438,7 +463,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-104" class="exercise"><strong>Exercise 6.5  </strong></span>(Inspired by <span class="citation"><a href="references.html#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="references.html#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Red blood cells are formed from stem cells in the bone marrow. The red blood cell density <span class="math inline">\(r\)</span> satisfies an equation of the form</p>
+<p><span id="exr:unnamed-chunk-104" class="exercise"><strong>Exercise 6.5  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Red blood cells are formed from stem cells in the bone marrow. The red blood cell density <span class="math inline">\(r\)</span> satisfies an equation of the form</p>
 <p><span class="math display">\[\begin{equation}
 \frac{dr}{dt} = \frac{0.2r}{1+r^{2}} -  0.1 r,
 \end{equation}\]</span></p>
@@ -452,7 +477,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- Van den Berg page 19 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-105" class="exercise"><strong>Exercise 6.6  </strong></span>(Inspired by <span class="citation"><a href="references.html#ref-berg_mathematical_2011" role="doc-biblioref">Berg</a> (<a href="references.html#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
+<p><span id="exr:unnamed-chunk-105" class="exercise"><strong>Exercise 6.6  </strong></span>(Inspired by <span class="citation"><a href="#ref-berg_mathematical_2011" role="doc-biblioref">Hugo van den Berg</a> (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
 <p><span class="math display">\[ \frac{dS}{dt} = 1 + 0.3 \cdot (3 - S) \]</span></p>
 <ol style="list-style-type: lower-alpha">
 <li>What are the equilibrium solutions for this differential equation?</li>
@@ -464,7 +489,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- From van den Berg, pg 59, exercise 3.13 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-106" class="exercise"><strong>Exercise 6.7  </strong></span>(Inspired by <span class="citation"><a href="references.html#ref-berg_mathematical_2011" role="doc-biblioref">Berg</a> (<a href="references.html#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) The core body temperature (<span class="math inline">\(T\)</span>) of a mammal is coupled to the heat production (scaled by heat capacity <span class="math inline">\(Q\)</span>) with the following system of differential equations:
+<p><span id="exr:unnamed-chunk-106" class="exercise"><strong>Exercise 6.7  </strong></span>(Inspired by <span class="citation"><a href="#ref-berg_mathematical_2011" role="doc-biblioref">Hugo van den Berg</a> (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) The core body temperature (<span class="math inline">\(T\)</span>) of a mammal is coupled to the heat production (scaled by heat capacity <span class="math inline">\(Q\)</span>) with the following system of differential equations:
 <span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dT}{dt} &amp;= Q + 0.5 \cdot (20-T) \\ 
@@ -500,7 +525,7 @@ Figure 6.6: An example of a chemostat.
 </div>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-108" class="exercise"><strong>Exercise 6.9  </strong></span>A chemostat is a tank used to study microbes and ecology, where microbes grow under controlled conditions. Think of this like a large tank with nutrient-rich water being continuously cycled through, as shown in the following Figure <a href="exercises-5.html#fig:chemostat-06">6.6</a>. (Source: <a href="https://en.wikipedia.org/wiki/Chemostat">Wikipedia</a>). Equations that describe the microbial biomass <span class="math inline">\(W\)</span> and the nutrient concentration <span class="math inline">\(C\)</span> (in the culture) are the following:</p>
+<p><span id="exr:unnamed-chunk-108" class="exercise"><strong>Exercise 6.9  </strong></span>(Inspired by <span class="citation"><a href="#ref-berg_mathematical_2011" role="doc-biblioref">Hugo van den Berg</a> (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) A chemostat is a tank used to study microbes and ecology, where microbes grow under controlled conditions. Think of this like a large tank with nutrient-rich water being continuously cycled through, as shown in the following Figure <a href="exercises-5.html#fig:chemostat-06">6.6</a>. (Source: <a href="https://en.wikipedia.org/wiki/Chemostat">Wikipedia</a>). Equations that describe the microbial biomass <span class="math inline">\(W\)</span> and the nutrient concentration <span class="math inline">\(C\)</span> (in the culture) are the following:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dW}{dt} &amp;= \mu W - F \frac{W}{V} \\
@@ -519,12 +544,12 @@ Figure 6.6: An example of a chemostat.
 <div class="figure"><span id="fig:gause-06"></span>
 <img src="figures/06-coupledSystems/gause-results.png" alt="Population results from two yeast species growing in competition. From @gause_experimental_1932." width="50%" />
 <p class="caption">
-Figure 6.7: Population results from two yeast species growing in competition. From <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>.
+Figure 6.7: Population results from two yeast species growing in competition. From <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>.
 </p>
 </div>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-109" class="exercise"><strong>Exercise 6.10  </strong></span> A classical paper <em>Experimental Studies on the Struggle for Existence: I. Mixed Population of Two Species of Yeast</em> by <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> examined two different species of yeast growing in competition with each other. The differential equations given for two species in competition are:</p>
+<p><span id="exr:unnamed-chunk-109" class="exercise"><strong>Exercise 6.10  </strong></span> A classical paper <em>Experimental Studies on the Struggle for Existence: I. Mixed Population of Two Species of Yeast</em> by <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> examined two different species of yeast growing in competition with each other. The differential equations given for two species in competition are:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dy_{1}}{dt} &amp;= -b_{1} y_{1} \frac{(K_{1}-(y_{1}+\alpha y_{2}) )}{K_{1}} \\
@@ -536,12 +561,27 @@ Figure 6.7: Population results from two yeast species growing in competition. Fr
 <li>Determine the equilibrium solutions for this differential equation. Express your answer in terms of the parameters <span class="math inline">\(b_{1}, \; b_{2}, \; K_{1}, \; K_{2}, \; \alpha, \; \beta\)</span>.</li>
 <li>Gause computed the following values of the parameters: <span class="math inline">\(b_{1}=0.21827, \; b_{2}=0.06069, \; K_{1}=13.0, \; K_{2}=5.8, \; \alpha=3.15, \; \beta=0.439\)</span>. Using these values, what would be the predicted values for the equilibrium solutions?</li>
 <li>Use the function  to solve this system of differential equations numerically.</li>
-<li>Figure  is from <span class="citation"><a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="references.html#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> and shows the experimental population values ``in mixed population’’. Use the graph to estimate the equilibrium solutions for both species. How close (or how far from) the equilibrium solutions are Gause’s results to your computed equilibrium solutions?</li>
+<li>Figure  is from <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> and shows the experimental population values ``in mixed population’’. Use the graph to estimate the equilibrium solutions for both species. How close (or how far from) the equilibrium solutions are Gause’s results to your computed equilibrium solutions?</li>
 </ol>
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-berg_mathematical_2011" class="csl-entry">
+Berg, Hugo van den. 2011. <em>Mathematical <span>Models</span> of <span>Biological Systems</span></em>. Illustrated edition. <span>Oxford ; New York</span>: <span>Oxford University Press</span>.
+</div>
+<div id="ref-gause_experimental_1932" class="csl-entry">
+Gause, G. F. 1932. <span>“Experimental <span>Studies</span> on the <span>Struggle</span> for <span>Existence</span>: <span>I</span>. <span>Mixed Population</span> of <span>Two Species</span> of <span>Yeast</span>.”</span> <em>Journal of Experimental Biology</em> 9 (4): 389–402.
+</div>
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+<div id="ref-thornley_plant_1990" class="csl-entry">
+Thornley, John H M, and Ian R Johnson. 1990. <em>Plant and <span>Crop Modelling</span>: <span>A Mathematical Approach</span> to <span>Plant</span> and <span>Crop Physiology</span></em>. <span>Oxford Science Publications</span>.
+</div>
+</div>
             </section>
 
           </div>
@@ -571,6 +611,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

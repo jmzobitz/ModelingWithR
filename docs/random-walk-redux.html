@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>24.1 Random walk redux | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="24.1 Random walk redux | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="diffusion-24.html"/>
 <link rel="next" href="concluding-thoughts-3.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,44 +404,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="random-walk-redux" class="section level2" number="24.1">
 <h2><span class="header-section-number">24.1</span> Random walk redux</h2>
-<p>In our random walk derivation we focused on the <em>position</em> of a particle on the random walk, based upon prescribed rules. In this scenario we instead are going to consider the <em>probability</em> that a particle is at position <span class="math inline">\(x\)</span> in time <span class="math inline">\(t\)</span>. We will denote this probability as <span class="math inline">\(p(x,t)\)</span>. In other words, rather than focusing on where the particle is, we focus on the chance that the particle is at a given spot.</p>
-<p>A way to conceptualize this is at any given position <span class="math inline">\(x\)</span>, a particle can arrive there from either the left or the right, illustrated in the following number line:</p>
-<p><img src="series_files/figure-html/unnamed-chunk-326-1.png" width="672" /></p>
-<p>Notice how the the particle could only move in unit increments. To generalize this setup a little more where to increments <span class="math inline">\(\Delta x\)</span>, the equation that defines the probability <span class="math inline">\(p\)</span> of being at position <span class="math inline">\(x\)</span> at any time <span class="math inline">\(t\)</span> is the following:</p>
+<p>In our random walk derivation in Section <a href="random-walks-23.html#random-walks-23">23</a> we focused on the <em>position</em> of a particle on the random walk, based upon prescribed rules. In this scenario we instead are going to consider the <em>probability</em> that a particle is at position <span class="math inline">\(x\)</span> in time <span class="math inline">\(t\)</span>. We will denote this probability as <span class="math inline">\(p(x,t)\)</span>. In other words, rather than focusing on where the particle is, we focus on the chance that the particle is at a given spot.</p>
+<p>A way to conceptualize this is at any given position <span class="math inline">\(x\)</span>, a particle can arrive there from either the left or the right, illustrated in Figure <a href="random-walk-redux.html#fig:random-walk-25">24.1</a>.</p>
+<div class="figure"><span id="fig:random-walk-25"></span>
+<img src="series_files/figure-html/random-walk-25-1.png" alt="Schematic diagram for one-dimensional random walk." width="672" />
+<p class="caption">
+Figure 24.1: Schematic diagram for one-dimensional random walk.
+</p>
+</div>
+<p>Notice how the the particle in Figure <a href="random-walk-redux.html#fig:random-walk-25">24.1</a> could only move in unit increments. To generalize this setup a little more where to increments <span class="math inline">\(\Delta x\)</span>, the equation that defines the probability <span class="math inline">\(p\)</span> of being at position <span class="math inline">\(x\)</span> at any time <span class="math inline">\(t\)</span> is the following:</p>
 <p><span class="math display" id="eq:master-diff">\[\begin{equation}
 p(x,t+\Delta t) = \frac{1}{2} p(x-\Delta x,t) + \frac{1}{2} p(x+\Delta x,t) \tag{24.1}
 \end{equation}\]</span></p>
-<p>The next step to analyze this expression is apply Taylor approximations on each side of the equation. First let’s do a locally linear approximation for <span class="math inline">\(p(x,t+\Delta t)\)</span>:</p>
+<p>The next step to analyze this expression is apply Taylor approximations on each side of Equation <a href="random-walk-redux.html#eq:master-diff">(24.1)</a>. First let’s do a locally linear approximation for <span class="math inline">\(p(x,t+\Delta t)\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
 p(x,t+\Delta t)  \approx p(x,t) + \Delta t \cdot p_{t},
 \end{equation}\]</span></p>
-<p>where we have dropped the shorthand <span class="math inline">\(p_{t}(x,t)\)</span> as <span class="math inline">\(p_{t}\)</span>. On the right hand side of the equation we will compute the 2nd degree (quadratic) Taylor polynomial:</p>
+<p>where we have dropped the shorthand <span class="math inline">\(p_{t}(x,t)\)</span> as <span class="math inline">\(p_{t}\)</span>. On the right hand side of Equation <a href="random-walk-redux.html#eq:master-diff">(24.1)</a> we will compute the 2nd degree (quadratic) Taylor polynomial:</p>
 <p><span class="math display">\[\begin{align*}
 \frac{1}{2} p(x-\Delta x,t)  &amp; \approx \frac{1}{2} p(x,t) -   \frac{1}{2} \Delta x \cdot p_{x} + \frac{1}{4} (\Delta x)^{2}\cdot  p_{xx} \\
 \frac{1}{2} p(x+\Delta x,t)  &amp; \approx \frac{1}{2} p(x,t) +   \frac{1}{2} \Delta x \cdot p_{x} + \frac{1}{4} (\Delta x)^{2} \cdot p_{xx}
 \end{align*}\]</span></p>
-<p>With these approximations we can re-write the Equation <a href="random-walk-redux.html#eq:master-diff">(24.1)</a>:</p>
+<p>With these approximations we can re-write Equation <a href="random-walk-redux.html#eq:master-diff">(24.1)</a> as Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a>:</p>
 <p><span class="math display" id="eq:new-master-diff">\[\begin{equation}
 \Delta t \cdot p_{t} = \frac{1}{2} (\Delta x)^{2} p_{xx} \rightarrow  p_{t} = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t} \cdot p_{xx} \tag{24.2}
 \end{equation}\]</span></p>
-<p>Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is called a partial differential equation - a differential equation with derivatives that depend on two variables. This particular equation is the <strong>diffusion equation</strong>. Cool! We can also simplify Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> even more by defining <span class="math inline">\(\displaystyle D = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}\)</span>.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
+<p>Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is called a partial differential equation - what this means is that it is a differential equation with derivatives that depend on two variables (<span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span> (two derivatives). Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is called the <strong>diffusion equation</strong>. Cool!</p>
+<p>We can also simplify Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> even more by defining <span class="math inline">\(\displaystyle D = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}\)</span>, so we have <span class="math inline">\(p_{t}=D \cdot p_{xx}\)</span>. Other derivations of the diffusion equation let <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> in the limit, but because of Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is connected to a random walk we will not make that limiting argument.</p>
 <p>Determining an exact solution to the diffusion equation requires more study in techniques of partial differential equations, so we will leave that for another time. However, the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is given by Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a>:
 <span class="math display" id="eq:diff-eq-soln">\[\begin{equation}
  p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \tag{24.3}
  \end{equation}\]</span></p>
-<p>What this equation represents is the probability that the particle is at the position <span class="math inline">\(x\)</span> at time <span class="math inline">\(t\)</span>.</p>
-<p>Figure <a href="random-walk-redux.html#fig:diffusion-profile">24.1</a> shows plots for <span class="math inline">\(p(x,t)\)</span> when <span class="math inline">\(D=0.5\)</span> (we will call these plots profiles) for different values of <span class="math inline">\(t\)</span>:</p>
+<p>Figure <a href="random-walk-redux.html#fig:diffusion-profile">24.2</a> shows plots for <span class="math inline">\(p(x,t)\)</span> when <span class="math inline">\(D=0.5\)</span> (we will call these plots profiles) for different values of <span class="math inline">\(t\)</span>:
+What Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> represents is the probability that the particle is at the position <span class="math inline">\(x\)</span> at time <span class="math inline">\(t\)</span>. In the exercises for this section you will examine more properties of the diffusion equation.</p>
 <div class="figure" style="text-align: center"><span id="fig:diffusion-profile"></span>
-<img src="series_files/figure-html/diffusion-profile-1.png" alt="Profiles of Equation \@ref(eq:diff-eq-soln) for different values of $t$ with $D = 0.5$." width="384" />
+<img src="series_files/figure-html/diffusion-profile-1.png" alt="Profiles of $p(x,t)$ (solution to the diffusion equation) for different values of $t$ with $D = 0.5$." width="384" />
 <p class="caption">
-Figure 24.1: Profiles of Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> for different values of <span class="math inline">\(t\)</span> with <span class="math inline">\(D = 0.5\)</span>.
+Figure 24.2: Profiles of <span class="math inline">\(p(x,t)\)</span> (solution to the diffusion equation) for different values of <span class="math inline">\(t\)</span> with <span class="math inline">\(D = 0.5\)</span>.
 </p>
 </div>
 <p>As you can see that as time increases the graph of <span class="math inline">\(p(x,t)\)</span> gets flatter - or more uniform. What this tells you is that the longer <span class="math inline">\(t\)</span> increases it is less likely to find the particle at the origin.</p>
 <div id="verifying-the-solution-to-the-diffusion-equation" class="section level3" number="24.1.1">
 <h3><span class="header-section-number">24.1.1</span> Verifying the solution to the diffusion equation</h3>
 <p>Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is the solution to Equation <a href="random-walk-redux.html#eq:new-master-diff">(24.2)</a> is a good review of your multivariable calculus skills! As a first step to verifying this solution, let’s take the partial derivative with respect to <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>.</p>
-<p>First we will compute <span class="math inline">\(\displaystyle \frac{\partial p}{\partial x}\)</span>, which we will denote as <span class="math inline">\(p_{x}\)</span>:
+<p>First we will compute <span class="math inline">\(\displaystyle \frac{\partial p}{\partial x}\)</span> (also represented as <span class="math inline">\(p_{x}\)</span>):
 <span class="math display">\[\begin{align*}
 p_{x} &amp;= \frac{\partial }{\partial x} \left( \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \right) \\
 &amp;= \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \cdot \frac{-2x}{4Dt}
@@ -429,32 +460,22 @@ p_{xx} &amp;= p_{x} \cdot \left( \frac{-x}{2Dt} \right) - p(x,t) \cdot \left( \f
 &amp;= p(x,t) \left( \left( \frac{-x}{2Dt} \right)^{2} - \left( \frac{1}{2Dt} \right) \right) \\
 &amp;= p(x,t) \left( \frac{x^{2}-2Dt}{(2Dt)^{2}}\right).
 \end{align*}\]</span></p>
-<p>Or if we re-write <span class="math inline">\(p_{xx}\)</span> in our original variables:</p>
-<p><span class="math display">\[\begin{equation*}
-p_{xx} = \frac{1}{\sqrt{4 \pi Dt} } \left(  e^{-x^{2}/(4 D t)} \cdot \frac{-2x}{4Dt} \right)
-\end{equation*}\]</span></p>
-<p>So far so good. Now computing <span class="math inline">\(p_{t}\)</span> this gets a little tricky because this derivative involves both the product rule with the chain rule in two places (the variable <span class="math inline">\(t\)</span> appears twice in the formula for <span class="math inline">\(p(x,t)\)</span>). To aid in computing the derivative we identify two functions <span class="math inline">\(\displaystyle f(t) = \frac{1}{\sqrt{4 \pi Dt} } = (4 \pi D t)^{-1/2}\)</span> and <span class="math inline">\(\displaystyle g(t)= \frac{-x^{2}}{4Dt} = -x^{2} \cdot (4Dt)^{-1}\)</span>. This changes <span class="math inline">\(p(x,t)\)</span> into <span class="math inline">\(p(x,t) = f(t) \cdot e^{g(t)}\)</span>. In this way <span class="math inline">\(p_{t} = f&#39;(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g&#39;(t)\)</span>. Now we can focus on computing the individual derivatives <span class="math inline">\(f&#39;(t)\)</span> and <span class="math inline">\(g&#39;(t)\)</span> (after simplification - be sure to verify these on your own!):</p>
+<p>So far so good. Now computing <span class="math inline">\(p_{t}\)</span> gets a little tricky because this derivative involves both the product rule with the chain rule in two places (the variable <span class="math inline">\(t\)</span> appears twice in the formula for <span class="math inline">\(p(x,t)\)</span>). To aid in computing the derivative we identify two functions <span class="math inline">\(\displaystyle f(t) = \frac{1}{\sqrt{4 \pi Dt} } = (4 \pi D t)^{-1/2}\)</span> and <span class="math inline">\(\displaystyle g(t)= \frac{-x^{2}}{4Dt} = -x^{2} \cdot (4Dt)^{-1}\)</span>. This changes <span class="math inline">\(p(x,t)\)</span> into <span class="math inline">\(p(x,t) = f(t) \cdot e^{g(t)}\)</span>. In this way <span class="math inline">\(p_{t} = f&#39;(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g&#39;(t)\)</span>. Now we can focus on computing the individual derivatives <span class="math inline">\(f&#39;(t)\)</span> and <span class="math inline">\(g&#39;(t)\)</span> (after simplification - be sure to verify these on your own!):</p>
 <p><span class="math display">\[\begin{align*}
-f&#39;(t) &amp;= -\frac{1}{2} (4 \pi D t)^{-3/2} \cdot 4 \pi D = -2\pi D (4 \pi D t)^{-3/2}  \\
-g&#39;(t) &amp;= x^{2} (4Dt)^{-2} 4D = \frac{x^{2}}{4Dt^{2}}
+f&#39;(t) &amp;= -\frac{1}{2} (4 \pi D t)^{-3/2} \cdot 4 \pi D = -2\pi D \; (4 \pi D t)^{-3/2}  \\
+g&#39;(t) &amp;= x^{2}\; (4Dt)^{-2} 4D = \frac{x^{2}}{4Dt^{2}}
 \end{align*}\]</span></p>
 <p>Assembling these results together, we have the following:</p>
 <p><span class="math display">\[\begin{align*}
 p_{t} &amp;= f&#39;(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g&#39;(t) \\
-&amp;= -2\pi D (4 \pi D t)^{-3/2} \cdot e^{-x^{2}/(4 D t)}  + \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \cdot \frac{x^{2}}{4Dt^{2}} \\
-&amp;= \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \left( -2 \pi D (4 \pi D t)^{-1} +  \frac{x^{2}}{4Dt^{2}} \right) \\
+&amp;= -2\pi D \; (4 \pi D t)^{-3/2} \cdot e^{-x^{2}/(4 D t)}  + \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \cdot \frac{x^{2}}{4Dt^{2}} \\
+&amp;= \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \left( -2 \pi D \; (4 \pi D t)^{-1} +  \frac{x^{2}}{4Dt^{2}} \right) \\
 &amp;= \frac{1}{\sqrt{4 \pi Dt} } \cdot e^{-x^{2}/(4 D t)} \left( -\frac{1}{2t} +  \frac{x^{2}}{4Dt^{2}} \right) \\
 &amp;= p(x,t)  \left( -\frac{1}{2t} +  \frac{x^{2}}{4Dt^{2}} \right)
 \end{align*}\]</span></p>
 <p>Wow. Verifying Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is a solution to the diffusion equation is getting complicated, but also notice that through algebraic simplification, <span class="math inline">\(\displaystyle p_{t} = p(x,t) \left(\frac{x^{2}-2Dt}{4Dt^{2}} \right)\)</span>. If we compare <span class="math inline">\(p_{t}\)</span> to <span class="math inline">\(D p_{xx}\)</span>, they are equal!</p>
 <p>The connections between diffusion and probability are so strong. Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> is related to the formula for a normal probability density function (you might want to refer back to Section <a href="likelihood-09.html#likelihood-09">9</a>)! In this case, the standard deviation in Equation <a href="random-walk-redux.html#eq:diff-eq-soln">(24.3)</a> dependent on time (Exercise <a href="exercises-23.html#exr:normal-compare">24.2</a>). Even though we approached the random walk differently here compared to Section <a href="random-walks-23.html#random-walks-23">23</a>, we also saw that the variance grew proportional to the time spent, so there is some consistency.</p>
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="12">
-<li id="fn12"><p>Other derivations of the diffusion equation let <span class="math inline">\(\Delta t \rightarrow 0\)</span> and <span class="math inline">\(\Delta x \rightarrow 0\)</span> in the limit, but to continue the physical aspect of this problem and connects back to our work on the random walk.<a href="random-walk-redux.html#fnref12" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
@@ -485,6 +506,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>21.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="21.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="discrete-systems-of-equations.html"/>
 <link rel="next" href="stoch-sim-22.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -382,44 +407,65 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- DO SOME MODELS WITH LOONS HERE (SEE PUBS) -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-305" class="exercise"><strong>Exercise 21.1  </strong></span>Re-run the moose population model with probabilities of adjusting to the deep snowpack at <span class="math inline">\(p = 0, \; 0.1, \; 0.9, \;1\)</span>. How does that adjusting the probability affect the moose population after 10 years?
+<span id="exr:unnamed-chunk-303" class="exercise"><strong>Exercise 21.1  </strong></span>Re-run the moose population model with probabilities of adjusting to the deep snowpack at <span class="math inline">\(p = 0, \; 0.1, \; 0.9, \;1\)</span>. How does that adjusting the probability affect the moose population after 10 years?
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-306" class="exercise"><strong>Exercise 21.2  </strong></span>Modify the two stage moose population model (Equation <a href="discrete-systems-of-equations.html#eq:moose-juvenile">(21.2)</a>) with the following parameters and plot the resulting adult and juvenile populations:</p>
+<p><span id="exr:unnamed-chunk-304" class="exercise"><strong>Exercise 21.2  </strong></span>Modify the two stage moose population model (Equation <a href="discrete-systems-of-equations.html#eq:moose-juvenile">(21.2)</a>) with the following parameters and plot the resulting adult and juvenile populations:</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(f = 0.6\)</span>, <span class="math inline">\(g = 0.6\)</span>, <span class="math inline">\(p = 0.7\)</span></li>
+<li><span class="math inline">\(f = 0.5\)</span>, <span class="math inline">\(g = 0.6\)</span>, <span class="math inline">\(p = 0.4\)</span></li>
+<li><span class="math inline">\(f = 0.3\)</span>, <span class="math inline">\(g = 0.6\)</span>, <span class="math inline">\(p = 0.5\)</span></li>
+</ol>
 </div>
  
 <!-- LW pg 318 -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-307" class="exercise"><strong>Exercise 21.3  </strong></span>An animal reproduces two, one, or no offspring. The chance it produces one offspring is 0.50, two offspring 0.25, and no offspring 0.25. This animal does not survive after reproducing. Use the function <code>population</code> in the <code>MAT 369Code</code> library to produce 1000 realizations of this stochastic process over 20 generations. Assume the initial population size is 10 individuals. Comment on the long term dynamics of the population.
+<span id="exr:unnamed-chunk-305" class="exercise"><strong>Exercise 21.3  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) An animal reproduces two, one, or no offspring. The chance it produces one offspring is 0.50, two offspring 0.25, and no offspring 0.25. This animal does not survive after reproducing. Use the function <code>population</code> in the <code>demodeler</code> library to produce 1000 realizations of this stochastic process over 20 generations. Assume the initial population size is 10 individuals. Comment on the long term dynamics of the population.
 </div>
 <p> </p>
 <!-- LW pg 318 -->
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-308" class="exercise"><strong>Exercise 21.4  </strong></span>You are playing a casino game. If you win the game earn a dollar. If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100. You play the game 200 times. Use the function <code>casino</code> in the <code>demodelr</code> library to produce 1000 realizations of this stochastic process. Comment on the long term dynamics of your earnings. Then assuming the house win probability is 0.52 figure out how long the game, on average, runs before you are broke. Finally, adjusting the house win probability, hypothesize a function of the length of game as a function of the house win probability.
+<span id="exr:unnamed-chunk-306" class="exercise"><strong>Exercise 21.4  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) You are playing a casino game. If you win the game earn a dollar. If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100. You play the game 200 times. Use the function <code>casino</code> in the <code>demodelr</code> library to produce 1000 realizations of this stochastic process. Comment on the long term dynamics of your earnings. Then assuming the house win probability is 0.52 figure out how long the game, on average, runs before you are broke. Finally, adjusting the house win probability, hypothesize a function of the length of game as a function of the house win probability.
 </div>
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-309" class="exercise"><strong>Exercise 21.5  </strong></span>Modify the two stage moose population model (Equation <a href="discrete-systems-of-equations.html#eq:moose-juvenile">(21.2)</a>) to account for years with large snowdepths. In normal years, <span class="math inline">\(f=0.5\)</span>, <span class="math inline">\(g=0.6\)</span>, <span class="math inline">\(p=0.7\)</span>. However for snowy years, <span class="math inline">\(f=0.3\)</span>, <span class="math inline">\(g=0.6\)</span>, <span class="math inline">\(p=0.5\)</span>. Generate code that can account for these variable rates (similar to the moose population model). Plot simulations when <span class="math inline">\(N=10\)</span> and <span class="math inline">\(N=30\)</span> and comment on the long-term dynamics of the moose.
+<span id="exr:unnamed-chunk-307" class="exercise"><strong>Exercise 21.5  </strong></span>Modify the two stage moose population model (Equation <a href="discrete-systems-of-equations.html#eq:moose-juvenile">(21.2)</a>) to account for years with large snowdepths. In normal years, <span class="math inline">\(f=0.5\)</span>, <span class="math inline">\(g=0.6\)</span>, <span class="math inline">\(p=0.7\)</span>. However for snowy years, <span class="math inline">\(f=0.3\)</span>, <span class="math inline">\(g=0.6\)</span>, <span class="math inline">\(p=0.5\)</span>. Generate code that can account for these variable rates (similar to the moose population model). Plot simulations when <span class="math inline">\(N=10\)</span> and <span class="math inline">\(N=30\)</span> and comment on the long-term dynamics of the moose.
 </div>
  
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-310" class="exercise"><strong>Exercise 21.6  </strong></span>A population grows according the the growth law <span class="math inline">\(x_{t+1}=r_{t}x_{t}\)</span>.
+<p><span id="exr:unnamed-chunk-308" class="exercise"><strong>Exercise 21.6  </strong></span>A population grows according the the growth law <span class="math inline">\(x_{t+1}=r_{t}x_{t}\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine the general solution to this discrete dynamical system.</li>
+<li>Plot a sample growth curve with <span class="math inline">\(r_{t}=0.86\)</span> and <span class="math inline">\(r_{t}=1.16\)</span>, with <span class="math inline">\(x_{0}=100\)</span>. Show your solution for <span class="math inline">\(t=50\)</span> generations.</li>
+<li>Now consider a model where <span class="math inline">\(r_{t}=0.86\)</span> with probability 1/2 and <span class="math inline">\(r_{t}=1.16\)</span> with probability 1/2. Write a function that will predict the population after <span class="math inline">\(t=50\)</span>. Show three or four different realizations of this stochastic process.</li>
+</ol>
 </div>
  
 <!-- %LW #2 page 317 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-311" class="exercise"><strong>Exercise 21.7  </strong></span>A ``patch’’ has area <span class="math inline">\(a\)</span>, perimeter <span class="math inline">\(s\)</span>, and a strip (band) of width <span class="math inline">\(w\)</span> inside the boundary of <span class="math inline">\(a\)</span> from which the animals disperse. Only those in the strip disperse. Let <span class="math inline">\(u_{t}\)</span> be the number of animals in <span class="math inline">\(a\)</span> at any time <span class="math inline">\(t\)</span>. The growth rate of all the animals in <span class="math inline">\(a\)</span> is <span class="math inline">\(r\)</span>. The rate at which animals disperse from the strip is proportional to the fraction of the animals in the strip, with proportionality constant <span class="math inline">\(\epsilon\)</span>, which is the emigration rate for those in the strip.</p>
+<p><span id="exr:unnamed-chunk-309" class="exercise"><strong>Exercise 21.7  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) A “patch” has area <span class="math inline">\(a\)</span>, perimeter <span class="math inline">\(s\)</span>, and a strip (band) of width <span class="math inline">\(w\)</span> inside the boundary of <span class="math inline">\(a\)</span> from which the animals disperse. Only those in the strip disperse. Let <span class="math inline">\(u_{t}\)</span> be the number of animals in <span class="math inline">\(a\)</span> at any time <span class="math inline">\(t\)</span>. The growth rate of all the animals in <span class="math inline">\(a\)</span> is <span class="math inline">\(r\)</span>. The rate at which animals disperse from the strip is proportional to the fraction of the animals in the strip, with proportionality constant <span class="math inline">\(\epsilon\)</span>, which is the emigration rate for those in the strip.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Draw a picture of the situation described above.</li>
+<li>Explain why the equation that describes the dynamics is <span class="math display">\[ u_{t+1}=ru_{t} - \epsilon \left( \frac{w \cdot s}{a} u_{t} \right) \]</span></li>
+<li>Determine conditions on the parameters <span class="math inline">\(r\)</span>, <span class="math inline">\(w\)</span>, <span class="math inline">\(s\)</span>, <span class="math inline">\(\epsilon\)</span>, and <span class="math inline">\(a\)</span> under which the population is growing.</li>
+</ol>
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -449,6 +495,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>22.1 Ensemble Averages | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="22.1 Ensemble Averages | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="stoch-sim-22.html"/>
 <link rel="next" href="computing-ensemble-averages.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,21 +404,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="ensemble-averages" class="section level2" number="22.1">
 <h2><span class="header-section-number">22.1</span> Ensemble Averages</h2>
-<p>Consider Figure <a href="ensemble-averages.html#fig:kuopio-weather">22.1</a>, which shows the weather forecast for Kuopio, which is a city in Finland:<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
+<p>Consider Figure <a href="ensemble-averages.html#fig:kuopio-weather">22.1</a>, which shows the weather forecast for Kuopio, a city in Finland:<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p>
 <div class="figure" style="text-align: center"><span id="fig:kuopio-weather"></span>
-<img src="figures/22-simulation/kuopio.png" alt="Long-term weather forecast for Kuopio, a city in Finland" width="5in" />
+<img src="figures/22-simulation/kuopio.png" alt="Long-term weather forecast for Kuopio, a city in Finland, from the [https://en.ilmatieteenlaitos.fi/](Finnish Weather Institute)" width="50%" />
 <p class="caption">
-Figure 22.1: Long-term weather forecast for Kuopio, a city in Finland
+Figure 22.1: Long-term weather forecast for Kuopio, a city in Finland, from the <a href="Finnish%20Weather%20Institute">https://en.ilmatieteenlaitos.fi/</a>
 </p>
 </div>
-<p>Figure <a href="ensemble-averages.html#fig:kuopio-weather">22.1</a> is a great example of what is called an <em>ensemble average</em>. The horizontal axis lists the time of day and the vertical axis is the temperature (the precipitation is in bars down below, but not important in this context). The forecast temperature at a given point in time can have a range of outcomes, with the median of the distribution as the ``temperature probability forecast’’<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. The shading says that 80% of the outcomes fall in a given range, so while the median temperature on Tuesday May 5 (labeled as Tu 4.5) is 7<span class="math inline">\(^{\circ}\)</span> C, it may range between 4 and 11<span class="math inline">\(^{\circ}\)</span> C (39 to 51 <span class="math inline">\(^{\circ}\)</span> F). Based on the legends given, the 80% confidence interval is between 4 - 11<span class="math inline">\(^{\circ}\)</span> C, or the models have 80% confidence for the temperature to be between that range of temperatures.</p>
+<p>Figure <a href="ensemble-averages.html#fig:kuopio-weather">22.1</a> shows a great example of what is called an <em>ensemble average</em>. The horizontal axis lists the time of day and the vertical axis is the temperature (the precipitation is in bars down below, but not important in this context). The forecast temperature at a given point in time can have a range of outcomes, with the median of the distribution as the “temperature probability forecast”<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>. The red shading states that 80% of the outcomes fall in a given range, so while the median temperature on Tuesday May 5 (labeled as Tu 4.5 - dates are represented as DAY-MONTH-YEAR) is 7 <span class="math inline">\(^{\circ}\)</span>C, it may range between 4 and 11 <span class="math inline">\(^{\circ}\)</span>C (39 to 51 <span class="math inline">\(^{\circ}\)</span>F). Based on the legends given, the 80% confidence interval is between 4 - 11 <span class="math inline">\(^{\circ}\)</span>C, or the models have 80% confidence for the temperature to be between that range of temperatures.</p>
 <p>Because there may be different factors that alter the weather in a particular spot (e.g. the timing of a low-pressure front, or clouds, etc) there are different possibilities for an outcome of the weather forecast. While that may seem like forecasting weather may impossible to do, sometimes these changes lead to small fluctuations in the forecasted weather at a given point. The further out in time the more ensemble average becomes more uncertain (wider bars), as unforeseen events may drastically change the weather in the long term.</p>
+<p>In this section we will focus on how to take results from a simulation (such as several simulations of the moose population from Section <a href="stoch-sys-21.html#stoch-sys-21">21</a>) to generate ensemble average plots. Computing an ensemble average is a great way to show your uncertainty or confidence in a model outcome.</p>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="9">
-<li id="fn9"><p>I could have picked any city, but a lot of this textbook was written while I was on sabbatical in Kuopio. I highly recommend Finland as a country to visit.<a href="ensemble-averages.html#fnref9" class="footnote-back">↩︎</a></p></li>
-<li id="fn10"><p>Notice the meteorologist’s temperature forecast - sometimes that may diverge from the model outcomes!<a href="ensemble-averages.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<ol start="8">
+<li id="fn8"><p>I could have picked any city, but a lot of this textbook was written while I was on sabbatical in Kuopio. I highly recommend Finland as a country to visit.<a href="ensemble-averages.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>Notice the meteorologist’s temperature forecast - sometimes that may diverge from the model outcomes!<a href="ensemble-averages.html#fnref9" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -425,6 +451,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

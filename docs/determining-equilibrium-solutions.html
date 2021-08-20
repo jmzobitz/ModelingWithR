@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>16.1 Determining equilibrium solutions | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="16.1 Determining equilibrium solutions | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -30,9 +30,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="systems-of-nonlinear-equations.html"/>
+<link rel="prev" href="nonlinear-16.html"/>
 <link rel="next" href="stability-of-an-equilibrium-solution.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,33 +404,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="determining-equilibrium-solutions" class="section level2" number="16.1">
 <h2><span class="header-section-number">16.1</span> Determining equilibrium solutions</h2>
-<p>To determine an equilbrium solutions we need to find the intersection of different nullclines. We do this by setting each of the rate equations (<span class="math inline">\(\displaystyle \frac{dx}{dt}\)</span> or <span class="math inline">\(\displaystyle \frac{dy}{dt}\)</span>) equal to zero. Equation <a href="systems-of-nonlinear-equations.html#eq:ex1-ch16">(16.1)</a> has two nullclines:</p>
-<p><span class="math display" id="eq:ex1-ch16">\[\begin{equation}
+<p>To determine an equilbrium solutions for a system of differential equations we first need to find the intersection of different nullclines. We do this by setting each of the rate equations (<span class="math inline">\(\displaystyle \frac{dx}{dt}\)</span> or <span class="math inline">\(\displaystyle \frac{dy}{dt}\)</span>) equal to zero. Equation <a href="nonlinear-16.html#eq:ex1-ch16">(16.1)</a> has two nullclines:</p>
+<p><span class="math display" id="eq:ex1-ch16-null">\[\begin{equation}
 \begin{split} 
-\frac{dx}{dt} = 0 &amp;\rightarrow y-1 = 0\\  \tag{16.1}
+\frac{dx}{dt} = 0 &amp;\rightarrow y-1 = 0\\  
 \frac{dy}{dt} = 0 &amp; \rightarrow x^{2}-1 = 0
-\end{split}
+\end{split} \tag{16.2}
 \end{equation}\]</span></p>
-<p>So solving for both nullclines we have that <span class="math inline">\(y=1\)</span> or <span class="math inline">\(x = \pm 1\)</span>. You can visually see the phaseplane with the nullclines in Figure <a href="determining-equilibrium-solutions.html#fig:ex16-phaseplane">16.4</a>.</p>
+<p>So solving for both nullclines in Equation <a href="determining-equilibrium-solutions.html#eq:ex1-ch16-null">(16.2)</a> we have that <span class="math inline">\(y=1\)</span> or <span class="math inline">\(x = \pm 1\)</span>. You can visually see the phaseplane with the nullclines in Figure <a href="determining-equilibrium-solutions.html#fig:ex16-phaseplane">16.4</a>.</p>
 <div class="figure"><span id="fig:ex16-phaseplane"></span>
-<img src="series_files/figure-html/ex16-phaseplane-1.png" alt="Phaseplane for Equation \ref{eq:ex1-ch16}." width="384" />
+<img src="series_files/figure-html/ex16-phaseplane-1.png" alt="Phaseplane for $x'=y-1$ and $y'=x^{2}-1$." width="384" />
 <p class="caption">
-Figure 16.4: Phaseplane for Equation .
+Figure 16.4: Phaseplane for <span class="math inline">\(x&#39;=y-1\)</span> and <span class="math inline">\(y&#39;=x^{2}-1\)</span>.
 </p>
 </div>
 <p>Remember: equilibrium solutions occur when two <em>different</em> nullclines intersect.</p>
-<p>Let’s another example:</p>
+<p>Let’s try another example:</p>
 <p><span class="math display" id="eq:ex2-ch16">\[\begin{equation}
 \begin{split} 
-\frac{dx}{dt} &amp;= x-0.5yx \\  \tag{16.2}
+\frac{dx}{dt} &amp;= x-0.5yx \\  
 \frac{dy}{dt} &amp;= yx -y^{2} 
-\end{split}
+\end{split} \tag{16.3}
 \end{equation}\]</span></p>
 <p>Figure <a href="determining-equilibrium-solutions.html#fig:ex16-2-phaseplane">16.5</a> shows the phaseplane for this example. Can you guess where an equilibrium solution would be?</p>
 <div class="figure"><span id="fig:ex16-2-phaseplane"></span>
-<img src="series_files/figure-html/ex16-2-phaseplane-1.png" alt="Phaseplane for Equation \ref{eq:ex2-ch16}." width="384" />
+<img src="series_files/figure-html/ex16-2-phaseplane-1.png" alt="Phaseplane for $x'=x-0.5xy$ and $y'=yx=y^{2}$." width="384" />
 <p class="caption">
-Figure 16.5: Phaseplane for Equation .
+Figure 16.5: Phaseplane for <span class="math inline">\(x&#39;=x-0.5xy\)</span> and <span class="math inline">\(y&#39;=yx=y^{2}\)</span>.
 </p>
 </div>
 <p>Let’s find the equations for the nullclines:</p>
@@ -416,14 +441,14 @@ Figure 16.5: Phaseplane for Equation .
 \end{split}
 \end{equation}\]</span></p>
 <p>The algebra is becoming a little more involved. Factoring <span class="math inline">\(x-0.5yx = 0\)</span> we have <span class="math inline">\(x \cdot (1 - 0.5 y) = 0\)</span>, so either <span class="math inline">\(x=0\)</span> or <span class="math inline">\(y=2\)</span>. Factoring the second equation we have <span class="math inline">\(y \cdot (x - y) = 0\)</span>, so either <span class="math inline">\(y=0\)</span> or <span class="math inline">\(x=y\)</span>. Notice how this second nullcline is a function of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</p>
-<p>For this case, the equilibrium solutions are <span class="math inline">\((0,0)\)</span>, <span class="math inline">\((2,2)\)</span>. You may be tempted to think that <span class="math inline">\((0,2)\)</span> is also an equilibrium solution - however - <span class="math inline">\(x=0\)</span> and <span class="math inline">\(y=2\)</span> are equations for the <span class="math inline">\(x\)</span> nullcline. It is easy to forget, but equilibrium solutions are determined from the intersection of <em>distinct</em> nullclines.</p>
+<p>For Equation <a href="determining-equilibrium-solutions.html#eq:ex2-ch16">(16.3)</a> the equilibrium solutions are <span class="math inline">\((0,0)\)</span>, <span class="math inline">\((2,2)\)</span>. You may be tempted to think that <span class="math inline">\((0,2)\)</span> is also an equilibrium solution - however - <span class="math inline">\(x=0\)</span> and <span class="math inline">\(y=2\)</span> are equations for the <span class="math inline">\(x\)</span> nullcline. It is easy to forget, but equilibrium solutions are determined from the intersection of <em>distinct</em> nullclines.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="systems-of-nonlinear-equations.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="nonlinear-16.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="stability-of-an-equilibrium-solution.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
@@ -447,6 +472,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>18.2 Computing eigenvalues and eigenvectors | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="18.2 Computing eigenvalues and eigenvectors | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="straight-line-solutions.html"/>
 <link rel="next" href="what-do-eigenvalues-tell-us.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -388,36 +413,56 @@ A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix},
 <p><span class="math display">\[\begin{equation*}
 A - \lambda I=\begin{pmatrix} a - \lambda &amp; b \\ c &amp; d-\lambda \end{pmatrix}
 \end{equation*}\]</span></p>
-<p>The determinant of a 2 by 2 matrix is the product of the diagonal entries (for <span class="math inline">\(A - \lambda I\)</span> they are <span class="math inline">\((a-\lambda)\cdot (d-\lambda)\)</span> less the product of the off-diagonal entries (in this case <span class="math inline">\(bc\)</span>). So <span class="math inline">\(\det(A-\lambda I)=0\)</span> is the equation <span class="math inline">\((a-\lambda)(d-\lambda)-bc=0\)</span>. When we multiply this equation all out we obtain a quadratic equation to solve (for <span class="math inline">\(\lambda\)</span>). The equation <span class="math inline">\(\det(A - \lambda I)=0\)</span> even has a special name - it is called the <em>characteristic equation</em>. (We will find out why later.)</p>
+<p>The determinant of a 2 by 2 matrix is the product of the diagonal entries (for <span class="math inline">\(A - \lambda I\)</span> they are <span class="math inline">\((a-\lambda)\cdot (d-\lambda)\)</span>) less the product of the off-diagonal entries (in this case <span class="math inline">\(bc\)</span>). So <span class="math inline">\(\det(A-\lambda I)=0\)</span> is the equation <span class="math inline">\((a-\lambda)(d-\lambda)-bc=0\)</span>. When we multiply this equation out we obtain a quadratic equation to solve (for <span class="math inline">\(\lambda\)</span> - see Exercise <a href="exercises-17.html#exr:ch-eq-exr-18">18.7</a>). The equation <span class="math inline">\(\det(A - \lambda I)=0\)</span> even has a special name - it is called the <em>characteristic equation</em>. (We will find out why later.)</p>
 
 <div class="example">
-<span id="exm:unnamed-chunk-257" class="example"><strong>Example 18.1  </strong></span>Compute the eigenvalues for the matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>.
+<span id="exm:unnamed-chunk-255" class="example"><strong>Example 18.1  </strong></span>Compute the eigenvalues for the matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>.
 </div>
 
-<div class="remark">
-<p> <span class="remark"><em>Remark. </em></span> The matrix <span class="math inline">\(A-\lambda I\)</span> is:
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> The matrix <span class="math inline">\(A-\lambda I\)</span> is:
 <span class="math inline">\(\displaystyle A-\lambda I = \begin{pmatrix} -1-\lambda &amp; 1 \\ 0 &amp; 3-\lambda \end{pmatrix}\)</span>. So we have:</p>
 <p><span class="math display">\[\begin{equation}
 \det(A-\lambda I) =  (-1-\lambda)(3-\lambda) - 0 = 0
 \end{equation}\]</span></p>
 Solving the equation <span class="math inline">\((-1-\lambda)(3-\lambda)=0\)</span> yields two eigenvalues: <span class="math inline">\(\lambda = -1\)</span> or <span class="math inline">\(\lambda = 3\)</span>.
 </div>
-<p>Once the eigenvalues are compute we compute the eigenvectors associated with each eigenvalue by finding a vector <span class="math inline">\(\vec{v}\)</span> consistent with <span class="math inline">\(A \vec{v} = \lambda \vec{v}\)</span> or <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span>. Note that the eigenvectors have the form <span class="math inline">\(\displaystyle \vec{v} = \begin{pmatrix} x \\ y \end{pmatrix}\)</span>. So if we consider the right hand side of <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span> we have:</p>
+Once we have determined the eigenvalues we next compute the eigenvectors associated with each eigenvalue. Remember that an eigenvector is a vector <span class="math inline">\(\vec{v}\)</span> consistent with <span class="math inline">\(A \vec{v} = \lambda \vec{v}\)</span> or <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span>. Note that the eigenvectors have the form <span class="math inline">\(\displaystyle \vec{v} = \begin{pmatrix} x \\ y \end{pmatrix}\)</span>.<br />
+
+<div class="example">
+<span id="exm:unnamed-chunk-257" class="example"><strong>Example 18.2  </strong></span>Compute the eigenvectors for the matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>.
+</div>
+
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> So if we consider the right hand side of <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span> we have:</p>
 <p><span class="math display">\[\begin{equation*}
 ( A \vec{v} - \lambda \vec{v} ) =  \begin{pmatrix} -x +y - \lambda x  \\ 3y - \lambda y \end{pmatrix}.
 \end{equation*}\]</span>.</p>
 <p>Examining this setup gives us two equations to work with: <span class="math inline">\(- x + y - \lambda x = 0\)</span> and <span class="math inline">\(3y-\lambda y =0\)</span>. We will need to analyze them for each of our eigenvalues.</p>
 <ul>
-<li>Case 1: <span class="math inline">\(\lambda = -1\)</span>. In the first equation we have <span class="math inline">\(-x+y+x =0\)</span>, which just yields <span class="math inline">\(y=0\)</span>. For the second equation we also have <span class="math inline">\(3y+y =0\)</span>, so that tells us again that <span class="math inline">\(y=0\)</span>. Notice how we solved for <span class="math inline">\(y\)</span>, but we didn’t uniquely determine <span class="math inline">\(x\)</span>. While this seems a little unsatisfying, that is ok. The form of this particular straight line solution is <span class="math inline">\(\displaystyle s_{1}(t)=e^{-t} \begin{pmatrix} x \\ 0 \end{pmatrix}\)</span>.</li>
+<li>Case 1: <span class="math inline">\(\lambda = -1\)</span>. In the first equation we have <span class="math inline">\(-x+y+x =0\)</span>, which just yields <span class="math inline">\(y=0\)</span>. For the second equation we also have <span class="math inline">\(3y+y =0\)</span>, so that tells us again that <span class="math inline">\(y=0\)</span>. Notice how we solved for <span class="math inline">\(y\)</span>, but we didn’t uniquely determine <span class="math inline">\(x\)</span>. While this seems a little unsatisfying, that is ok. The form of this particular straight line solution is <span class="math inline">\(\displaystyle s_{1}(t)=e^{-t} \begin{pmatrix} x \\ 0 \end{pmatrix}\)</span>, where <span class="math inline">\(x\)</span> is a free variable.</li>
 <li>Case 2: <span class="math inline">\(\lambda = 3\)</span>. For the second equation we have <span class="math inline">\(3y - 3y=0\)</span>, which is always true. However in the first equation we have <span class="math inline">\(- x + y - 3x = 0\)</span>, or <span class="math inline">\(y = 4x\)</span>. In this case, <span class="math inline">\(x\)</span> can be anything as well, but this condition means that <span class="math inline">\(y\)</span> will have to be 4 times that value. Hence, this particular straight line solution is <span class="math inline">\(\displaystyle s_{2}(t)=e^{3t} \begin{pmatrix} x \\ 4x \end{pmatrix}\)</span>.</li>
 </ul>
-<p>Notice that in both of our cases we had a free variable <span class="math inline">\(x\)</span>. Given an initial condition to the differential equation we would specify this free variable (a good choice would be <span class="math inline">\(x=1\)</span>), or just leave this as a constant. Putting this all together our most general solution<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> to Equation <a href="#ex1-ch17"><strong>??</strong></a> will be:</p>
+Notice that in both of our cases we had a free variable <span class="math inline">\(x\)</span>. Given an initial condition to the differential equation we would specify this free variable (a good choice would be <span class="math inline">\(x=1\)</span>), or just leave this as a constant.
+</div>
+<p>Once we have computed the eigenvalues and eigenvectors, we are now ready to express the most general solution for a system of differential equations. For a two-dimensional system of linear differential equations (<span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}\)</span>, the most general solution is <span class="math inline">\(\vec{x}(t) = c_{1} e^{\lambda_{1}t} \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \vec{v}_{2}\)</span></p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-259" class="example"><strong>Example 18.3  </strong></span>What is the solution to the differential equation <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix} \vec{x}\)</span>?.
+</div>
+
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> Since we have already computed the eigenvalues and eigenvectors, our most general solution is:</p>
 <p><span class="math display">\[\begin{equation*}
 \vec{x} = c_{1} e^{- t} \begin{pmatrix} 1 \\ 0 \end{pmatrix}  + c_{2} e^{3t} \begin{pmatrix} 1 \\ 4 \end{pmatrix}
 \end{equation*}\]</span></p>
-<p>While computing the eigenvalues is a good exercise, we can also program this in <code>R</code> using the function <code>eigenvalues</code> from the <code>demodelr</code> package. The syntax works where <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span> is entered in as <code>eigenvalues(a,b,c,d,matrix_rows)</code> where <code>matrix_rows</code> is the number of rows<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. What gets returned from the function will be the eigenvalues and eigenvectors for any square matrix.</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="computing-eigenvalues-and-eigenvectors.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also leave out matrix_rows - the code assumes the default is a 2 by 2 matrix.</span></span>
-<span id="cb115-2"><a href="computing-eigenvalues-and-eigenvectors.html#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">3</span>))</span></code></pre></div>
+</div>
+<div id="eigenvalues-computed-with-demodelr" class="section level3" number="18.2.1">
+<h3><span class="header-section-number">18.2.1</span> Eigenvalues computed with demodelr</h3>
+<p>While computing eigenvalues and eigenvectors is a good algebraic exercise, we can also program this in <code>R</code> using the function <code>eigenvalues</code> from the <code>demodelr</code> package. The syntax works where <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span> is entered in as <code>eigenvalues(a,b,c,d,matrix_rows)</code> where <code>matrix_rows</code> is the number of rows<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. What gets returned from the function will be the eigenvalues and eigenvectors for any square matrix.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="computing-eigenvalues-and-eigenvectors.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For a two dimensional equation the code assumes the default is a 2 by 2 matrix, .</span></span>
+<span id="cb115-2"><a href="computing-eigenvalues-and-eigenvectors.html#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="at">matrix_entries =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb115-3"><a href="computing-eigenvalues-and-eigenvectors.html#cb115-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">matrix_rows =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## eigen() decomposition
 ## $values
 ## [1]  3 -1
@@ -426,14 +471,16 @@ Solving the equation <span class="math inline">\((-1-\lambda)(3-\lambda)=0\)</sp
 ##          X1 X2
 ## 1 0.2425356  1
 ## 2 0.9701425  0</code></pre>
-<p>Notice that the eigenvalues and the eigenvectors get returned. The eigenvector associated with <span class="math inline">\(\lambda=3\)</span> is a little different from what we computed - <code>R</code> will normalize the vector, which means that its total length will be one.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> However upon closer inspection in our solution we found that the second component was 4 times the first for the eigenvector, which is indeed the case.</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="computing-eigenvalues-and-eigenvectors.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is equivalent because we have a two dimensional equation:</span></span>
+<span id="cb117-2"><a href="computing-eigenvalues-and-eigenvectors.html#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="co">#eigenvalues(c(-1, 1, 0, 3))</span></span></code></pre></div>
+<p>Notice that the eigenvalues and the eigenvectors get returned. How you read the output for the eigenvector is that <code>X1</code> is the eigenvector associated with the first eigenvalue (<span class="math inline">\(\lambda = 3\)</span>) and <code>X2</code> is the eigenvector associated with the second eigenvalue (<span class="math inline">\(\lambda = -1\)</span>). The eigenvector associated with <span class="math inline">\(\lambda=3\)</span> is a little different from what we computed - <code>R</code> will normalize the vector, which means that its total length will be one.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> However upon closer inspection in our solution we found that the second component was 4 times the first for the eigenvector, which is indeed the case.</p>
+</div>
 </div>
 <div class="footnotes">
 <hr />
 <ol start="6">
-<li id="fn6"><p>Even though we were working with a specific example, for a 2 by 2 system of equations the most general solution is <span class="math inline">\(\vec{x}(t) = c_{1} e^{\lambda_{1}t} \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \vec{v}_{2}\)</span>.<a href="computing-eigenvalues-and-eigenvectors.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p>If you have a 2 by 2 matrix, you can leave out <code>matrix_rows</code> (so just <code>eigenvalues(a,b,c,d)</code>) as the default is a 2 by 2 matrix.<a href="computing-eigenvalues-and-eigenvectors.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>The length of a vector <span class="math inline">\(\vec{v}\)</span> is denoted as <span class="math inline">\(||\vec{v}||\)</span> and is computed the following way: <span class="math inline">\(||\vec{v}||=\sqrt{v_{1}^{2}+v_{2}^{2}+...+v_{n}^{2}}\)</span>. We normalize a vector to a length of 1 by dividing each component by its length.<a href="computing-eigenvalues-and-eigenvectors.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>If you have a 2 by 2 matrix, you can leave out <code>matrix_rows</code> (so just <code>eigenvalues(a,b,c,d)</code>) as the default is a 2 by 2 matrix.<a href="computing-eigenvalues-and-eigenvectors.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>The length of a vector <span class="math inline">\(\vec{v}\)</span> is denoted as <span class="math inline">\(||\vec{v}||\)</span> and is computed the following way: <span class="math inline">\(||\vec{v}||=\sqrt{v_{1}^{2}+v_{2}^{2}+...+v_{n}^{2}}\)</span>. We normalize a vector to a length of 1 by dividing each component by its length.<a href="computing-eigenvalues-and-eigenvectors.html#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -465,6 +512,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

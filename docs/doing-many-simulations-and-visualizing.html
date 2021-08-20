@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>22.3 Doing many simulations and visualizing | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="22.3 Doing many simulations and visualizing | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="computing-ensemble-averages.html"/>
 <link rel="next" href="exercises-21.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,76 +406,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">22.3</span> Doing many simulations and visualizing</h2>
 <p>Now that we have some idea of a ensemble average, let’s put this into practice by doing some simulations of some one and two dimensional equations. What you will learn here is how to generate a simulation</p>
 <p>For example consider the following code that produces a solution to the logistic differential equation:</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="doing-many-simulations-and-visualizing.html#cb141-1" aria-hidden="true" tabindex="-1"></a>logistic_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dx<span class="sc">~</span>r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))  <span class="co"># Define the rate equation</span></span>
-<span id="cb141-2"><a href="doing-many-simulations-and-visualizing.html#cb141-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-3"><a href="doing-many-simulations-and-visualizing.html#cb141-3" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span>.<span class="dv">8</span>,<span class="at">K=</span><span class="dv">100</span>)  <span class="co"># Identify any parameters</span></span>
-<span id="cb141-4"><a href="doing-many-simulations-and-visualizing.html#cb141-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-5"><a href="doing-many-simulations-and-visualizing.html#cb141-5" aria-hidden="true" tabindex="-1"></a>init_cond <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="dv">3</span>)  <span class="co"># Initial condition</span></span>
-<span id="cb141-6"><a href="doing-many-simulations-and-visualizing.html#cb141-6" aria-hidden="true" tabindex="-1"></a>soln <span class="ot">&lt;-</span> <span class="fu">euler</span>(logistic_eq,init_cond,params,<span class="at">deltaT=</span>.<span class="dv">05</span>,<span class="at">n_steps=</span><span class="dv">200</span>)</span>
-<span id="cb141-7"><a href="doing-many-simulations-and-visualizing.html#cb141-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-8"><a href="doing-many-simulations-and-visualizing.html#cb141-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
-<span id="cb141-9"><a href="doing-many-simulations-and-visualizing.html#cb141-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-10"><a href="doing-many-simulations-and-visualizing.html#cb141-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb141-11"><a href="doing-many-simulations-and-visualizing.html#cb141-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
-<span id="cb141-12"><a href="doing-many-simulations-and-visualizing.html#cb141-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
-<span id="cb141-13"><a href="doing-many-simulations-and-visualizing.html#cb141-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Time&#39;</span>,</span>
-<span id="cb141-14"><a href="doing-many-simulations-and-visualizing.html#cb141-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span><span class="st">&#39;x&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="doing-many-simulations-and-visualizing.html#cb138-1" aria-hidden="true" tabindex="-1"></a>logistic_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r <span class="sc">*</span> x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x <span class="sc">/</span> K)) <span class="co"># Define the rate equation</span></span>
+<span id="cb138-2"><a href="doing-many-simulations-and-visualizing.html#cb138-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-3"><a href="doing-many-simulations-and-visualizing.html#cb138-3" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> .<span class="dv">8</span>, <span class="at">K =</span> <span class="dv">100</span>) <span class="co"># Identify any parameters</span></span>
+<span id="cb138-4"><a href="doing-many-simulations-and-visualizing.html#cb138-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-5"><a href="doing-many-simulations-and-visualizing.html#cb138-5" aria-hidden="true" tabindex="-1"></a>init_cond <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x =</span> <span class="dv">3</span>) <span class="co"># Initial condition</span></span>
+<span id="cb138-6"><a href="doing-many-simulations-and-visualizing.html#cb138-6" aria-hidden="true" tabindex="-1"></a>soln <span class="ot">&lt;-</span> <span class="fu">euler</span>(</span>
+<span id="cb138-7"><a href="doing-many-simulations-and-visualizing.html#cb138-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">system_eq =</span> logistic_eq,</span>
+<span id="cb138-8"><a href="doing-many-simulations-and-visualizing.html#cb138-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_condition =</span> init_cond,</span>
+<span id="cb138-9"><a href="doing-many-simulations-and-visualizing.html#cb138-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> params,</span>
+<span id="cb138-10"><a href="doing-many-simulations-and-visualizing.html#cb138-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaT =</span> .<span class="dv">05</span>,</span>
+<span id="cb138-11"><a href="doing-many-simulations-and-visualizing.html#cb138-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_steps =</span> <span class="dv">200</span></span>
+<span id="cb138-12"><a href="doing-many-simulations-and-visualizing.html#cb138-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb138-13"><a href="doing-many-simulations-and-visualizing.html#cb138-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-14"><a href="doing-many-simulations-and-visualizing.html#cb138-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
+<span id="cb138-15"><a href="doing-many-simulations-and-visualizing.html#cb138-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-16"><a href="doing-many-simulations-and-visualizing.html#cb138-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb138-17"><a href="doing-many-simulations-and-visualizing.html#cb138-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
+<span id="cb138-18"><a href="doing-many-simulations-and-visualizing.html#cb138-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb138-19"><a href="doing-many-simulations-and-visualizing.html#cb138-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
+<span id="cb138-20"><a href="doing-many-simulations-and-visualizing.html#cb138-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;x&quot;</span></span>
+<span id="cb138-21"><a href="doing-many-simulations-and-visualizing.html#cb138-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:logistic-example"></span>
-<img src="series_files/figure-html/logistic-example-1.png" alt="Solution to the logistic differential equation." width="5in" />
+<img src="series_files/figure-html/logistic-example-1.png" alt="Solution to the logistic differential equation." width="384" />
 <p class="caption">
 Figure 22.6: Solution to the logistic differential equation.
 </p>
 </div>
 <p>What if you wanted to investigate the effect of the initial condition on the solution, so the solution was randomly chosen, from a uniform distribution between 0 and 20? Well, to do one simluation is not a small modification of the code:</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="doing-many-simulations-and-visualizing.html#cb142-1" aria-hidden="true" tabindex="-1"></a>logistic_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dx<span class="sc">~</span>r<span class="sc">*</span>x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">/</span>K))  <span class="co"># Define the rate equation</span></span>
-<span id="cb142-2"><a href="doing-many-simulations-and-visualizing.html#cb142-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-3"><a href="doing-many-simulations-and-visualizing.html#cb142-3" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r=</span>.<span class="dv">8</span>,<span class="at">K=</span><span class="dv">100</span>)  <span class="co"># Identify any parameters</span></span>
-<span id="cb142-4"><a href="doing-many-simulations-and-visualizing.html#cb142-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-5"><a href="doing-many-simulations-and-visualizing.html#cb142-5" aria-hidden="true" tabindex="-1"></a>init_cond <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x=</span><span class="fu">runif</span>(<span class="dv">1</span>,<span class="at">min=</span><span class="dv">0</span>,<span class="at">max=</span><span class="dv">20</span>))  <span class="co"># Random initial condition</span></span>
-<span id="cb142-6"><a href="doing-many-simulations-and-visualizing.html#cb142-6" aria-hidden="true" tabindex="-1"></a>soln <span class="ot">&lt;-</span> <span class="fu">euler</span>(logistic_eq,init_cond,params,<span class="at">deltaT=</span>.<span class="dv">05</span>,<span class="at">n_steps=</span><span class="dv">200</span>)</span>
-<span id="cb142-7"><a href="doing-many-simulations-and-visualizing.html#cb142-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-8"><a href="doing-many-simulations-and-visualizing.html#cb142-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
-<span id="cb142-9"><a href="doing-many-simulations-and-visualizing.html#cb142-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-10"><a href="doing-many-simulations-and-visualizing.html#cb142-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb142-11"><a href="doing-many-simulations-and-visualizing.html#cb142-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
-<span id="cb142-12"><a href="doing-many-simulations-and-visualizing.html#cb142-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
-<span id="cb142-13"><a href="doing-many-simulations-and-visualizing.html#cb142-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Time&#39;</span>,</span>
-<span id="cb142-14"><a href="doing-many-simulations-and-visualizing.html#cb142-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span><span class="st">&#39;x&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="doing-many-simulations-and-visualizing.html#cb139-1" aria-hidden="true" tabindex="-1"></a>logistic_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r <span class="sc">*</span> x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x <span class="sc">/</span> K)) <span class="co"># Define the rate equation</span></span>
+<span id="cb139-2"><a href="doing-many-simulations-and-visualizing.html#cb139-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-3"><a href="doing-many-simulations-and-visualizing.html#cb139-3" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> .<span class="dv">8</span>, <span class="at">K =</span> <span class="dv">100</span>) <span class="co"># Identify any parameters</span></span>
+<span id="cb139-4"><a href="doing-many-simulations-and-visualizing.html#cb139-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-5"><a href="doing-many-simulations-and-visualizing.html#cb139-5" aria-hidden="true" tabindex="-1"></a>init_cond_rand <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">20</span>)) <span class="co"># Random initial condition</span></span>
+<span id="cb139-6"><a href="doing-many-simulations-and-visualizing.html#cb139-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-7"><a href="doing-many-simulations-and-visualizing.html#cb139-7" aria-hidden="true" tabindex="-1"></a>soln_rand <span class="ot">&lt;-</span> <span class="fu">euler</span>(</span>
+<span id="cb139-8"><a href="doing-many-simulations-and-visualizing.html#cb139-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">system_eq =</span> logistic_eq,</span>
+<span id="cb139-9"><a href="doing-many-simulations-and-visualizing.html#cb139-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_condition =</span> init_cond_rand,</span>
+<span id="cb139-10"><a href="doing-many-simulations-and-visualizing.html#cb139-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> params,</span>
+<span id="cb139-11"><a href="doing-many-simulations-and-visualizing.html#cb139-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaT =</span> .<span class="dv">05</span>,</span>
+<span id="cb139-12"><a href="doing-many-simulations-and-visualizing.html#cb139-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_steps =</span> <span class="dv">200</span></span>
+<span id="cb139-13"><a href="doing-many-simulations-and-visualizing.html#cb139-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb139-14"><a href="doing-many-simulations-and-visualizing.html#cb139-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-15"><a href="doing-many-simulations-and-visualizing.html#cb139-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
+<span id="cb139-16"><a href="doing-many-simulations-and-visualizing.html#cb139-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-17"><a href="doing-many-simulations-and-visualizing.html#cb139-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb139-18"><a href="doing-many-simulations-and-visualizing.html#cb139-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> soln, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x), <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb139-19"><a href="doing-many-simulations-and-visualizing.html#cb139-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> soln_rand, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb139-20"><a href="doing-many-simulations-and-visualizing.html#cb139-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb139-21"><a href="doing-many-simulations-and-visualizing.html#cb139-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
+<span id="cb139-22"><a href="doing-many-simulations-and-visualizing.html#cb139-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;x&quot;</span></span>
+<span id="cb139-23"><a href="doing-many-simulations-and-visualizing.html#cb139-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:logistic-example-rev"></span>
-<img src="series_files/figure-html/logistic-example-rev-1.png" alt="Solution to the logistic differential equation with a random initial condition." width="5in" />
+<img src="series_files/figure-html/logistic-example-rev-1.png" alt="Solution to the logistic differential equation with a random initial condition (red). The original solution is also plotted for comparison." width="384" />
 <p class="caption">
-Figure 22.7: Solution to the logistic differential equation with a random initial condition.
+Figure 22.7: Solution to the logistic differential equation with a random initial condition (red). The original solution is also plotted for comparison.
 </p>
 </div>
-<p>But this could quickly grow time consuming if you wanted to do this several times (think hundreds). Fortunately we will can use iteration here to compute and gather several different solutions. I am going to post the code and then we can deconstruct it:</p>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="doing-many-simulations-and-visualizing.html#cb143-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># The number of simulations</span></span>
-<span id="cb143-2"><a href="doing-many-simulations-and-visualizing.html#cb143-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb143-3"><a href="doing-many-simulations-and-visualizing.html#cb143-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb143-4"><a href="doing-many-simulations-and-visualizing.html#cb143-4" aria-hidden="true" tabindex="-1"></a>try1 <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims, <span class="fu">c</span>(<span class="at">x=</span><span class="fu">runif</span>(<span class="dv">1</span>,<span class="at">min=</span><span class="dv">0</span>,<span class="at">max=</span><span class="dv">20</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb143-5"><a href="doing-many-simulations-and-visualizing.html#cb143-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb143-6"><a href="doing-many-simulations-and-visualizing.html#cb143-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler</span>(logistic_eq,.x,params,<span class="at">deltaT=</span>.<span class="dv">05</span>,<span class="at">n_steps=</span><span class="dv">200</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb143-7"><a href="doing-many-simulations-and-visualizing.html#cb143-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb143-8"><a href="doing-many-simulations-and-visualizing.html#cb143-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb143-9"><a href="doing-many-simulations-and-visualizing.html#cb143-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb143-10"><a href="doing-many-simulations-and-visualizing.html#cb143-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
-<span id="cb143-11"><a href="doing-many-simulations-and-visualizing.html#cb143-11" aria-hidden="true" tabindex="-1"></a>try1 <span class="sc">%&gt;%</span></span>
-<span id="cb143-12"><a href="doing-many-simulations-and-visualizing.html#cb143-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
-<span id="cb143-13"><a href="doing-many-simulations-and-visualizing.html#cb143-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb143-14"><a href="doing-many-simulations-and-visualizing.html#cb143-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Random initial conditions&quot;</span>) <span class="sc">+</span></span>
-<span id="cb143-15"><a href="doing-many-simulations-and-visualizing.html#cb143-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="cn">FALSE</span>)</span></code></pre></div>
-<pre><code>## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =
-## &quot;none&quot;)` instead.</code></pre>
+<p>Running several different iterations could quickly grow time consuming if you wanted to do this several times (think hundreds). Fortunately we will can use iteration here to compute and gather several different solutions. I am going to post the code and then we can deconstruct it:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="doing-many-simulations-and-visualizing.html#cb140-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">500</span> <span class="co"># The number of simulations</span></span>
+<span id="cb140-2"><a href="doing-many-simulations-and-visualizing.html#cb140-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-3"><a href="doing-many-simulations-and-visualizing.html#cb140-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb140-4"><a href="doing-many-simulations-and-visualizing.html#cb140-4" aria-hidden="true" tabindex="-1"></a>try1 <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims, <span class="fu">c</span>(<span class="at">x =</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">20</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb140-5"><a href="doing-many-simulations-and-visualizing.html#cb140-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb140-6"><a href="doing-many-simulations-and-visualizing.html#cb140-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler</span>(</span>
+<span id="cb140-7"><a href="doing-many-simulations-and-visualizing.html#cb140-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">system_eq =</span> logistic_eq,</span>
+<span id="cb140-8"><a href="doing-many-simulations-and-visualizing.html#cb140-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">initial_condition =</span> .x,</span>
+<span id="cb140-9"><a href="doing-many-simulations-and-visualizing.html#cb140-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameters =</span> params,</span>
+<span id="cb140-10"><a href="doing-many-simulations-and-visualizing.html#cb140-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">deltaT =</span> .<span class="dv">05</span>,</span>
+<span id="cb140-11"><a href="doing-many-simulations-and-visualizing.html#cb140-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_steps =</span> <span class="dv">200</span></span>
+<span id="cb140-12"><a href="doing-many-simulations-and-visualizing.html#cb140-12" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb140-13"><a href="doing-many-simulations-and-visualizing.html#cb140-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb140-14"><a href="doing-many-simulations-and-visualizing.html#cb140-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-15"><a href="doing-many-simulations-and-visualizing.html#cb140-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-16"><a href="doing-many-simulations-and-visualizing.html#cb140-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all up together</span></span>
+<span id="cb140-17"><a href="doing-many-simulations-and-visualizing.html#cb140-17" aria-hidden="true" tabindex="-1"></a>try1 <span class="sc">%&gt;%</span></span>
+<span id="cb140-18"><a href="doing-many-simulations-and-visualizing.html#cb140-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x)) <span class="sc">+</span></span>
+<span id="cb140-19"><a href="doing-many-simulations-and-visualizing.html#cb140-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb140-20"><a href="doing-many-simulations-and-visualizing.html#cb140-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Random initial conditions&quot;</span>) <span class="sc">+</span></span>
+<span id="cb140-21"><a href="doing-many-simulations-and-visualizing.html#cb140-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:logistic-example-many"></span>
-<img src="series_files/figure-html/logistic-example-many-1.png" alt="Many realiziations of the logistic differential equation with random initial conditions." width="5in" />
+<img src="series_files/figure-html/logistic-example-many-1.png" alt="Many realiziations of the logistic differential equation with random initial conditions." width="384" />
 <p class="caption">
 Figure 22.8: Many realiziations of the logistic differential equation with random initial conditions.
 </p>
 </div>
+<p>Wow! This plot is really interesting - it should show how even though the initial conditions vary between <span class="math inline">\(x=0\)</span> to <span class="math inline">\(x=20\)</span>, eventually all solutions flow to the carrying capacity <span class="math inline">\(K=100\)</span> (which is a stable equilbrium solution). Initial conditions that start closer to <span class="math inline">\(x=0\)</span> take longer, mainly because they are so close to the other equilibrium solution at <span class="math inline">\(x=0\)</span> (which is an unstable equilibrium solution).</p>
 <p>Ok, let’s deconstruct this code line by line:</p>
 <ul>
-<li><code>rerun(n_sims, c(x=runif(1,min=0,max=5)))</code> This line does two things: <code>x=runif(1,min=0,max=5)</code> makes a random initial condition, and the command <code>rerun</code> runs this again for <code>n_sims</code> times.</li>
+<li><code>rerun(n_sims, c(x=runif(1,min=0,max=20)))</code> This line does two things: <code>x=runif(1,min=0,max=20)</code> makes a random initial condition, and the command <code>rerun</code> runs this again for <code>n_sims</code> times.</li>
 <li><code>set_names(paste0("sim", 1:n_sims))</code> This line distinguishes between all the different simulations.</li>
-<li><code>map(~ euler(logistic_eq,.x,params,deltaT=.05,n_steps=200))</code> You should be familiar with <code>euler</code>, but notice the pronoun <code>.x</code> that substitutes all the different initial conditions into Euler’s method. The <code>map</code> function iterates over each of the simulations.</li>
+<li><code>map(~ euler( ... )</code> You should be familiar with <code>euler</code>, but notice the pronoun <code>.x</code> that substitutes all the different initial conditions into Euler’s method. The <code>map</code> function iterates over each of the simulations.</li>
 <li><code>map_dfr(~ .x, .id = "simulation")</code> This line binds everything up together.</li>
 </ul>
 <p>This code applies a new concept called <em>functional programming</em>. This is a powerful tool that allows you to perform the process of iteration (do the same thing repeatedly) with uncluttered code. We won’t delve more into this here, but I encourage you to read about more programming concepts in <a href="R%20for%20data%20science">https://r4ds.had.co.nz/iteration.html</a> by Wickham and Grolemund</p>
@@ -484,6 +530,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

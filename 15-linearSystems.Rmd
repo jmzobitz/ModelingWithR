@@ -2,15 +2,15 @@
 
 # Systems of linear equations {#linearsystems-15}
 
-So far we have looked at understanding differential equations qualitatively and estimating model parameters with data.  Now we are going to delve into a deeper understanding of long term stability and equilibrium solutions for differential equations.  As a first step we will work to understand *linear* systems of differential equations.
+So far we have looked at understanding differential equations qualitatively and estimating model parameters with data.  Now we are going to delve into a deeper understanding of differential equations by examining long term stability of equilibrium solutions.  As a first step this section focuses on *linear* systems of differential equations.
 
 For example consider this following system of equations:
 
 \begin{equation}
-\begin{split} (\#eq:example-ch15)
+\begin{split} 
 \frac{dx}{dt} &= 2x \\ 
 \frac{dy}{dt} &= x+y
-\end{split}
+\end{split} (\#eq:example-ch15)
 \end{equation}
 
 This set of differential equations is linear because it does not have any nonlinear (squared, power terms) or transendental functions (sine, cosine, exponential) of the variables $x$ and $y$.  This system is an example of a *coupled* system of equations, mainly due to the expression $\displaystyle \frac{dy}{dt}=x+y$.
@@ -24,7 +24,7 @@ One way to write this is with matrix notation, where we use the prime notation (
 \end{align}
 
 
-We can also represent this in a compact vector notation: $\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}$, where the matrix $\displaystyle \vec{A}=\begin{pmatrix} 2 & 0 \\ 1 &  1 \end{pmatrix}$.
+We can also represent the differential equation in a compact vector notation: $\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}$, where for this example $\displaystyle \vec{A}=\begin{pmatrix} 2 & 0 \\ 1 &  1 \end{pmatrix}$.
 
 Linear equations have some _very_ interesting properties - which I hope you will explore more by taking linear algebra!  But let's generalize a little bit now.  If we have a system of linear equations
 
@@ -41,11 +41,9 @@ you can write it in the following manner:
 \end{equation}
 
 ## Equilibrium solutions
-Now that we have our systems of linear equations, let's understand the dynamics.  A first question is to examine the equilibrium solutions, or places where both $\displaystyle \frac{dx}{dt}=0 \mbox{ and } \frac{dy}{dt}=0$.
+Now that we have our systems of linear equations, let's understand the dynamics.  A first question is to examine the equilibrium solutions, or places where both $\displaystyle \frac{dx}{dt}=0 \mbox{ and } \frac{dy}{dt}=0$. It might be helpful to imagine what we should _expect_ for an equilibrium solution. Think back to calculus - what types of functions have a zero derivative?  (Hopefully constant functions comes to mind!)
 
-It might be helpful to imagine what we should _expect_ for an equilibrium solution.  An equilibrium solution means that $\displaystyle \frac{dx}{dt} = 0$ and $\displaystyle \frac{dy}{dt} = 0$.  Think back to calculus - what types of functions have a zero derivative?  (Hopefully constant functions comes to mind!)
-
-If constant functions are a type of equilibrium solution, does that mean _any_ constant function? Let's try this out with our example:
+If constant functions are a type of equilibrium solution, does that mean _any_ constant function is an equilibrium solution? Let's try this out with our example:
 
 \begin{equation}
 \begin{split}
@@ -54,7 +52,7 @@ If constant functions are a type of equilibrium solution, does that mean _any_ c
 \end{split}
 \end{equation}
 
-If we evaluate our differential equation at $x=3$ and $y=5$, we have the following:
+If we evaluate our differential equation at $x=3$ and $y=5$ (which are both constant solutions), we have the following:
 
 \begin{equation}
 \begin{split}
@@ -63,12 +61,12 @@ If we evaluate our differential equation at $x=3$ and $y=5$, we have the followi
 \end{split}
 \end{equation}
 
-So looking at our results the right hand sides of the differential equation do not evaluate to zero.  Does that mean our intuition is wrong? Not necessarily - maybe we just didn't pick the correct solution.  Note in the second equation we have $\displaystyle \frac{dy}{dt}= x+y$ - what if we picked $x=0$ and $y=-5$?  That makes $\displaystyle \frac{dx}{dt}=0$, but $\displaystyle \frac{dy}{dt}=-5$.  Oh no - it is not an equilibrium solution!
+So looking at our results the right hand sides of the differential equation do not evaluate to zero.  Does that mean our intuition is wrong? Not necessarily - maybe we just didn't pick the correct solution.  Note in the second equation we have $\displaystyle \frac{dy}{dt}= x+y$ - what if we picked $x=0$ and $y=-5$?  That makes $\displaystyle \frac{dx}{dt}=0$, but $\displaystyle \frac{dy}{dt}=-5$.  Oh no - that is not an equilibrium solution either!
 
 
-One solution that could work is if both $x=0$ and $y=0$ (Try to do this on your own.)  So we know that we have at least _one_ equilibrium solution.  It turns out that the *only* equilibrium solution occurs at $x=0$ and $y=0$ (also known as the origin).  In fact, **any linear system has the origin as its only equilibrium solution.**  I won't discuss this fact more, but if you take linear algebra you will study the nature of solutions for linear systems.
+However, a solution that could work is if both $x=0$ and $y=0$ (Try to do this on your own.)  Here is an amazing fact: it turns out **any linear system has the origin as its only equilibrium solution.**.  I won't discuss this fact more, but one way to explain this is by examining solutions for linear systems of equations in linear algebra.
 
-You might be wondering why all the fuss with equilibrium solutions - especially the origin ($x=0$ and $y=0$)^[Another name for the origin equilibrium solution is the _trivial equilibrium_.].  So while equilibrium solutions are not terribly interesting question at the moment, the _stability_ of solutions are.  In order to understand what I mean by stability we need a new visualization tool called the phase plane.
+You might be wondering why all the fuss with equilibrium solutions - especially the origin ($x=0$ and $y=0$)^[Another name for the origin equilibrium solution is the _trivial equilibrium_.].  So while equilibrium solutions are not terribly interesting question at the moment, the _stability_ of solutions are.  In order to understand what I mean by stability let's re-examine phase planes from Section \@ref(coupled-06)
 
 ## The phase plane
 The phase plane is helpful here to understand the nature of the equilibrium solution.  Remember that the phase plane shows the motion of solutions, visualized as a vector.  For the system we examined earlier let’s take a look at the phase plane.  Here is some `R` code from the `demodelr` package to help you visualize a phaseplane:
@@ -77,11 +75,13 @@ The phase plane is helpful here to understand the nature of the equilibrium solu
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
 
-systems_eq <- c(dxdt ~ 2*x,
-                dydt ~ x+y )
+systems_eq <- c(
+  dxdt ~ 2 * x,
+  dydt ~ x + y
+)
 
-# Now we plot the solution. 
-phaseplane(systems_eq,'x','y')
+# Now we plot the solution.
+phaseplane(systems_eq, "x", "y")
 ```
 
 Let's talk a little bit about each of the commands first.
@@ -101,11 +101,13 @@ Let's take the example $\displaystyle \frac{dx}{dt} = -3x$
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
 
-systems_eq <- c(dt ~ 1,
-                dx ~ -3*x )
+systems_eq <- c(
+  dt ~ 1,
+  dx ~ -3 * x
+)
 
-# Now we plot the solution. 
-phaseplane(systems_eq,'t','x')
+# Now we plot the solution.
+phaseplane(systems_eq, "t", "x")
 ```
 
 This codes looks similar to the previous example, with one small modification.  For the variable `systems_eq` we need `dt ~ 1` - which basically uses the horizontal axis as the time dependent variable - this basically says that the rate of change on the horizontal axis is constant (which yields the solution $t$).  You will work out the details for converting a one-dimensional equation into a system of equations in Exercise \@ref(exr:reparam).
@@ -123,52 +125,47 @@ We can make a table of the solution for different values of $t$:
 
 ```{r, echo=FALSE}
 n <- 20
-t<- round(seq(0,1,length.out=n),digits = 2)
-x1 <- 0*t
-y1 <- round(exp(t),digits = 2)
+t <- round(seq(0, 1, length.out = n), digits = 2)
+x1 <- 0 * t
+y1 <- round(exp(t), digits = 2)
 
-x2 <- round(exp(2*t),digits=2)
-y2 <- round(exp(2*t),digits = 2)
-model_out <- data.frame(t,x1,y1,x2,y2)
+x2 <- round(exp(2 * t), digits = 2)
+y2 <- round(exp(2 * t), digits = 2)
+model_out <- data.frame(t, x1, y1, x2, y2)
 model_out %>%
-  kableExtra::kbl(caption = 'Solution values') %>%
+  kableExtra::kbl(caption = "Solution values") %>%
   kableExtra::kable_minimal() %>%
   kableExtra::add_header_above(c(" " = 1, "Solution 1" = 2, "Solution 2" = 2))
-
-
-
 ```
 We can incorporate the information from the table with the phase plane:
 
 ```{r,echo=FALSE,warning=FALSE,fig.width=5,fig.height=4}
 
 
-phaseplane(c(dx~2*x,dy~x+y),'x','y') +
-  geom_point(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
-  geom_line(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
-  geom_point(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
-  geom_line(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
-  xlim(c(-4,4)) + ylim(c(-4,4)) +
-  geom_point(aes(x=0,y=0),size=3)
-
+phaseplane(c(dx ~ 2 * x, dy ~ x + y), "x", "y") +
+  geom_point(data = model_out, aes(x = x1, y = y1), inherit.aes = FALSE, color = "red") +
+  geom_line(data = model_out, aes(x = x1, y = y1), inherit.aes = FALSE, color = "red") +
+  geom_point(data = model_out, aes(x = x2, y = y2), inherit.aes = FALSE, color = "blue") +
+  geom_line(data = model_out, aes(x = x2, y = y2), inherit.aes = FALSE, color = "blue") +
+  xlim(c(-4, 4)) + ylim(c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3)
 ```
 
 Do you notice the motion in the $xy$ plane of the two solutions?  They are straight lines!  It turns out that these straight lines solutions are quite useful - we will study them in a later section.  But for the moment we will apply the idea of linear combinations to plot another solution, where $\vec{z}(t)=\vec{x}_{1}(t) -0.1 \vec{x}_{2}(t)$:
 
 ```{r,echo=FALSE,warning=FALSE,fig.width=5,fig.height=4}
 
-new_data <- model_out %>% mutate(x3 = x1-0.1*x2,y3=y1-0.1*y2)
+new_data <- model_out %>% mutate(x3 = x1 - 0.1 * x2, y3 = y1 - 0.1 * y2)
 
-phaseplane(c(dx~2*x,dy~x+y),'x','y',) +
-  geom_point(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
-  geom_line(data=model_out,aes(x=x1,y=y1),inherit.aes = FALSE,color='red') +
-  geom_point(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
-  geom_line(data=model_out,aes(x=x2,y=y2),inherit.aes = FALSE,color='blue') +
-  geom_line(data=new_data,aes(x=x3,y=y3),inherit.aes = FALSE,color='purple') +
-  geom_point(data=new_data,aes(x=x3,y=y3),inherit.aes = FALSE,color='purple') +
-  xlim(c(-4,4)) + ylim(c(-4,4)) +
-  geom_point(aes(x=0,y=0),size=3)
-
+phaseplane(c(dx ~ 2 * x, dy ~ x + y), "x", "y", ) +
+  geom_point(data = model_out, aes(x = x1, y = y1), inherit.aes = FALSE, color = "red") +
+  geom_line(data = model_out, aes(x = x1, y = y1), inherit.aes = FALSE, color = "red") +
+  geom_point(data = model_out, aes(x = x2, y = y2), inherit.aes = FALSE, color = "blue") +
+  geom_line(data = model_out, aes(x = x2, y = y2), inherit.aes = FALSE, color = "blue") +
+  geom_line(data = new_data, aes(x = x3, y = y3), inherit.aes = FALSE, color = "purple") +
+  geom_point(data = new_data, aes(x = x3, y = y3), inherit.aes = FALSE, color = "purple") +
+  xlim(c(-4, 4)) + ylim(c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3)
 ```
 
 
@@ -201,38 +198,34 @@ In the exercises you will look at additional examples to understand the behavior
 ```{exercise}
 Write the following systems of equations in matrix notation ($\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}$):
   
-\begin{enumerate}[label=\alph*.]
-\item  \begin{equation}
+
+a. \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= 3x-4y \\ 
 \frac{dy}{dt} &= 2x-y,
 \end{split}
 \end{equation}
-
-\item  \begin{equation}
+b.  \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= x+y \\ 
 \frac{dy}{dt} &= y-x,
 \end{split}
 \end{equation}
-
-
-\item  \begin{equation}
+c.  \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= 5x-4y + z \\ 
 \frac{dy}{dt} &= y - 9z, \\
 \frac{dz}{dt} &= 7x-z, \\
 \end{split}
 \end{equation}
-
-\item  \begin{equation}
+d.  \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= -cx \\ 
 \frac{dy}{dt} &= rcx-y,
 \end{split}
 \end{equation}
 
-\end{enumerate}
+
   
 ```
 
@@ -281,12 +274,12 @@ Verify that $x=0$, $y=0$, and $z=0$ are solutions to the differential equation
 ```{exercise reparam}
 Consider the differential equation $\displaystyle \frac{dx}{dt} = -3x$. This exercise will help you work through the details of creating a two dimensional system of equations by re-parameterizing $s=t$.
 
-\begin{enumerate}[label=\alph*.]
-\item Define the variable $t = s$.  For this case, what is $\displaystyle \frac{dt}{ds}$?
-\item Explain if $ x = f (t (s))$ ($x$ is a composition between $t$ and $s$), explain why the chain rule has $\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}$.
-\item Use the fact that $\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}$ to explain why $\displaystyle \frac{dx}{ds} = -3x$.
-\item Finally use your previous work to determine the system of equations for $\displaystyle \frac{dx}{ds}$ and $\displaystyle \frac{dt}{ds}$.
-\end{enumerate}
+
+a. Define the variable $t = s$.  For this case, what is $\displaystyle \frac{dt}{ds}$?
+b. Explain if $ x = f (t (s))$ ($x$ is a composition between $t$ and $s$), explain why the chain rule has $\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}$.
+c. Use the fact that $\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}$ to explain why $\displaystyle \frac{dx}{ds} = -3x$.
+d. Finally use your previous work to determine the system of equations for $\displaystyle \frac{dx}{ds}$ and $\displaystyle \frac{dt}{ds}$.
+
 
 ```
 &nbsp;
@@ -301,11 +294,11 @@ This problem considers the differential equation
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Use the command `phaseplane` to create a phaseplane of this differential equation.
-\item Change the number of arrows shown to 5 and 20 (2 different plots).  What do you notice about the updated phaseplane?
-\item Change the viewing window from the default to -10 to 10 in both axes.  Now change the number of arrows shown to 5 and 20 (2 different plots).  What do you notice about the updated phaseplane?
-\end{enumerate}
+
+a. Use the command `phaseplane` to create a phaseplane of this differential equation.
+b. Change the number of arrows shown to 5 and 20 (2 different plots).  What do you notice about the updated phaseplane?
+c. Change the viewing window from the default to -10 to 10 in both axes.  Now change the number of arrows shown to 5 and 20 (2 different plots).  What do you notice about the updated phaseplane?
+
 ```
 
 &nbsp;
@@ -324,7 +317,7 @@ Explain why we call $x=0$ and $y=0$ _equilibrium_ solutions to the general linea
 <!-- Adapted from LW pg 164 -->
 <!-- tr = -2a det = a^2-1 -->
 ```{exercise}
-Consider the following differential equation:
+(Inspired by logan_mathematical_2009) Consider the following differential equation:
   
 \begin{equation}
 \begin{split}
@@ -333,10 +326,10 @@ Consider the following differential equation:
 \end{split}
 \end{equation}
 
-\begin{enumerate}[label=\alph*.]
-\item Write this system in the form $\displaystyle \frac{d\vec{x}}{dt}=A \vec{x}$.
-\item Let $a= -2, \; -1, \; -0.5, \; 0, \; 0.5, \; 1, \; 2$.  Generate a phase plane for each of these values of $a$ and characterize the behavior of the equilibrium solution.
-\end{enumerate}
+
+a. Write this system in the form $\displaystyle \frac{d\vec{x}}{dt}=A \vec{x}$.
+b. Let $a= -2, \; -1, \; -0.5, \; 0, \; 0.5, \; 1, \; 2$.  Generate a phase plane for each of these values of $a$ and characterize the behavior of the equilibrium solution.
+
 ```
 
 &nbsp;
@@ -344,13 +337,13 @@ Consider the following differential equation:
 ```{exercise}
 Generate a phaseplane for the following differential equations and using your result, classify if the equilibrium solution is stable or unstable.
 
-\begin{enumerate}[label=\alph*.]
-\item $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -2y$
-\item $\displaystyle \frac{dx}{dt} = 3x+y, \;  \frac{dy}{dt} = 2x+4y$
-\item $\displaystyle \frac{dx}{dt} = 8x-11y, \;  \frac{dy}{dt} = 6x-9y$
-\item $\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y$
-\item $\displaystyle \frac{dx}{dt} = -2x-3y, \;  \frac{dy}{dt} = 3x-2y$
-\end{enumerate}
+
+a. $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -2y$
+b. $\displaystyle \frac{dx}{dt} = 3x+y, \;  \frac{dy}{dt} = 2x+4y$
+c. $\displaystyle \frac{dx}{dt} = 8x-11y, \;  \frac{dy}{dt} = 6x-9y$
+d. $\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y$
+e. $\displaystyle \frac{dx}{dt} = -2x-3y, \;  \frac{dy}{dt} = 3x-2y$
+
 
 ```
 
@@ -367,14 +360,14 @@ Consider the following differential equation:
 \end{equation}
 
 
-\begin{enumerate}[label=\alph*.]
-\item Generate a phase plane diagram of this system.  What do you notice?
-\item Verify that $x(t)=A \cos(t)$ and $y(t)=A \sin(t)$ is a solution to this differential equation.
-\item An equation of a circle of radius $R$ is $x^{2}+y^{2}=R^{2}$. Use implicit differentiation to differentiate this equation.  Remember you are differentiating with respect to $t$, and $x$ and $y$ are functions of time $t$.
-\item Substitute the differential equation into your implicit derivative to verify $x^{2}+y^{2}=R^{2}$ is a solution to the differential equation.
-\item Verify that $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=A \sin(t)-B \cos(t)$ are also solutions.
-\item Make a plot of $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=-A \sin(t)-B \cos(t)$ for $A=1$, $B=1$.
-\end{enumerate}
+
+a. Generate a phase plane diagram of this system.  What do you notice?
+b. Verify that $x(t)=A \cos(t)$ and $y(t)=A \sin(t)$ is a solution to this differential equation.
+c. An equation of a circle of radius $R$ is $x^{2}+y^{2}=R^{2}$. Use implicit differentiation to differentiate this equation.  Remember you are differentiating with respect to $t$, and $x$ and $y$ are functions of time $t$.
+d. Substitute the differential equation into your implicit derivative to verify $x^{2}+y^{2}=R^{2}$ is a solution to the differential equation.
+e. Verify that $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=A \sin(t)-B \cos(t)$ are also solutions.
+f. Make a plot of $x(t)=A \cos(t) + B \sin(t)$ and $y(t)=-A \sin(t)-B \cos(t)$ for $A=1$, $B=1$.
+
 
 ```
 

@@ -1,9 +1,9 @@
 # Bifurcation {#bifurcation-20}
 
-In this section we will study a key topic that applies the qualititative stability analysis to examine sensitivity to parameters, or what is called *bifurcation*.
+In this section we will study a key topic that applies qualititative stability analysis from Section \@ref(stability-19) to examine how stability of an equilibrium solution is sensitivity to parameters. This general topic is called *bifurcation*, and to illustrate what bifurcation is we will examine several examples.
 
 ## A series of equations
-First let's consider the differential equations $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Section \@ref(phase-05)):
+First let's consider the differential equation $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Section \@ref(phase-05)):
 
 
 - If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be unstable.
@@ -12,7 +12,7 @@ First let's consider the differential equations $\displaystyle \frac{dx}{dt} = 1
 
 Applying this test, we know $f(x)=1-x^2$ and $f'(x)=-2x$.  Since $f'(1)=-2$ and $f'(-1)=2$, then the equilibrium solution $x=1$ is stable and $x=-1$ unstable.
 
-Figure \@ref(fig:eq1-x2) shows a plot of the phase plane along with some solutions:
+Figure \@ref(fig:eq1-x2) shows a plot of the phase plane along with some solutions. Notice how the solutions seem to flow to $x=1$ and away from $x=-1$.
 
 ```{r eq1-x2, echo=FALSE,fig.width=5,fig.height=4,results='hide',warning=FALSE,fig.cap="Phase plane of $x'=1-x^{2}$"}
 system_eq <- c(dxdt ~ 1,
@@ -41,11 +41,12 @@ phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
 ```
 
 
-Let's modify and extend this example further. Consider two more differential equations to consider:
+Let's modify and extend this example further. Consider two more differential equations:
+
  - $\displaystyle \frac{dx}{dt} = -1-x^{2}$: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.
  - $\displaystyle \frac{dx}{dt} = -x^{2}$:  The stability of the second equation is a little more tricky.  While it has an equilibrium solution at $x=0$, the stability test cannot apply because $f'=-2x$ and $f'(0)=0$.  However investigating the sign of $f(x)$ to the left and right of $x=0$, we see that this solution is constantly decreasing, so the equilibrium is unstable.
 
-So let's also take a look at these phaseplanes along with the solution:
+So let's also take a look at the phaseplanes for $\displaystyle \frac{dx}{dt} = -1-x^{2}$ and $\displaystyle \frac{dx}{dt} = -x^{2}$ along with the some solution curves (see also the accompanying figure).
 
 ```{r eq1-x2-2, echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1,fig.cap="Phase plane of $x'=-1-x^{2}$ and $x'=-x^{2}$"}
 system_eq <- c(dxdt ~ 1,
@@ -98,24 +99,35 @@ phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
 ```
 
 
-There is an interesting pattern going on here. Let's build on these three examples in a more general context. Consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$ the value of $c$ influences whether or not we will have a stable equilibrium solution.
+There is an interesting pattern going on here. Let's build on these three examples in a more general context. Consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$. In our first example, $c=1$. In the second example, $c=-1$, and the third example $c=0$. The phaseplanes from these examples illustrates how the value of $c$ influences the phase line and the resulting solution.
 
-Steady states to this differential equation are when $x^{*}=\pm \sqrt{c}$.  If $c>0$ we have two steady states.  If $c=0$ there is only one steady state, and if $c<0$, then there are no steady states.
+Steady states to $\displaystyle \frac{dx}{dt} = c-x^{2}$ are at $x^{*}=\pm \sqrt{c}$. We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$: 
 
-We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$:
-
+- If $c>0$ we have two steady states, summarized in the following table:
 
 Equilibrium solution | $f'(x^{*})$  | Tendency of solution | 
 -------------| ------------- | ------------- | 
     $x^{*}=\sqrt{c}$ | $-2 \sqrt{c}$ | Stable 
     $x^{*}=-\sqrt{c}$ |  $2 \sqrt{c}$ | Unstable 
+
+(You should verify that the stability result we initially found when $c=1$ matches the table.)
+
+- If $c=0$ there is only one steady state, summarized, in the following table:
+
+Equilibrium solution | $f'(x^{*})$  | Tendency of solution | 
+-------------| ------------- | ------------- | 
    $x^{*}=0$  | 0 | Inconclusive 
 
+Based on the phaseplane for $x'=-x^{2}$, the equilibrium solution $x^{*}=0$ is unstable.  If the initial condition $x(0)$ is greater than 0, the solution flows towards $x=0$, but if the initial condition is less than zero, the solution flows away from $x=0$.  This is similar to a one-dimensional analogue to a saddle node from Section \@ref(stability-19).
 
-Even better, since we have a function dependence of $x^{*}$ on the value of $c$, we can represent the different notions of stability encapsulated in the above table graphically in what is called a *bifurcation diagram*:
+- Finally, if $c<0$, then there are no steady states because $\sqrt{c}$ is does not have a real solution when $c<0$.  (Note: eigenvalues can be imaginary, but equilibrium solutions for our contexts can only be real). We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$:
 
-```{r,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap='A saddle-node bifurcation'}
-\begin{center}
+
+
+Notice how different values of $c$ influence both the *value* $(x^{*}=\pm \sqrt{c})$ and the *stability* of the equilibrium solution. Rather than making a series of tables, we can represent the dependence of the equilibrium solution and its stability in what is called a *bifurcation diagram* (Figure \@ref(fig:saddle-bifur-20)).
+
+```{r saddle-bifur-20,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap='A saddle-node bifurcation',fig.align='center'}
+
 
 \begin{tikzpicture}
 %\draw[help lines, color=gray!30, dashed] (-4.9,-4.9) grid (4.9,4.9);
@@ -129,14 +141,14 @@ Even better, since we have a function dependence of $x^{*}$ on the value of $c$,
 \end{tikzpicture}
 
 
-\end{center}
 ```
+Let's talk about Figure \@ref(fig:saddle-bifur-20). The graph represents the value of the equilibrium solution ($x^{*}$, vertical axis) as a function of the parameter $c$ (horizontal axis).  Since equilibrium solutions are characterized by $x^{*}=\pm \sqrt{c}$ we have the "sideways parabola", traced in blue in Figure \@ref(fig:saddle-bifur-20).  When $c<0$, there is no equilibrium solution, (so nothing is plotted in the second and third quadrants of Figure \@ref(fig:saddle-bifur-20)). The difference between the solid and dashed lines in Figure \@ref(fig:saddle-bifur-20) is used to distinguish between a stable equilibrium solution ($x^{*}=\sqrt{c}$ when $c>0$) and unstable equilibrium solution ($x^{*}=-\sqrt{c}$ when $c>0$). That is so cool that *all* the information about the equilibrium solution and its stability is contained in this diagram!
 
-For this particular example we have what is called a *saddle-node* bifurcation.  It might be helpful to think of this $c$ like a tuning knob.  As $c>0$ we will always have two different equilibrium solutions that are symmetrical based on the value of $c$.  The positive one will be stable, the other unstable.  As $c$ gets smaller these equilbrium solutions will collapse into one, which will be unstable.  If $c$ is negative, the equilibrium solution disappears.
+This particular example is called a *saddle-node* bifurcation.  It might be helpful to think of this $c$ like a tuning knob.  As $c>0$ we will always have two different equilibrium solutions that are symmetrical based on the value of $c$.  The positive one will be stable, the other unstable.  As $c$ gets smaller these equilbrium solutions will collapse into one, which will be unstable.  If $c$ is negative, the equilibrium solution disappears.
 
 ## Bifurcations with systems of equations 
 
- Determine the behavior of solutions near the origin for the system
+As another example, let's determine the behavior of solutions near the origin for the system of equations:
  \begin{equation}
  \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}. (\#eq:b-bifurc-20)
  \end{equation}
@@ -206,10 +218,10 @@ The previous examples we have studied examine the stability of an equilibrium so
 
  Consider the following highly nonlinear system:
 \begin{equation}
-\begin{cases}
-\frac{dx}{dt} =-y-x(x^2+y^2-1) \\ (\#eq:limit-cycle-20)
+\begin{split}
+\frac{dx}{dt} =-y-x(x^2+y^2-1) \\ 
 \frac{dy}{dt}=x-y(x^2+y^2-1)
-\end{cases}
+\end{split} (\#eq:limit-cycle-20)
 \end{equation}
 
 The phase plane for Equation \@ref(eq:limit-cycle-20) is shown in Figure \@ref(fig:phase-limit-20). You can verify that Equation \@ref(eq:limit-cycle-20) system has an equilibrium solution at the point  $x=0$, $y=0$. 
@@ -255,9 +267,12 @@ What is interesting in Figure \@ref(fig:limit-cycle-20-f) that the solution is t
 \frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}. (\#eq:limit-X-20)
 \end{equation}
 
-How Equation \@ref(eq:limit-cycle-20) transforms to Equation \@ref(eq:limit-X-20) is by applying a polar coordinate transformation to this system.  By applying stability analysis for Equation \@ref(eq:limit-X-20) we can show that the equilibrium solution $X=0$ is unstable (meaning the origin $x=0$ and $y=0$ is an unstable solution) and the circle of radius 1 is stable (which is the equation $x^{2}+y^{2}=1$). In this case we would say $r=1$ is a *stable limit cycle*.
+How Equation \@ref(eq:limit-cycle-20) transforms to Equation \@ref(eq:limit-X-20) is by applying a polar coordinate transformation to this system.  By applying stability analysis for Equation \@ref(eq:limit-X-20) we can show that the equilibrium solution $X=0$ is unstable (meaning the origin $x=0$ and $y=0$ is an unstable solution) and the circle of radius 1 is stable (which is the equation $x^{2}+y^{2}=1$). In this case we would say $r=1$ is a *stable limit cycle*.  You will study a similar system in Exercises \@ref(exr:limit-transform-20) and \@ref(exr:hopf-20).
 
-This is another example of next steps with studying the qualitative analysis of systems.  While we have focused on bifurcation of equilibrium solutions, hopefully this brief introduction will pique your interest in further study of bifurcations.
+Equation \@ref(eq:limit-X-20) is an example of next steps with studying the qualitative analysis of systems.  While we have focused on bifurcation of equilibrium solutions, hopefully this brief introduction will pique your interest in further study of bifurcations.
+
+The most important part in studying bifurcations is analyzing examples.  I've provided a lot of exercises where you will construct bifurcation diagrams for one and two-dimensional equations.  Given an equation with a parameter, it is helpful to construct some sample phaselines / phaseplanes before analyzing stability in general using the stability test or the trace-determinant plane.
+
 
 
 \newpage
@@ -265,11 +280,11 @@ This is another example of next steps with studying the qualitative analysis of 
 ## Exercises
 ```{exercise}
 Apply local linearization to classify stability of the following differential equations:
-  \begin{enumerate}
-\item $\displaystyle \frac{dx}{dt} = x-x^{2}$
-\item $\displaystyle \frac{dx}{dt} = -x^{2}$
-\item $\displaystyle \frac{dx}{dt} = -x-x^{2}$
-  \end{enumerate}
+
+a. $\displaystyle \frac{dx}{dt} = x-x^{2}$
+b. $\displaystyle \frac{dx}{dt} = -x^{2}$
+c. $\displaystyle \frac{dx}{dt} = -x-x^{2}$
+
 ```
 &nbsp;
 ```{exercise}
@@ -281,7 +296,8 @@ Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{3}$.  Wh
 ```
 &nbsp;
 ```{exercise}
- Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the system
+(Inspired by @logan_mathematical_2009) Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the following system:
+  
  \begin{equation}
  \frac{\vec{x}}{dt} = \begin{pmatrix} 3 & b \\ b & 1 \end{pmatrix} \vec{x}.
  \end{equation}
@@ -289,11 +305,14 @@ Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{3}$.  Wh
 &nbsp;
 <!-- LW pg 164 -->
 ```{exercise}
-Consider the linear system of equations:
-    \begin{align*}
+(Inspired by @logan_mathematical_2009) Consider the linear system of equations:
+
+\begin{equation}
+\begin{split}
 \frac{dx}{dt}&=-ax-y \\
 \frac{dy}{dt} &= -x-ay
-\end{align*}
+\end{split}
+\end{equation}
 
 Construct a bifurcation diagram for this system of equations.
 
@@ -302,36 +321,38 @@ Construct a bifurcation diagram for this system of equations.
 
 ```{exercise limit-transform-20}
  Consider the following highly nonlinear system:
-\begin{align*}
+
+\begin{equation}
+\begin{split}
 \frac{dx}{dt} =-y-x(x^2+y^2-1) \\
 \frac{dy}{dt}=x-y(x^2+y^2-1)
-\end{align*}
+\end{split}
+\end{equation}
 
 We are going to transform the system by defining new variables $x=r \cos \theta$ and $y=r \sin \theta$.  Observe that $r^2=x^2+y^2$.
 
-\begin{enumerate}
-\item Consider the equation $r^2=x^2+y^2$, where $r$, $x$, and $y$ are all functions of time. Apply implicit differentiation to determine a differential equation for $\displaystyle \frac{d(r^{2})}{dt}$, expressed in terms of $x$, $y$, $\displaystyle \frac{dx}{dt}$ and $\displaystyle \frac{dy}{dt}$.
-\item Multiply $\frac{dx}{dt}$ by $2x$ and $\frac{dy}{dt}$ by $2y$ on both sides of the equation.  Then add the two equations together.  You should get an expression for $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $x$ and $y$.
-\item Re-write the equation for the right hand side of $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $r^{2}$.
 
-\item Use your equation that you found to verify that 
-
+a. Consider the equation $r^2=x^2+y^2$, where $r$, $x$, and $y$ are all functions of time. Apply implicit differentiation to determine a differential equation for $\displaystyle \frac{d(r^{2})}{dt}$, expressed in terms of $x$, $y$, $\displaystyle \frac{dx}{dt}$ and $\displaystyle \frac{dy}{dt}$.
+b. Multiply $\displaystyle \frac{dx}{dt}$ by $2x$ and $\displaystyle \frac{dy}{dt}$ by $2y$ on both sides of the equation.  Then add the two equations together.  You should get an expression for $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $x$ and $y$.
+c. Re-write the equation for the right hand side of $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $r^{2}$.
+d. Use your equation that you found to verify that 
 \begin{equation}
 \frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}
 \end{equation}
+e. Verify that $X=1$ is a stable node and $X=0$ is unstable.
+f. As discussed in this section this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is a unstable limit cycle?  Justify your work.
 
-\item Verify that $X=1$ is a stable node and $X=0$ is unstable.
-\item As discussed in the text this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is a unstable limit cycle?  Justify your work.
-\end{enumerate}
 ```
 &nbsp;
-```{exercise}
-Construct a bifurcation diagram for $\displaystyle \frac{dX}{dt} = - X(X-\mu)$, $\mu$ is a parameter.  Explain how you can apply that result to understanding the bifurcation diagram of the system
+```{exercise hopf-20}
+Construct a bifurcation diagram for $\displaystyle \frac{dX}{dt} = - X(X-\mu)$, $\mu$ is a parameter.  Explain how you can apply that result to understanding the bifurcation diagram of the system:
 
-\begin{align*}
+\begin{equation}
+\begin{split}
 \frac{dx}{dt} =-y- x(x^2+y^2-\mu) \\
 \frac{dy}{dt}=x- y(x^2+y^2-\mu)
-\end{align*}
+\end{split}
+\end{equation}
   
 This system is an example of a \emph{Hopf bifurcation}.
 ```
@@ -341,33 +362,39 @@ This system is an example of a \emph{Hopf bifurcation}.
 
 <!-- adapted LW pg 183 -->
 ```{exercise}
-Consider following predator-prey model:
-    \begin{align*}
+(Inspired by @logan_mathematical_2009) Consider following predator-prey model:
+
+\begin{equation}
+\begin{split}
 \frac{dx}{dt}&=\frac{2}{3}x\left(1 - \frac{x}{4} \right) - \frac{xy}{1+x} \\
 \frac{dy}{dt} &= ry\left(1 - \frac{y}{x} \right)
-\end{align*}
+\end{split}
+\end{equation}
 
-\begin{enumerate}
-\item Explain the various terms in this model and their biological meaning.
-\item Determine the equilibrium solutions.
-\item Evaluate the Jacobian at each of the equilibrium solutions.
-\item Construct a bifurcation diagram (with the parameter $r$) for each of the equilibrium solutions.
-\end{enumerate}
+
+a. Explain the various terms in this model and their biological meaning.
+b. Determine the equilibrium solutions.
+c. Evaluate the Jacobian at each of the equilibrium solutions.
+d. Construct a bifurcation diagram (with the parameter $r$) for each of the equilibrium solutions.
+
 ```
 &nbsp;
 <!-- adapted LW pg 185, get some more citations in here -->
 ```{exercise}
-The immune response to HIV has been described with differential equations.  In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where $v$ is the virus load and $x$ the immune response:
-    \begin{align*}
+(Inspired by @logan_mathematical_2009) The immune response to HIV has been described with differential equations.  In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where $v$ is the virus load and $x$ the immune response:
+  
+\begin{equation}
+\begin{split}
 \frac{dv}{dt}&=rv - pxv \\
 \frac{dx}{dt} &= cv-bx
-\end{align*}
+\end{split}
+\end{equation}
 
-\begin{enumerate}
-\item Explain the various terms in this model and their biological meaning.
-\item Determine the equilibrium solutions.
-\item Evaluate the Jacobian at each of the equilibrium solutions.
-\item Construct a bifurcation diagram for each of the equilibrium solutions.
-\end{enumerate}
+
+a. Explain the various terms in this model and their biological meaning.
+b. Determine the equilibrium solutions.
+c. Evaluate the Jacobian at each of the equilibrium solutions.
+d. Construct a bifurcation diagram for each of the equilibrium solutions.
+
 ```
 

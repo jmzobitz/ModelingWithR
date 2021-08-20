@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>26.2 A stochastic system of equations | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="26.2 A stochastic system of equations | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="the-stochastic-logistic-model-redux.html"/>
 <link rel="next" href="generalizing-the-approach-.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,12 +404,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="a-stochastic-system-of-equations" class="section level2" number="26.2">
 <h2><span class="header-section-number">26.2</span> A stochastic system of equations</h2>
-<p>We can also apply this to a stochastic system of equations. Here we will return to the lynx-hare model:</p>
+<p>Let’s examine a stochastic system of differential equations. Here we will return to the lynx-hare model:</p>
 <p><span class="math display">\[\begin{equation}
-\begin{cases}
+\begin{split}
 \frac{dH}{dt} &amp;= r H - b HL \\
 \frac{dL}{dt} &amp;=ebHL -dL
-\end{cases}
+\end{split}
 \end{equation}\]</span></p>
 <p>In this case we still split <em>each equation</em> into the birth (<span class="math inline">\(\alpha\)</span>) and death (<span class="math inline">\(\delta\)</span>) parts:
 <span class="math display">\[\begin{align*}
@@ -399,40 +424,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \frac{dL}{dt}: &amp; dL\\
 \end{cases} 
 \end{align*}\]</span></p>
-<p>To simulate this stochastic process the setup of the code is similar to previous ways we solved systems of differential equations. Since we have a system of equations to compute the expected value and variance requires additional knowledge of matrix algebra, but that is already included in the function <code>birth_death_stochastic</code></p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="a-stochastic-system-of-equations.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
-<span id="cb168-2"><a href="a-stochastic-system-of-equations.html#cb168-2" aria-hidden="true" tabindex="-1"></a>birth_rate_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(dH <span class="sc">~</span> r<span class="sc">*</span>H, dL <span class="sc">~</span> e<span class="sc">*</span>b<span class="sc">*</span>H<span class="sc">*</span>L)</span>
-<span id="cb168-3"><a href="a-stochastic-system-of-equations.html#cb168-3" aria-hidden="true" tabindex="-1"></a>death_rate_pred <span class="ot">&lt;-</span>  <span class="fu">c</span>(dH <span class="sc">~</span> b<span class="sc">*</span>H<span class="sc">*</span>L, dL <span class="sc">~</span> d<span class="sc">*</span>L)</span>
-<span id="cb168-4"><a href="a-stochastic-system-of-equations.html#cb168-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-5"><a href="a-stochastic-system-of-equations.html#cb168-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
-<span id="cb168-6"><a href="a-stochastic-system-of-equations.html#cb168-6" aria-hidden="true" tabindex="-1"></a>init_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">H=</span><span class="dv">1</span>, <span class="at">L=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables</span></span>
-<span id="cb168-7"><a href="a-stochastic-system-of-equations.html#cb168-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-8"><a href="a-stochastic-system-of-equations.html#cb168-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the parameters</span></span>
-<span id="cb168-9"><a href="a-stochastic-system-of-equations.html#cb168-9" aria-hidden="true" tabindex="-1"></a>parameters_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="fl">0.5</span>, <span class="at">e =</span> <span class="fl">0.1</span>, <span class="at">d =</span> <span class="dv">1</span>)</span>
-<span id="cb168-10"><a href="a-stochastic-system-of-equations.html#cb168-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-11"><a href="a-stochastic-system-of-equations.html#cb168-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
-<span id="cb168-12"><a href="a-stochastic-system-of-equations.html#cb168-12" aria-hidden="true" tabindex="-1"></a>deltaT_pred <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
-<span id="cb168-13"><a href="a-stochastic-system-of-equations.html#cb168-13" aria-hidden="true" tabindex="-1"></a>time_steps_pred <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
-<span id="cb168-14"><a href="a-stochastic-system-of-equations.html#cb168-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-15"><a href="a-stochastic-system-of-equations.html#cb168-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
-<span id="cb168-16"><a href="a-stochastic-system-of-equations.html#cb168-16" aria-hidden="true" tabindex="-1"></a>sigma_pred <span class="ot">&lt;-</span> .<span class="dv">1</span></span>
-<span id="cb168-17"><a href="a-stochastic-system-of-equations.html#cb168-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-18"><a href="a-stochastic-system-of-equations.html#cb168-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-19"><a href="a-stochastic-system-of-equations.html#cb168-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
-<span id="cb168-20"><a href="a-stochastic-system-of-equations.html#cb168-20" aria-hidden="true" tabindex="-1"></a>out_pred <span class="ot">&lt;-</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_pred,</span>
-<span id="cb168-21"><a href="a-stochastic-system-of-equations.html#cb168-21" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">death_rate =</span> death_rate_pred,</span>
-<span id="cb168-22"><a href="a-stochastic-system-of-equations.html#cb168-22" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">init_cond =</span> init_pred,</span>
-<span id="cb168-23"><a href="a-stochastic-system-of-equations.html#cb168-23" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">parameters =</span> parameters_pred,</span>
-<span id="cb168-24"><a href="a-stochastic-system-of-equations.html#cb168-24" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">deltaT =</span> deltaT_pred,</span>
-<span id="cb168-25"><a href="a-stochastic-system-of-equations.html#cb168-25" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">n_steps =</span> time_steps_pred,</span>
-<span id="cb168-26"><a href="a-stochastic-system-of-equations.html#cb168-26" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">sigma =</span> sigma_pred)</span>
-<span id="cb168-27"><a href="a-stochastic-system-of-equations.html#cb168-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb168-28"><a href="a-stochastic-system-of-equations.html#cb168-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the solution</span></span>
-<span id="cb168-29"><a href="a-stochastic-system-of-equations.html#cb168-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_pred) <span class="sc">+</span></span>
-<span id="cb168-30"><a href="a-stochastic-system-of-equations.html#cb168-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>H),<span class="at">color=</span><span class="st">&#39;red&#39;</span>) <span class="sc">+</span></span>
-<span id="cb168-31"><a href="a-stochastic-system-of-equations.html#cb168-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>L),<span class="at">color=</span><span class="st">&#39;blue&#39;</span>) <span class="sc">+</span></span>
-<span id="cb168-32"><a href="a-stochastic-system-of-equations.html#cb168-32" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Time&#39;</span>,</span>
-<span id="cb168-33"><a href="a-stochastic-system-of-equations.html#cb168-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">y=</span><span class="st">&#39;Lynx (red) or Hares (blue)&#39;</span>)</span></code></pre></div>
+<p>To simulate this stochastic process, the setup of the code is similar to previous ways we solved systems of differential equations. Since we have a system of equations to compute the expected value and variance requires additional knowledge of matrix algebra, but that is already included in the function <code>birth_death_stochastic</code></p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="a-stochastic-system-of-equations.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
+<span id="cb166-2"><a href="a-stochastic-system-of-equations.html#cb166-2" aria-hidden="true" tabindex="-1"></a>birth_rate_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(dH <span class="sc">~</span> r<span class="sc">*</span>H, dL <span class="sc">~</span> e<span class="sc">*</span>b<span class="sc">*</span>H<span class="sc">*</span>L)</span>
+<span id="cb166-3"><a href="a-stochastic-system-of-equations.html#cb166-3" aria-hidden="true" tabindex="-1"></a>death_rate_pred <span class="ot">&lt;-</span>  <span class="fu">c</span>(dH <span class="sc">~</span> b<span class="sc">*</span>H<span class="sc">*</span>L, dL <span class="sc">~</span> d<span class="sc">*</span>L)</span>
+<span id="cb166-4"><a href="a-stochastic-system-of-equations.html#cb166-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-5"><a href="a-stochastic-system-of-equations.html#cb166-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb166-6"><a href="a-stochastic-system-of-equations.html#cb166-6" aria-hidden="true" tabindex="-1"></a>init_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">H=</span><span class="dv">1</span>, <span class="at">L=</span><span class="dv">3</span>)  <span class="co"># Be sure you have enough conditions as you do variables</span></span>
+<span id="cb166-7"><a href="a-stochastic-system-of-equations.html#cb166-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-8"><a href="a-stochastic-system-of-equations.html#cb166-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the parameters</span></span>
+<span id="cb166-9"><a href="a-stochastic-system-of-equations.html#cb166-9" aria-hidden="true" tabindex="-1"></a>parameters_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="fl">0.5</span>, <span class="at">e =</span> <span class="fl">0.1</span>, <span class="at">d =</span> <span class="dv">1</span>)</span>
+<span id="cb166-10"><a href="a-stochastic-system-of-equations.html#cb166-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-11"><a href="a-stochastic-system-of-equations.html#cb166-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb166-12"><a href="a-stochastic-system-of-equations.html#cb166-12" aria-hidden="true" tabindex="-1"></a>deltaT_pred <span class="ot">&lt;-</span> .<span class="dv">05</span>    <span class="co"># timestep length</span></span>
+<span id="cb166-13"><a href="a-stochastic-system-of-equations.html#cb166-13" aria-hidden="true" tabindex="-1"></a>time_steps_pred <span class="ot">&lt;-</span> <span class="dv">200</span>   <span class="co"># must be a number greater than 1</span></span>
+<span id="cb166-14"><a href="a-stochastic-system-of-equations.html#cb166-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-15"><a href="a-stochastic-system-of-equations.html#cb166-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
+<span id="cb166-16"><a href="a-stochastic-system-of-equations.html#cb166-16" aria-hidden="true" tabindex="-1"></a>sigma_pred <span class="ot">&lt;-</span> .<span class="dv">1</span></span>
+<span id="cb166-17"><a href="a-stochastic-system-of-equations.html#cb166-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-18"><a href="a-stochastic-system-of-equations.html#cb166-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-19"><a href="a-stochastic-system-of-equations.html#cb166-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb166-20"><a href="a-stochastic-system-of-equations.html#cb166-20" aria-hidden="true" tabindex="-1"></a>out_pred <span class="ot">&lt;-</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_pred,</span>
+<span id="cb166-21"><a href="a-stochastic-system-of-equations.html#cb166-21" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">death_rate =</span> death_rate_pred,</span>
+<span id="cb166-22"><a href="a-stochastic-system-of-equations.html#cb166-22" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">init_cond =</span> init_pred,</span>
+<span id="cb166-23"><a href="a-stochastic-system-of-equations.html#cb166-23" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">parameters =</span> parameters_pred,</span>
+<span id="cb166-24"><a href="a-stochastic-system-of-equations.html#cb166-24" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">deltaT =</span> deltaT_pred,</span>
+<span id="cb166-25"><a href="a-stochastic-system-of-equations.html#cb166-25" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">n_steps =</span> time_steps_pred,</span>
+<span id="cb166-26"><a href="a-stochastic-system-of-equations.html#cb166-26" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">sigma =</span> sigma_pred)</span>
+<span id="cb166-27"><a href="a-stochastic-system-of-equations.html#cb166-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-28"><a href="a-stochastic-system-of-equations.html#cb166-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the solution</span></span>
+<span id="cb166-29"><a href="a-stochastic-system-of-equations.html#cb166-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_pred) <span class="sc">+</span></span>
+<span id="cb166-30"><a href="a-stochastic-system-of-equations.html#cb166-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>H),<span class="at">color=</span><span class="st">&#39;red&#39;</span>) <span class="sc">+</span></span>
+<span id="cb166-31"><a href="a-stochastic-system-of-equations.html#cb166-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>L),<span class="at">color=</span><span class="st">&#39;blue&#39;</span>) <span class="sc">+</span></span>
+<span id="cb166-32"><a href="a-stochastic-system-of-equations.html#cb166-32" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">x=</span><span class="st">&#39;Time&#39;</span>,</span>
+<span id="cb166-33"><a href="a-stochastic-system-of-equations.html#cb166-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">y=</span><span class="st">&#39;Lynx (red) or Hares (blue)&#39;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:stoch-pred-prey-26"></span>
 <img src="series_files/figure-html/stoch-pred-prey-26-1.png" alt="One realization of the stochastic predator-prey model." width="384" />
 <p class="caption">
@@ -440,73 +465,75 @@ Figure 26.4: One realization of the stochastic predator-prey model.
 </p>
 </div>
 <p>Excellent! Notice how Figure <a href="a-stochastic-system-of-equations.html#fig:stoch-pred-prey-26">26.4</a> has stochasticity in the variables for <em>both</em> <em>H</em> and <em>L</em>. The next step would be to do many simulations and then compute the ensemble average. First let’s compute the individual simulations:</p>
-<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="a-stochastic-system-of-equations.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb169-2"><a href="a-stochastic-system-of-equations.html#cb169-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
-<span id="cb169-3"><a href="a-stochastic-system-of-equations.html#cb169-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb169-4"><a href="a-stochastic-system-of-equations.html#cb169-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb169-5"><a href="a-stochastic-system-of-equations.html#cb169-5" aria-hidden="true" tabindex="-1"></a>pred_sim <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb169-6"><a href="a-stochastic-system-of-equations.html#cb169-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb169-7"><a href="a-stochastic-system-of-equations.html#cb169-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_pred,</span>
-<span id="cb169-8"><a href="a-stochastic-system-of-equations.html#cb169-8" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">death_rate =</span> death_rate_pred,</span>
-<span id="cb169-9"><a href="a-stochastic-system-of-equations.html#cb169-9" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">init_cond =</span> init_pred,</span>
-<span id="cb169-10"><a href="a-stochastic-system-of-equations.html#cb169-10" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">parameters =</span> parameters_pred,</span>
-<span id="cb169-11"><a href="a-stochastic-system-of-equations.html#cb169-11" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">deltaT =</span> deltaT_pred,</span>
-<span id="cb169-12"><a href="a-stochastic-system-of-equations.html#cb169-12" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">n_steps =</span> time_steps_pred,</span>
-<span id="cb169-13"><a href="a-stochastic-system-of-equations.html#cb169-13" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">sigma =</span> sigma_pred)</span>
-<span id="cb169-14"><a href="a-stochastic-system-of-equations.html#cb169-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb169-15"><a href="a-stochastic-system-of-equations.html#cb169-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span></code></pre></div>
-<p>The above code may take a while to complete - but this is certainly shorter than computing these all by hand! In order to make the spaghetti plot, in Figure <a href="#fig:spaghetti-pred-26"><strong>??</strong></a> we will plot the variables separately:</p>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="a-stochastic-system-of-equations.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the hares first:</span></span>
-<span id="cb170-2"><a href="a-stochastic-system-of-equations.html#cb170-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> pred_sim) <span class="sc">+</span></span>
-<span id="cb170-3"><a href="a-stochastic-system-of-equations.html#cb170-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>H,<span class="at">color=</span>simulation)) <span class="sc">+</span></span>
-<span id="cb170-4"><a href="a-stochastic-system-of-equations.html#cb170-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for hares in the predator-prey SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb170-5"><a href="a-stochastic-system-of-equations.html#cb170-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="a-stochastic-system-of-equations.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb167-2"><a href="a-stochastic-system-of-equations.html#cb167-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
+<span id="cb167-3"><a href="a-stochastic-system-of-equations.html#cb167-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb167-4"><a href="a-stochastic-system-of-equations.html#cb167-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb167-5"><a href="a-stochastic-system-of-equations.html#cb167-5" aria-hidden="true" tabindex="-1"></a>pred_sim <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb167-6"><a href="a-stochastic-system-of-equations.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb167-7"><a href="a-stochastic-system-of-equations.html#cb167-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">birth_death_stochastic</span>(<span class="at">birth_rate =</span> birth_rate_pred,</span>
+<span id="cb167-8"><a href="a-stochastic-system-of-equations.html#cb167-8" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">death_rate =</span> death_rate_pred,</span>
+<span id="cb167-9"><a href="a-stochastic-system-of-equations.html#cb167-9" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">init_cond =</span> init_pred,</span>
+<span id="cb167-10"><a href="a-stochastic-system-of-equations.html#cb167-10" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">parameters =</span> parameters_pred,</span>
+<span id="cb167-11"><a href="a-stochastic-system-of-equations.html#cb167-11" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">deltaT =</span> deltaT_pred,</span>
+<span id="cb167-12"><a href="a-stochastic-system-of-equations.html#cb167-12" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">n_steps =</span> time_steps_pred,</span>
+<span id="cb167-13"><a href="a-stochastic-system-of-equations.html#cb167-13" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">sigma =</span> sigma_pred)</span>
+<span id="cb167-14"><a href="a-stochastic-system-of-equations.html#cb167-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb167-15"><a href="a-stochastic-system-of-equations.html#cb167-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span></code></pre></div>
+<p>The above code may take a while to complete - but this is certainly shorter than computing these all by hand! In order to make the spaghetti plot, we will plot the variables <span class="math inline">\(H\)</span> and <span class="math inline">\(L\)</span> separately.</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="a-stochastic-system-of-equations.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the hares first:</span></span>
+<span id="cb168-2"><a href="a-stochastic-system-of-equations.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> pred_sim) <span class="sc">+</span></span>
+<span id="cb168-3"><a href="a-stochastic-system-of-equations.html#cb168-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>H,<span class="at">color=</span>simulation)) <span class="sc">+</span></span>
+<span id="cb168-4"><a href="a-stochastic-system-of-equations.html#cb168-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for hares in the predator-prey SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb168-5"><a href="a-stochastic-system-of-equations.html#cb168-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-pred-26-1"></span>
-<img src="series_files/figure-html/spaghetti-pred-26-1.png" alt="Several different realizations of the stochastic predator-prey system." width="672" />
+<img src="series_files/figure-html/spaghetti-pred-26-1.png" alt="Several different realizations of the stochastic predator-prey system." width="384" />
 <p class="caption">
 Figure 26.5: Several different realizations of the stochastic predator-prey system.
 </p>
 </div>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="a-stochastic-system-of-equations.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Then plot the lynx:</span></span>
-<span id="cb171-2"><a href="a-stochastic-system-of-equations.html#cb171-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> pred_sim) <span class="sc">+</span></span>
-<span id="cb171-3"><a href="a-stochastic-system-of-equations.html#cb171-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>L,<span class="at">color=</span>simulation)) <span class="sc">+</span></span>
-<span id="cb171-4"><a href="a-stochastic-system-of-equations.html#cb171-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for lynx in the predator-prey SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb171-5"><a href="a-stochastic-system-of-equations.html#cb171-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="a-stochastic-system-of-equations.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Then plot the lynx:</span></span>
+<span id="cb169-2"><a href="a-stochastic-system-of-equations.html#cb169-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> pred_sim) <span class="sc">+</span></span>
+<span id="cb169-3"><a href="a-stochastic-system-of-equations.html#cb169-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">y=</span>L,<span class="at">color=</span>simulation)) <span class="sc">+</span></span>
+<span id="cb169-4"><a href="a-stochastic-system-of-equations.html#cb169-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for lynx in the predator-prey SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb169-5"><a href="a-stochastic-system-of-equations.html#cb169-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:spaghetti-pred-26-2"></span>
-<img src="series_files/figure-html/spaghetti-pred-26-2.png" alt="Several different realizations of the stochastic predator-prey system." width="672" />
+<img src="series_files/figure-html/spaghetti-pred-26-2.png" alt="Several different realizations of the stochastic predator-prey system." width="384" />
 <p class="caption">
 Figure 26.6: Several different realizations of the stochastic predator-prey system.
 </p>
 </div>
 <p>For the ensemble average plots, we will first utilize the <code>pivot_longer</code> command, group and then summarize:</p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="a-stochastic-system-of-equations.html#cb172-1" aria-hidden="true" tabindex="-1"></a> <span class="do">### Summarize the variables</span></span>
-<span id="cb172-2"><a href="a-stochastic-system-of-equations.html#cb172-2" aria-hidden="true" tabindex="-1"></a>summarized_pred_sim <span class="ot">&lt;-</span> pred_sim <span class="sc">%&gt;%</span></span>
-<span id="cb172-3"><a href="a-stochastic-system-of-equations.html#cb172-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">&quot;H&quot;</span>,<span class="st">&quot;L&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb172-4"><a href="a-stochastic-system-of-equations.html#cb172-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name,t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
-<span id="cb172-5"><a href="a-stochastic-system-of-equations.html#cb172-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">value =</span> <span class="fu">quantile</span>(value, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb172-6"><a href="a-stochastic-system-of-equations.html#cb172-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> value)</span></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="a-stochastic-system-of-equations.html#cb170-1" aria-hidden="true" tabindex="-1"></a> <span class="do">### Summarize the variables</span></span>
+<span id="cb170-2"><a href="a-stochastic-system-of-equations.html#cb170-2" aria-hidden="true" tabindex="-1"></a>summarized_pred_sim <span class="ot">&lt;-</span> pred_sim <span class="sc">%&gt;%</span></span>
+<span id="cb170-3"><a href="a-stochastic-system-of-equations.html#cb170-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">&quot;H&quot;</span>,<span class="st">&quot;L&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb170-4"><a href="a-stochastic-system-of-equations.html#cb170-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name,t) <span class="sc">%&gt;%</span>  <span class="co"># All simulations will be grouped at the same timepoint.</span></span>
+<span id="cb170-5"><a href="a-stochastic-system-of-equations.html#cb170-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">value =</span> <span class="fu">quantile</span>(value, <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="at">q =</span> <span class="fu">c</span>(<span class="st">&quot;q0.025&quot;</span>, <span class="st">&quot;q0.5&quot;</span>, <span class="st">&quot;q0.975&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb170-6"><a href="a-stochastic-system-of-equations.html#cb170-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> q, <span class="at">values_from =</span> value)</span></code></pre></div>
 <pre><code>## `summarise()` has grouped output by &#39;name&#39;, &#39;t&#39;. You can override using the `.groups` argument.</code></pre>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="a-stochastic-system-of-equations.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s take a look at the resulting data frame</span></span>
-<span id="cb174-2"><a href="a-stochastic-system-of-equations.html#cb174-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(summarized_pred_sim)</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="a-stochastic-system-of-equations.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s take a look at the resulting data frame</span></span>
+<span id="cb172-2"><a href="a-stochastic-system-of-equations.html#cb172-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(summarized_pred_sim)</span></code></pre></div>
 <pre><code>## Rows: 400
 ## Columns: 5
 ## Groups: name, t [400]
 ## $ name   &lt;chr&gt; &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;…
 ## $ t      &lt;dbl&gt; 0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.5…
-## $ q0.025 &lt;dbl&gt; 1.0000000, 0.9724537, 0.9739560, 0.9918553, 1.0001840, 1.040800…
-## $ q0.5   &lt;dbl&gt; 1.000000, 1.014240, 1.048036, 1.085957, 1.117278, 1.143477, 1.2…
-## $ q0.975 &lt;dbl&gt; 1.000000, 1.065978, 1.113072, 1.157116, 1.241530, 1.271713, 1.3…</code></pre>
-<p>Let’s break this down:
-- The data frame <code>pred_sim</code> has columns <code>simulation</code>, <code>t</code>, <code>H</code>, and <code>L</code>. We want to group <em>each</em> variable by the time <code>t</code>. In order to do that efficiently we need to pivot the data frame longer. By applying the command <code>pivot_longer(cols=c("H","L"))</code> we will still have 4 columns, but this time they are called <code>simulation</code>, <code>t</code>, <code>name</code>, and <code>value</code>. The column <code>name</code> is a categorical variable that is either <code>H</code> or <code>L</code> (the columns we made longer), and the column <code>value</code> has the numerical values for both at each time.
-- We then group by the column <code>name</code> first, and then by <code>time</code>.
-- The remainder of the code is similar to how we computed the ensemble average above.</p>
+## $ q0.025 &lt;dbl&gt; 1.0000000, 0.9739683, 0.9704827, 0.9850577, 0.9916619, 1.031269…
+## $ q0.5   &lt;dbl&gt; 1.000000, 1.024874, 1.046321, 1.050366, 1.075298, 1.140154, 1.1…
+## $ q0.975 &lt;dbl&gt; 1.000000, 1.080082, 1.091934, 1.139265, 1.212339, 1.248552, 1.3…</code></pre>
+<p>Let’s break this down:</p>
+<ul>
+<li>The data frame <code>pred_sim</code> has columns <code>simulation</code>, <code>t</code>, <code>H</code>, and <code>L</code>. We want to group <em>each</em> variable by the time <code>t</code>. In order to do that efficiently we need to pivot the data frame longer. By applying the command <code>pivot_longer(cols=c("H","L"))</code> we will still have 4 columns, but this time they are called <code>simulation</code>, <code>t</code>, <code>name</code>, and <code>value</code>. The column <code>name</code> is a categorical variable that is either <code>H</code> or <code>L</code> (the columns we made longer), and the column <code>value</code> has the numerical values for both at each time.</li>
+<li>We then group by the column <code>name</code> first, and then by <code>time</code>.</li>
+<li>The remainder of the code is similar to how we computed the ensemble average above.</li>
+</ul>
 <p>The tricky part is that resulting columns of <code>summarized_pred_sim</code> are <code>name</code>, <code>t</code>, and the quantile values. This may seem a challenge to plot, but we can easily make a small multiples plot with the command <code>facet_grid</code>:</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="a-stochastic-system-of-equations.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_pred_sim) <span class="sc">+</span></span>
-<span id="cb176-2"><a href="a-stochastic-system-of-equations.html#cb176-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb176-3"><a href="a-stochastic-system-of-equations.html#cb176-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb176-4"><a href="a-stochastic-system-of-equations.html#cb176-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> name)</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="a-stochastic-system-of-equations.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_pred_sim) <span class="sc">+</span></span>
+<span id="cb174-2"><a href="a-stochastic-system-of-equations.html#cb174-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb174-3"><a href="a-stochastic-system-of-equations.html#cb174-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>t,<span class="at">ymin=</span>q0<span class="fl">.025</span>,<span class="at">ymax=</span>q0<span class="fl">.975</span>),<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb174-4"><a href="a-stochastic-system-of-equations.html#cb174-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> name)</span></code></pre></div>
 <div class="figure"><span id="fig:ensemble-pred-26"></span>
-<img src="series_files/figure-html/ensemble-pred-26-1.png" alt="Ensemble average plot of the predator-prey system." width="672" />
+<img src="series_files/figure-html/ensemble-pred-26-1.png" alt="Ensemble average plot of the predator-prey system." width="384" />
 <p class="caption">
 Figure 26.7: Ensemble average plot of the predator-prey system.
 </p>
@@ -543,6 +570,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

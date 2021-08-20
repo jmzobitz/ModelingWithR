@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>23.5 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="23.5 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="continuous-random-walks-diffusion.html"/>
 <link rel="next" href="diffusion-24.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,48 +406,102 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">23.5</span> Exercises</h2>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-320" class="exercise"><strong>Exercise 23.1  </strong></span>In class we found that the diffusion coefficient is equal to <span class="math inline">\(\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}\)</span>.</p>
+<p><span id="exr:unnamed-chunk-322" class="exercise"><strong>Exercise 23.1  </strong></span>In class we found that the diffusion coefficient is equal to <span class="math inline">\(\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Solve the expression for <span class="math inline">\(D\)</span> in terms of <span class="math inline">\(\Delta t\)</span>.</li>
+<li>The diffusion coefficient for oxygen in water is approximately <span class="math inline">\(10^{-5}\)</span> cm<span class="math inline">\(^{2}\)</span> sec<span class="math inline">\(^{-1}\)</span>. Use that value to complete the following table:</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Distance (<span class="math inline">\(\Delta x\)</span>)</th>
+<th align="center"><span class="math inline">\(\mu\)</span>m = 10<span class="math inline">\(^{-6}\)</span> m</th>
+<th align="center">10 <span class="math inline">\(\mu\)</span>m</th>
+<th align="center">1 mm</th>
+<th align="center">1 cm</th>
+<th align="center">1 m</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><em>Diffusion time (<span class="math inline">\(\Delta t\)</span>)</em></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>Report your the diffusion time in an appropriate unit (seconds, minutes, hours, years) accordingly.</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Navigate to the following website, which lists sizes of different cells: (<a href="https://en.wikibooks.org/wiki/Cell_Biology/Introduction/Cell_size" class="uri">https://en.wikibooks.org/wiki/Cell_Biology/Introduction/Cell_size</a>)[LINK]. For what cells would diffusion be a reasonable process to transport materials?</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-321" class="exercise"><strong>Exercise 23.2  </strong></span>You are playing a casino game. If you win the game earn a dollar. If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.</p>
+<p><span id="exr:unnamed-chunk-323" class="exercise"><strong>Exercise 23.2  </strong></span>You are playing a casino game. If you win the game earn a dollar. If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Write a one-dimensional random walk to simulate your money after playing the game 50 times. Make a few sample plots.</li>
+<li>Based on the results of this section, what do you think your long-term expected winnings will be?</li>
+<li>Now assume the house win probability is 0.52. Modify your random walk to simulate your money after playing the game 50 times. Make a few sample plots.</li>
+<li>What do you think your long-term expected winnings of this modified game will be? (You may need to play the game for 100, 200 times to see a pattern.)</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-322" class="exercise"><strong>Exercise 23.3  </strong></span>Compute <span class="math inline">\(\langle r \rangle\)</span> for the following random variable:
+<p><span id="exr:unnamed-chunk-324" class="exercise"><strong>Exercise 23.3  </strong></span>Compute <span class="math inline">\(\langle r \rangle\)</span> for the following random variable:
 <span class="math display">\[\begin{equation} 
-r=\begin{cases} -1 &amp; p_{1}=0.52 \\
-1 &amp; p_{2}=0.48 \end{cases}
+r=\begin{cases} -1 &amp; p(r)=0.52 \\
+1 &amp; p(r)=0.48 \end{cases}
 \end{equation}\]</span></p>
 </div>
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-323" class="exercise"><strong>Exercise 23.4  </strong></span>Compute <span class="math inline">\(\langle r \rangle\)</span> for the following random variable, where <span class="math inline">\(0 \leq q \leq 1\)</span>:
+<span id="exr:unnamed-chunk-325" class="exercise"><strong>Exercise 23.4  </strong></span>Compute <span class="math inline">\(\langle r \rangle\)</span> for the following random variable:
 <span class="math display">\[\begin{equation} 
-r=\begin{cases} -1 &amp; p_{1}=q \\
-1 &amp; p_{2}=(1-q) \end{cases}
+r=\begin{cases} -1 &amp; p(-1)=q \\
+1 &amp; p(1)=(1-q) \end{cases}
 \end{equation}\]</span>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-324" class="exercise"><strong>Exercise 23.5  </strong></span>Consider the following random variable:
+<p><span id="exr:unnamed-chunk-326" class="exercise"><strong>Exercise 23.5  </strong></span>Consider the following random variable:
 <span class="math display">\[\begin{equation}
 r=
 \begin{cases}
--1 &amp; p &lt; 1/3 \\
-0 &amp; 1/3 \leq p &lt; 2/3\\
-1 &amp; 2/3 \leq p
+-1 &amp; p(-1) = 1/3 \\
+0 &amp; p(0)= 1/3\\
+1 &amp; p(1)=1/3
 \end{cases}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Modify the code for the one dimensional random walk to generate a simulation of this random walk and plot your result. You can do this by applying a <code>if</code> <code>else</code> statement as shown in the code chunk below.:</p></li>
+<li><p>Compute <span class="math inline">\(\displaystyle \langle r \rangle\)</span> and <span class="math inline">\(\displaystyle \langle r^{2} \rangle\)</span>.</p></li>
+<li><p>Based on your last answer, explain how this random variable introduces a different random walk than the one described in this section. In what ways do you tihnk this would change our calculations for the mean and variance of the ensemble simulations?</p></li>
+</ol>
 </div>
 <p> </p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="exercises-22.html#cb150-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb150-2"><a href="exercises-22.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (p <span class="sc">&lt;</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">3</span>) {</span>
+<span id="cb150-3"><a href="exercises-22.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb150-4"><a href="exercises-22.html#cb150-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">3</span> <span class="sc">&lt;=</span> p <span class="sc">&amp;</span> p <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">/</span> <span class="dv">3</span>) {</span>
+<span id="cb150-5"><a href="exercises-22.html#cb150-5" aria-hidden="true" tabindex="-1"></a>  x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb150-6"><a href="exercises-22.html#cb150-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb150-7"><a href="exercises-22.html#cb150-7" aria-hidden="true" tabindex="-1"></a>  x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb150-8"><a href="exercises-22.html#cb150-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-325" class="exercise"><strong>Exercise 23.6  </strong></span>In this exercise you will write code for a two dimensional random walk.</p>
+<p><span id="exr:unnamed-chunk-328" class="exercise"><strong>Exercise 23.6  </strong></span>In this exercise you will write code for a two dimensional random walk.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Modify the code for the one dimensional random walk to have both an <span class="math inline">\(x\)</span> and a <span class="math inline">\(y\)</span> position. One way to do this is to create a variable <span class="math inline">\(y\)</span> structured similar to <span class="math inline">\(x\)</span>, and to make a second <code>if</code> statement in your for loop that moves <code>y</code>.</li>
+<li>Plot a few different realizations of your sample paths.</li>
+<li>If we were to compute the mean and variance of the ensemble simulations, what do you think they would be?</li>
+</ol>
 </div>
 
 </div>
@@ -456,6 +535,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

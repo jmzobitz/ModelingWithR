@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>27.2 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="27.2 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="meet-the-fokker-planck-equation.html"/>
 <link rel="next" href="references.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -382,47 +407,105 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- Based off LW pg 346 #3 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-352" class="exercise"><strong>Exercise 27.1  </strong></span>Let <span class="math inline">\(R(t)\)</span> denote the rainfall at a location at time <span class="math inline">\(t\)</span>, which is a random process. Assume that probability of the change in rainfall from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
+<p><span id="exr:unnamed-chunk-354" class="exercise"><strong>Exercise 27.1  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Let <span class="math inline">\(R(t)\)</span> denote the rainfall at a location at time <span class="math inline">\(t\)</span>, which is a random process. Assume that probability of the change in rainfall from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">change</th>
+<th align="center">probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\Delta R = \rho\)</span></td>
+<td align="center"><span class="math inline">\(\lambda \Delta t\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\Delta R = 0\)</span></td>
+<td align="center"><span class="math inline">\(1- \lambda \Delta t\)</span></td>
+</tr>
+</tbody>
+</table>
 <p>The stochastic differential equation generated by this process is <span class="math inline">\(dR = \lambda \rho \; dt + \sqrt{\lambda \rho^{2}} \; dW(t)\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>What is the Fokker-Planck partial differential equation for the probability distribution <span class="math inline">\(f(R,t)\)</span>?</li>
+<li>What is a formula that solves the Fokker-Planck partial differential equation?</li>
+<li>Make some representative plots of the solution as it evolves over time</li>
+</ol>
 </div>
  
 <!-- Gardinier, pg 126 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-353" class="exercise"><strong>Exercise 27.2  </strong></span>A particle is moving in a gravitational field but still allowed to diffuse randomly. In this case the stochastic differential equation is <span class="math inline">\(dx = -g \; dt + \sqrt{D} \; dW(t)\)</span>.</p>
+<p><span id="exr:unnamed-chunk-355" class="exercise"><strong>Exercise 27.2  </strong></span>A particle is moving in a gravitational field but still allowed to diffuse randomly. In this case the stochastic differential equation is <span class="math inline">\(dx = -g \; dt + \sqrt{D} \; dW(t)\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>What is the Fokker-Planck partial differential equation for the probability distribution <span class="math inline">\(f(x,t)\)</span>?</li>
+<li>Based on the work done in this section, what is the equation for the probability distribution <span class="math inline">\(f(x,t)\)</span>?</li>
+</ol>
 </div>
 &amp;nbsp
 <!-- Ornstein uhlenbeck process -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-354" class="exercise"><strong>Exercise 27.3  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise.</p>
+<p><span id="exr:unnamed-chunk-356" class="exercise"><strong>Exercise 27.3  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise.</p>
+<ol style="list-style-type: lower-alpha">
+<li>First let <span class="math inline">\(\sigma = 0\)</span> so the equation is entirely deterministic. Classify the stability of the equilibrium solutions for this differential equation.</li>
+<li>Still let <span class="math inline">\(\sigma = 0\)</span>. Apply separation of variables to solve this differential equation.</li>
+<li>Now let <span class="math inline">\(\sigma = 0.1\)</span>. Do 100 realizations of this stochastic process, with initial condition <span class="math inline">\(S(0)=0.5\)</span>. What do you notice?</li>
+<li>Now try different values of <span class="math inline">\(\sigma\)</span> larger and smaller than 0.1. What do you notice?</li>
+<li>What is the Fokker-Planck partial differential equation for the probability distribution <span class="math inline">\(f(S,t)\)</span>?</li>
+</ol>
 </div>
 <p> </p>
 <!-- Based off Example 7.24 pg 355 LW -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-355" class="exercise"><strong>Exercise 27.4  </strong></span>Consider the differential equation <span class="math inline">\(\displaystyle x&#39; = \lambda x - c \mu x^{2}\)</span>, which is similar to a logistic differential equation. The <em>per capita</em> rate equation for this differential equation is <span class="math inline">\(\displaystyle \frac{x&#39;}{x} = \lambda - c \mu x\)</span>.</p>
+<p><span id="exr:unnamed-chunk-357" class="exercise"><strong>Exercise 27.4  </strong></span>(Inspired by <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Consider the differential equation <span class="math inline">\(\displaystyle x&#39; = \lambda x - c \mu x^{2}\)</span>, which is similar to a logistic differential equation. The <em>per capita</em> rate equation for this differential equation is <span class="math inline">\(\displaystyle \frac{x&#39;}{x} = \lambda - c \mu x\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Assume there is noise to this per capita rate, i.e. <span class="math inline">\(\displaystyle \frac{x&#39;}{x} \rightarrow \displaystyle \frac{x&#39;}{x} + \mbox{ Noise}\)</span>. With this revised equation, what are the deterministic and stochastic parts?</li>
+<li>What is the Fokker-Planck partial differential equation for the probability distribution <span class="math inline">\(f(x,t)\)</span>?</li>
+<li>The  assumes that <span class="math inline">\(f_{t} = 0\)</span>, so <span class="math inline">\(f(x,t) \rightarrow f(x)\)</span>. Through direct verification, show that <span class="math inline">\(f(x)=Dx^{\alpha-1} e^{-\beta x}\)</span> is a solution to the steady-state distribution, where <span class="math inline">\(\alpha = 2 \lambda - 1\)</span> and <span class="math inline">\(\beta = 2c\mu\)</span>.</li>
+<li>With <span class="math inline">\(\lambda = c = \mu = D = 1\)</span>, make a graph of <span class="math inline">\(f(x)\)</span> and graph it below:</li>
+</ol>
 </div>
 <p> </p>
 <!-- Gardinier, pg 126 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-356" class="exercise"><strong>Exercise 27.5  </strong></span>A type of chemical reaction is <span class="math inline">\(X + A \leftrightarrow 2X\)</span>, where <span class="math inline">\(A\)</span> acts like an enzyme. The stochastic differential equation that describes this scenario is:</p>
+<p><span id="exr:unnamed-chunk-358" class="exercise"><strong>Exercise 27.5  </strong></span>(Inspired by <span class="citation"><a href="#ref-gardiner_handbook_2004" role="doc-biblioref">Gardiner</a> (<a href="#ref-gardiner_handbook_2004" role="doc-biblioref">2004</a>)</span>) A type of chemical reaction is <span class="math inline">\(X + A \leftrightarrow 2X\)</span>, where <span class="math inline">\(A\)</span> acts like an enzyme. The stochastic differential equation that describes this scenario is:</p>
 <p><span class="math display">\[\begin{equation}
 dX = \left( A X - X^{2} \right) \; dt + \left( AX + X^{2} \right) dW(t)
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>What is the Fokker-Planck equation for this stochastic differential equation?</li>
+<li>The steady-state distribution for this process is <span class="math inline">\(p(X) = e^{-2X}(A+X)^{4A-1}X^{-1}\)</span>. With <span class="math inline">\(A=1\)</span> make a plot of this distribution.</li>
+</ol>
 </div>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-357" class="exercise"><strong>Exercise 27.6  </strong></span>Models of cell membranes take account for the energy needed for ions and other materials to cross the cell membrane, usually expressed as a membrane potential <span class="math inline">\(U(x)\)</span>, where <span class="math inline">\(x\)</span> is the current position of a particle distance. The probability <span class="math inline">\(p\)</span> of the particle being at position <span class="math inline">\(x\)</span> at time <span class="math inline">\(t\)</span> is given by the Fokker-Planck equation:</p>
+<p><span id="exr:unnamed-chunk-359" class="exercise"><strong>Exercise 27.6  </strong></span>Models of cell membranes take account for the energy needed for ions and other materials to cross the cell membrane, usually expressed as a membrane potential <span class="math inline">\(U(x)\)</span>, where <span class="math inline">\(x\)</span> is the current position of a particle distance. The probability <span class="math inline">\(p\)</span> of the particle being at position <span class="math inline">\(x\)</span> at time <span class="math inline">\(t\)</span> is given by the Fokker-Planck equation:</p>
 <p><span class="math display">\[\begin{equation}
 v \frac{\partial p}{\partial t} = \frac{\partial}{\partial x} \left( U&#39;(x) p \right) + k T \frac{\partial^{2} p}{\partial x^{2}},
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(k\)</span> is Boltzmann’s constant and <span class="math inline">\(T\)</span> is the temperature.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Write the Fokker-Planck equation in steady state.
+Show that a solution for the steady-state equation is <span class="math inline">\(p(x)=C e^{-\frac{U(x)}{kT}}\)</span></li>
+<li>If the steady-state distribution is normal, what is function will <span class="math inline">\(U(x)\)</span> be?</li>
+</ol>
 </div>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gardiner_handbook_2004" class="csl-entry">
+Gardiner, C W. 2004. <em>Handbook of <span>Stochastic Methods</span> for <span>Physics</span>, <span>Chemistry</span>, and the <span>Natural Sciences</span></em>. 3rd ed. springer.
+</div>
+<div id="ref-logan_mathematical_2009" class="csl-entry">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
             </section>
 
           </div>
@@ -452,6 +535,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>15.4 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="15.4 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -31,8 +31,8 @@
   
   
 <link rel="prev" href="stability-of-solutions.html"/>
-<link rel="next" href="systems-of-nonlinear-equations.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<link rel="next" href="nonlinear-16.html"/>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -382,6 +407,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-229" class="exercise"><strong>Exercise 15.1  </strong></span>Write the following systems of equations in matrix notation (<span class="math inline">\(\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}\)</span>):</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+\frac{dx}{dt} &amp;= 3x-4y \\ 
+\frac{dy}{dt} &amp;= 2x-y,
+\end{split}
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+\frac{dx}{dt} &amp;= x+y \\ 
+\frac{dy}{dt} &amp;= y-x,
+\end{split}
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+\frac{dx}{dt} &amp;= 5x-4y + z \\ 
+\frac{dy}{dt} &amp;= y - 9z, \\
+\frac{dz}{dt} &amp;= 7x-z, \\
+\end{split}
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{split}
+\frac{dx}{dt} &amp;= -cx \\ 
+\frac{dy}{dt} &amp;= rcx-y,
+\end{split}
+\end{equation}\]</span></li>
+</ol>
 </div>
 <p> </p>
 
@@ -421,6 +473,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div class="exercise">
 <p><span id="exr:reparam" class="exercise"><strong>Exercise 15.5  </strong></span>Consider the differential equation <span class="math inline">\(\displaystyle \frac{dx}{dt} = -3x\)</span>. This exercise will help you work through the details of creating a two dimensional system of equations by re-parameterizing <span class="math inline">\(s=t\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Define the variable <span class="math inline">\(t = s\)</span>. For this case, what is <span class="math inline">\(\displaystyle \frac{dt}{ds}\)</span>?</li>
+<li>Explain if $ x = f (t (s))$ (<span class="math inline">\(x\)</span> is a composition between <span class="math inline">\(t\)</span> and <span class="math inline">\(s\)</span>), explain why the chain rule has <span class="math inline">\(\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}\)</span>.</li>
+<li>Use the fact that <span class="math inline">\(\displaystyle \frac{dx}{ds} = \frac{dx}{dt} \cdot \frac{dt}{ds}\)</span> to explain why <span class="math inline">\(\displaystyle \frac{dx}{ds} = -3x\)</span>.</li>
+<li>Finally use your previous work to determine the system of equations for <span class="math inline">\(\displaystyle \frac{dx}{ds}\)</span> and <span class="math inline">\(\displaystyle \frac{dt}{ds}\)</span>.</li>
+</ol>
 </div>
 <p> </p>
 
@@ -432,6 +490,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \frac{dy}{dt} &amp;= y-x,
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Use the command <code>phaseplane</code> to create a phaseplane of this differential equation.</li>
+<li>Change the number of arrows shown to 5 and 20 (2 different plots). What do you notice about the updated phaseplane?</li>
+<li>Change the viewing window from the default to -10 to 10 in both axes. Now change the number of arrows shown to 5 and 20 (2 different plots). What do you notice about the updated phaseplane?</li>
+</ol>
 </div>
 <p> </p>
 
@@ -443,19 +506,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- tr = -2a det = a^2-1 -->
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-235" class="exercise"><strong>Exercise 15.8  </strong></span>Consider the following differential equation:</p>
+<p><span id="exr:unnamed-chunk-235" class="exercise"><strong>Exercise 15.8  </strong></span>(Inspired by logan_mathematical_2009) Consider the following differential equation:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dx}{dt} &amp;= -ax-y \\ 
 \frac{dy}{dt} &amp;= x-ay
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Write this system in the form <span class="math inline">\(\displaystyle \frac{d\vec{x}}{dt}=A \vec{x}\)</span>.</li>
+<li>Let <span class="math inline">\(a= -2, \; -1, \; -0.5, \; 0, \; 0.5, \; 1, \; 2\)</span>. Generate a phase plane for each of these values of <span class="math inline">\(a\)</span> and characterize the behavior of the equilibrium solution.</li>
+</ol>
 </div>
  
 <!-- %\marginnote{Exercises a-c,e Based on Example 4.9 page 166 in \lw. d on 1c, pg 163 in lw}  -->
 
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-236" class="exercise"><strong>Exercise 15.9  </strong></span>Generate a phaseplane for the following differential equations and using your result, classify if the equilibrium solution is stable or unstable.</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -x, \; \frac{dy}{dt} = -2y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 3x+y, \; \frac{dy}{dt} = 2x+4y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 8x-11y, \; \frac{dy}{dt} = 6x-9y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt}= 3x-y, \; \frac{dy}{dt}=3y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = -2x-3y, \; \frac{dy}{dt} = 3x-2y\)</span></li>
+</ol>
 </div>
 <p> </p>
 
@@ -467,6 +541,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   \frac{dy}{dt} &amp;= x
 \end{split}
 \end{equation}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li>Generate a phase plane diagram of this system. What do you notice?</li>
+<li>Verify that <span class="math inline">\(x(t)=A \cos(t)\)</span> and <span class="math inline">\(y(t)=A \sin(t)\)</span> is a solution to this differential equation.</li>
+<li>An equation of a circle of radius <span class="math inline">\(R\)</span> is <span class="math inline">\(x^{2}+y^{2}=R^{2}\)</span>. Use implicit differentiation to differentiate this equation. Remember you are differentiating with respect to <span class="math inline">\(t\)</span>, and <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are functions of time <span class="math inline">\(t\)</span>.</li>
+<li>Substitute the differential equation into your implicit derivative to verify <span class="math inline">\(x^{2}+y^{2}=R^{2}\)</span> is a solution to the differential equation.</li>
+<li>Verify that <span class="math inline">\(x(t)=A \cos(t) + B \sin(t)\)</span> and <span class="math inline">\(y(t)=A \sin(t)-B \cos(t)\)</span> are also solutions.</li>
+<li>Make a plot of <span class="math inline">\(x(t)=A \cos(t) + B \sin(t)\)</span> and <span class="math inline">\(y(t)=-A \sin(t)-B \cos(t)\)</span> for <span class="math inline">\(A=1\)</span>, <span class="math inline">\(B=1\)</span>.</li>
+</ol>
 </div>
 <p> </p>
 
@@ -478,7 +560,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="stability-of-solutions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="systems-of-nonlinear-equations.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="nonlinear-16.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -501,6 +583,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

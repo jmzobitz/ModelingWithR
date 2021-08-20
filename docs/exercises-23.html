@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>24.3 Exercises | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="24.3 Exercises | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="concluding-thoughts-3.html"/>
 <link rel="next" href="sdes-25.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -381,7 +406,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">24.3</span> Exercises</h2>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-327" class="exercise"><strong>Exercise 24.1  </strong></span>Through direct computation, verify the following calculations:
+<p><span id="exr:unnamed-chunk-329" class="exercise"><strong>Exercise 24.1  </strong></span>Through direct computation, verify the following calculations:</p>
+<ol style="list-style-type: lower-alpha">
+<li>When <span class="math inline">\(\displaystyle f(t)=\frac{1}{\sqrt{4 \pi Dt} }\)</span>, then <span class="math inline">\(\displaystyle f&#39;(t)=-2\pi D (4 \pi D t)^{-3/2}\)</span></li>
+<li>When <span class="math inline">\(\displaystyle g(t)=\frac{-x^{2}}{4Dt}\)</span>, then <span class="math inline">\(\displaystyle g&#39;(t)=\frac{x^{2}}{4Dt^{2}}\)</span></li>
+<li>Verify that <span class="math inline">\(\displaystyle \left( -\frac{1}{2t} + \frac{x^{2}}{4Dt^{2}} \right)= \left( \frac{x^{2}-2Dt}{(2Dt)^{2}}\right)\)</span></li>
+</ol>
 </div>
  
 
@@ -391,31 +421,85 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p> </p>
 
 <div class="exercise">
-<span id="exr:unnamed-chunk-328" class="exercise"><strong>Exercise 24.3  </strong></span>For this problem you will investigate <span class="math inline">\(p(x,t)\)</span> (Equation @ref(eq:diffusion-equation}) with <span class="math inline">\(\displaystyle D=\frac{1}{2}\)</span>.
+<p><span id="exr:unnamed-chunk-330" class="exercise"><strong>Exercise 24.3  </strong></span>For this problem you will investigate <span class="math inline">\(p(x,t)\)</span> (Equation @ref(eq:diffusion-equation}) with <span class="math inline">\(\displaystyle D=\frac{1}{2}\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Evaluate <span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,10) \; dx\)</span>. Write a one sentence description what this quantity represents.</li>
+<li>Using desmos or some other numerical integrator, complete the following table:</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th align="center"><strong>Equation</strong></th>
+<th align="center"><strong>Result</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,10) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,5) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,2.5) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,1) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,0.1) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,0.01) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\displaystyle \int_{-1}^{1} p(x,0.001) \; dx=\)</span></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Based on the evidence from your table, what would you say is the value of <span class="math inline">\(\displaystyle \lim_{t \rightarrow 0^{+}} \int_{-1}^{1} p(x,t) \; dx\)</span>?</li>
+<li>Now make graphs of <span class="math inline">\(p(x,t)\)</span> at each of the values of <span class="math inline">\(t\)</span> in your table. What would you say is occuring in the graph as <span class="math inline">\(\displaystyle \lim_{t \rightarrow 0^{+}} p(x,t)\)</span>? Does anything surprise you? (The results you computed here lead to the foundation of what is called the Dirac delta function.)</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-329" class="exercise"><strong>Exercise 24.4  </strong></span>Consider the function <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi D t}} e^{-x^{2}/(4 D t)}\)</span>. Let <span class="math inline">\(x=1\)</span>.</p>
+<p><span id="exr:unnamed-chunk-331" class="exercise"><strong>Exercise 24.4  </strong></span>Consider the function <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi D t}} e^{-x^{2}/(4 D t)}\)</span>. Let <span class="math inline">\(x=1\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Explain in your own words what the graph <span class="math inline">\(p(1,t)\)</span> represents as a function of <span class="math inline">\(t\)</span>.</li>
+<li>Graph several profiles of <span class="math inline">\(p(1,t)\)</span> when <span class="math inline">\(D = 1\)</span>, <span class="math inline">\(2\)</span>, and <span class="math inline">\(0.1\)</span>. How does the value of <span class="math inline">\(D\)</span> affect the profile?</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-330" class="exercise"><strong>Exercise 24.5  </strong></span>Consider the function <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{\pi t}} e^{-x^{2}/t}\)</span>:</p>
+<p><span id="exr:unnamed-chunk-332" class="exercise"><strong>Exercise 24.5  </strong></span>Consider the function <span class="math inline">\(\displaystyle p(x,t) = \frac{1}{\sqrt{\pi t}} e^{-x^{2}/t}\)</span>:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Using your differentiation skills compute the partial derivatives <span class="math inline">\(p_{t}\)</span>, <span class="math inline">\(p_{x}\)</span>, and <span class="math inline">\(p_{xx}\)</span>.</li>
+<li>Verify <span class="math inline">\(p(x,t)\)</span> is consistent with the diffusion equation <span class="math inline">\(\displaystyle p_{t}=\frac{1}{4} p_{xx}\)</span>.</li>
+</ol>
 </div>
 <p> </p>
 
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-331" class="exercise"><strong>Exercise 24.6  </strong></span>For the one-dimensional random walk we discussed where there was an equal chance of moving to the left or the right. Here is a variation on this problem.</p>
-<p>Let’s assume there is a chance <span class="math inline">\(v\)</span> that it moves to the left (position <span class="math inline">\(x - \Delta x\)</span>), and therefore a chance is <span class="math inline">\(1-v\)</span> that the particle remains at position <span class="math inline">\(x\)</span>. The basic equation that describes the particle’s position at position <span class="math inline">\(x\)</span> and time <span class="math inline">\(t + \Delta t\)</span> is:
-<span class="math display">\[\begin{equation}
+<p><span id="exr:unnamed-chunk-333" class="exercise"><strong>Exercise 24.6  </strong></span>For the one-dimensional random walk we discussed where there was an equal chance of moving to the left or the right. Here is a variation on this problem.</p>
+<p>Let’s assume there is a chance <span class="math inline">\(v\)</span> that it moves to the left (position <span class="math inline">\(x - \Delta x\)</span>), and therefore a chance is <span class="math inline">\(1-v\)</span> that the particle remains at position <span class="math inline">\(x\)</span>. The basic equation that describes the particle’s position at position <span class="math inline">\(x\)</span> and time <span class="math inline">\(t + \Delta t\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
 p(x,t + \Delta t) = (1-v) \cdot p(x,t) + v \cdot p(x- \Delta x,t)
 \end{equation}\]</span></p>
-<p>Apply the techniques of local linearization in <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span> to show that this random walk to derive the following partial differential equation, called the :
-<span class="math display">\[\begin{equation}
+<p>Apply the techniques of local linearization in <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span> to show that this random walk to derive the following partial differential equation, called the <em>advection equation</em>:</p>
+<p><span class="math display">\[\begin{equation}
 p_{t} = - \left( v \cdot \frac{ \Delta x}{\Delta t} \right) \cdot p_{x}
 \end{equation}\]</span></p>
-
+<em>Note: you only need to expand this equation to first order</em>
 </div>
 
 </div>
@@ -449,6 +533,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>19.2 Sensitivity to parameters with the trace-determinant | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="19.2 Sensitivity to parameters with the trace-determinant | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="two-dimensional-linear-systems-the-general-case.html"/>
 <link rel="next" href="higher-dimensional-stability.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -379,7 +404,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="sensitivity-to-parameters-with-the-trace-determinant" class="section level2" number="19.2">
 <h2><span class="header-section-number">19.2</span> Sensitivity to parameters with the trace-determinant</h2>
-<p>Where the trace determinant plane is even more useful if your system consists of parameters that aren’t specified. Consider the following lynx - hare system:</p>
+<p>Figure <a href="two-dimensional-linear-systems-the-general-case.html#fig:trace-det-ref">19.2</a> is even more useful if your system consists of parameters that aren’t specified. Consider the following lynx - hare system:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
 \frac{dH}{dt} &amp;= r H - b HL \\
@@ -393,8 +418,8 @@ J_{(\frac{d}{eb}, \frac{r}{b})} &amp;=\begin{pmatrix} r-\frac{d}{e} &amp; -\frac
 \end{align}\]</span></p>
 <p>Let’s analyze the Jacobian at each of the the equilibrium solutions.</p>
 <ul>
-<li><p><span class="math inline">\((0,0)\)</span> equilibrium solution: We have tr<span class="math inline">\((J)=r-d\)</span> and <span class="math inline">\(\det(J)=-rd\)</span>. Since <span class="math inline">\(r\)</span> and <span class="math inline">\(d\)</span> are both positive parameters the determinant will always be negative, so no matter what the origin will be a saddle.</p></li>
-<li><p><span class="math inline">\(\displaystyle (\frac{d}{eb}, \frac{r}{b})\)</span> equilibrium solution: We have tr<span class="math inline">\(\displaystyle (J)=r-\frac{d}{e}\)</span> and <span class="math inline">\(\det(J)=d\)</span>. The determinant is positive, however we can see that the stability of this equilibrium solution will be dependent on the trace. If the trace is positive, or <span class="math inline">\(\displaystyle r &gt; \frac{d}{e}\)</span> than the equilibrium solution will be unstable. If <span class="math inline">\(\displaystyle r &lt; \frac{d}{e}\)</span> it will be stable. You can derive even stronger boundaries between a spiral source or spiral sink as well.</p></li>
+<li><span class="math inline">\((0,0)\)</span> equilibrium solution: We have tr<span class="math inline">\((J)=r-d\)</span> and <span class="math inline">\(\det(J)=-rd\)</span>. Since <span class="math inline">\(r\)</span> and <span class="math inline">\(d\)</span> are both positive parameters the determinant will always be negative, so no matter what the origin will be a saddle.</li>
+<li><span class="math inline">\(\displaystyle (\frac{d}{eb}, \frac{r}{b})\)</span> equilibrium solution: We have tr<span class="math inline">\(\displaystyle (J)=r-\frac{d}{e}\)</span> and <span class="math inline">\(\det(J)=d\)</span>. The determinant is positive, however we can see that the stability of this equilibrium solution will be dependent on the trace. If the trace is positive, or <span class="math inline">\(\displaystyle r &gt; \frac{d}{e}\)</span> than the equilibrium solution will be unstable. If <span class="math inline">\(\displaystyle r &lt; \frac{d}{e}\)</span> it will be stable. You can derive even stronger boundaries between a spiral source or spiral sink as well.</li>
 </ul>
 <p>Notice how these relationships give you a sense for what you could expect in terms of a solution even before computing eigenvalues!</p>
 </div>
@@ -427,6 +452,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R</title>
+  <title>Section 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R" />
+  <meta property="og:title" content="Section 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R" />
+  <meta name="twitter:title" content="Section 15 Systems of linear equations | Exploring Modeling with Data and Differential Equations Using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="exercises-13.html"/>
 <link rel="next" href="equilibrium-solutions-1.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,6 +50,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -119,6 +121,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/style.css" type="text/css" />
 <link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
@@ -140,6 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
 <li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
 <li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
 <li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
 </ul></li>
@@ -267,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
 <li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="systems-of-nonlinear-equations.html"><a href="systems-of-nonlinear-equations.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
 <li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
@@ -356,7 +382,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
-<li style="padding: 10px 15px; font-weight: bold;">Open access book-in-progress</li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
 
@@ -378,14 +403,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="linearsystems-15" class="section level1" number="15">
-<h1><span class="header-section-number">Chapter 15</span> Systems of linear equations</h1>
-<p>So far we have looked at understanding differential equations qualitatively and estimating model parameters with data. Now we are going to delve into a deeper understanding of long term stability and equilibrium solutions for differential equations. As a first step we will work to understand <em>linear</em> systems of differential equations.</p>
+<h1><span class="header-section-number">Section 15</span> Systems of linear equations</h1>
+<p>So far we have looked at understanding differential equations qualitatively and estimating model parameters with data. Now we are going to delve into a deeper understanding of differential equations by examining long term stability of equilibrium solutions. As a first step this section focuses on <em>linear</em> systems of differential equations.</p>
 <p>For example consider this following system of equations:</p>
 <p><span class="math display" id="eq:example-ch15">\[\begin{equation}
-\begin{split} \tag{15.1}
+\begin{split} 
 \frac{dx}{dt} &amp;= 2x \\ 
 \frac{dy}{dt} &amp;= x+y
-\end{split}
+\end{split} \tag{15.1}
 \end{equation}\]</span></p>
 <p>This set of differential equations is linear because it does not have any nonlinear (squared, power terms) or transendental functions (sine, cosine, exponential) of the variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. This system is an example of a <em>coupled</em> system of equations, mainly due to the expression <span class="math inline">\(\displaystyle \frac{dy}{dt}=x+y\)</span>.</p>
 <p>One way to write this is with matrix notation, where we use the prime notation (<span class="math inline">\(x&#39;\)</span> or <span class="math inline">\(y&#39;\)</span>) to signify <span class="math inline">\(\displaystyle \frac{dx}{dt}\)</span> or <span class="math inline">\(\displaystyle \frac{dy}{dt}\)</span>:</p>
@@ -393,7 +418,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \begin{pmatrix} x&#39; \\ y&#39; \end{pmatrix} &amp;=  \begin{pmatrix} 2x \\ x+y \end{pmatrix} \\
 &amp;=\begin{pmatrix} 2 &amp; 0 \\ 1 &amp;  1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
 \end{align}\]</span></p>
-<p>We can also represent this in a compact vector notation: <span class="math inline">\(\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}\)</span>, where the matrix <span class="math inline">\(\displaystyle \vec{A}=\begin{pmatrix} 2 &amp; 0 \\ 1 &amp; 1 \end{pmatrix}\)</span>.</p>
+<p>We can also represent the differential equation in a compact vector notation: <span class="math inline">\(\displaystyle \frac{ d \vec{x} }{dt} = A \vec{x}\)</span>, where for this example <span class="math inline">\(\displaystyle \vec{A}=\begin{pmatrix} 2 &amp; 0 \\ 1 &amp; 1 \end{pmatrix}\)</span>.</p>
 <p>Linear equations have some <em>very</em> interesting properties - which I hope you will explore more by taking linear algebra! But let’s generalize a little bit now. If we have a system of linear equations</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
@@ -435,6 +460,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": false
 },
 "fontsettings": {

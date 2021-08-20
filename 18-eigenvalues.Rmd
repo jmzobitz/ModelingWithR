@@ -2,18 +2,19 @@
 
 To understand a system of differential equations it is key to analyze the locally linear behavior of the system near any equilibrium solution. Consider the following representative phaseplane from Section \@ref(jacobian-17):
 
-```{r,echo=FALSE,fig.width=4,fig.height=3,fig.cap="A representative phase plane."}
+```{r non-lin-phase-18,echo=FALSE,fig.width=4,fig.height=3,fig.cap="A representative phase plane."}
 # Define the range we wish to evaluate this vector field
-system_eq <- c(dx ~ y-1,
-               dy ~ x^2-1)
+system_eq <- c(
+  dx ~ y - 1,
+  dy ~ x^2 - 1
+)
 
-phaseplane(system_eq,'x','y',x_window = c(-2,2),y_window = c(-2,2))
-
-
+phaseplane(system_eq, "x", "y", x_window = c(-2, 2), y_window = c(-2, 2)) +
+  geom_point(data=tibble(xint=c(-1,1),yint=c(1,1)),aes(x=xint,y=yint),color='red',size=4)
 ```
 
 
-Is the equilibrium solution stable?  Unstable?  A mixture of the two?  In this section we will develop an algebraic process to analyze locally linear behavior, connecting what we learned to straight line solutions.
+Are the equilibrium solutions (red dots in Figure \@ref(fig:non-lin-phase-18)) stable?  In this section we will develop an algebraic process to analyze locally linear behavior, connecting what we learned to straight line solutions (Section \@ref(linearsystems-15)) and the Jacobian (Section \@ref(jacobian-17)).
 
 
 ## Straight line solutions
@@ -50,10 +51,10 @@ In fact, for any linear system $\vec{y'}=A\vec{y}$, straight line solutions have
 
 Some apply some terminology here. For these special straight line solutions, we give a particular name to $\vec{v}$ - we call it the *eigenvector*.  The name we give to $\lambda$ is the *eigenvalue*.  (Eigen means _own_ in German - get it?)
 
-Notice how $s_{2}(t)$ was expressed as $\begin{pmatrix} 1 \\ 1\end{pmatrix}e^{2t}$.  In fact, any straight line solution has the form $\displaystyle \vec{s} = e^{\lambda t} \vec{v}$, where $\lambda$ and $\vec{v}$ are the eigenvalue and eigvenvector.
+Notice how $s_{2}(t)$ was expressed as $e^{2t}\begin{pmatrix} 1 \\ 1\end{pmatrix}$.  In fact, any straight line solution has the form $\displaystyle \vec{s} = e^{\lambda t} \vec{v}$, where $\lambda$ and $\vec{v}$ are the eigenvalue and eigvenvector.
 
 
-So how do we _determine_ an eigenvalue or eigenvector?  Well, from above a straight line solution satisfies the equation $A\vec{v} = \lambda{v}$.  Re-arranging this equation we can express this as $(A - \lambda I) \vec{v} = \vec{0}$, where $\vec{0}$ is a vector of all zeros and $I$ is called the _identity matrix_, or a square matrix with ones along the diagonal and zero everywhere else.  The goal is to find a $\lambda$ and $\vec{v}$ consistent with this equation.
+So how do we _determine_ an eigenvalue or eigenvector?  A straight line solution satisfies the equation $A\vec{v} = \lambda{v}$.  Re-arranging this equation we can express this as $(A - \lambda I) \vec{v} = \vec{0}$, where $\vec{0}$ is a vector of all zeros and $I$ is called the _identity matrix_, or a square matrix with ones along the diagonal and zero everywhere else.  The goal is to find a $\lambda$ and $\vec{v}$ consistent with this equation.
 
 The eigenvalues of $\lambda$ that solve $( A \vec{v} - \lambda \vec{v} ) = 0$ can be found by solving $\det (A - \lambda I ) =0$, where $\det(M)$ is the determinant. Once the eigenvalues are found, we then determine the eigenvectors.
 
@@ -75,13 +76,13 @@ So then $A - \lambda I$ is the matrix:
 A - \lambda I=\begin{pmatrix} a - \lambda & b \\ c & d-\lambda \end{pmatrix}
 \end{equation*}
 
-The determinant of a 2 by 2 matrix is the product of the diagonal entries (for $A - \lambda I$ they are $(a-\lambda)\cdot (d-\lambda)$ less the product of the off-diagonal entries (in this case $bc$).  So $\det(A-\lambda I)=0$ is the equation $(a-\lambda)(d-\lambda)-bc=0$. When we multiply this equation all out we obtain a quadratic equation to solve (for $\lambda$).  The equation $\det(A - \lambda I)=0$ even has a special name - it is called the _characteristic equation_. (We will find out why later.)
+The determinant of a 2 by 2 matrix is the product of the diagonal entries (for $A - \lambda I$ they are $(a-\lambda)\cdot (d-\lambda)$) less the product of the off-diagonal entries (in this case $bc$).  So $\det(A-\lambda I)=0$ is the equation $(a-\lambda)(d-\lambda)-bc=0$. When we multiply this equation out we obtain a quadratic equation to solve (for $\lambda$ - see Exercise \@ref(exr:ch-eq-exr-18)).  The equation $\det(A - \lambda I)=0$ even has a special name - it is called the _characteristic equation_. (We will find out why later.)
 
 ```{example}
 Compute the eigenvalues for the matrix $\displaystyle A =  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix}$.
 ```
 
-```{remark}
+```{solution}
 The matrix $A-\lambda I$ is:
 $\displaystyle A-\lambda I =  \begin{pmatrix} -1-\lambda & 1 \\ 0 &  3-\lambda \end{pmatrix}$.  So we have:
 
@@ -92,7 +93,13 @@ $\displaystyle A-\lambda I =  \begin{pmatrix} -1-\lambda & 1 \\ 0 &  3-\lambda \
 Solving the equation $(-1-\lambda)(3-\lambda)=0$ yields two eigenvalues: $\lambda = -1$ or $\lambda = 3$.
 ```
 
-Once the eigenvalues are compute we compute the eigenvectors associated with each eigenvalue by finding a vector $\vec{v}$ consistent with $A \vec{v} = \lambda \vec{v}$ or $A \vec{v} - \lambda \vec{v} =\vec{0}$.  Note that the eigenvectors have the form $\displaystyle \vec{v} = \begin{pmatrix} x \\ y \end{pmatrix}$.  So if we consider the right hand side of $A \vec{v} - \lambda \vec{v} =\vec{0}$ we have:
+Once we have determined the eigenvalues we next compute the eigenvectors associated with each eigenvalue. Remember that an eigenvector is a vector $\vec{v}$ consistent with $A \vec{v} = \lambda \vec{v}$ or $A \vec{v} - \lambda \vec{v} =\vec{0}$.  Note that the eigenvectors have the form $\displaystyle \vec{v} = \begin{pmatrix} x \\ y \end{pmatrix}$.  
+```{example}
+Compute the eigenvectors for the matrix $\displaystyle A =  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix}$.
+```
+
+```{solution}
+So if we consider the right hand side of $A \vec{v} - \lambda \vec{v} =\vec{0}$ we have:
 
 \begin{equation*}
 ( A \vec{v} - \lambda \vec{v} ) =  \begin{pmatrix} -x +y - \lambda x  \\ 3y - \lambda y \end{pmatrix}.
@@ -100,33 +107,47 @@ Once the eigenvalues are compute we compute the eigenvectors associated with eac
 
 Examining this setup gives us two equations to work with: $- x + y - \lambda x = 0$ and $3y-\lambda y =0$.  We will need to analyze them for each of our eigenvalues. 
 
-- Case 1: $\lambda = -1$. In the first equation we have $-x+y+x =0$, which just yields $y=0$. For the second equation we also have $3y+y =0$, so that tells us again that $y=0$.  Notice how we solved for $y$, but we didn't uniquely determine $x$. While this seems a little unsatisfying, that is ok. The form of this particular straight line solution is $\displaystyle s_{1}(t)=e^{-t} \begin{pmatrix} x \\ 0 \end{pmatrix}$.
+- Case 1: $\lambda = -1$. In the first equation we have $-x+y+x =0$, which just yields $y=0$. For the second equation we also have $3y+y =0$, so that tells us again that $y=0$.  Notice how we solved for $y$, but we didn't uniquely determine $x$. While this seems a little unsatisfying, that is ok. The form of this particular straight line solution is $\displaystyle s_{1}(t)=e^{-t} \begin{pmatrix} x \\ 0 \end{pmatrix}$, where $x$ is a free variable.
 - Case 2: $\lambda = 3$. For the second equation we have $3y - 3y=0$, which is always true. However in the first equation we have $- x + y - 3x = 0$, or $y = 4x$.  In this case, $x$ can be anything as well, but this condition means that $y$ will have to be 4 times that value.  Hence, this particular straight line solution is $\displaystyle s_{2}(t)=e^{3t} \begin{pmatrix} x \\ 4x \end{pmatrix}$.
 
-Notice that in both of our cases we had a free variable $x$.  Given an initial condition to the differential equation we would specify this free variable (a good choice would be $x=1$), or just leave this as a constant.  Putting this all together our most general solution^[Even though we were working with a specific example, for a 2 by 2 system of equations the most general solution is $\vec{x}(t) = c_{1} e^{\lambda_{1}t} \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \vec{v}_{2}$.] to Equation \@ref(ex1-ch17) will be:
+Notice that in both of our cases we had a free variable $x$.  Given an initial condition to the differential equation we would specify this free variable (a good choice would be $x=1$), or just leave this as a constant.
+```
+
+Once we have computed the eigenvalues and eigenvectors, we are now ready to express the most general solution for a system of differential equations. For a two-dimensional system of linear differential equations ($\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}$, the most general solution is $\vec{x}(t) = c_{1} e^{\lambda_{1}t} \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \vec{v}_{2}$
+
+```{example}
+What is the solution to the differential equation $\displaystyle \frac{d}{dt} \vec{x} =  \begin{pmatrix} -1 & 1 \\ 0 &  3 \end{pmatrix} \vec{x}$?.
+```
+
+```{solution}
+Since we have already computed the eigenvalues and eigenvectors, our most general solution is:
 
 \begin{equation*}
 \vec{x} = c_{1} e^{- t} \begin{pmatrix} 1 \\ 0 \end{pmatrix}  + c_{2} e^{3t} \begin{pmatrix} 1 \\ 4 \end{pmatrix}
 \end{equation*}
 
+```
 
-
-While computing the eigenvalues is a good exercise, we can also program this in `R` using the function `eigenvalues` from the `demodelr` package. The syntax works where $\displaystyle A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$ is entered in as `eigenvalues(a,b,c,d,matrix_rows)` where `matrix_rows` is the number of rows^[If you have a 2 by 2 matrix, you can leave out `matrix_rows` (so just `eigenvalues(a,b,c,d)`) as the default is a 2 by 2 matrix.]. What gets returned from the function will be the eigenvalues and eigenvectors for any square matrix.
+### Eigenvalues computed with demodelr
+While computing eigenvalues and eigenvectors is a good algebraic exercise, we can also program this in `R` using the function `eigenvalues` from the `demodelr` package. The syntax works where $\displaystyle A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$ is entered in as `eigenvalues(a,b,c,d,matrix_rows)` where `matrix_rows` is the number of rows^[If you have a 2 by 2 matrix, you can leave out `matrix_rows` (so just `eigenvalues(a,b,c,d)`) as the default is a 2 by 2 matrix.]. What gets returned from the function will be the eigenvalues and eigenvectors for any square matrix.
 
 
 ```{r}
-# You can also leave out matrix_rows - the code assumes the default is a 2 by 2 matrix.
-eigenvalues(c(-1,1,0,3))
+# For a two dimensional equation the code assumes the default is a 2 by 2 matrix, .
+eigenvalues(matrix_entries = c(-1, 1, 0, 3),
+            matrix_rows = 2)
 
+# This is equivalent because we have a two dimensional equation:
+#eigenvalues(c(-1, 1, 0, 3))
 ```
 
 
-Notice that the eigenvalues and the eigenvectors get returned.  The eigenvector associated with $\lambda=3$ is a little different from what we computed - `R` will normalize the vector, which means that its total length will be one.^[The length of a vector $\vec{v}$ is denoted as $||\vec{v}||$ and is computed the following way: $||\vec{v}||=\sqrt{v_{1}^{2}+v_{2}^{2}+...+v_{n}^{2}}$. We normalize a vector to a length of 1 by dividing each component by its length.]  However upon closer inspection in our solution we found that the second component was 4 times the first for the eigenvector, which is indeed the case.
+Notice that the eigenvalues and the eigenvectors get returned. How you read the output for the eigenvector is that `X1` is the eigenvector associated with the first eigenvalue ($\lambda = 3$) and `X2` is the eigenvector associated with the second eigenvalue ($\lambda = -1$). The eigenvector associated with $\lambda=3$ is a little different from what we computed - `R` will normalize the vector, which means that its total length will be one.^[The length of a vector $\vec{v}$ is denoted as $||\vec{v}||$ and is computed the following way: $||\vec{v}||=\sqrt{v_{1}^{2}+v_{2}^{2}+...+v_{n}^{2}}$. We normalize a vector to a length of 1 by dividing each component by its length.]  However upon closer inspection in our solution we found that the second component was 4 times the first for the eigenvector, which is indeed the case.
 
 ## What do eigenvalues tell us?
-Here the focus of the section changes a little bit from finding the solution of the differential equation (e.g. the formulas $s_{1}(t)$ and $s_{2}(t)$) to understanding what the solutions would _look_ like in the phaseplane.  This is intentional: once we have found the eigenvalues, finding eigenvectors can seem rather mundane at times (perhaps heavy on the algebra), yet we know they will be a straight line through the origin.  We know the general form of the solution is $\vec{x}(t) = c_{1} e^{\lambda_{1}t} \cdot \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \cdot \vec{v}_{2}$, so what else is there?
+Here the focus of the section changes a little bit from finding the solution of the differential equation (e.g. the formulas $s_{1}(t)$ and $s_{2}(t)$) to understanding what the solutions would _look_ like in the phaseplane.  This is intentional: once we have found the eigenvalues, finding eigenvectors can seem rather mundane at times (perhaps heavy on the algebra), yet we know they will be a straight line through the origin.  So what else is there?
 
-In fact, studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let's think about the characteristic equation for a 2 by 2 matrix, simplifying things out:
+Studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let's think about the characteristic equation for a 2 by 2 matrix, simplifying things out:
 
 \begin{align*}
 \det(A - \lambda I) &= 0 \\
@@ -134,7 +155,7 @@ In fact, studying the eigenvalues helps us understand the qualitative nature of 
 \lambda^{2} - (a+d) \lambda + ad-bc & = 0
 \end{align*}
 
-The last line of the above equation is a quadratic equation in $\lambda$.  Think about what you know about quadratic equations: there may be 2 distinct solutions, no solution (the solutions are imaginary) or 1 solution (repeated solutions).  Also the solutions may be positive or negative.  There are so many different combinations!  In this case the solutions are referring to eigenvalues, so there is a phaseplane associated with each case. What types of phaseplanes do all those different types of eigenvalues produce?   Let's take a look at each of these cases, focusing our analysis on a two-dimensional system of equations (the results can be generalized to higher-dimensional systems).
+The last line of the above equation is a quadratic equation in $\lambda$.  Think about what you know about quadratic equations: there may be 2 distinct solutions, no solution (the solutions are imaginary) or 1 solution (repeated solutions).  Also the solutions may be positive or negative.  There are so many different combinations!  What types of phaseplanes do all those different types of eigenvalues produce? Let's take a look at each of these cases, focusing our analysis on a two-dimensional system of equations (the results can be generalized to higher-dimensional systems).
 
 
 ### All eigenvalues positive (unstable node)
@@ -144,20 +165,20 @@ Let's consider  the phase plane for the differential equation $\displaystyle
 
 The eigenvalues are both positive:
 ```{r}
-eigenvalues(c(2,0,1,1))  
+eigenvalues(c(2, 0, 1, 1))
 ```
 
 The phase plane for this diagram is shown below:
 
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
-phaseplane(c(dx~2*x,dy~x+y),"x","y",c(-4,4),c(-4,4))+
-  geom_point(aes(x=0,y=0),size=3,color='red')
+phaseplane(c(dx ~ 2 * x, dy ~ x + y), "x", "y", c(-4, 4), c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 Notice how the phase plane diagram has all arrows pointing from the origin. In the phaseplane a solution would move _away_, so the origin is an unstable node.
 
-Plotting both solutions versus time shows that they increase in $x$ and $y$
+Plotting both solutions versus time shows woudl show $x$ and $y$ increase in time.
 
 ### All eigenvalues negative (stable node)
 Now consider  the phase plane for the differential equation $\displaystyle 
@@ -165,7 +186,7 @@ Now consider  the phase plane for the differential equation $\displaystyle
 
 (This is a _slight_ modification from the previous example.) The eigenvalues are both positive:
 ```{r}
-eigenvalues(c(-2,0,1,-1))  
+eigenvalues(c(-2, 0, 1, -1))
 ```
 
 In this case the situation is reversed, with the phase plane having all arrows pointing to the origin.
@@ -173,9 +194,8 @@ In this case the situation is reversed, with the phase plane having all arrows p
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
-phaseplane(c(dx~-2*x,dy~x-y),"x","y",c(-4,4),c(-4,4))+
-  geom_point(aes(x=0,y=0),size=3,color='red')
-
+phaseplane(c(dx ~ -2 * x, dy ~ x - y), "x", "y", c(-4, 4), c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 We say the equilibrium solution is a _stable node_.  In the phaseplane a solution would eventually move towards the origin (asymptotically) 
@@ -187,7 +207,7 @@ Let's consider  the phase plane for the differential equation $\displaystyle
 
 The eigenvalues are both positive:
 ```{r}
-eigenvalues(c(3,-2,1,-1))  
+eigenvalues(c(3, -2, 1, -1))
 ```
 
 This situation is called a saddle node, best explained with a phase diagram:
@@ -195,9 +215,8 @@ This situation is called a saddle node, best explained with a phase diagram:
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
-phaseplane(c(dx~3*x-2*y,dy~x-y),"x","y",c(-4,4),c(-4,4)) +
-  geom_point(aes(x=0,y=0),size=3,color='red')
-
+phaseplane(c(dx ~ 3 * x - 2 * y, dy ~ x - y), "x", "y", c(-4, 4), c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 This equilibrium solution is called a _saddle node_.  From one direction (the horizontal) the arrows point away from the origin, but in the vertical direction the arrows point towards the origin.  We will see that this behavior is due to the contradictory nature of the solution - one part of the solution (the one associated with the negative eigenvalue) decays asymptotically to zero.  The other positive eigenvalue is associated with the asymptotically unstable, giving the solution trajectory the saddle shape.
@@ -209,7 +228,7 @@ Let's consider  the phase plane for the differential equation $\displaystyle
 
 The eigenvalues are both positive:
 ```{r}
-eigenvalues(c(-3,-8,4,-6))  
+eigenvalues(c(-3, -8, 4, -6))
 ```
 
 There are two eigenvalues to this system: $\lambda = -4.5+5.45i$ and $\lambda = -4.5 - 5.45i$. In this case the $i$ means the eigenvalues are imaginary. Notice how the eigenvalues are similar, but the signs on the second term differs. We say the eigenvalues are _complex conjugates_ of each other, and write them in the form $\lambda = \alpha \pm \beta i$.
@@ -219,17 +238,17 @@ Let's take a look at the phase plane for this system.  When $\alpha < 0$ the equ
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
-phaseplane(c(dx~-3*x-8*y,dy~4*x-6*y),"x","y",c(-4,4),c(-4,4),)+
-  geom_point(aes(x=0,y=0),size=3,color='red')
+phaseplane(c(dx ~ -3 * x - 8 * y, dy ~ 4 * x - 6 * y), "x", "y", c(-4, 4), c(-4, 4), ) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 This phaseplane has some spiraling motion to it.  Why does that occur? Imaginary eigenvalues can occur when the solution to $\det(A-\lambda I)=0$ has imaginary solutions. More generally, we say $\lambda = \alpha \pm \beta i$. Because the eigenvalues are complex, we would also expect the eigenvectors to be complex as well (i.e. $\vec{v} \pm i \vec{w}$). Don't let the term _imaginary_ fool you: by using properties from complex analysis it can be shown that the complete solution is:
 
 \begin{equation}
-\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t))
+\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t)) (\#eq:imag-eval-18)
 \end{equation}
 
-Notice the trigonometric terms in the solution - we should expect the solution to be periodic and to have some periodic behavior to it.  In fact, When $\alpha < 0$ we say the equilibrium solution is a _spiral sink_ because the exponential terms in the solution decay asymptotically to zero.  
+Notice the trigonometric terms in Equation \@ref(eq:imag-eval-18) - we should expect the solution to be periodic and to have some periodic behavior to it.  In fact, When $\alpha < 0$ we say the equilibrium solution is a _spiral sink_ because the exponential terms in the solution decay asymptotically to zero.  
 
 
 As you would expect, when $\alpha > 0$ we classify a phaseplane as a spiral source, as we can see in the phase plane for $\displaystyle
@@ -239,9 +258,8 @@ As you would expect, when $\alpha > 0$ we classify a phaseplane as a spiral sour
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
-phaseplane(c(dx~4*x-5*y,dy~3*x+2*y),"x","y",c(-4,4),c(-4,4),)+
-  geom_point(aes(x=0,y=0),size=3,color='red')
-
+phaseplane(c(dx ~ 4 * x - 5 * y, dy ~ 3 * x + 2 * y), "x", "y", c(-4, 4), c(-4, 4), ) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 The final case for imaginary eigenvalues is when $\alpha = 0$, which is termed a _center_ equilibrium.  As an example, let's examine the phaseplane for the system $\displaystyle 
@@ -250,10 +268,8 @@ The final case for imaginary eigenvalues is when $\alpha = 0$, which is termed a
 ```{r echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1}
 # For a two variable systems of differential equations we need to define dx/dt and dy/dt separately:
 
-phaseplane(c(dx~-y,dy~x),"x","y",c(-4,4),c(-4,4))+
-  geom_point(aes(x=0,y=0),size=3,color='red')
-
-
+phaseplane(c(dx ~ -y, dy ~ x), "x", "y", c(-4, 4), c(-4, 4)) +
+  geom_point(aes(x = 0, y = 0), size = 3, color = "red")
 ```
 
 Notice how the arrows don't spin in (or out here) - but seem to point in a circle.
@@ -295,15 +311,15 @@ Verify that $\displaystyle  \vec{s}_{1}(t) = \begin{pmatrix} 0 \\ e^{t} \end{pma
 
 <!-- %\marginnote{Exercises a-c,e Based on Example 4.9 page 166 in \lw. d on 1c, pg 163 in lw}  -->
 ```{exercise}
-Compute the eigenvalues and eigenvectors for the following linear systems.  Based on the eigenvalues, classify if the equilibrium solution is stable or unstable.  Finally write down the most general solution for the system of equations.
+(Inspired by @logan_mathematical_2009) Compute the eigenvalues and eigenvectors for the following linear systems.  Based on the eigenvalues, classify if the equilibrium solution is stable or unstable.  Finally write down the most general solution for the system of equations.
 
-\begin{enumerate}[label=\alph*.]
-\item $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -y$
-\item $\displaystyle \frac{dx}{dt} = 3x-2y, \;  \frac{dy}{dt} = 2x-2y$
-\item $\displaystyle \frac{dx}{dt} = -4x+2y, \;  \frac{dy}{dt} = x-3y$
-\item $\displaystyle \frac{dx}{dt}= 4y, \; \frac{dy}{dt}=-9x$
-\item $\displaystyle \frac{dx}{dt} = y, \;  \frac{dy}{dt} = -x$
-\end{enumerate}
+
+a. $\displaystyle \frac{dx}{dt} = -x, \;  \frac{dy}{dt} = -y$
+b. $\displaystyle \frac{dx}{dt} = 3x-2y, \;  \frac{dy}{dt} = 2x-2y$
+c. $\displaystyle \frac{dx}{dt} = -4x+2y, \;  \frac{dy}{dt} = x-3y$
+d. $\displaystyle \frac{dx}{dt}= 4y, \; \frac{dy}{dt}=-9x$
+e. $\displaystyle \frac{dx}{dt} = y, \;  \frac{dy}{dt} = -x$
+
 
 ```
 &nbsp;
@@ -318,12 +334,12 @@ Consider the following nonlinear system:
 \end{split}
 \end{equation}  
 
-\begin{enumerate}[label=\alph*/]
-\item Previously you verified that $(x,y)=(1,1)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
-\item Generate a phaseplane for the Jacobian matrix.
-\item What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
-\item Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
-\end{enumerate}
+
+a. Previously you verified that $(x,y)=(1,1)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
+b. Generate a phaseplane for the Jacobian matrix.
+c. What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
+d. Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
+
 
 ```
 &nbsp;
@@ -337,12 +353,12 @@ Consider the following nonlinear system:
 \end{split}
 \end{equation}  
 
-\begin{enumerate}[label=\alph*.]
-\item Previously you verified that $(x,y)=(0,0)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
-\item Generate a phaseplane for the Jacobian matrix.
-\item What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
-\item Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
-\end{enumerate}
+
+a. Previously you verified that $(x,y)=(0,0)$ is an equilibrium solution for this system.  What is the Jacobian matrix at that equilibrium solution?
+b. Generate a phaseplane for the Jacobian matrix.
+c. What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
+d. Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
+
 
 ```
 &nbsp;
@@ -358,13 +374,13 @@ Consider the following system:
 \end{split}
 \end{equation}  
 
-\begin{enumerate}[label=\alph*.]
-\item There is one equilibrium solution to this system of equations.  What is it?
-\item What is the Jacobian matrix for this equilibrium solution?
-\item Generate a phaseplane for the Jacobian matrix.
-\item What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
-\item Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
-\end{enumerate}
+
+a. There is one equilibrium solution to this system of equations.  What is it?
+b. What is the Jacobian matrix for this equilibrium solution?
+c. Generate a phaseplane for the Jacobian matrix.
+d. What are the eigenvalues for the Jacobian matrix at the equilbrium solution?
+e. Based on the eigenvalues, how would you classify the stability of the equilibrium solution?
+
 
 ```
 
@@ -373,16 +389,16 @@ Consider the following system:
 ```{exercise}
 Consider the system $\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}$.
 
-\begin{enumerate}[label=\alph*.]
-\item Given the function $\vec{s}(t)=e^{\lambda t} \vec{v}$, where $\vec{v}$ is a constant vector, what is an expression for $\displaystyle \frac{d}{dt} \vec{s}(t)$?
-\item Given the function $\vec{s}(t)=e^{\lambda t} \vec{v}$, where $\vec{v}$ is a constant vector, what is an expression for $A \vec{s}(t)$? 
-\item Now use the previous results to compare $\displaystyle \frac{d}{dt} \vec{s}(t) = A \vec{s}(t)$. Explain why it must be the case that $\lambda \vec{v} = A \vec{v}$
-\end{enumerate}
+
+a. Given the function $\vec{s}(t)=e^{\lambda t} \vec{v}$, where $\vec{v}$ is a constant vector, what is an expression for $\displaystyle \frac{d}{dt} \vec{s}(t)$?
+b. Given the function $\vec{s}(t)=e^{\lambda t} \vec{v}$, where $\vec{v}$ is a constant vector, what is an expression for $A \vec{s}(t)$? 
+c. Now use the previous results to compare $\displaystyle \frac{d}{dt} \vec{s}(t) = A \vec{s}(t)$. Explain why it must be the case that $\lambda \vec{v} = A \vec{v}$
+
 
 ```
 &nbsp;
 
-```{exercise}
+```{exercise ch-eq-exr-18}
 In this section we learned that for a two dimensional matrix $\displaystyle A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$, eigenvalues can be found by solving the characteristic equation $\det(A-\lambda I)=0$, or $\lambda^{2} - (a+d) \lambda + ad-bc = 0$.  Use the quadratic formula to get an expression for the eigenvalues $\lambda$ in terms of $a$,$b$, $c$, and $d$.
 ```
 
