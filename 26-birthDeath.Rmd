@@ -26,8 +26,7 @@ $\Delta x = 0$ (no population change) | $\displaystyle 1 - rx \; \Delta t - \fra
 
 It also may be helpful to think of these changes on a random walk number line:
 
-```{r random-walk-stoch,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE}
-\begin{center}
+```{tikz,random-walk-stoch,warning=FALSE,message=FALSE,echo=FALSE,fig.width=4,fig.height=3}
 \begin{tikzpicture}
     \draw (-3,0) -- (3,0);
     \foreach \i in {-3,-2,...,3} % numbers on line
@@ -39,7 +38,6 @@ It also may be helpful to think of these changes on a random walk number line:
     \node[align=center] at (1,0.5) {$r x \Delta t$};
     \draw [->,red,thick] (0,0.15) to [out=30,in=150] (1,0.15);
   \end{tikzpicture}
-\end{center}
 ```
 
 
@@ -427,9 +425,8 @@ b. Use `birth_death_stochastic` to perform 500 simulations of this stochastic di
 
 &nbsp;
 
-```{tikz, sis-bd,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
+```{tikz,sis-bd,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
 
-\begin{center}
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
 
@@ -438,7 +435,7 @@ b. Use `birth_death_stochastic` to perform 500 simulations of this stochastic di
 \draw [->] ([yshift=3pt]S.east) --  node[above] {\small{$b$}} ([yshift=3pt]I.west) ;
 \draw [<-] ([yshift=-3pt]S.east) --  node[below] {\small{$r$}} ([yshift=-3pt]I.west) ;
 \end{tikzpicture}
-\end{center}
+
 
 
 ```

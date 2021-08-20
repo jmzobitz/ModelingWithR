@@ -74,8 +74,7 @@ Knowing the relationships between the trace and determinant for a two-dimensiona
 
 Another way to graphically represent the stability of solutions is with the _trace-determinant plane_ (shown in Figure \@ref(fig:trace-det-18)), with tr$(A)$ on the horizontal axis and det$(A)$ on the vertical axis:
 
-```{r trace-det-18,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The trace-determinant plane"}
-\begin{center}
+```{tikz, trace-det-18,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The trace-determinant plane"}
 \begin{tikzpicture}
 %\draw[help lines, color=gray!30, dashed] (-4.9,-4.9) grid (4.9,4.9);
 \draw[<->,ultra thick] (-5,0)--(5,0) node[right]{tr$(A)$};
@@ -85,7 +84,6 @@ Another way to graphically represent the stability of solutions is with the _tra
 \node at (-3,1.5) {Sink};
 \node at (3,1.5) {Source};
 \end{tikzpicture}
-\end{center}
 ```
 
 
@@ -99,8 +97,8 @@ Firt we will apply the quadratic formula to Equation \@ref(eq:tr-det-19) to solv
 
 While Equation \@ref(eq:tr-det-soln-19) seems like a more complicated expression, it can be shown to be consistent with our above work. Imaginary eigenvalues can be a stable or unstable spiral depending on its location in the trace-determinant plane (Figure \@ref(fig:trace-det-ref)).
 
-```{r trace-det-ref,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Revised trace-determinant plane."}
-\begin{center}
+```{tikz, trace-det-ref,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Revised trace-determinant plane."}
+
 \begin{tikzpicture}
 %\draw[help lines, color=gray!30, dashed] (-4.9,-4.9) grid (4.9,4.9);
 \draw[<->,ultra thick] (-5,0)--(5,0) node[right]{tr$(A)$};
@@ -113,7 +111,7 @@ While Equation \@ref(eq:tr-det-soln-19) seems like a more complicated expression
 \node[align=center] at (1,2.3) {Spiral \\ source};
 \node[align=center] at (-1,2.3) {Spiral \\ sink};
 \end{tikzpicture}
-\end{center}
+
 ```
 
 If the discriminant (the part inside the square root for Equation \@ref(eq:tr-det-soln-19), which is $(\mbox{tr}(A))^2-4 \det(A)$) of the eigenvalue expression is negative then we have a spiral source or spiral sink depending on the positivity of the tr$(A)$.

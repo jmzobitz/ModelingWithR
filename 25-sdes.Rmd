@@ -131,6 +131,7 @@ logistic_run <- rerun(n_sims) %>%
 
 
 ```
+
 As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.
 
 Figure \@ref(fig:logistic-ensemble) shows the ensemble average (median and 95% confidence interval) for the different simulations, recycling code from Section \@ref(stoch-sim-22).
@@ -302,9 +303,9 @@ d. Contrast your results to when we added stochasticity to the parameter $r$ in 
 &nbsp;
 
 
-```{r sis-stochastics,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
+```{tikz,sis-stochastics,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model",fig.width=4,fig.height=3}
 
-\begin{center}
+
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
 
@@ -313,7 +314,7 @@ d. Contrast your results to when we added stochasticity to the parameter $r$ in 
 \draw [->] ([yshift=3pt]S.east) --  node[above] {\small{$b$}} ([yshift=3pt]I.west) ;
 \draw [<-] ([yshift=-3pt]S.east) --  node[below] {\small{$r$}} ([yshift=-3pt]I.west) ;
 \end{tikzpicture}
-\end{center}
+
 
 
 ```

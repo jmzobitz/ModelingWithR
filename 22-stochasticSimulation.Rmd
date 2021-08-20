@@ -5,7 +5,7 @@ In Section \@ref(stoch-sys-21) we examined models for stochastic biological syst
 ## Ensemble Averages
 Consider Figure \@ref(fig:kuopio-weather), which shows the weather forecast for Kuopio, a city in Finland:^[I could have picked any city, but a lot of this textbook was written while I was on sabbatical in Kuopio. I highly recommend Finland as a country to visit.]
 
-```{r kuopio-weather, echo=FALSE,out.width = "50%",fig.align="center",fig.cap = "Long-term weather forecast for Kuopio, a city in Finland, from the [https://en.ilmatieteenlaitos.fi/](Finnish Weather Institute)"}
+```{r kuopio-weather, echo=FALSE,out.width = "50%",fig.align="center",fig.cap = "Long-term weather forecast for Kuopio, a city in Finland, from the Finnish Weather Institute."}
 knitr::include_graphics("figures/22-simulation/kuopio.png")
 ```
 
@@ -59,7 +59,7 @@ knitr::kable(my_table_long, caption = "Simulations of a variable at different ti
 Notice how the command `pivot_longer` takes the different simulations (`sim1`, `sim2`, `sim3`) and reassigns the column names to a new column `name` and the values in the different columns to `value`. This process called pivoting creates a new data frame, which is easier to generate the spaghetti plot.
 
 
-```{r simul-graph,fig.width = 4,fig.height=3,fig.align="center",fig.cap="Timeseries plot of the three simulations from the pivoted data frame `my_table_long`."}
+```{r simul-graph,fig.width = 4,fig.height=3,fig.align="center",fig.cap="Timeseries plot of the three simulations from the pivoted data frame."}
 my_table_long %>%
   ggplot(aes(x = t, y = value, group = name)) +
   geom_point() +
@@ -87,7 +87,7 @@ Let's break this down.
 
 We can add this mean value to our data (Figure \@ref(fig:simul-graph-rev)), represented with a thick red line.
 
-```{r simul-graph-rev,fig.width = 4,fig.height=3,fig.align="center",fig.cap="Timeseries plot of the three simulations from Table \\@ref(tab:table-summary).",message=FALSE,warning=FALSE}
+```{r simul-graph-rev,fig.width = 4,fig.height=3,fig.align="center",fig.cap="Timeseries plot of the three simulations.",message=FALSE,warning=FALSE}
 my_table_long %>%
   ggplot(aes(x = t, y = value, group = name)) +
   geom_point() +
