@@ -147,20 +147,15 @@ f(x)=\frac{1}{\sqrt{2 \pi} \sigma x } e^{-(\ln(x)-\mu)^{2}/(2 \sigma^{2})} \mbox
 
 
 ### Computing and graphic probabilities in R
-Here is the good news with `R`: the commands to generate densities and cumulative distributions are already included!  There are a variety of implementations: both for the density, cumulative distribution, random number generation, and lognormal distributions from these.  For the moment, Table \ref{table:prob-dist} summarizes some common probability distributions in `R`.
+Here is the good news with `R`: the commands to generate densities and cumulative distributions are already included!  There are a variety of implementations: both for the density, cumulative distribution, random number generation, and lognormal distributions from these.  For the moment, the following table summarizes some common probability distributions in `R`.
 
-\begin{table}
-\begin{tabular}{c|c|c|c}
-Distribution & Key Parameters & R command & Density Example \\ \hline
-Normal & $\mu \rightarrow$ \texttt{mean}, $\sigma \rightarrow$ \texttt{sd} & \texttt{norm} 
-& \texttt{dnorm(mu=0,sd=1,seq(-5,5,length=200))} \\
-Uniform & $a \rightarrow$ \texttt{min}, $b \rightarrow$ \texttt{max} & \texttt{unif} & \texttt{dunif(seq(-5,5,length=200),min = -5,max=5)} \\
-Exponential & $\lambda \rightarrow$ \texttt{rate} & \texttt{exp} & \texttt{dexp(seq(0,5,length=200))} \\
-Normal & $\mu \rightarrow$ \texttt{meanlog}, $\sigma \rightarrow$ \texttt{sdlog} & \texttt{lnorm} 
-& \texttt{dlnorm(seq(0,5,length=200))}
-\end{tabular}
-\caption{Summary of common probability distributions in \texttt{R}}\label{table:prob-dist}
-\end{table}
+Distribution | Key Parameters | R command | Density Example
+------------- | ------------- | ------------- | -------------
+Normal | $\mu \rightarrow$ `mean`, $\sigma \rightarrow$ `sd` | `norm` | `dnorm(mu=0,sd=1,seq(-5,5,length=200))`
+Uniform | $a \rightarrow$ `min`, $b \rightarrow$ `max` | `unif` | `dunif(seq(-5,5,length=200),min = -5,max=5)`
+Exponential | $\lambda \rightarrow$ `rate` | `exp` | `dexp(seq(0,5,length=200))`
+Normal | $\mu \rightarrow$ `meanlog`, $\sigma \rightarrow$ `sdlog` | `lnorm` | `dlnorm(seq(0,5,length=200))`
+
 
 To make the graphs of these density functions in `R` we use the prefix `d + ` the name (`norm`, `exp`) etc of the distribution we wish to specify, including any of the key parameters.  If we don't include any of the parameters then it will just use the defaults (which you can see by typing `?NAME` where `NAME` is the name of the command (i.e. `?dnorm`).
 
@@ -333,7 +328,7 @@ First we will define the equation used to compute our model in the likelihood.  
 library(demodelr)
 
 # Gause model equation
-gause_model <- volume ~ K / (1 + exp(log(k / 0.45 - 1) - b * time))
+gause_model <- volume ~ K / (1 + exp(log(K / 0.45 - 1) - b * time))
 
 
 # Identify the ranges of the parameters that we wish to investigate
@@ -615,14 +610,36 @@ c. With your values of $p_{1}$ and $p_{2}$ add the function $W$ to your scatterp
 ```{exercise}
 
 Consider the following data which represents the temperature over the course of a day:
-\begin{tabular}{lccccccccccccc}
-\textbf{Hour} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 &10 &11 &12  \\ \hline
-\textbf{Temperature} ($^{\circ}$F) 
-& 54 &53 &55& 54& 58& 58 &61& 63 &67& 66& 67& 69& 68 \\ \hline \hline
-\textbf{Hour} &13 &14 &15 &16 &17 &18 &19 &20& 21& 22& 23& 24 & \\
-\textbf{Temperature} ($^{\circ}$F) &
- 68& 66& 67& 63& 60& 59& 57& 56& 53& 52& 54& 53 & \\ \hline
-\end{tabular}
+
+
+ **Hour** | **Temperature** 
+|:------:|:-----:|
+ 0 | 54 |
+ 1 | 53 |
+ 2 | 55 |
+ 3 | 54 |
+ 4 | 58 |
+ 5 | 58 |
+ 6 | 61 |
+ 7 | 63 | 
+ 8 | 67 | 
+ 9 | 66 |
+ 10 | 67 |
+ 11 | 69 |
+ 12 | 68 | 
+ 13 | 68 | 
+ 14 | 66 |
+ 15 | 67 |
+ 16 | 63 |
+ 17 | 60 |
+ 18 | 59 |
+ 19 | 57 |
+ 20 | 56 |
+ 21 | 53 |
+ 22 | 52 |
+ 23 | 54 |
+ 24 | 53 |
+
 
 A function that describes these data is $\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) - C \cos \left( \frac{\pi}{12} \cdot H \right)$, where $H$ is the hour and $T$ is the temperature.  Use the function `compute_likelihood` to determine maximum likelihood parameter estimates for $A$, $B$, and $C$.  The values of $A$, $B$, and $C$ are all positive.
 

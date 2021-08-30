@@ -427,10 +427,10 @@ With a dataset of 7 observations you found that the log-likelihood for Model 1 <
 <p><span id="exr:unnamed-chunk-222" class="exercise"><strong>Exercise 14.3  </strong></span>An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta},\)</span> where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c\)</span> are both constants is a constant. We can apply linear regression to the dataset <span class="math inline">\((x, \; \ln(y) )\)</span>, so the intercept of the linear regression equals <span class="math inline">\(\ln(c)\)</span> and the slope equals <span class="math inline">\(1 / \theta\)</span>.</p>
 <ol style="list-style-type: lower-alpha">
 <li>Show that you can write this equation as linear equation by applying a logarithm to both sides and simplifying.</li>
-<li>With the dataset , take the logarithim the  variable and then to determine a linear regression fit for your new linear equation. What are the reported values of the slope and intercept from the linear regression, and by association, <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span>?</li>
-<li>Use the function  to report the likelihood of the fit.</li>
+<li>With the dataset <code>phosphorous</code>, take the logarithim the <code>daphnia</code> variable and then to determine a linear regression fit for your new linear equation. What are the reported values of the slope and intercept from the linear regression, and by association, <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span>?</li>
+<li>Use the function <code>logLik</code> to report the likelihood of the fit.</li>
 <li>What are the reported values of the AIC and the BIC?</li>
-<li>An alternative linear model is the equation <span class="math inline">\(y = a + b \sqrt{x}\)</span>. Use the R command <span class="math inline">\(\sim\)</span> to first obtain a linear fit. Then compute the log likelihood and the AIC and the BIC. Of the two models, which one is the better approximating model?</li>
+<li>An alternative linear model is the equation <span class="math inline">\(y = a + b \sqrt{x}\)</span>. Use the R command <code>model2 &lt;- lm(daphnia~I(sqrt(algae),data = phosphorous))</code> to first obtain a linear fit. Then compute the log likelihood and the AIC and the BIC. Of the two models, which one is the better approximating model?</li>
 </ol>
 </div>
 <p> </p>

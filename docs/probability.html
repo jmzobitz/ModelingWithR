@@ -476,7 +476,49 @@ f(x)=\frac{1}{\sqrt{2 \pi} \sigma x } e^{-(\ln(x)-\mu)^{2}/(2 \sigma^{2})} \mbox
 </div>
 <div id="computing-and-graphic-probabilities-in-r" class="section level3" number="9.2.2">
 <h3><span class="header-section-number">9.2.2</span> Computing and graphic probabilities in R</h3>
-<p>Here is the good news with <code>R</code>: the commands to generate densities and cumulative distributions are already included! There are a variety of implementations: both for the density, cumulative distribution, random number generation, and lognormal distributions from these. For the moment, Table  summarizes some common probability distributions in <code>R</code>.</p>
+<p>Here is the good news with <code>R</code>: the commands to generate densities and cumulative distributions are already included! There are a variety of implementations: both for the density, cumulative distribution, random number generation, and lognormal distributions from these. For the moment, the following table summarizes some common probability distributions in <code>R</code>.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distribution</th>
+<th>Key Parameters</th>
+<th>R command</th>
+<th>Density Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Normal</td>
+<td><span class="math inline">\(\mu \rightarrow\)</span> <code>mean</code>, <span class="math inline">\(\sigma \rightarrow\)</span> <code>sd</code></td>
+<td><code>norm</code></td>
+<td><code>dnorm(mu=0,sd=1,seq(-5,5,length=200))</code></td>
+</tr>
+<tr class="even">
+<td>Uniform</td>
+<td><span class="math inline">\(a \rightarrow\)</span> <code>min</code>, <span class="math inline">\(b \rightarrow\)</span> <code>max</code></td>
+<td><code>unif</code></td>
+<td><code>dunif(seq(-5,5,length=200),min = -5,max=5)</code></td>
+</tr>
+<tr class="odd">
+<td>Exponential</td>
+<td><span class="math inline">\(\lambda \rightarrow\)</span> <code>rate</code></td>
+<td><code>exp</code></td>
+<td><code>dexp(seq(0,5,length=200))</code></td>
+</tr>
+<tr class="even">
+<td>Normal</td>
+<td><span class="math inline">\(\mu \rightarrow\)</span> <code>meanlog</code>, <span class="math inline">\(\sigma \rightarrow\)</span> <code>sdlog</code></td>
+<td><code>lnorm</code></td>
+<td><code>dlnorm(seq(0,5,length=200))</code></td>
+</tr>
+</tbody>
+</table>
 <p>To make the graphs of these density functions in <code>R</code> we use the prefix <code>d +</code> the name (<code>norm</code>, <code>exp</code>) etc of the distribution we wish to specify, including any of the key parameters. If we don’t include any of the parameters then it will just use the defaults (which you can see by typing <code>?NAME</code> where <code>NAME</code> is the name of the command (i.e. <code>?dnorm</code>).</p>
 
 <div class="example">

@@ -437,7 +437,7 @@ Figure 9.10: Scatterplot of <em>Sacchromyces</em> volume growing by itself in a 
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="plotting-likelihood-surfaces.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(demodelr)</span>
 <span id="cb52-2"><a href="plotting-likelihood-surfaces.html#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-3"><a href="plotting-likelihood-surfaces.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Gause model equation</span></span>
-<span id="cb52-4"><a href="plotting-likelihood-surfaces.html#cb52-4" aria-hidden="true" tabindex="-1"></a>gause_model <span class="ot">&lt;-</span> volume <span class="sc">~</span> K <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(k <span class="sc">/</span> <span class="fl">0.45</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span> b <span class="sc">*</span> time))</span>
+<span id="cb52-4"><a href="plotting-likelihood-surfaces.html#cb52-4" aria-hidden="true" tabindex="-1"></a>gause_model <span class="ot">&lt;-</span> volume <span class="sc">~</span> K <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(K <span class="sc">/</span> <span class="fl">0.45</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span> b <span class="sc">*</span> time))</span>
 <span id="cb52-5"><a href="plotting-likelihood-surfaces.html#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-6"><a href="plotting-likelihood-surfaces.html#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-7"><a href="plotting-likelihood-surfaces.html#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the ranges of the parameters that we wish to investigate</span></span>
@@ -465,9 +465,9 @@ Figure 9.10: Scatterplot of <em>Sacchromyces</em> volume growing by itself in a 
 <p>The output to <code>compute_likelihood</code> is a list - this is a flexible data structure. You can think of this as a collection of items. In this case, what gets returned are two data frames: <code>likelihood</code>, which is a data frame of likelihood values for each of the parameters and <code>opt_value</code>, which reports back the values of the parameters that optimize the likelihood function. Note that the optimum value is <em>an approximation</em>, as it is just the optimum from the input values. Let’s take a look at the reported optimum values, which we can do with the syntax <code>LIST_NAME$VARIABLE_NAME</code>, where the dollar sign ($) helps identify which variable from the list you are investigating.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="plotting-likelihood-surfaces.html#cb53-1" aria-hidden="true" tabindex="-1"></a>gause_likelihood<span class="sc">$</span>opt_value</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 4
-##       K      b       l_hood log_lik
-##   &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;  
-## 1  12.7 0.0707 0.0000000492 FALSE</code></pre>
+##       K     b   l_hood log_lik
+##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;  
+## 1  12.7 0.242 0.000348 FALSE</code></pre>
 <p>It is also important to visualize this likelihood function. For this dataset we have the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>, so the likelihood function will be a likelihood surface. The code to generate the plot looks a little different from previous plots we have used previously:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="plotting-likelihood-surfaces.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the likelihood values</span></span>
 <span id="cb55-2"><a href="plotting-likelihood-surfaces.html#cb55-2" aria-hidden="true" tabindex="-1"></a>my_likelihood <span class="ot">&lt;-</span> gause_likelihood<span class="sc">$</span>likelihood</span>
