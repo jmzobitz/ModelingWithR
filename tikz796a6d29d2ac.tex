@@ -1,0 +1,17 @@
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{matrix}
+%% EXTRA_TIKZ_PREAMBLE_CODE %%
+\begin{document}
+%% TIKZ_CODE %%
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
+
+\node [vspecies] (S) {$S$} ;
+\node [vspecies, right of = S] (I) {$I$} ;
+\draw [->,thick] (S) --  node {\small{$kS$}} (I) ;
+\draw [->,thick] (I.south) --  node[right] {\small{$\beta$}} +(0pt,-1cm) ;
+\end{tikzpicture}
+
+\end{document}

@@ -1,8 +1,10 @@
-# Systems of nonlinear equations {#nonlinear-16}
+# Systems of Nonlinear Differential Equations {#nonlinear-16}
 
-In Section \@ref(linearsystems-15) we discussed systems of linear equations.  For this section we focus on _non_-linear systems of equations.  Here is the good news: the processes and approaches that we will apply for nonlinear systems are similar to linear equations.  While we previously discussed coupled (nonlinear) systems of equations in Section \@ref(coupled-06), it helps to have a refresher with an example.
 
-Consider the following non-linear system of equations:
+## Introducing nonlinear systems of differential equations
+In Chapter \@ref(linearsystems-15) we discussed systems of linear equations. For this chapter we focus on _non_-linear systems of equations. We previously discussed coupled (nonlinear) systems of equations in Chapter \@ref(coupled-06), but we will dig in a little deeper here.
+
+Consider the following nonlinear system of equations with the associated phase plane in Figure \@ref(fig:phase-ex1-16):
 
 \begin{equation}
 \begin{split} 
@@ -11,34 +13,63 @@ Consider the following non-linear system of equations:
 \end{split} (\#eq:ex1-ch16)
 \end{equation}
 
-The nullclines for this system are $y=1$ and $x=\pm1$, leading to two equilibrium solutions when we create the phaseplane:
-
-```{r phase-ex1-16,fig.width=4,fig.height=3,fig.cap="Phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
-# Define the range we wish to evaluate this vector field
+```{r phase-ex1-16,echo=FALSE,fig.cap="Phase plane for Equation \\@ref(eq:ex1-ch16)."  }
+# Define the range we wish to use to evaluate this vector field
 
 system_eq <- c(
   dx ~ y - 1,
   dy ~ x^2 - 1
 )
 
-phaseplane(system_eq, "x", "y", x_window = c(-2, 2), y_window = c(-2, 2))
+phaseplane(system_eq, "x", "y", 
+           x_window = c(-2, 2), 
+           y_window = c(-2, 2)
+           ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind()
+
 ```
 
-Wow!  The phaseplane in Figure \@ref(fig:phase-ex1-16) looks really interesting.  In the upper left corner there is some swirling action, so let's zoom in somewhat:
+Wow!  The phase plane in Figure \@ref(fig:phase-ex1-16) looks really interesting. Let's dig into this deeper to understand the phase plane better.
 
-```{r zoom-ch16,fig.width=4,fig.height=3,fig.cap="Zoomed in phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
-# Define the range we wish to evaluate this vector field
+## Zooming in on the phase plane
+One way to investigate the phase plane is to zoom in on interesting chapters for Figure \@ref(fig:phase-ex1-16). In the upper left corner there is some swirling action, so let's zoom in somewhat (remember you can adjust the window size in `phaseplane` with the option `x_window` and `y_window`):
+
+```{r zoom-ch16,fig.cap="Zoomed in phase plane for Equation \\@ref(eq:ex1-ch16)." ,echo=FALSE }
+# Define the range we wish to use to evaluate this vector field
 
 system_eq <- c(
   dx ~ y - 1,
   dy ~ x^2 - 1
 )
 
-phaseplane(system_eq, "x", "y", x_window = c(-1.5, -0.5), y_window = c(0.5, 1.5)) +
-  geom_point(data = tibble(xint = c(-1), yint = c(1)), aes(x = xint, y = yint), color = "red", size = 4)
+phaseplane(system_eq, "x", "y", 
+           x_window = c(-1.5, -0.5), 
+           y_window = c(0.5, 1.5)
+           ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind()
+  
+ 
 ```
 
-Something interesting is happening at the point $(-1,1)$ in Figure \@ref(fig:zoom-ch16).  Let's take a look if we evaluate this point in our differential equation:
+Something interesting seems to be happening at the point $(x,y)=(-1,1)$ in Figure \@ref(fig:zoom-ch16). Let's take a look at what happens if we evaluate our differential equation at $(x,y)=(-1,1)$:
 
 \begin{equation}
 \begin{split} 
@@ -47,19 +78,31 @@ Something interesting is happening at the point $(-1,1)$ in Figure \@ref(fig:zoo
 \end{split}
 \end{equation}
 
-Aha!  So the point $(-1,1)$ is an equilibrium solution.  In later sections we will discuss _why_ we are observing the behavior with the swirling arrows. For now, the key point from Figure \@ref(fig:zoom-ch16) is to recognize that _nonlinear systems_ have equilibrium solutions as well.
+Aha!  So the point $(-1,1)$ is an equilibrium solution. In later chapters we will discuss _why_ we are observing the behavior with the swirling arrows. For now, the key point from Figure \@ref(fig:zoom-ch16) is to recognize that _nonlinear systems_ can have nonzero equilibrium solutions.
 
-Something else is interesting in the upper right corner of Figure \@ref(fig:phase-ex1-16).  Let's zoom in near the point $(1,1)$:
+Next, there seems to be a second interesting point in the upper right corner of Figure \@ref(fig:phase-ex1-16). Let's zoom in near the point $(x,y)=(1,1)$:
 
-```{r zoom-ch16a,fig.width=4,fig.height=3,fig.cap="Another zoomed in phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
-# Define the range we wish to evaluate this vector field
+```{r zoom-ch16a,fig.cap="Another zoomed in phase plane for Equation \\@ref(eq:ex1-ch16).",echo=FALSE  }
+# Define the range we wish to use to evaluate this vector field
 system_eq <- c(
   dx ~ y - 1,
   dy ~ x^2 - 1
 )
 
-phaseplane(system_eq, "x", "y", x_window = c(0.5, 1.5), y_window = c(0.5, 1.5)) +
-  geom_point(data = tibble(xint = c(1), yint = c(1)), aes(x = xint, y = yint), color = "red", size = 4)
+phaseplane(system_eq, "x", "y", 
+           x_window = c(0.5, 1.5), 
+           y_window = c(0.5, 1.5)
+           ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind()
 ```
 
 It seems like there is a _second_ equilibrium solution at the point $(1,1)$!  Let's confirm this:
@@ -71,10 +114,10 @@ It seems like there is a _second_ equilibrium solution at the point $(1,1)$!  Le
 \end{split}
 \end{equation}
 
-We learned something important about nonlinear systems compared to linear systems.  In Section \@ref(linearsystems-15) we learned that the origin is the sole equilibrium solution for a linear system of differential equations.  On the other hand, there may be _multiple_ equilibrium solutions for nonlinear systems of equations.
+By zooming in on the phase plane we learned something important about nonlinear systems and how they might differ compared to linear systems. In Chapter \@ref(linearsystems-15) we learned that the origin is the only equilibrium solution for a linear system of differential equations. On the other hand, nonlinear systems of equations may have _multiple_ equilibrium solutions.
 
-## Determining equilibrium solutions
-To determine an equilbrium solutions for a system of differential equations we first need to find the intersection of different nullclines. We do this by setting each of the rate equations ($\displaystyle \frac{dx}{dt}$ or $\displaystyle \frac{dy}{dt}$) equal to zero. Equation \@ref(eq:ex1-ch16) has two nullclines:
+## Determining equilibrium solutions with nullclines
+To determine an equilibrium solution for a system of differential equations we first need to find the intersection of different nullclines. We do this by setting each of the rate equations ($\displaystyle \frac{dx}{dt}$ or $\displaystyle \frac{dy}{dt}$) equal to zero. Equation \@ref(eq:ex1-ch16) has two nullclines:
 
 \begin{equation}
 \begin{split} 
@@ -83,10 +126,10 @@ To determine an equilbrium solutions for a system of differential equations we f
 \end{split} (\#eq:ex1-ch16-null)
 \end{equation}
 
-So solving for both nullclines in Equation \@ref(eq:ex1-ch16-null) we have that $y=1$ or $x = \pm 1$.  You can visually see the phaseplane with the nullclines in Figure \@ref(fig:ex16-phaseplane).
+So, solving for both nullclines in Equation \@ref(eq:ex1-ch16-null) we have that $y=1$ or $x = \pm 1$. You can visually see the phase plane with the nullclines in Figure \@ref(fig:ex16-phaseplane), where we will add the nullclines and equilibrium solutions into the plot.
 
-```{r ex16-phaseplane,fig.width=4,fig.height=3,echo=FALSE,fig.cap="Phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
-# Define the range we wish to evaluate this vector field
+```{r ex16-phaseplane,fig.cap="Phase plane for Equation \\@ref(eq:ex1-ch16), with nullclines and equilibrium solutions shown.",echo=FALSE }
+# Define the range we wish to use to evaluate this vector field
 
 system_eq <- c(
   dx ~ y - 1,
@@ -94,14 +137,29 @@ system_eq <- c(
 )
 
 phaseplane(system_eq, "x", "y", x_window = c(-2, 2), y_window = c(-2, 2)) + # The values in quotes are the labels for the axes
-  stat_function(fun = function(x) 1, geom = "line", aes(colour = "x' = 0"), size = 1) +
+  stat_function(fun = function(x) 1, geom = "line", aes(colour = "x' = 0"), size = 1,linetype="dashed") +
   geom_vline(data = tibble(xint = c(-1, 1)), aes(xintercept = xint, colour = "y' = 0"), size = 1) + geom_point(data = tibble(xint = c(-1, 1), yint = c(1, 1)), aes(x = xint, y = yint), color = "red", size = 4) +
-  scale_colour_discrete(name = "Nullclines")
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_colour_colorblind(name = "Nullclines:",labels=c("x'=0","y'=0"))
 ```
 
-Remember: equilibrium solutions occur when two _different_ nullclines intersect.
+In Figure \@ref(fig:ex16-phaseplane) we can see equilibrium solutions occur where a nullcline for $x'=0$ intersects with a nullcline where $y'=0$.
 
-Let's try another example:
+## Stability of an equilibrium solution
+The idea of stability of an equilibrium solution for a nonlinear system is intuitively similar to that of a linear system: the equilibrium is stable when all the phase plane arrows point towards the equilibrium solution. For Equation \@ref(eq:ex2-ch16), the equilibrium solution at $(x,y)=(1,1)$ is _unstable_ because in Figure \@ref(fig:zoom-ch16a) some of the arrows point towards the equilibrium solution, whereas others point away from it. For Figure \@ref(fig:zoom-ch16) it is a little harder to tell stability of the equilibrium solution at $(x,y)=(-1,1)$. At this point we won't discuss more specifics of determining stable versus unstable equilibrium solutions. If the phase plane suggests that the equilibrium solution is stable or unstable, then you have established some good intuition that can be confirmed with additional analyses.
+
+## Graphing nullclines in a phase plane
+
+
+Let's look at another example, but this time we will focus on generating graphs for the nullclines.
 
 \begin{equation}
 \begin{split} 
@@ -110,19 +168,51 @@ Let's try another example:
 \end{split} (\#eq:ex2-ch16)
 \end{equation}
 
-Figure \@ref(fig:ex16-2-phaseplane) shows the phaseplane for this example.  Can you guess where an equilibrium solution would be?
+Figure \@ref(fig:ex16-2-phaseplane) shows the phase plane for this example. Can you guess where an equilibrium solution would be?
 
-```{r ex16-2-phaseplane,fig.width=4,fig.height=3,echo=FALSE,fig.cap="Phaseplane for $x'=x-0.5xy$ and $y'=yx=y^{2}$."  }
-# Define the range we wish to evaluate this vector field
+```{r eval = FALSE }
+# Define the range we wish to use to evaluate this vector field
 system_eq <- c(
   dx ~ x - 0.5 * y * x,
   dy ~ y * x - y^2
 )
 
-phaseplane(system_eq, "x", "y", x_window = c(0, 4), y_window = c(0, 4))
+p1 <- phaseplane(system_eq, "x", "y", 
+                 x_window = c(0, 4),
+                 y_window = c(0, 4)
+                 )
+
+p1
 ```
 
-Let's find the equations for the nullclines:
+```{r ex16-2-phaseplane,fig.cap="Phase plane for Equation \\@ref(eq:ex2-ch16).",echo=FALSE  }
+# Define the range we wish to use to evaluate this vector field
+system_eq <- c(
+  dx ~ x - 0.5 * y * x,
+  dy ~ y * x - y^2
+)
+
+p1 <- phaseplane(system_eq, "x", "y", 
+                 x_window = c(0, 4),
+                 y_window = c(0, 4)
+                 ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
+
+
+p1
+```
+
+
+Notice how the code used to generate Figure  \@ref(fig:ex16-2-phaseplane) stores the phase plane in the variable `p1` and the displays it. This will make things easier when we plot the nullclines.
+Speaking of nullclines, let's find them:
 
 \begin{equation}
 \begin{split} 
@@ -131,23 +221,79 @@ Let's find the equations for the nullclines:
 \end{split}
 \end{equation}
 
-The algebra is becoming a little more involved.  Factoring $x-0.5yx = 0$ we have $x \cdot (1 - 0.5 y) = 0$, so either $x=0$ or $y=2$.  Factoring the second equation we have $y \cdot (x - y) = 0$, so either $y=0$ or $x=y$.  Notice how this second nullcline is a function of $x$ and $y$.
+The algebra is becoming a little more involved. Factoring $x-0.5yx = 0$ we have $x \cdot (1 - 0.5 y) = 0$, so either $x=0$ or $y=2$. Factoring the second equation we have $y \cdot (x - y) = 0$, so either $y=0$ or $x=y$. Notice how this second nullcline is a function of $x$ and $y$. The following code plots the phase plane (`p1`) along with the nullclines (try this code out on your own):
 
-For Equation \@ref(eq:ex2-ch16) the equilibrium solutions are $(0,0)$, $(2,2)$.  You may be tempted to think that $(0,2)$ is also an equilibrium solution - however - $x=0$ and $y=2$ are equations for the $x$ nullcline.  It is easy to forget, but equilibrium solutions are determined from the intersection of _distinct_ nullclines.
+```{r eval = FALSE}
+
+# Define the nullclines for dx/dt = 0 (red):
+
+# x = 0
+nullcline_x1 <- tibble(x = 0,
+                       y=seq(0,4,length.out=100)
+)
+
+# y = 0.5
+nullcline_x2 <- tibble(x = seq(0,4,length.out=100),
+                       y=2
+)
+
+# Define the nullclines for dy/dt = 0 (blue):
+# y = 0
+nullcline_y1 <- tibble(x = seq(0,4,length.out=100),
+                       y=0 
+)
+
+# y = x
+nullcline_y2 <- tibble(x = seq(0,4,length.out=100),
+                       y=x
+)
+
+# Add the nullclines onto the phase plane
+p1 +
+  geom_line(data = nullcline_x1,aes(x=x,y=y),color='red') +
+  geom_line(data = nullcline_x2,aes(x=x,y=y),color='red') +
+  geom_line(data = nullcline_y1,aes(x=x,y=y),color='blue') +
+  geom_line(data = nullcline_y2,aes(x=x,y=y),color='blue')
+
+```
+
+For each nullcline we define a data frame (`tibble`) that encodes the relevant information so we can plot it. In order to accomplish this we defined a sequence of values ranging from the plot window of 0 to 4 for the *other* variable. For nullclines where $y$ was a function of $x$ we defined a sequence of values for $x$ and defined $y$ accordingly.
+
+For Equation \@ref(eq:ex2-ch16) the equilibrium solutions are $(x,y)=(0,0)$, $(x,y)=(2,2)$. You may be tempted to think that $(0,2)$ is also an equilibrium solution - however - $x=0$ and $y=2$ are equations for the $x$ nullcline. It is easy to forget, but equilibrium solutions are determined from the intersection of _distinct_ nullclines.
+
+Now that we have seen how nonlinear systems are different from linear systems, Chapter \@ref(jacobian-17) will introduce tools for analysis for the stability of equilibrium solutions.
 
 
-## Stability of an equilibrium solution
-The idea of stability of an equilibrium solution for a nonlinear system is intuitively similar to that of a linear system: the equilibrium is stable when all the phaseplane arrows point towards the equilibrium solution.  For Equation \@ref(eq:ex2-ch16), the equilibrium solution at $(1,1)$ is _unstable_ because some of the arrows point towards the equilibrium solution, whereas others point away from it.  
-
-
-For the moment, we won't go into more specifics of how to classify a stable versus unstable equilibrium solution. If you can recognize from the phaseplane equilibrium solutions that appear to be stable (versus those aren't), then you have established some good intuition that can be confirmed with additional analyses. We will study how to do these analyses in the next few sections.
-
-
-\newpage
 
 ## Exercises
 ```{exercise}
+Equation \@ref(eq:ex2-ch16) equilibrium solutions are $(x,y)=(0,0)$, $(x,y)=(2,2)$. Zoom in on the phase plane at each of those points to determine the stability of the equilibrium solutions. (Set the window between $-0.5 \leq x \leq 0.5$ and $-0.5 \leq x \leq 0.5$ for the $(x,y)=(0,0)$ equilibrium solution.)
+  
+```
+
+```{exercise}
+Consider the following nonlinear system of equations, which is a modification of Equation \@ref(eq:ex1-ch16):
+  
+\begin{equation}
+\begin{split}
+\frac{dx}{dt} &= y-x  \\
+\frac{dy}{dt} &= x^{2}-1
+\end{split}
+\end{equation}
+
+
+a. What are the equations for the nullclines for this differential equation?
+b. What are the equilibrium solutions for this differential equation?
+c. Generate a phase plane that includes all equilibrium solutions (use the window  $-2 \leq x \leq 2$ and $-2 \leq y \leq 2$)
+d. Based on the phase plane, evaluate the stability of the equilibrium solution.
+
+```
+
+
+
+```{exercise}
 Consider the following nonlinear system of equations:
+  
 \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= x - .5xy  \\
@@ -158,21 +304,21 @@ Consider the following nonlinear system of equations:
 
 a. What are the equations for the nullclines for this differential equation?
 b. What are the equilibrium solutions for this differential equation?
-c. Generate a phaseplane that includes all equilibrium solutions.
-d. Based on the phaseplane, evaluate the stability of the equilibrium solution.
+c. Generate a phase plane that includes all equilibrium solutions.
+d. Based on the phase plane, evaluate the stability of the equilibrium solution.
 
 
 ```
 
-&nbsp;
-<!-- LW pg 157 158 #3 -->
+
+<!-- Modified from LW pg 157 158 #3 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) A population of fish has natural predators. A model that describes this interaction is the following:
+(Inspired by @logan_mathematical_2009) A population of fish $F$  has natural predators $P$. A model that describes this interaction is the following:
 
 \begin{equation}
 \begin{split}
-\frac{dN}{dt} &= N - .3NP  \\
-\frac{dP}{dt} &= .5NP - P ,
+\frac{dF}{dt} &= F - .3FP  \\
+\frac{dP}{dt} &= .5FP - P
 \end{split}
 \end{equation}
 
@@ -180,11 +326,11 @@ d. Based on the phaseplane, evaluate the stability of the equilibrium solution.
 
 a. What are the equations for the nullclines for this differential equation?
 b. What are the equilibrium solutions for this differential equation?
-c. Generate a phaseplane that includes all the equilibrium solutions.
-d. Based on the phaseplane, evaluate the stability of the equilibrium solution.
+c. Generate a phase plane that includes all the equilibrium solutions.
+d. Based on the phase plane, evaluate the stability of the equilibrium solution.
 
 ```
-&nbsp;
+
 
 
 ```{exercise}
@@ -193,73 +339,78 @@ Consider the following system:
 \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= y^{2} \\
-\frac{dy}{dt} &= -\frac{2}{3} x,
+\frac{dy}{dt} &= - x
 \end{split}
 \end{equation}
 
 
 a. What are the nullclines for this system of equations?
 b. What is the equilibrium solution for this system of equations?
-c. Generate a phaseplane that includes the equilibrium solution.
-d. Based on the phaseplane, evaluate the stability of the equilibrium solution.
+c. Generate a phase plane that includes the equilibrium solution. Set the viewing window to be $-0.5 \leq x \leq 0.5$ and $-0.5 \leq y \leq 0.5$.
+d. Based on the phase plane, evaluate the stability of the equilibrium solution.
 
 ```
 
-&nbsp;
+
 
 ```{exercise}
 The *Van der Pol Equation* is a second-order differential equation used to study radio circuits: $x'' + \mu \cdot (x^{2}-1) x' + x = 0$, where $\mu$ is a parameter.
 
 
-a. Let $y'=x$. Show that with this change of variables the Van de Pol equation can be written as a system: 
+a. Let $x'=y$ (note: $\displaystyle x' = \frac{dx}{dt}$). Show that with this change of variables the Van der Pol equation can be written as a system: 
+  
 \begin{equation}
 \begin{split} 
 \frac{dx}{dt} &= y \\ 
-\frac{dy}{dt} &= -x-\mu (x^{2}-1)y
+\frac{dy}{dt} &= -x-\mu \cdot  (x^{2}-1)y
 \end{split}
 \end{equation}
-b. Verify that the only equilibrium solution is $(0,0)$.
-\item Set $\mu=1$. Generate a phaseplane that includes the equilibrium solution.
-c. Based on the phaseplane, evaluate the stability of the equilibrium solution.
+
+b. By determining the nullclines, verify that the only equilibrium solution is $(x,y)=(0,0)$.
+c. Make a phase plane for different values of $\mu$ ranging from $-3$, $-1$, $0$, $1$, $3$. Set your $x$ and $y$ windows to range between $-1$ to $1$.
+d. Based on the phase planes that you generate, evaluate the stability of the equilibrium solution as $\mu$ changes.
 
 
 ```
 
-&nbsp;
+
+<!-- Strogatz pg 246, 259-260. LW pg 183 #11 - cell differentiation -->
 ```{exercise}
-Consider the following nonlinear system:
+(Inspired by @strogatz_nonlinear_2015) Consider the following nonlinear system:
 
 \begin{equation}
 \begin{split}
-\frac{dx}{dt} &= x-y \\
-\frac{dy}{dt} &=-y + \frac{5x^2}{4+x^{2}},
-\end{split}
-\end{equation}
-
-
-a. What are the two equations for the nullclines?
-b. Using desmos (or some other graphing utility), graph the two nullclines simultaneous.  What are the intersection points?
-c. Generate a phaseplane for this system that contains all the equilibrium solutions.
-d. Let's say instead that $\displaystyle \frac{dx}{dt} = bx-y$, where $b$ is a parameter such that $0 \leq b \leq 2$. How many equilibrium solutions do you have as $b$ changes?
-
-
-```
-&nbsp;
-
-
-```{exercise}
-(Inspired by @logan_mathematical_2009) Let $C$ be the amount of carbon in a forest ecosystem, with $P$ be the rate of increase due to photosynthesis.  Herbivores $H$ consume carbon on the following predator-prey model:
-
-\begin{equation}
-\begin{split}
-\frac{dC}{dt}&=- aC - bHC \\
-\frac{dH}{dt} &= ebHC-dC
+\frac{dx}{dt} &= y-x \\
+\frac{dy}{dt} &=-y + \frac{5x^2}{4+x^{2}}
 \end{split}
 \end{equation}
 
 
 a. What are the equations for the nullclines?
-b. Determine the equilibrium solutions.
+b. Using desmos (or some other graphing utility), graph the two nullclines simultaneously. What are the intersection points?
+c. Generate a phase plane for this system that contains all the equilibrium solutions.
+d. Let's say instead that $\displaystyle \frac{dx}{dt} = bx-y$, where $b$ is a parameter such that $0 \leq b \leq 2$. Using desmos (or some other graphing utility), how many equilibrium solutions do you have as $b$ changes?
+
+
+```
+
+
+<!-- LW pg 182 -->
+```{exercise}
+(Inspired by @logan_mathematical_2009) Let $C$ be the amount of carbon in a forest ecosystem, with $P$ as the rate of increase in carbon due to photosynthesis. Herbivores $H$ consume carbon on the following predator-prey model:
+
+\begin{equation}
+\begin{split}
+\frac{dC}{dt}&=P- bHC \\
+\frac{dH}{dt} &= e\cdot bHC-dC
+\end{split}
+\end{equation}
+
+In the above equation, $b$, $e$, and $d$ are all parameters greater than zero.
+
+a. What are the equations for the nullclines?
+b. Set $e=b=d=1$. Plot the equations of the nullclines. How many equilibrium solutions does this system have?
+c. Determine the equilibrium solutions for this system of equations, expressed in terms of the parameters $b$, $e$, and $d$.
 
 ```
 

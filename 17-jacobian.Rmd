@@ -1,181 +1,183 @@
 # Local Linearization and the Jacobian {#jacobian-17}
 
-In Sections \@ref(linearsystems-15) and \@ref(nonlinear-16) we focused on systems of differential equations and the types of behaviors we should expect when analyzing the stability of the equilibrium solution.  In this section we will analyze stability of a nonlinear system through the concept of *local linearization*, beginning to build a bridge between nonlinear and linear systems of equations.
+Chapters \@ref(linearsystems-15) and \@ref(nonlinear-16) focused on systems of differential equations and using phase planes to determine a preliminary classification of any equilibrium solution. In this chapter we study local linearization and the associated Jacobian matrix.\index{local linearization}\index{Jacobian}  These tools are used to analyze stability of equilibrium solutions for a nonlinear system, thereby building a bridge between nonlinear and linear systems of equations. Let's get started!
 
-## A first example
-Let's take a look at the following phase plane to this non-linear system:
-
-\begin{equation}
-\begin{split} 
-\frac{dx}{dt} &= y-1 \\  
-\frac{dy}{dt} &= x^{2}-1 
-\end{split} (\#eq:ex1-ch17)
-\end{equation}
-
-The nullclines for this system are $y=1$ and $x=\pm1$, leading two two equilibrium solutions when we create the phaseplane:
-
-```{r ex1-phaseplane,fig.width=4,fig.height=3,echo=FALSE,fig.cap="Phaseplane for $x'=y-1$ and $y'=x^{2}-1$."  }
-# Define the range we wish to evaluate this vector field
-system_eq <- c(dx ~ y-1,
-               dy ~ x^2-1)
-
-phaseplane(system_eq,'x','y',x_window = c(-2,2),y_window = c(-2,2))+  # The values in quotes are the labels for the axes
-stat_function(fun=function(x)1, geom="line", aes(colour="x' = 0"),size=1) +
-  geom_vline(data=tibble(xint=c(-1,1)),aes(xintercept=xint,colour="y' = 0"),size=1) + geom_point(data=tibble(xint=c(-1,1),yint=c(1,1)),aes(x=xint,y=yint),color='red',size=4) +
-  scale_colour_discrete(name='Nullclines')
-  
-
-```
-
-From Figure \@ref(fig:ex1-phaseplane), arrows on the phaseplane by the equilibrium solution at $(x,y)=(-1,1)$ seems to spiral inwards, whereas the second equilibrium solution at $(x,y)=(1,1)$ has behavior that flows in and out depending on the direction you approach.  Beyond this visualization we can define additional tools to help characterize the stability of this system near the equilibrium solutions. 
-
-This section is focused on understanding the behavior near the equilibrium solutions, and in particular applying concepts of _local linearization_ along with our understanding of linear systems.  Let's get started!
-
-
-## The lynx hare revisited
-Let's take a look at another familiar example.  Consider the following nonlinear system of equations from the Lynx-Hare model, with $H$ and $L$ measured in thousands of animals:
+## Competing populations
+Let's take a look at a familiar example from Chapter \@ref(likelihood-09), specifically the experiments of growing different species of yeast together [@gause_experimental_1932]. Equation \@ref(eq:yeast-comp-17) (adapted from the one presented in @gause_experimental_1932) represents the volume of two species of yeast (which we will call $Y$ and $N$) growing in the same solution:
 
 \begin{equation}
 \begin{split}
-\frac{dH}{dt} &= .3 H - .1 HL \\  
-\frac{dL}{dt} &=.05HL -.2L
-\end{split} (\#eq:lynx-hare-17)
+\frac{dY}{dt} &= .2 Y \left( \frac{13-Y-2N}{13} \right)  \\  
+\frac{dN}{dt} &= .06 N \left( \frac{6-N-0.4Y}{6} \right)  \\ 
+\end{split} (\#eq:yeast-comp-17)
 \end{equation}
 
+While Equation \@ref(eq:yeast-comp-17) is a tricky model to consider, the terms $2N$ and $0.4Y$ represent the effect that $Y$ and $N$ have on each other since they are competing for the same resource. If these terms weren't present, both $Y$ and $N$ would follow a logistic growth (verify this on your own).
 
-You can show that the steady states for Equation \@ref(eq:lynx-hare-17) are $(H,L)=(0,0)$ and $(4,3)$.  The phase plane diagram for this system is the following:
+Equation \@ref(eq:yeast-comp-17) has 4 equilibrium solutions: $(Y,N)=(0,0)$, $(Y,N)=(13,0)$, $(Y,N)=(0,6)$, and $(Y,N)=(5,4)$ (Exercise \@ref(exr:yeast-ss-17)). Figure \@ref(fig:yeast-orig-17) shows the phase plane for this system along with the equilibrium solutions.^[I encourage you to use the `phaseplane` command to re-create Figure \@ref(fig:yeast-orig-17). If you do, be sure to use the options `x_window` and `y_window` to set things correctly.]
 
-```{r,fig.width=4,fig.height=3}
+```{r yeast-orig-17,fig.cap="Phase plane for Equation \\@ref(eq:yeast-comp-17), with equilibrium solutions shown as red points.",echo=FALSE}
 # Define the range we wish to evaluate this vector field
-H_window <- c(0,5)
-L_window <- c(0,5)
+Y_window <- c(0, 20)
+N_window <- c(0, 10)
 
-system_eq <- c(dH ~ .3*H - .1*H*L,
-               dL ~ .05*H*L -.2*L)
+yeast_eq <- c(
+  dY ~ .2 * Y * (13 - Y - 2 * N) / 13,
+  dN ~ .06 * N * (6 - N - 0.4 * Y) / 6
+)
+
+# Define the points where the
+# equilibrium solutions are located
+eq_solns <- tibble(
+  Y = c(0, 13, 0, 5),
+  N = c(0, 0, 6, 4)
+)
 
 # Reminder: The values in quotes are the labels for the axes
-phaseplane(system_eq,'H','L',x_window = H_window, y_window = L_window)  
-
-
+# We plot the phase plane and add on the points.
+phaseplane(yeast_eq, "Y", "N",
+  x_window = Y_window,
+  y_window = N_window
+) +
+  geom_point(
+    data = eq_solns,
+    aes(x = Y, y = N),
+    color = "red",
+    size = 2
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind()
 ```
 
-Let's take a closer look at the phase plane near the first equilibrium solution:
+Let's take a closer look at the phase plane near the equilibrium solution $(Y,N)=(5,4)$ in Figure \@ref(fig:yeast-closer):
 
-```{r,label="lynx-hare-closer",fig.width=4,fig.height=3,fig.cap="A zoomed in view of the lynx-hare system."}
+```{r,label="yeast-closer",fig.cap="A zoomed in view of Equation \\@ref(eq:yeast-comp-17) near the $(Y,N)=(5,4)$ equilibrium solution.",echo=FALSE,warning=FALSE}
 # Define the range we wish to evaluate this vector field
-H_window <- c(0,0.5)
-L_window <- c(0,0.5)
+Y_window <- c(4, 6)
+N_window <- c(3, 5)
 
-system_eq <- c(dH ~ .3*H - .1*H*L,
-               dL ~ .05*H*L -.2*L)
+yeast_eq <- c(
+  dY ~ .2 * Y * (13 - Y - 2 * N) / 13,
+  dN ~ .06 * N * (6 - N - 0.4 * Y) / 6
+)
+
+# Define the points where the
+# equilibrium solutions are located
+eq_solns <- tibble(
+  Y = c(0, 13, 0, 5),
+  N = c(0, 0, 6, 4)
+)
 
 # Reminder: The values in quotes are the labels for the axes
-phaseplane(system_eq,'H','L',x_window = H_window, y_window = L_window) 
-
-
+# We plot the phase plane and add on the points.
+phaseplane(yeast_eq, "Y", "N",
+  x_window = Y_window,
+  y_window = N_window
+) +
+  geom_point(
+    data = eq_solns,
+    aes(x = Y, y = N),
+    color = "red",
+    size = 2
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind() +
+  xlim(Y_window) +
+  ylim(N_window)
 ```
 
-While the phaseplane in Figure \@ref(fig:lynx-hare-closer) _looks_ like this equilibrium solution is unstable, verifying this with another approach would be useful.  To do so, we are going to do a **locally linear approximation** or **tangent plane approximation** around $H=0$, $L=0$, which we discuss next.
+The phase plane in Figure \@ref(fig:yeast-closer) _looks_ like this equilibrium solution is stable (the arrows seem to suggest a "swirling" into this equilibrium solution. However, another way to verify this is by applying a **locally linear approximation**. Better stated, because Equation \@ref(eq:yeast-comp-17) is a system of differential equations, we will construct a **tangent plane approximation** around $Y=5$, $N=4$. Let's review how to do that next.
 
 ## Tangent plane approximations
-To extend the notion of a linear approximation, we apply the **tangent plane approximation**  at the point $x=a$, $y=b$:
+For a multivariable function $f(x,y)$, the tangent plane approximation \index{tangent!plane}  at the point $x=a$, $y=b$ is given by Equation \@ref(eq:tangent-plane-17):
 
 \begin{equation}
-L(x,y) = f(a,b) + f_{x}(a,b) \cdot (x-a) + f_{y}(a,b) \cdot (y-b),
+L(x,y) = f(a,b) + f_{x}(a,b) \cdot (x-a) + f_{y}(a,b) \cdot (y-b), (\#eq:tangent-plane-17)
 \end{equation}
 
-where $f_{x}$ is the partial derivative of $f(x,y)$ with respect to $x$ and $f_{y}$ is the partial derivative of $f(x,y)$ with respect to $y$.  For simplicity let's work with the equilibrium solution at $(0,0)$. If we say that $f(H,L)=.3 H - .1 HL$, we know $f(0,0)=0$.  Furthermore the locally linear approximation is:
+where $f_{x}$ is the partial derivative of $f(x,y)$ with respect to $x$ and $f_{y}$ is the partial derivative of $f(x,y)$ with respect to $y$.
 
+We will apply Equation \@ref(eq:tangent-plane-17) to Equation \@ref(eq:yeast-comp-17) at the equilibrium solution at $(Y,N)=(5,4)$. Since we have *two* equations, we need to compute two tangent plane approximations (one for each equation). The right hand sides for Equation \@ref(eq:yeast-comp-17) look complicated, but we can expand them to identify $f(Y,N)=.2Y - .03 Y N - .015 Y^{2}N$ and $g(Y,N)= .06N-.01 N^{2} - .004YN$.
 
-\begin{equation}
-\begin{split}
-f_{H} = .3 - .1L & \rightarrow f_{H}(0,0)=.3 \\
-f_{L} = -.1H & \rightarrow f_{L}(0,0)=0
-\end{split}
-\end{equation}
+First consider $f(Y,N)$. Let's compute the partial derivatives for $f(Y,N)$ at the equilibrium solution:
 
-With this information we are able to take this and then write down the locally linear approximation for $f(H,L)$:
-
-\begin{equation}
-f(H,L) \approx 0 + .3 \cdot (H-0) - 0 \cdot (L-0) = .3H
-\end{equation}
-
-
-Likewise if we consider $g(H,L)= .05HL -.2L$, then we have:
 
 \begin{equation}
 \begin{split}
-g_{H} &= .05L-.2L  \rightarrow g_{H}(0,0)=0 \\
-g_{L} &= .05H-.2  \rightarrow f_{L}(0,0)=-.2
+f_{Y} = .2 - .03N - .03YN & \rightarrow f_{Y}(5,4)=-.52 \\
+f_{N} = .03Y - .015Y^{2} & \rightarrow f_{N}(5,4)=-.225
 \end{split}
 \end{equation}
 
+We also know that $f(5,4)=0$. As a result, the tangent plane approximation for $f(Y,N)$ is given by Equation \@ref(eq:tangent-plane-f-17):
 
-With these results, our locally linear approximation for $g(H,L)$ is:
 
 \begin{equation}
-g(H,L) \approx 0 + 0  \cdot (H-0) -.2 \cdot (L-0) = 0 - .2L.
+f(Y,N) \approx  -.52 \cdot (Y-5) - .225 \cdot (N-4)  (\#eq:tangent-plane-f-17)
 \end{equation}
 
-So, at the equilibrium solution $(0,0)$, Equation \@ref(eq:lynx-hare-17)  behaves like the following system of equations:
 
-\begin{align}
-\frac{dH}{dt} &= .3H\\
-\frac{dL}{dt} &= - .2L (\#eq:lynx-hare-17-00)
-\end{align}
+Likewise if we consider $g(Y,N)= .06N-.01 N^{2} - .004YN$, we have:
+
+\begin{equation}
+\begin{split}
+g_{Y} &= -.004N  \rightarrow g_{Y}(5,4)=-.016 \\
+g_{N} &= .06 -.02N-.004Y  \rightarrow g_{N}(5,4)=-.04
+\end{split}
+\end{equation}
+
+We also know that $g(5,4)=0$. As a result, the tangent plane approximation for $g(Y,N)$ is given by Equation \@ref(eq:tangent-plane-g-17):
+
+\begin{equation}
+g(H,L) \approx  -.016  \cdot (Y-5) -.04 \cdot (N-4) (\#eq:tangent-plane-g-17)
+\end{equation}
+
+So, at the equilibrium solution $(Y,N)=(5,4)$, Equation \@ref(eq:yeast-comp-17)  behaves like the following system of equations (Equation \@ref(eq:yeast-17-54)):
+
+\begin{equation}
+\begin{split}
+\frac{dY}{dt} &= -.52 \cdot (Y-5) - .225 \cdot (N-4)\\
+\frac{dN}{dt} &= -.016  \cdot (Y-5) -.04 \cdot (N-4)
+\end{split} (\#eq:yeast-17-54)
+\end{equation}
 
 
-Notice how Equation \@ref(eq:lynx-hare-17-00) is an entirely decoupled linear system of equations that can be solved easily by separation of variables. For an initial condition $(H_{0},L_{0})$ Equation \@ref(eq:lynx-hare-17-00) has a solution $H(t)=H_{0}e^{.3t}$ and $L(t)=L_{0}e^{-.2t}$.
 
 ## The Jacobian matrix
-RevisitingEquation \@ref(eq:lynx-hare-17-00) we can write our system in matrix form:
-
-\begin{equation}
-\begin{pmatrix} H' \\ L' \end{pmatrix} =\begin{pmatrix} .3 & 0 \\ 0 &  -.2 \end{pmatrix} \begin{pmatrix} H \\ L \end{pmatrix}
-\end{equation}
-
-We define the matrix $\displaystyle J= \begin{pmatrix} .3 & 0 \\ 0 &  -.2 \end{pmatrix}$ as the *Jacobian matrix*.  This matrix is key matrix to investigate stability of nonlinear systems.
-
-## Predator prey with logistic growth
-Let's take a look at another model developed from the lynx-hare system.  We assumed that the hare grow exponentially (notice the term $rH$ in their equation.)  However we can modify their growth rate to be a logistic growth function with carrying capacity $K$:
+Equation \@ref(eq:yeast-17-54) looks like a linear system of equations; however, we first need to re-define our system with the change of variables $y = Y-5$, $n = N-4$, which essentially is a shift of the variables so the equilibrium solution is at the origin (Equation \@ref(eq:yeast-17-54-shift)): 
 
 \begin{equation}
 \begin{split}
-\frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
-\frac{dL}{dt} &=ebHL -dL
-\end{split} (\#eq:logistic-system-17)
+\frac{dy}{dt} &= -.52 y - .225 n\\
+\frac{dn}{dt} &= -.016  y -.04 n
+\end{split} (\#eq:yeast-17-54-shift)
 \end{equation}
 
-Through a rescaling of Equation \@ref(eq:logistic-system-17) with the variables $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite Equation \@ref(eq:logistic-system-17) as:
+Then we can write Equation \@ref(eq:yeast-17-54-shift) in matrix form using the tools from Chapter \@ref(linearsystems-15):
 
 \begin{equation}
-\begin{split}
-\frac{dx}{d T} &= x(1-x) - xy \\
-\frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
-\end{split} (\#eq:logistic-system-rev-17)
+\begin{pmatrix} y' \\ n' \end{pmatrix} =\begin{pmatrix} -.52 & -.225 \\ -.016 &  -.04 \end{pmatrix} \begin{pmatrix} y \\ n \end{pmatrix}
 \end{equation}
 
-In order to analyze the Jacobian matrix for Equation \@ref(eq:logistic-system-rev-17) we will need to compute several partial derivatives:
+We define the matrix $\displaystyle J= \begin{pmatrix} -.52 & -.225 \\ -.016 &  -.04 \end{pmatrix}$ as the Jacobian matrix.\index{Jacobian}
 
-\begin{equation}
-\begin{split}
-\frac{\partial}{\partial x} \left( f(x,y) \right) &= \frac{\partial}{\partial x} \left( x(1-x) - xy \right) = 1-2x-y \\
-\frac{\partial}{\partial y} \left( f(x,y) \right) &= \frac{\partial}{\partial y} \left( x(1-x) - xy \right) = -x \\
-\frac{\partial}{\partial x} \left( g(x,y) \right) &= \frac{\partial}{\partial x} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}y  \\
-\frac{\partial}{\partial y} \left( g(x,y) \right) &= \frac{\partial}{\partial y} \left( \frac{ebK}{r}xy -\frac{d}{r}y \right) = \frac{ebK}{r}x -\frac{d}{r}
-\end{split}
-\end{equation}
-
-So now we can construct the Jacobian matrix:
-
-\begin{equation}
-J_{(x,y)} = \begin{pmatrix} 1-2x-y & -x \\ \frac{ebK}{r}y & \frac{ebK}{r}x -\frac{d}{r} \end{pmatrix}
-\end{equation}
-
-The notation $J_{(x,y)}$ signifies the Jacobian matrix evaluated at the equilibrium solution $(x,y)$. Sometimes computing the Jacobian matrix is a good first step so then you are ready to compute the equilibrium solutions.  In the exercises you will determine equilibrium solutions and visualize the Jacobian matrix.
-
-## Concluding thoughts
-To summarize, let's say we have the following system of equations
+More generally, let's say we have the following system of differential equations, with an equilibrium solution at $(x,y)=(a,b)$:
 
 \begin{equation}
 \begin{split}
@@ -184,36 +186,53 @@ To summarize, let's say we have the following system of equations
 \end{split}
 \end{equation}
 
-Assuming we have an equibrium solution at $(x,y)=(a,b)$, the Jacobian matrix at that solution is:
+The _Jacobian matrix_ at that equilibrium solution is:
 
 \begin{equation}
-J_{(a,b)} =\begin{pmatrix} f_{x}(a,b) & f_{y}(a,b) \\ g_{x}(a,b) &  g_{y}(a,b) \end{pmatrix}
+J_{(a,b)} =\begin{pmatrix} f_{x}(a,b) & f_{y}(a,b) \\ g_{x}(a,b) &  g_{y}(a,b) \end{pmatrix} (\#eq:jacobian-17)
 \end{equation}
 
-While we don't discuss it here, the Jacobian matrix also extends to higher order systems as well.
+The notation $J_{(a,b)}$ signifies the Jacobian matrix evaluated at the equilibrium solution $(x,y)=(a,b)$. The Jacobian matrix (Equation \@ref(eq:jacobian-17)) follows naturally from tangent plane approximations (Equation \@ref(eq:tangent-plane-17)). In later chapters we will use the Jacobian matrix to investigate stability of nonlinear systems.
 
-\newpage
+The Jacobian matrix is part of the following system of linear equations (Equation \@ref(eq:linear-jacobian-17)):
+
+\begin{equation}
+\begin{split}
+\frac{dX}{dt} &= f_{x}(a,b) \cdot X + f_{y}(a,b) \cdot Y \\
+\frac{dY}{dt} &= g_{x}(a,b) \cdot X + g_{y}(a,b) \cdot Y 
+\end{split} (\#eq:linear-jacobian-17)
+\end{equation}
+
+You may recognize that Equation \@ref(eq:yeast-17-54) was a specific example of Equation \@ref(eq:linear-jacobian-17). The variables $X=x-a$ and $Y=y-b$ help translate the tangent plane equation into a linear system. Also notice how Equation \@ref(eq:jacobian-17) does not include the terms $f(a,b)$ or $g(a,b)$ from Equation \@ref(eq:tangent-plane-17). This is because of the fact that we are building our tangent plane approximation at an equilibrium solution, so $f(a,b)=g(a,b)=0$! 
+
+One more additional note: when we visualize the phase plane for a Jacobian matrix, we center the window at the origin $(x,y)=(0,0)$ (rather than at the equilibrium solution $(a,b)$) because Equation \@ref(eq:linear-jacobian-17) is a linear system, with an equilibrium solution at the origin. While we don't discuss it here, the Jacobian matrix also extends to higher order systems as well.
+
+
+### An unstable equilibrium solution
+Let's return to Equation \@ref(eq:yeast-comp-17) and investigate the Jacobian at the origin $(Y,N)=(0,0)$. The Jacobian matrix at that solution is the following:
+
+\begin{equation}
+J_{(0,0)} =\begin{pmatrix} .6 & 0 \\0 &  .2 \end{pmatrix} (\#eq:yeast-00-17)
+\end{equation}
+
+(You should verify this on your own). This Jacobian matrix leads to an uncoupled system of linear equations where $Y' = 0.2Y$ and $N'=0.6N$. In this case, both $Y$ and $N$ are growing exponentially. This type of behavior supports the idea that both $Y$ and $N$ are growing away from the origin, as indicated in Figure \@ref(fig:yeast-orig-17).
+
+The Jacobian matrix helps confirm some of our intuition from examining the phase plane of a system of differential equations. At the heart of the Jacobian matrix is that idea that we can understand the dynamics of a nonlinear system through examining a closely related linear system. Chapter \@ref(eigenvalues-18) will continue to build on this idea, giving you a tool to quantitatively analyze the stability of an equilibrium solution.
+
+
 
 ## Exercises
-```{exercise}
-Consider the following nonlinear system:
-
-\begin{equation}
-\begin{split} 
-\frac{dx}{dt} &= y-1 \\ 
-\frac{dy}{dt} &= x^{2}-1 
-\end{split}
-\end{equation}
 
 
-a. Verify that this system has equilibrium solutions at $(-1,1)$ and $(1,1)$.
-b. Construct the Jacobian matrix at the equilibrium solutions at $(-1,1)$ and $(1,1)$.
-c. With the Jacobian matrix, visualize a phaseplane at these equilbrium solutions to determine stability.
-
-
+```{exercise yeast-ss-17}
+Using algebra, show that the 4 equilibrium solutions to Equation \@ref(eq:yeast-comp-17) are $(Y,N)=(0,0)$, $(Y,N)=(13,0)$, $(Y,N)=(0,6)$, and $(Y,N)=(5,4)$ *Hint:* Perhaps first determine the nullclines for each solution.
 ```
-&nbsp;
 
+```{exercise}
+Construct the Jacobian matrices for the equilibrium solutions $(Y,N)=(13,0)$ and $(Y,N)=(0,6)$ to Equation \@ref(eq:yeast-comp-17).
+```
+
+ 
 ```{exercise}
 By solving directly, show that $(H,L)=(0,0)$ and $(4,3)$ are equilibrium solutions to the following system of equations:
 
@@ -224,44 +243,62 @@ By solving directly, show that $(H,L)=(0,0)$ and $(4,3)$ are equilibrium solutio
 \end{split}
 \end{equation}
 ```
-&nbsp;
+
+
+```{exercise}
+A system of two differential equations has a Jacobian matrix at the equilibrium solution $(0,0)$ as the following:
+  
+  \begin{equation}
+J_{(0,0)}=\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}
+\end{equation}
+
+What would be a system of differential equations that would produce that Jacobian matrix?
+
+```
 
 
 ```{exercise}
 Consider the following nonlinear system:
 
 \begin{equation}
+\begin{split} 
+\frac{dx}{dt} &= y-1 \\ 
+\frac{dy}{dt} &= x^{2}-1
+\end{split}
+\end{equation}
+
+
+a. Verify that this system has equilibrium solutions at $(-1,1)$ and $(1,1)$.
+b. Determine the linear system associated with the tangent plane approximation at the equilibrium solution $(x,y)=(-1,1)$ and $(1,1)$ (two separate linear systems).
+c. Construct the Jacobian matrix at the equilibrium solutions at $(-1,1)$ and $(1,1)$.
+d. With the Jacobian matrix, visualize a phase plane at these equilbrium solutions to estimate stability of the equilibrium solution.
+
+
+```
+
+
+
+<!-- Strogatz pg 259-260. LW pg 183 #11 - cell differentiation -->
+```{exercise}
+(Inspired by @strogatz_nonlinear_2015) Consider the following nonlinear system:
+
+\begin{equation}
 \begin{split}
-\frac{dx}{dt} &= x-y \\
-\frac{dy}{dt} &=-y + \frac{5x^2}{4+x^{2}},
+\frac{dx}{dt} &= y-x \\
+\frac{dy}{dt} &=-y + \frac{5x^2}{4+x^{2}}
 \end{split}
 \end{equation}
 
 
 a. Verify that the point $(x,y)=(1,1)$ is an equilibrium solution.
-b. Construct the Jacobian matrix at this equilibrium solution.
-c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
+b. Determine the linear system associated with the tangent plane approximation at the equilibrium solution $(x,y)=(1,1)$.
+c. Construct the Jacobian matrix at this equilibrium solution.
+d. With the Jacobian matrix, visualize a phase plane at that equilbrium solution to estimate stability of the equilibrium solution.
 
 
 ```
-&nbsp;
-```{exercise}
-Consider the nonlinear system
-
-\begin{equation}
-\begin{split}
-\frac{dx}{dt} &= 2x+3y+xy \\
-\frac{dy}{dt} &= -x + y - 2xy^{3},
-\end{split}
-\end{equation}
 
 
-a. Verify that the point $(0,0)$ is an equilibrium solution.
-b. Determine the Jacobian matrix at this equilbrium solution.
-c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
-
-```
-&nbsp;
 
 ```{exercise}
 Consider the following system:
@@ -269,80 +306,93 @@ Consider the following system:
 \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= y^{2} \\
-\frac{dy}{dt} &= -\frac{2}{3} x,
+\frac{dy}{dt} &= - x
 \end{split}
 \end{equation}
 
 
 a. Determine the equilibrium solution.
-b. Construct the Jacobian at the equilibrium solution.
-c. With the Jacobian matrix, visualize a phaseplane at that equilbrium solution to determine stability.
-d. Use the fact that that $\displaystyle \frac{dy}{dx} / \frac{dy}{dt} = \frac{dy}{dx}$, which should yield a separable differential equation that will allow you to solve $y(x)$.  How does that solved differential equation compare to what you found by analyzing the Jacobian matrix?
+b. Visualize a phase plane of this system of differential equations.
+c. Construct the Jacobian at the equilibrium solution.
+d. Use the fact that $\displaystyle \frac{dy}{dt} / \frac{dx}{dt} = \frac{dy}{dx}$, which should yield a separable differential equation that will allow you to solve for a function $y(x)$. Plot several solutions of $y(x)$. How does that solution compare to the phase plane from the Jacobian matrix?
 
 ```
 
-&nbsp;
 
 
 ```{exercise}
-Consider the lynx-hare system with parameters $r$, $b$, $e$, and $d$:
-  
+The *Van der Pol Equation* is a second-order differential equation used to study radio circuits. In Chapter \@ref(nonlinear-16) you showed that the differential equations $x'' + \mu \cdot (x^{2}-1) x' + x = 0$, where $\mu$ is a parameter can be written as a system of equations:
+
+\begin{equation}
+\begin{split} 
+\frac{dx}{dt} &= y \\ 
+\frac{dy}{dt} &= -x-\mu (x^{2}-1)y
+\end{split}
+\end{equation}
+
+a. Determine the general Jacobian matrix $J_{(x,y)}$ for this system of equations.
+b. The point $(0,0)$ is an equilibrium solution. Evaluate the Jacobian matrix at the point $(0,0)$. Your Jacobian matrix will depend on $\mu$.
+c. Evaluate your Jacobian matrix at the $(0,0)$ equilibrium solution for different values of $\mu$ ranging from $-3$, $-1$, 0, 1, 3.
+d. Make a phase plane for the Jacobian matrices at each of the values of $\mu$.
+e. Based on the phase planes that you generate, evaluate the stability of the equilibrium solution as $\mu$ changes.
+
+
+```
+
+
+
+
+<!-- Modified from LW pg 157 158 #3 -->
+```{exercise}
+(Inspired by @logan_mathematical_2009) A population of fish $F$  has natural predators $P$. A model that describes this interaction is the following:
+
 \begin{equation}
 \begin{split}
-\frac{dH}{dt} &= r H - b HL \\
-\frac{dL}{dt} &=ebHL -dL
+\frac{dF}{dt} &= F - .3FP  \\
+\frac{dP}{dt} &= .5FP - P
 \end{split}
 \end{equation}
 
 
-a. Verify that the point $\displaystyle \left( \frac{d}{eb}, \frac{r}{b} \right)$ is an equilibrium solution.
-b. Construct the Jacobian at the equilibrium solution. (Your final answer will include the parameters.)
+a. What are the equilibrium solutions for this differential equation?
+b. Construct a Jacobian matrix for each of the equilibrium solutions.
+c. Based on the phase plane from the Jacobian matrices, evaluate the stability of the equilibrium solutions.
 
 ```
 
-&nbsp;
 
 ```{exercise}
-This problem revisits the modified lynx-hare system:
+(Inspired by @pastor_mathematical_2008) The amount of nutrients (such as carbon) in soil organic matter is represented by $N$, whereas the amount of inorganic nutrients in soil is represented by $I$. A system of differential equations that describes the turnover of inorganic and organic nutrients is the following:
 
 \begin{equation}
 \begin{split}
-\frac{dH}{dt} &= r H \left( 1- \frac{H}{K} \right) - b HL \\
-\frac{dL}{dt} &=ebHL -dL
+\frac{dN}{dt} &= L + kdI - \mu N I - \delta N  \\
+\frac{dI}{dt} &= \mu N I - k d I - \delta I
 \end{split}
 \end{equation}
 
 
-a. Verify that by rescaling of this system $\displaystyle x=\frac{H}{K}$, $\displaystyle y=\frac{L}{r/b}$ and $T = r t$ we can rewrite this system as:
-\begin{equation}
-\begin{split}
-\frac{dx}{d T} &= x(1-x) - xy \\
-\frac{dy}{d T} &=\frac{ebK}{r}xy -\frac{d}{r}y
-\end{split}
-\end{equation}
-b. Determine the three equilibrium solutions of this rescaled system.
-c. Evaluate the Jacobian at each of the equilibrium solutions.
-d. With your Jacobian, select reasonable values of the parameters to generate a phaseplane diagram and classify the stability of each equilibrium solution.
-e. How does this revised system compare to the stability of the regular lynx-hare model?
+a. Verify that $\displaystyle N = \frac{L}{\delta}, \; I = 0$ and $\displaystyle N = \frac{kd+\delta}{\mu}, \; I = \frac{L \mu - \delta k d - \delta^{2}}{\mu \delta}$ are equilibrium solutions for this system.
+b. Construct a Jacobian matrix for each of the equilibrium solutions.
+
 
 ```
-
-&nbsp;
 
 
 
 <!-- Adapted from LW pg 121 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) A model for the spread of a disease where people recover is given by the following differential equation:
+(Inspired by @logan_mathematical_2009 \& @kermack_contribution_1927) A model for the spread of a disease where people recover is given by the following differential equation:
 
 \begin{equation}
 \begin{split}
 \frac{dS}{dt} &= -\alpha SI \\
 \frac{dI}{dt} &= \alpha SI - \gamma I \\
-\frac{dR}{dt} &= \gamma I,
+\frac{dR}{dt} &= \gamma I
 \end{split}
 \end{equation}
 
+Assume this population has $N=1000$ people.
 
 a. Determine the equilibrium solutions for this system of equations.
 b. Construct the Jacobian for each of the equilibrium solutions.
@@ -351,29 +401,8 @@ c. Let $\alpha=0.001$ and $\gamma = 0.2$. With the Jacobian matrix, generate the
 
 ```
 
-&nbsp;
-
-<!-- LW pg 157 158 #3 -->
-```{exercise}
-(Inspired by @logan_mathematical_2009) A population of fish used as food is an example of a renewable resource. This population decreases due to harvesting the fish.  As long as the rate of harvest is smaller than the replacement rate, theoretically the population would be considered a renewable resource.  However fish do have natural predators, which may also be harvested at the same time.  A model that describes this interaction is
-
-\begin{equation}
-\begin{split}
-\frac{dN}{dt} &= rN - cNP - \rho E N \\
-\frac{dP}{dt} &= bcNP - mP - \sigma EP,
-\end{split}
-\end{equation}
-
-where $E$ is the fishing effort and $\rho$ and $\sigma$ are the catchability coefficients for the prey and predator.
 
 
-a. Determine all the equilibrium solutions for this model.
-b. Construct the Jacobian matrix for each of the the equilibrium solutions.
-c. Select different parameter values.  With the Jacobian, construct a phase plane diagram for each of the equilibrium solutions.
-d. In the absence of fishing $E=0$.  How do these equilibrium solutions compare to the ones from the previous part?
-
-```
-&nbsp;
 
 ```{tikz,glucose,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Glucose transporter reaction schemes.",fig.width=4,fig.height=3}
 
@@ -382,10 +411,10 @@ d. In the absence of fishing $E=0$.  How do these equilibrium solutions compare 
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
 
 %% keener pg 65 - need to adapt somewhat with se
-\node [vspecies] (A) {$C_{e}$} ;
-\node [vspecies, right of = A] (B) {$P_{e}$} ;
-\node [vspecies, below of = A] (C) {$C_{i}$} ;
-\node [vspecies, below of = B] (D) {$P_{i}$} ;
+\node [vspecies] (A) {$c_{e}$} ;
+\node [vspecies, right of = A] (B) {$p_{e}$} ;
+\node [vspecies, below of = A] (C) {$c_{i}$} ;
+\node [vspecies, below of = B] (D) {$p_{i}$} ;
 \node [right of = D,node distance = 1.5cm] (model) {inside};
 \node [right of = B,node distance = 1.5cm] (model2) {outside};
 
@@ -407,11 +436,11 @@ d. In the absence of fishing $E=0$.  How do these equilibrium solutions compare 
 
 ```
 
-&nbsp;
+
 
 <!-- Problem adapted from Keener pg 64 and 65 2.4.1 glucose transport -->
 ```{exercise}
-(Inspired by @keener_mathematical_2009) The chemical glucose is transported across the cell membrane using a carrier proteins.  These proteins can have different states (open or closed) that can be bound to a glucose substrate.  The schematic for this reaction is shown in Figure \@ref(fig:glucose).  The system of differential equations describing this reaction is:
+(Inspired by @keener_mathematical_2009) The chemical glucose is transported across the cell membrane using carrier proteins. These proteins can have different states (open or closed) that can be bound to a glucose substrate. The schematic for this reaction is shown in Figure \@ref(fig:glucose). The system of differential equations describing this reaction is:
   
 \begin{equation}
 \begin{split}
@@ -423,7 +452,7 @@ d. In the absence of fishing $E=0$.  How do these equilibrium solutions compare 
 \end{equation}
 
 
-a. We can reduce this to a system of three equations.  First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$.  Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
+a. We can reduce this to a system of three equations. First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$. Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
 b. Determine the equilibrium solutions for this new system of three equations.
 c. Construct the Jacobian matrix for each of these equilibrium solutions.
 

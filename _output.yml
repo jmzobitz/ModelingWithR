@@ -12,9 +12,28 @@ bookdown::gitbook:
         <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
     edit: https://github.com/jules32/bookdown-tutorial/edit/master/%s
     download: []
-#    download: []
-#bookdown::pdf_book:
-#  includes:
-#    in_header: _preamble.tex
-#  latex_engine: xelatex
-#  keep_tex: no
+
+
+# bookdown::pdf_book:
+#   toc_depth: 2
+#   number_sections: true
+#   citation_package: default
+
+bookdown::pdf_book:
+  includes:
+    in_header: latex/preamble.tex
+    before_body: latex/before_body.tex
+    after_body: latex/after_body.tex
+  keep_tex: true
+  latex_engine: xelatex
+  biblio-style: apacite
+  template: null
+  pandoc_args: --top-level-division=chapter
+  toc_depth: 2
+  toc_unnumbered: false
+  toc_appendix: true
+  quote_footer: ["\\VA{", "}{}"]
+  highlight_bw: true
+  fig_width: 4
+  fig_height: 3
+  fig_align: 'center'

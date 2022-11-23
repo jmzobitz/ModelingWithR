@@ -1,5 +1,5 @@
 wilson_data_plot <- ggplot(data = wilson) +
-  geom_point(aes(x = days, y = mass)) +
+  geom_point(aes(x = days, y = weight)) +
   labs(
     x = "Days since birth",
     y = "Weight (pounds)"
@@ -12,12 +12,12 @@ days <- seq(0, 1500, by = 1)
 p1 <- 78
 p2 <- -2.461935
 p3 <- 0.017032
-mass <- p1 / (1 + exp(-(p2 + p3 * days)))
+weight <- p1 / (1 + exp(-(p2 + p3 * days)))
 
-my_guess <- tibble(days, mass)
+my_guess <- tibble(days, weight)
 
 wilson_data_plot +
-  geom_line(data = my_guess, color = "red", aes(x = days, y = mass))
+  geom_line(data = my_guess, color = "red", aes(x = days, y = weight))
 
 
 days <- seq(0, 1500, by = 1)
@@ -27,10 +27,10 @@ p2 <- -2.461935
 p3 <- 0.017032
 mass <- p1 / (1 + exp(-(p2 + p3 * days)))
 
-my_guess <- tibble(days, mass)
+my_guess <- tibble(days, weight)
 
 my_guess_plot <- wilson_data_plot +
-  geom_line(data = my_guess, color = "red", aes(x = days, y = mass))
+  geom_line(data = my_guess, color = "red", aes(x = days, y = weight))
 
 my_guess_plot
 
@@ -44,14 +44,14 @@ p2 <- -2.461935
 p3 <- 0.017032
 mass <- p1 / (1 + exp(-(p2 + p3 * days)))
 
-my_guess_two <- tibble(days, mass)
+my_guess_two <- tibble(days, weight)
 
 my_guess_plot +
-  geom_line(data = my_guess_two, color = "blue", aes(x = days, y = mass))
+  geom_line(data = my_guess_two, color = "blue", aes(x = days, y = weight))
 
 #####
 # Can we do this with compute likelihood?
-my_model <- mass ~ p1 / (1 + exp(-(p2 + p3 * days)))
+my_model <- weight ~ p1 / (1 + exp(-(p2 + p3 * days)))
 
 # This allows for all the possible combinations of parameters
 parameters <- tibble(p1 = c(78, 65), p2 = -2.461935, p3 = 0.017032)
@@ -65,7 +65,7 @@ out_values <- compute_likelihood(my_model, demodelr::wilson, parameters)$likelih
 likelihood_ratio_wilson <- function(proposed, current) {
 
   # Can we do this with compute likelihood?
-  my_model <- mass ~ p1 / (1 + exp(-(p2 + p3 * days)))
+  my_model <- weight ~ p1 / (1 + exp(-(p2 + p3 * days)))
 
 
   # This allows for all the possible combinations of parameters

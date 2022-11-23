@@ -1,112 +1,159 @@
-# Stochastic Differential Equations {#sdes-25}
+# Simulating Stochastic Differential Equations {#sdes-25}
 
-In this section we will begin to combine our knowledge of random walks to numerically simulate _stochastic differential equations_, or SDEs for short.  Here is the good news: much of the content from the previous sections comes into focus here.  We are going to focus on a model that you know (a logisitic differential equation) to develop general principles for working with other SDEs.  
+In this chapter we will begin to combine our knowledge of random walks to numerically simulate _stochastic differential equations_, or SDEs for short. Here is the good news: our previous work comes into focus. This chapter returns to a specific model you are familiar with (the logistic differential equation) and examines it stochastically. Hopefully this specific example will allow you to see how the methods developed here work in other contexts. Let's get started!
 
 ## The stochastic logistic model
-
-In Section \@ref(diffusion-24) we started to write down the format of a stochastic differential equation, which we will use the logistic equation for context:
-
-\begin{equation}
-dx = rx \left(1 - \frac{x}{K} \right) \; dt + \mbox{ Noise } \; dt   (\#eq:logistic-sde-25)
-\end{equation}
-
-It is helpful to identify the two different parts of Equation \@ref(eq:logistic-sde-25).  The first part is called the _deterministic part_, and it does not involve the "Noise" term: $\displaystyle rx \left(1 - \frac{x}{K} \right) \; dt$.  The second part is called the _stochastic part_ and is (I bet you guessed it!) the term that contains $\mbox{ Noise } \; dt$ is the "stochastic part".
-
-While just writing $\mbox{ Noise } \; dt$ doesn't seem mathematical, its just a substitute for the type of stochastic process we have.  For our purposes we are only going to consider random walks (a.k.a white noise a.k.a. Weiner processes), which we represent in shorthand with $dW(t)$, so that $dW(t)=\mbox{ Noise } \; dt$. This allows us to re-write Equation \@ref(eq:logistic-sde-25) as a more formal SDE (Equation \@ref(eq:logistic-stochastic-sde)).
+Equation \@ref(eq:logistic-de-25) begins with the logistic differential equation, but written a little differently by multiplying the differential $dt$ to the right hand side:
 
 \begin{equation}
-dx = rx \left(1 - \frac{x}{K} \right) \; dt + dW(t)   (\#eq:logistic-stochastic-sde)
+dx = rx \left(1 - \frac{x}{K} \right) \; dt  (\#eq:logistic-de-25)
 \end{equation}
 
+One way to interpret Equation \@ref(eq:logistic-de-25) is that a small change is the variable $x$ (denoted is $dx$), which is equal to the rate $\displaystyle rx \left(1 - \frac{x}{K} \right)$ multiplied by $dt$.
 
-Just to be clear the term $dW(t)$ in Equation \@ref(eq:logistic-stochastic-sde) is short hand to the differential equation $\displaystyle \frac{dW}{dt} = \mbox{ Noise }$, where $W(t)$ is the solution to a Weiner process. This white noise has the following characteristics:
+A direct way to incorporate stochastics is to modify Equation \@ref(eq:logistic-de-25) by incorporating aspects of Brownian motion, as shown with Equation \@ref(eq:logistic-sde-25):\index{Brownian motion}\index{differential equation!stochastic!logistic model}
 
-- $W(t)$ is continuous
-- $W(0)=0$
-- $W(t)-W(s)$ independent  (they call this independent increments)
-- $W(t)-W(s)$ is normally distributed with mean 0 and standard deviation $\sqrt{t-s}$.
+\begin{equation}
+dx = \underbrace{rx \left(1 - \frac{x}{K} \right) \; dt}_{\text{Deterministic part}} + \underbrace{\sqrt{2D \, dt} \, \mathcal{N}(0,1)}_{\text{Stochastic part}}  (\#eq:logistic-sde-25)
+\end{equation}
 
+In Equation \@ref(eq:logistic-sde-25), $D$ represents the diffusion coefficient and $\mathcal{N}(0,1)$ signifies the normal distribution with mean zero and variance one.^[As a reminder, in `R` the command `rnorm(1)` draws a random number from the standard unit normal distribution.]
 
+It may seem odd to express Equation \@ref(eq:logistic-sde-25) in this form (i.e. $dx = ...$ versus $\displaystyle \frac{dx}{dt} = ...$). However a good way to think of this stochastic differential equation is that a small change in the variable $x$ (represented by the term $dx$) is computed in two ways:
 
-
-It does seem odd to write a differential equation in this form (i.e. $dx = ...$ versus $\displaystyle \frac{dx}{dt} = ...$). but a good way to think of this stochastic differential equation is that a small change in the variable $x$ (represented by the term $dx$) is computed in two ways:
-
-\begin{equation*}
+\begin{equation}
 \begin{split}
 \mbox{Deterministic part: } & rx \left(1 - \frac{x}{K} \right) \; dt \\
-\mbox{Stochastic part: } & dW(t)
-\end{split}
+\mbox{Stochastic part: } & \sqrt{2D \, dt} \, \mathcal{N}(0,1)
+\end{split} (\#eq:logistic-sde-split-25)
+\end{equation}
+
+
+To simplify things somewhat we will represent $\sqrt{2D \, dt} \, \mathcal{N}(0,1)$ in Equation \@ref(eq:logistic-sde-25) with $dW(t)$, so that $dW(t)=\sqrt{2D \, dt} \, \mathcal{N}(0,1)$. The term $dW(t)$ can be thought of as similar to a stochastic differential equation $\displaystyle \frac{dW}{dt} = \sqrt{2D \, dt}$, with $W(0)=0$. The solution $W(t)$ is also representative of a *Weiner process*.\index{Weiner process} See @logan_mathematical_2009 For more information. In most cases a Weiner process does not include the term $\sqrt{2D}$ (effectively $D=\frac{1}{2}$). It is helpful to keep the term $D$ as a control parameter for simulating the SDE (see Exercises \@ref(exr:control-d-1) - \@ref(exr:control-d-3)).
+
+
+How does the stochastic part of this differential equation change the solution trajectory? It turns out that the "exact" solutions to problems like these are difficult (we will study a sample of exact solutions to SDEs in Chapter \@ref(solvingSDEs-27)). Rather than focus on exact solution techniques we will apply the workflow developed in Chapter \@ref(stoch-sim-22) (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize) by simulating several solution trajectories and then taking the ensemble average at each of the time points.
+
+
+## The Euler-Maruyama method
+One way to numerically solve a stochastic differential equation begins with a variation of Euler's method. The Euler-Maruyama method accounts for stochasticity and implements the random walk (Brownian motion).\index{random walk}\index{Brownian motion}\index{Euler-Maruyama method} We will build this method up step by step.
+
+Like Euler's method, the Euler-Maruyama method begins by writing the differential $dx$ as a difference: $dx = x_{n+1}-x_{n}$, where $n$ is the current step of the method. Likewise $dW(t) = W_{n+1} - W_{n}$, which represents one step of the random walk, but we approximate this difference by $\sqrt{2D \Delta t} \mathcal{N}(0,1)$, where $\Delta t$ is the timestep length. Given $\Delta t$, diffusion coefficient $D$, and starting value $x_{0}$, we can define the following method.
+
+- From the initial condition $x_{0}$, compute the value at the next time step ($x_{0}$), which for Equation \@ref(eq:logistic-sde-25) is:
+
+\begin{equation*}
+x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{2D \, \Delta t} \, \mathcal{N}(0,1)
 \end{equation*}
 
-How does the stochastic part of this differential equation change the solution trajectory? It turns out that the "exact" solutions to problems like these are difficult (we will study a sample of them in \@ref(solvingSDEs-27)). Rather than focus on an exact solution technique we are going to focus on how to apply a numerical method to simulate solution trajectories and then take the ensemble average each of the time points.
+- Repeat this iteration to step $n$, where $\mathcal{N}(0,1)$ is re-computed at each timestep:
+
+\begin{equation*}
+x_{n} = x_{n-1} + rx_{n-1} \left(1 - \frac{x_{n-1}}{K} \right) \; \Delta t + \sqrt{2D \Delta t} \, \mathcal{N}(0,1)
+\end{equation*}
 
 
-## The Euler-Maruyama Method
-
-The Euler-Maruyama method is a variation of Euler's method that accounts for stochasticity and implements the random walk.  We are going to build this up step by step.
-
-First we write the $dx$ term as a difference equation: $dx = x_{n+1}-x_{n}$, where $n$ is the current step of Euler's method.  Likewise $dW(t) = W_{n+1} - W_{n}$, which represents one step of the random walk.  We will approximate $W_{n+1}-W_{n} = \sqrt{\Delta t} Z_{1}$, where $Z_{1}$ is a random number from the standard unit normal distribution (done in `R` as `rnorm(1)`) and $\Delta t$ is the timestep length. When we put these together we have the following iterative method:
-
-- Given $\Delta t$ and starting value $x_{0}$,
-- Then compute the next step: $\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} \; Z_{1}$
-- Repeat to step $n$: $\displaystyle x_{1} = x_{0} + rx_{0} \left(1 - \frac{x_{0}}{K} \right) \; \Delta t + \sqrt{\Delta t} \; Z_{1}$
-
-That is it!  We can apply this numerical method for as many steps as we want. I have some defined code that will apply the simulation, but just like `euler` or `systems` there are some things that need to be set first. In order to apply the Euler-Maruyama method you will need to define six things:
+That is it!  We can apply this numerical method for as many steps as we want. In the `demodelr` package the function `euler_stochastic` will apply the Euler-Maruyama method to a stochastic differential equation. Just like the functions `euler` or `rk4` there are some things that need to be set first:
         
-- The size ($\Delta t$) of your timesteps.
-- The number of timesteps you wish to run the method.  More timesteps means more computational time.  If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.
-- A function for our deterministic dynamics.  For Equation \@ref(eq:logistic-stochastic-sde) this equals $\displaystyle rx \left(1 - \frac{x}{K} \right)$.
-- A function for our stochastic dynamics. For Equation \@ref(eq:logistic-stochastic-sde) this equals 1.
-- The values of the vector of parameters $\vec{\alpha}$.  For the logistic differential equation we will take $r=0.8$ and $K=100$.
-- The standard deviation ($\sigma$) of our normal distribution and random walk.  Typically this is set to 1, but can be varied if needed.
+- The size ($\Delta t$) of your timestep.
+- The value of the diffusion coefficient $D$ (we will discuss this later).
+- The number of timesteps you wish to run the method. More timesteps means more computational time. If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.
+- A function for our deterministic dynamics. For Equation \@ref(eq:logistic-de-25) this equals $\displaystyle rx \left(1 - \frac{x}{K} \right)$.
+- A function for our stochastic dynamics. For Equation \@ref(eq:logistic-de-25) this equals 1.
+- The values of the vector of parameters $\vec{\alpha}$. For the logistic differential equation we will take $r=0.8$ and $K=100$.
+
 
       
 Sample code for this stochastic differential equation is shown below, with the resulting trajectory of the solution in Figure \@ref(fig:log-sde).
 
-```{r log-sde,fig.cap="One realization of Equation \\@ref(eq:logistic-sde-25)",fig.width=4,fig.height=3}
+```{r eval=FALSE}
 
 # Identify the deterministic and stochastic parts of the DE:
 deterministic_logistic <- c(dx ~ r*x*(1-x/K))
 stochastic_logistic <-  c(dx ~ 1)
 
 # Identify the initial condition and any parameters
-init_logistic <- c(x=3)  # Be sure you have enough conditions as you do variables. 
+init_logistic <- c(x=3) 
 logistic_parameters <- c(r=0.8, K=100)   # parameters: a named vector
 
 # Identify how long we run the simulation
-deltaT_log <- .05    # timestep length
-timeSteps_log <- 200   # must be a number greater than 1
+deltaT_logistic <- .05    # timestep length
+timesteps_logistic <- 200   # must be a number greater than 1
 
 # Identify the standard deviation of the stochastic noise
-sigma_log <- 1
+D_logistic <- 1
 
 # Do one simulation of this differential equation
-logistic_out <- euler_stochastic(deterministic_rate = deterministic_logistic,
-                             stochastic_rate = stochastic_logistic,
-                             init_cond = init_logistic,
-                             parameters = logistic_parameters,
-                             deltaT = deltaT_log,
-                             n_steps = timeSteps_log,
-                             sigma = sigma_log)
+logistic_out <- euler_stochastic(
+  deterministic_rate = deterministic_logistic,
+  stochastic_rate = stochastic_logistic,
+  initial_condition = init_logistic,
+  parameters = logistic_parameters,
+  deltaT = deltaT_logistic,
+  n_steps = timesteps_logistic,
+  D = D_logistic
+  )
 
 # Plot out the solution
 ggplot(data = logistic_out) +
   geom_line(aes(x=t,y=x))
 ```
 
+```{r log-sde,echo=FALSE,fig.cap="One realization of Equation \\@ref(eq:logistic-sde-25)."}
 
-Let's break this code down step by step:
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_logistic <- c(dx ~ r*x*(1-x/K))
+stochastic_logistic <-  c(dx ~ 1)
 
-- We identify the deterministic and stochastic parts to our differential equation with the variables `deterministic_logistic` and `stochastic_logistic`. The same structure is used for Euler's method from Section \@ref(euler-04)
-- Similar with Euler's method we need to identify the initial conditions (`init_logistic`), parameters (`logistic_parameters`), $\Delta t$ (`deltaT_log`), and number of timesteps (`timeSteps_log`).
-- The standard deviation of the stochastic noise ($\sigma$) is represented with `sigma_log`.
-- The command `euler_stochastic` does one realization of the Euler-Maruyama method, returning a vector that we can then plot.
+# Identify the initial condition and any parameters
+init_logistic <- c(x=3) 
+logistic_parameters <- c(r=0.8, K=100)   # parameters: a named vector
+
+# Identify how long we run the simulation
+deltaT_logistic <- .05    # timestep length
+timesteps_logistic <- 200   # must be a number greater than 1
+
+# Identify the standard deviation of the stochastic noise
+D_logistic <- 1
+
+# Do one simulation of this differential equation
+logistic_out <- euler_stochastic(
+  deterministic_rate = deterministic_logistic,
+  stochastic_rate = stochastic_logistic,
+  initial_condition = init_logistic,
+  parameters = logistic_parameters,
+  deltaT = deltaT_logistic,
+  n_steps = timesteps_logistic,
+  D = D_logistic
+  )
+
+# Plot out the solution
+ggplot(data = logistic_out) +
+  geom_line(aes(x=t,y=x)) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind()
+```
+
+Let's break the code down to generate Figure \@ref(fig:log-sde) step by step:
+
+- We identify the deterministic and stochastic parts to our differential equation with the variables `deterministic_logistic` and `stochastic_logistic`. The same structure is used for Euler's method from Chapter \@ref(euler-04).
+- Similar to Euler's method we need to identify the initial conditions (`init_logistic`), parameters (`logistic_parameters`), $\Delta t$ (`deltaT_logistic`), and number of timesteps (`timesteps_logistic`).
+- The diffusion coefficient for the stochastic process ($D$) is represented with `D_logistic`.
+- The command `euler_stochastic` does one realization of the Euler-Maruyama method.
 
 
-### Multiple simulations
-Figure \@ref(fig:log-sde) shows one sample trajectory of our solution. If you re-run this code several times and replot the solution you may see different trajectories plotted.  In Section \@ref(stoch-sim-22) we discussed the idea of stochastic simulation and how to re-run code several times and compute the ensemble average. We can put those ideas to good use here:
+### Do several times
+Figure \@ref(fig:log-sde) shows one sample trajectory of our solution, but there is benefit to running several simulations and then plotting out all the solution trajectories together. The code presented below accomplishes that task and makes a plot of all the solution trajectories (Figure \@ref(fig:spaghetti)). This code is similar to code presented in Chapter \@ref(stoch-sim-22). As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.
 
-```{r spaghetti,fig.cap="Several different realizations of the logistic SDE.",fig.width=4,fig.height=3}
+```{r eval = FALSE}
 # Many solutions
 n_sims <- 100  # The number of simulations
 
@@ -115,16 +162,16 @@ logistic_run <- rerun(n_sims) %>%
   set_names(paste0("sim", 1:n_sims)) %>%
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic,
                              stochastic_rate = stochastic_logistic,
-                             init_cond = init_logistic,
+                             initial_condition = init_logistic,
                              parameters = logistic_parameters,
-                             deltaT = deltaT_log,
-                             n_steps = timeSteps_log,
-                             sigma = sigma_log)) %>%
+                             deltaT = deltaT_logistic,
+                             n_steps = timesteps_logistic,
+                             D = D_log)) %>%
   map_dfr(~ .x, .id = "simulation")
 
 
-# Plot these all up together
-  ggplot(data = logistic_run) +
+# Plot these all together
+ggplot(data = logistic_run) +
   geom_line(aes(x=t, y=x, color = simulation)) +
   ggtitle("Spaghetti plot for the logistic SDE") +
   guides(color="none")
@@ -132,17 +179,63 @@ logistic_run <- rerun(n_sims) %>%
 
 ```
 
-As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.
+```{r spaghetti,fig.cap="Several different realizations of Equation \\@ref(eq:logistic-sde-25).",echo=FALSE}
+# Many solutions
+n_sims <- 100  # The number of simulations
 
-Figure \@ref(fig:logistic-ensemble) shows the ensemble average (median and 95% confidence interval) for the different simulations, recycling code from Section \@ref(stoch-sim-22).
+# Compute solutions
+logistic_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(deterministic_rate = deterministic_logistic,
+                             stochastic_rate = stochastic_logistic,
+                             initial_condition = init_logistic,
+                             parameters = logistic_parameters,
+                             deltaT = deltaT_logistic,
+                             n_steps = timesteps_logistic,
+                             D = D_logistic)) %>%
+  map_dfr(~ .x, .id = "simulation")
 
-```{r logistic-ensemble,fig.cap="Ensemble average plot of the stochastic logistic SDE.",fig.width=4,fig.height=3}
+
+# Plot these all together
+ggplot(data = logistic_run) +
+  geom_line(aes(x=t, y=x, color = simulation)) +
+  ggtitle("Spaghetti plot for the logistic SDE") +
+  guides(color="none") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
+
+
+```
+
+
+
+
+### Summarize and Visualize
+The code used to generate the ensemble average for the different simulations is shown below (try running this out on your own). This code is similar to ones presented in Chapter \@ref(stoch-sim-22). The variable `summarized_logistic` first groups the simulations by the variable `t` in order to compute the quantiles across each of the simulations.
+
+```{r eval=FALSE}
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
 ### Summarize the variables
 summarized_logistic <- logistic_run %>%
-  group_by(t) %>%  # All simulations will be grouped at the same timepoint.
-  summarise(x = quantile(x, c(0.25, 0.5, 0.75)), q = c("q0.025", "q0.5", "q0.975")) %>%
-  pivot_wider(names_from = q, values_from = x)
-
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x,   # x is the column to compute the quantiles
+                     probs = quantile_vals
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(names_from = "q_name", values_from = "q_val", 
+              names_glue = "q{q_name}")
 
 ### Make the plot
 ggplot(data = summarized_logistic) +
@@ -152,66 +245,77 @@ ggplot(data = summarized_logistic) +
 
 ```
 
-Breaking this code down, the variable `summarized_logistic` first groups the simulations by the variable `t` in order to compute the quantiles across each of the simulations.  We then pivot resulting data frame in order to plot the ribbon. 
+
 
 ## Adding stochasticity to parameters
 
-Now that we have seen an example in adding stochasticity to the logistic equation, we can also parameters of the differential equation to be stochastic.  For example, let's say that the growth rate $r$ in the logistic equation is subject to stochastic effects.  How we would implement this by replacing $r$ with $r + \mbox{ Noise }$:
+A second approach for modeling SDEs is to assume that the parameters are stochastic. For example, let's say that the growth rate $r$ in the logistic differential equation is subject to stochastic effects. How we would implement this is by replacing $r$ with $r + \mbox{ Noise }$:
 
 \begin{equation}
-dx = (r + \mbox{ Noise } ) \; x \left(1 - \frac{x}{K} \right) \; dt,
+dx = (r + \mbox{ Noise} ) \; x \left(1 - \frac{x}{K} \right) \; dt
 \end{equation}
 
-Now what we do is separate out the terms that are multiplied by "Noise" - they will form the stochastic part of the differential equation.  The terms that aren't multipled by "Noise" form the deterministic part of the differential equation:
+Now what we do is separate out the terms that are multiplied by "Noise" - they will form the stochastic part of the differential equation. The terms that aren't multipled by "Noise" form the deterministic part of the differential equation:
 
 \begin{equation}
-dx = r  x \left(1 - \frac{x}{K} \right) \; dt + x \left(1 - \frac{x}{K} \right) \mbox{ Noise } \; dt,
+dx = r  x \left(1 - \frac{x}{K} \right) \; dt + x \left(1 - \frac{x}{K} \right) \mbox{ Noise } \; dt (\#eq:logistic-de-25-r)
 \end{equation}
 
-So we have the following, writing $\mbox{ Noise } \; dt = dW(t)$:
-\begin{align*}
+When we write $\mbox{ Noise } \; dt = dW(t)$, then the deterministic and stochastic parts to Equation \@ref(eq:logistic-de-25-r) are easily identified:
+
+\begin{equation}
+\begin{split}
 \mbox{Deterministic part: } & rx \left(1 - \frac{x}{K} \right) \; dt \\
 \mbox{Stochastic part: } & x \left(1 - \frac{x}{K} \right) dW(t)
-\end{align*}
+\end{split} (\#eq:logistic-sde-split-r-25)
+\end{equation}
 
-There are a few things to notice here. First, the deterministic part of the differential equation is what we would expect without noise added.  Second, notice how the stochastic part of the differential equation changed.  Let's take a look at the simulations with the Euler-Maruyama method, denoting the deterministic and stochastic parts as `deterministic_logistic_r` and `stochastic_logistic_r` respectively:
+There are a few things to notice with Equation \@ref(eq:logistic-sde-split-r-25). First, the deterministic part of the differential equation is what we would expect without incorporating the "Noise" term. Second, notice how the stochastic part of Equation \@ref(eq:logistic-sde-split-r-25) changed compared to Equation \@ref(eq:logistic-sde-split-25). Given these differences, let's see what happens when we simulate this SDE!
 
 
-```{r log-sde-r,fig.cap="One realization of the logistic differential equation with stochasticity in the parameter *r*." ,fig.width=4,fig.height=3}
+### Do once 
+The following code will produce one realization of Equation \@ref(eq:logistic-de-25-r), denoting the deterministic and stochastic parts as `deterministic_logistic_r` and `stochastic_logistic_r` respectively. We will also change the value of the diffusion coefficient $D$ to equal 0.1. I encourage you to try this code on your own.
+
+
+```{r,eval=FALSE}
 
 # Identify the deterministic and stochastic parts of the DE:
 deterministic_logistic_r <- c(dx ~ r*x*(1-x/K))
 stochastic_logistic_r <-  c(dx ~ x*(1-x/K))
 
 # Identify the initial condition and any parameters
-init_logistic <- c(x=3)  # Be sure you have enough conditions as you do variables. 
-logistic_parameters <- c(r=0.8, K=100)   # parameters: a named vector
+init_logistic <- c(x=3)
+logistic_parameters <- c(K=100,r=0.8)   # parameters: a named vector
 
 # Identify how long we run the simulation
-deltaT_log <- .05    # timestep length
-timeSteps_log <- 200   # must be a number greater than 1
+deltaT_logistic <- .05    # timestep length
+timesteps_logistic <- 200   # must be a number greater than 1
 
 # Identify the standard deviation of the stochastic noise
-sigma_log <- 1
+D_logistic <- .1
 
 # Do one simulation of this differential equation
-logistic_out <- euler_stochastic(deterministic_rate = deterministic_logistic_r,
-                             stochastic_rate = stochastic_logistic_r,
-                             init_cond = init_logistic,
-                             parameters = logistic_parameters,
-                             deltaT = deltaT_log,
-                             n_steps = timeSteps_log,
-                             sigma = sigma_log)
+logistic_out_r <- euler_stochastic(
+  deterministic_rate = deterministic_logistic_r,
+  stochastic_rate = stochastic_logistic_r,
+  initial_condition = init_logistic,
+  parameters = logistic_parameters,
+  deltaT = deltaT_logistic,
+  n_steps = timesteps_logistic,
+  D = D_logistic
+  )
 
 # Plot out the solution
-ggplot(data = logistic_out) +
+ggplot(data = logistic_out_r) +
   geom_line(aes(x=t,y=x))
 ```
 
-As we did before, we can run multiple iterations of this stochastic process.  We will also compute and plot the ensemble average.
+
+### Do several times
+As we did before, we can run multiple iterations of Equation \@ref(eq:logistic-de-25-r), which you can also try on your own. When you do this, does the resulting spaghetti plot look the same as or different from Figure \@ref(fig:spaghetti)? What could be some possible reasons for any differences?
 
 
-```{r spaghetti-r,fig.cap="Several different realizations of the logistic SDE with stochasticity in the parameter *r*, along with the ensemble average plot.",fig.width=4,fig.height=3}
+```{r eval=FALSE}
 # Many solutions
 n_sims <- 100  # The number of simulations
 
@@ -220,90 +324,413 @@ logistic_run_r <- rerun(n_sims) %>%
   set_names(paste0("sim", 1:n_sims)) %>%
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic_r,
                              stochastic_rate = stochastic_logistic_r,
-                             init_cond = init_logistic,
+                             initial_condition = init_logistic,
                              parameters = logistic_parameters,
-                             deltaT = deltaT_log,
-                             n_steps = timeSteps_log,
-                             sigma = sigma_log)
+                             deltaT = deltaT_logistic,
+                             n_steps = timesteps_logistic,
+                             D = D_logistic)
 ) %>%
   map_dfr(~ .x, .id = "simulation")
 
 
-# Plot these all up together
+# Plot these all together
   ggplot(data = logistic_run_r) +
   geom_line(aes(x=t, y=x, color = simulation)) +
   ggtitle("Spaghetti plot for the logistic SDE") +
   guides(color="none")
-
   
-  ### Summarize the variables
-summarized_logistic_r <- logistic_run_r %>%
-  group_by(t) %>%  # All simulations will be grouped at the same timepoint.
-  summarise(x = quantile(x, c(0.25, 0.5, 0.75)), q = c("q0.025", "q0.5", "q0.975")) %>%
-  pivot_wider(names_from = q, values_from = x)
+```
 
 
-### Make the plot
-ggplot(data = summarized_logistic_r) +
+
+### Summarize and Visualize 
+Now after running several different simulations we can plot the ensemble average, shown in Figure \@ref(fig:ensemble-r):
+```{r eval = FALSE}
+  
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+# Summarize the variables
+summarized_logistic <- logistic_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x,   # x is the column to compute the quantiles
+                     probs = quantile_vals
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(names_from = "q_name", values_from = "q_val", 
+              names_glue = "q{q_name}")
+
+# Make the plot
+ggplot(data = summarized_logistic) +
   geom_line(aes(x = t, y = q0.5)) +
   geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
   ggtitle("Ensemble average plot for the logistic SDE")
+```
+
+```{r ensemble-r,fig.cap="Ensemble average plot for Equation \\@ref(eq:logistic-de-25-r).",warning=FALSE,echo=FALSE,message=FALSE}
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_logistic_r <- c(dx ~ r*x*(1-x/K))
+stochastic_logistic_r <-  c(dx ~ x*(1-x/K))
+
+# Identify the initial condition and any parameters
+init_logistic <- c(x=3)
+logistic_parameters <- c(K=100,r=0.8)   # parameters: a named vector
+
+# Identify how long we run the simulation
+deltaT_logistic <- .05    # timestep length
+timesteps_logistic <- 200   # must be a number greater than 1
+
+# Identify the standard deviation of the stochastic noise
+D_logistic <- .1
+
+# Many solutions
+n_sims <- 100  # The number of simulations
+
+# Compute solutions
+logistic_run_r <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(deterministic_rate = deterministic_logistic_r,
+                             stochastic_rate = stochastic_logistic_r,
+                             initial_condition = init_logistic,
+                             parameters = logistic_parameters,
+                             deltaT = deltaT_logistic,
+                             n_steps = timesteps_logistic,
+                             D = D_logistic)
+) %>%
+  map_dfr(~ .x, .id = "simulation")
+
+
+  
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
+### Summarize the variables
+summarized_logistic <- logistic_run_r %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x,   # x is the column to compute the quantiles
+                     probs = quantile_vals
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(names_from = "q_name", values_from = "q_val", 
+              names_glue = "q{q_name}")
+
+### Make the plot
+ggplot(data = summarized_logistic) +
+  geom_line(aes(x = t, y = q0.5),
+    color = "red", size = 1, inherit.aes = FALSE
+  ) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),
+    alpha = 0.2, fill = "red") +
+  ggtitle("Ensemble average plot for the logistic SDE") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) + ylab("x")
+  
 
 ```
 
-Wow! Adding in stochasticity to the parameters changes things. Notice how the dynamics are different - there is a lot more variability in how quickly the solution rises to the steady state of $K=100$.
+
+The results you obtain in Figure \@ref(fig:ensemble-r) might look similar to the ensemble average from simulations of Equation \@ref(eq:logistic-sde-25), but perhaps with more variability (represented in the shading for the 95% confidence interval). Letting $r$ be a stochastic parameter affects how quickly the solution $x$ increases to the carrying capacity at $x=100$.
+
+### When you may have odd results
+Let's discuss failure and other oddities when simulating SDEs. Figure \@ref(fig:poor-sde) shows one odd realization of Equation \@ref(eq:logistic-de-25-r):
+
+```{r poor-sde, echo=FALSE,out.width = "80%",fig.cap = "One odd realization of Equation \\ref{eq:logistic-de-25-r}."}
+knitr::include_graphics("figures/25-sdes/poor-sde.png")
+```
+
+
+Notice in Figure \@ref(fig:poor-sde) how the variable $x$ has values that are negative. Is this a problem? ... Maybe. As with analyzing (non-stochastic) differential equations, unanticipated results may be a signal of the following:
+
+- You may have an error in the coding of the SDE (always double-check your work!)
+- You chose too large of a timestep $\Delta t$. For Brownian motion, the variance grows proportional to $\Delta t$, so larger timesteps mean more variability when you simulate a random variable, which leads to larger stochastic jumps. (To be fair, large values of $\Delta t$ are also a shortcoming of Euler's method.)
+- Similar to the last point, the value of $D$ may be too large. Recall that $D$ is the diffusion coefficient and affects the rate of spread. Try setting $D=0$ and seeing if that produces a result in line with your expectation from the (non-stochastic) differential equation.
+- The Euler-Maruyama may cause the variable to move across an equilibrium solution, thereby undergoing a change in the long-term behavior.^[Dynamically, a variable cannot cross an equilibrium solution. If a variable $x$ reaches an equilibrium solution at a finite time $t$, then it would remain at that equilibrium solution (see Exercise \@ref(exr:cross-eq)).] For the logistic equation, we know that $x=0$ is a unstable equilibrium solution. If for this instance $x$ becomes negative in Figure \@ref(fig:poor-sde), it will move (quickly) away from $x=0$ in the negative direction.
+- Sometimes you may get NaN values in your simulations. You may still be able to compute the ensemble average, but you will need add to the following `na.rm = TRUE` in your `quantile` command (using the variable `logistic_run` as an example):
+
+```{r eval=FALSE}
+# Summarize the variables
+summarized_logistic <- logistic_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x,   # x is the column to compute the quantiles
+                     probs = quantile_vals
+    na.rm = TRUE),  # Note the include of na.rm = TRUE
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(names_from = "q_name", values_from = "q_val", 
+              names_glue = "q{q_name}")
+```
+
+The last point is not a fault of the numerical method, but rather a feature of the differential equation. It is *always* helpful to understand your underlying dynamics before you start to implement a stochastic process!
+
+
+## Systems of stochastic differential equations
+To incorporate stochastic effects with a system of differential equations the process is similar to above, with a few changes. First, we need to keep track of the deterministic and stochastic parts *for each variable*. Second, when we summarize our results in computing the ensemble averages we also need to group by each of the variables. Let's take a look at an example.
+
+Let's revisit the tourism model from Chapter \@ref(mcmc-13) [@sinay_simple_2006]. This model described in Equation \@ref(eq:tourism-13-redux) relies on two non-dimensonal scaled variables: $R$, which is the amount of the resource (as a percentage), and $V$, the percentage of visitors that could visit (also as a percentage). 
+
+\begin{equation}
+\begin{split}
+\frac{dR}{dt}&=R\cdot (1-R)-aV \\ 
+\frac{dV}{dt}&=b\cdot V \cdot (R-V)
+\end{split} (\#eq:tourism-13-redux)
+\end{equation}
+
+Equation \@ref(eq:tourism-13-redux) has two parameters $a$ and $b$, which relate to how the resource is used up as visitors come ($a$) and how as the visitors increase, word of mouth leads to a negative effect of it being too crowded ($b$). @sinay_simple_2006 reported $a=0.15$ and $b=0.3316$. Let's assume that $b$ is stochastic, leading to the following deterministic and stochastic parts to Equation \@ref(eq:tourism-13-redux):
+
+
+- Deterministic part for $\displaystyle \frac{dR}{dt}$: $R\cdot (1-R)-aV$
+- Stochastic part for $\displaystyle \frac{dR}{dt}$: 0
+- Deterministic part for $\displaystyle \frac{dV}{dt}$: $b\cdot V \cdot (R-V)$
+- Stochastic part for $\displaystyle \frac{dV}{dt}$: $V \cdot (R-V)$
+
+
+
+Now we will apply the established workflow. The code to generate one realization of this stochastic process (the "Do once" step) is shown below (try this out on your own):
+
+```{r eval = FALSE}
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_tourism<- c(dr ~ R*(1-R)-a*V, dv ~ b*V*(R-V))
+stochastic_tourism <-  c(dr ~ 0, dv ~ V*(R-V))
+
+# Identify the initial condition and any parameters
+init_tourism <- c(R = 0.995, V = 0.00167)
+tourism_parameters <- c(a = 0.15, b = 0.3316)   #
+
+deltaT_tourism <- .5 # timestep length
+timeSteps_tourism <- 200 # must be a number greater than 1
+
+# Identify the diffusion coefficient
+D_tourism <- .05
+
+# Do one simulation of this differential equation
+tourism_out <- euler_stochastic(
+  deterministic_rate = deterministic_tourism,
+  stochastic_rate = stochastic_tourism,
+  initial_condition = init_tourism,
+  parameters = tourism_parameters,
+  deltaT = deltaT_tourism,
+  n_steps = timeSteps_tourism,
+  D = D_tourism
+  )
+
+# We will pivot the data to ease in plotting:
+tourism_revised <- tourism_out %>%
+  pivot_longer(cols=c("R","V"))
+
+# Plot out the solution
+ggplot(data = tourism_revised) +
+  geom_line(aes(x=t,y=value)) +
+  facet_grid(.~name)
+```
+
+Note the additional creation of the variable `tourism_revised` and the command `facet_grid` in the plotting. Let's break this down:
+
+- The data frame `tourism_out` has three variables: $t$, $R$, and $V$. Because we have more than one variable, we need to do an additional step in pivoting longer. (`pivot_longer(cols=c("r","v"))`) The data frame `tourism_revised` has more rows, but the second column (called `name`) contains the name of each variable), and the third column (`value`) has the associated value of each variable at a given point in time.
+- In order to plot these variables in a multipanel plot we use `facet_grid`. Think of `facet_grid(.~name)` as a row by column display. We want the columns to be the instances of the variable `name`, with one row (`.`).
+
+The "Do several times" step follows a similar process as previous examples. The code to generate and plot multiple realizations of this stochastic process is below and also displayed with Figure \@ref(fig:tourism-many).
+
+```{r eval=FALSE}
+
+# Many solutions
+n_sims <- 100  # The number of simulations
+
+# Compute solutions
+tourism_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(
+    deterministic_rate = deterministic_tourism,
+    stochastic_rate = stochastic_tourism,
+    initial_condition = init_tourism,
+    parameters = tourism_parameters,
+    deltaT = deltaT_tourism,
+    n_steps = timeSteps_tourism,
+    D = D_tourism)
+    ) %>%
+  map_dfr(~ .x, .id = "simulation")
+
+# We will pivot the data to ease in plotting and computing:
+tourism_run_revised <- tourism_run %>%
+  pivot_longer(cols=c("R","V"))
+
+# Plot these all together
+ggplot(data = tourism_run_revised) +
+  geom_line(aes(x=t, y=value, color = simulation)) +
+  facet_grid(.~name) +
+  guides(color="none")
+
+
+```
+
+```{r tourism-many,fig.cap="Spaghetti plot for many realizations of Equation \\@ref(eq:tourism-13-redux).",warning=FALSE,echo=FALSE}
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_tourism<- c(dr ~ R*(1-R)-a*V, dv ~ b*V*(R-V))
+stochastic_tourism <-  c(dr ~ 0, dv ~ V*(R-V))
+
+# Identify the initial condition and any parameters
+init_tourism <- c(R = 0.995, V = 0.00167)
+tourism_parameters <- c(a = 0.15, b = 0.3316)   #
+
+deltaT_tourism <- .5 # timestep length
+timeSteps_tourism <- 200 # must be a number greater than 1
+
+# Identify the diffusion coefficient
+D_tourism <- .05
+
+
+# Many solutions
+n_sims <- 100  # The number of simulations
+
+# Compute solutions
+tourism_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(
+    deterministic_rate = deterministic_tourism,
+    stochastic_rate = stochastic_tourism,
+    initial_condition = init_tourism,
+    parameters = tourism_parameters,
+    deltaT = deltaT_tourism,
+    n_steps = timeSteps_tourism,
+    D = D_tourism)
+    ) %>%
+  map_dfr(~ .x, .id = "simulation")
+
+# We will pivot the data to ease in plotting and computing:
+tourism_run_revised <- tourism_run %>%
+  pivot_longer(cols=c("R","V"))
+
+# Plot these all together
+ggplot(data = tourism_run_revised) +
+  geom_line(aes(x=t, y=value, color = simulation)) +
+  facet_grid(.~name) +
+  guides(color="none") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) + ylab("Value")
+
+```
+
+Notice how the different realizations in Figure \@ref(fig:tourism-many) show eventually the variables $R$ and $V$ approaching a steady-state value, but when $b$ is stochastic it affects how quickly the steady state is approached. The variability in $R$ and $V$ (especially during the intervals $0 \leq t \leq 50$) may be important for how quickly this resource gets utilized.
+
+The final steps (Summarize and Visualize) can be down together and as you may have suspected, have a similar process to the previous examples. However when computing the ensemble average plot, there are three changes because we pivoted our results in the variable `tourism_run_revised`:
+
+- When we group by our variables to compute the ensemble average we use `group_by(t,name)` so that we organize by each time `t` and the variables in our system (gathered in the column called `name`).
+- When computing the ensemble average, we will need to specify that we are computing the quantile of the variable `value` in our pivoted data frame (`tourism_run_revised`).
+- Finally, as in Figure \@ref(fig:tourism-many), we need to apply the `facet_grid` command.
+
+The code to generate this ensemble average plot is shown below. Try this code out on your own to generate an ensemble average plot.
+```{r eval = FALSE}
+  
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+# Summarize the variables
+summarized_tourism <- tourism_run_revised %>%
+  group_by(t,name) %>%  # We also include grouping by each variable.
+  summarize(
+    q_val = quantile(value, # the column to compute quantiles
+                     probs = quantile_vals,
+                     na.rm = TRUE  # Remove NA vlaues
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(names_from = "q_name", values_from = "q_val", 
+              names_glue = "q{q_name}")
+
+# Make the plot
+ggplot(data = summarized_tourism) +
+  geom_line(aes(x = t, y = q0.5)) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),alpha = 0.2) +
+  facet_grid(.~name) +
+  ggtitle("Ensemble average plot")
+
+```
+
+
+
 
 ## Concluding thoughts
-If you start with a known differential equation and want to add stochasticity to a parameter, here is a process:
+Whew. This chapter provided some concrete examples to model and visualize results for stochastic differential equations. To summarize, when you begin with a given differential equation and
 
-- Replace whatever parameter with a "parameter + Noise" term (i.e $a \rightarrow a + \mbox{ Noise }$).
-- Collect terms multiplied by Noise - they will form the stochastic part of the differential equation.
-- The deterministic part of the differential equation should be your original differential equation.
+1. if you want to add stochastic effects to a *variable*, include a term $\sqrt{2D \, \Delta t} \, \mathcal{N}(0,1)$ in the differential equation to model Brownian motion.
+2. if want to add stochastic effects to a *parameter*, here are the following steps:
 
-The most general form of the stochastic differential equation is: $\displaystyle d\vec{y} = f(\vec{y},\vec{\alpha},t) \; dt + g(\vec{y},\vec{\alpha},t) \; dW(t)$, where $\vec{y}$ is the vector of state variables you want to solve for, and $\vec{\alpha}$ is your vector of parameters, and $dW(t)$ is the stochastic noise from the random walk.
-      
-At a given initial condition, the Euler-Maruyama method applies locally linear approximations to forecast the solution forward $\Delta t$ time units: $\displaystyle \vec{y}_{n+1} = y_{n} + f(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \Delta t + g(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \sigma \cdot \mbox{rnorm(N)} \cdot \sqrt{\Delta t}$, where `rnorm(N)` is $N$ dimensional random variable from a normal distribution with mean 0.
+    - Replace instances of the parameter with a "parameter + Noise" term (i.e $a \rightarrow a + \mbox{ Noise }$).
+    - Collect terms that are multiplied by Noise - they will form the stochastic part of the differential equation.
+    - The deterministic part of the differential equation should be your original (deterministic) differential equation.
 
+The most general form of the stochastic differential equation is: $\displaystyle d\vec{y} = f(\vec{y},\vec{\alpha},t) \; dt + g(\vec{y},\vec{\alpha},t) \; dW(t)$, where $\vec{y}$ is the vector of variables, $\vec{\alpha}$ is your vector of parameters, and $dW(t)$ is the stochastic noise from the random walk.
 
-
-\newpage
+The workflow (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize) should provide structure to break down the different parts of simulation of SDEs. The general framework presented here allows you to computationally explore several different types of SDEs. If you are interested in further study of SDEs, see @gardiner_handbook_2004, @keener_biology_2021, or @logan_mathematical_2009 to learn more. In the next two chapters we will investigate additional properties of SDEs. Onward!
 
 ## Exercises
 
-```{exercise}
-Consider the logistic differential equation (Equation \@ref(eq:logistic-stochastic-sde)). In this section we set $\sigma = 1$. Re-run the code to generate one simulation with $\sigma = 0.01, \; 2, \; 10$. In each case, how does changing $\sigma$ affect the simulation run?
+```{exercise control-d-1}
+Consider the logistic differential equation (Equation \@ref(eq:logistic-de-25)). In this chapter we set $D = 0.1$. Re-run the code to generate one simulation with $D = 0.01, \; 2, \; 10$. In each case, how does changing $D$ affect the resulting solution trajectories?
 ```
 
-&nbsp;
 
-```{exercise}
-Consider the logistic differential equation (Equation \@ref(eq:logistic-stochastic-sde)). In this section we set $\sigma = 1$. Re-run the code to generate 100 simulations with $\sigma = 0.01, \; 2, \; 10$ and then compute the ensemble. In each case, how does changing $\sigma$ affect the ensemble average?
+
+```{exercise control-d-2}
+Consider the logistic differential equation (Equation \@ref(eq:logistic-de-25)). For this example we set $D = 1$. Re-run the code to generate 100 simulations with $D = 0.01, \; 2, \; 10$, and then compute the ensemble average. In each case, how does changing $D$ affect the ensemble average?
 ```
 
-&nbsp;
 
-```{exercise}
-Return back to the example of adding stochasticity to the parameter *r* in the logistic differential equation and the resulting spaghetti and ensemble average plots.  For these plots we set $\sigma = 1$. What happens to the resulting spaghetti and ensemble plots when $\sigma = 0.01, \; 0.1, \; 10$?
+
+```{exercise control-d-3}
+Return to Equation \@ref(eq:logistic-de-25-r). Use the code provided in this chapter to generate a spaghetti and ensemble average plot where $D = 0.1$. What happens to the resulting spaghetti and ensemble plots when $D = 0.01, \; 1, \; 10$?
 ```
 
-&nbsp;
+```{exercise}
+When $a=0.15$ and $b=0.3316$, determine the equilibrium solutions for Equation \@ref(eq:tourism-13-redux) and using the Jacobian, evaluate the stability of the equilibrium solutions.
+```
+
+```{exercise}
+Consider Equation \@ref(eq:tourism-13-redux) to answer the following questions:
+
+a. Determine the equilibrium solutions and the Jacobian matrix for general $a$ and $b$.
+b. Set $a=0.15$ but let $b$ be a free parameter ($b>0$). Evaluate the stability of the equilibrium solutions as a function of $b$.
+
+
+```
+
 
 <!-- LW pg 341 #2 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) Consider the logistic differential equation: $\displaystyle \frac{dx}{dt} = r x \left( 1-\frac{x}{K} \right)$.  Assume there is stochasticity in the inverse carrying capacity $1/K$ (so this means you will consider $1/K + \mbox{ Noise }$).
+(Inspired by @logan_mathematical_2009) Consider the logistic differential equation: $\displaystyle \frac{dx}{dt} = r x \left( 1-\frac{x}{K} \right)$. Assume there is stochasticity in the inverse carrying capacity $1/K$ (so this means you will consider $1/K + \mbox{ Noise }$).
 
 
-a. Identify the deterministic and stochastic part of each of the differential equation.
-b. Assume that $x(0)=3$,  $r=0.8$, $K=100$, $\Delta t = 0.05$, and $\sigma=1$. Apply the Euler-Maruyama method to produce a solution, using with 200 timesteps.
-c. Now do 500 simulations of this stochastic process and compare the ensemble solution.
-d. Contrast your results to when we added stochasticity to the parameter $r$ in the logistic model.
+a. Identify the deterministic and stochastic parts of each of the differential equation.
+b. Assume that $x(0)=3$,  $r=0.8$, $K=100$, $\Delta t = 0.05$, and the number of timesteps is 200. Set $D=0$. Do you get a value consistent with the deterministic solution to the logistic differential equation?
+c. Run several simulations where you slowly increase the value of $D$. At what point does $D$ get too large to produce meaningful results?
+d. With your chosen value of $D$, do 500 simulations of this stochastic process and compute the ensemble average.
+e. Contrast your results to when we added stochasticity to the parameter $r$ in the logistic model.
 
 ```
 
-&nbsp;
 
 
-```{tikz,sis-stochastics,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model",fig.width=4,fig.height=3}
+
+```{tikz,sis-stochastics,echo=FALSE,warning=FALSE,message=FALSE,warning=FALSE,fig.cap="The $SIS$ model."}
 
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -322,46 +749,37 @@ d. Contrast your results to when we added stochasticity to the parameter $r$ in 
 
 <!-- Adapted from LW pg 346 #4 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) An $SIS$ model is one where susceptibles $S$ become infected $I$, and then after recovering from an illness, become susceptible again.  The schematic representing this is shown in Figure \@ref(fig:sis-stochastics).  While you can write this as a system of differential equations, assuming the population size is constant $N$, this simplifies to the following differential equation:
+(Inspired by @logan_mathematical_2009) An $SIS$ model is one where susceptibles $S$ become infected $I$, and then after recovering from an illness, become susceptible again. The schematic representing this is shown in Figure \@ref(fig:sis-stochastics). While you can write this as a system of differential equations, assuming the population size is constant $N$, this simplifies to the following differential equation:
   
 \begin{equation}
 \frac{dI}{dt} = b(N-I) I - r I
 \end{equation}
 
-a. Determine the equilibrium solutions for this model and analyze the stability of the equilibrium solutions.
-b. Assuming $N=1000$, $r=0.01$, and $b=0.005$, $I(0)=1$, apply Euler's method to simulate this differential equation over two weeks with $\Delta t = 0.1$.  Show the plot of your result.
-c. Assume the transmission rate $b$ is stochastic.  Write down this stochastic differential equation.  Do 500 simulations of this stochastic process with $\sigma = 1$.  Contrast this result to the deterministic solution.
-d. Assume the recovery rate $r$ is stochastic.  Write down this stochastic differential equation.  Do 500 simulations of this stochastic process with $\sigma = 1$.  Contrast this result to the previous results.
+a. Determine the equilibrium solutions for this model. As a bonus, analyze the stability of the equilibrium solutions. You will need to assume that all parameters are positive and $bN-r > 0$.
+b. Assuming $N=1000$, $r=0.01$, and $b=0.005$, $I(0)=1$, apply Euler's method to simulate this differential equation over two weeks with $\Delta t = 0.1$ days. Show the plot of your result.
+c. Assume the transmission rate $b$ is stochastic. Write down this stochastic differential equation. Do 500 simulations of this stochastic process with with $D = 1 \cdot 10^{-6}$. Generate a spaghetti plot of your results. Contrast this result to the deterministic solution.
+d. Assume the recovery rate $r$ is stochastic. Write down this stochastic differential equation. Do 500 simulations of this stochastic process with $D = 1 \cdot 10^{-3}$. Generate a spaghetti plot of your results. Contrast this result to the deterministic solution.
 
 ```
 
-&nbsp;
-
+ <!-- Van den Berg page 19 -->
 ```{exercise}
-Consider the following Lotka-Volterra (predator prey) model:
+Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of $S$ (as a percent) in the blood is the following:
+  
+$$\frac{dS}{dt} = I + p \cdot (W - S), $$
 
-\begin{equation}
-\begin{split}
-\frac{dV}{dt} &= r V - kVP \\
-\frac{dP}{dt} &= e k V P - dP 
-\end{split}
-\end{equation}
-
-
-a. Assume that the parameter $k$ is stochastic.  Write down the stochastic differential equation, identifying the deterministic and stochastic parts to this system of equations.  
-b. Apply the Euler-Maruyama method for 100 simulations with $\sigma=0.01$ with the following values of parameters and step sizes:
-
-- Initial condition: $V(0)=1$, $P(0)=3$
-- Parameters: $r = 2$, $k = 0.5$, $e = 0.1$, and $d = 1$.
-- Set $\Delta t = 0.05$ and $N=200$.
-
+where the parameter $I$ represents the active uptake of salt (% / hour), $p$ is the permeability of the skin (hour$^{-1}$), and $W$ is the salinity in the water (as a percent). Use this information to answer the following questions:
+  
+  a. When $S(0)=S_{0}$, apply techniques from Chapter \@ref(exact-solns-07) to determine an exact solution for this initial value problem.
+b. Set $I = 0.1$, $p = 0.05$, $W = 0.4$, $S_{0}=0.6$. Make a plot of your solution for $0 \leq t \leq 20$.
+c. What is a corresponding stochastic differential equation when the parameter $p$ is stochastic?
+  d. Set $I = 0.1$, $p = 0.05$, $W = 0.4$, $S_{0}=0.6$. With $\Delta t = 0.05$ and for 400 timesteps, with $D = 0.1$, simulate this stochastic process. With an ensemble of 200 realizations compare the generated ensemble average to your deterministic solution.
 
 ```
- 
-&nbsp; 
+
  
 ```{exercise}
-Consider the following model for zombie population dynamics:
+(Inspired by @munz_when_2009) Consider the following model for zombie population dynamics:
 
 \begin{equation}
 \begin{split}  
@@ -372,7 +790,7 @@ Consider the following model for zombie population dynamics:
 \end{equation}
 
 
-a. Let's assume the transmission rate $\beta$ is a stochastic parameter.  With this assumption, group each differential equation into two parts: terms not involving noise (the deterministic part) and terms that are multiplied by noise (the stochastic part)
+a. Let's assume the transmission rate $\beta$ is a stochastic parameter. With this assumption, group each differential equation into two parts: terms not involving noise (the deterministic part) and terms that are multiplied by noise (the stochastic part)
 
 - Deterministic part for $\displaystyle \frac{dS}{dt}$:
 - Stochastic part for $\displaystyle \frac{dS}{dt}$:
@@ -381,15 +799,21 @@ a. Let's assume the transmission rate $\beta$ is a stochastic parameter.  With t
 - Deterministic part for $\displaystyle \frac{dR}{dt}$:
 - Stochastic part for $\displaystyle \frac{dR}{dt}$:
 
-b. Apply the Euler-Maruyama method to do 500 simulations of this stochastic differential equation and compute the ensemble average.  For the Euler-Maruyama method apply the following values:
+b. Apply the Euler-Maruyama method to generate an ensemble avearage plot with the following values:
 
-- $\sigma = 0.004$
-- $\Delta t= 0.5$.
-- Timesteps: 200.
+- $D = 5 \cdot 10^{-6}$
+- $\Delta t= 0.05$.
+- Timesteps: 1000.
 - $\beta = 0.0095$, $\delta = 0.0001$ ,$\xi =  0.1$, $\alpha = 0.005$.
 - Initial condition: $S(0)=499$, $Z(0)=1$, $R(0)=0$.
+- Set the number of simulations to be 100.
 
-c.  How does making $\beta$ stochastic affect the disease transmission? d. If we assume that the population is fixed at 500 individuals, what is interesting about your stochastic results?
-
+c. How does making $\beta$ stochastic affect the disease transmission?
 
 ```
+
+
+```{exercise}
+Evaluate results from stochastic simulation of Equation \@ref(eq:tourism-13-redux) when the parameter $a$ is stochastic. You will need to determine an appropriate value of $D$ with the values of the parameters and timestep given. Contrast your findings with the results presented in Figure \@ref(fig:tourism-many).
+```
+

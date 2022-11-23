@@ -1,0 +1,138 @@
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{matrix}
+%% EXTRA_TIKZ_PREAMBLE_CODE %%
+\begin{document}
+%% TIKZ_CODE %%
+
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
+
+%% Model 1  Burnham Anderson
+\node [vspecies] (A) {$W$} ;
+\node [vspecies, right of = A] (B) {$P$} ;
+\node [vspecies, below of = A] (C) {$F$} ;
+\node [vspecies, above of = A,node distance = 1cm] (model) {\textbf{Model 1}};
+\draw [->] ([yshift=3pt]A.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B.west) ;
+\draw [->] ([yshift=-3pt]B.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A.east) ;
+
+\draw [->] ([xshift=0]A.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C.north) ;
+
+%%% Model 2a  Burnham Anderson
+\node [vspecies, right of = B, node distance = 1.75 cm] (A2) {$W$} ;
+\node [vspecies, right of = A2] (B2) {$P$} ;
+\node [vspecies, below of = A2] (C2) {$F$} ;
+\node [vspecies, above of = A2,node distance = 1cm] (model2) {\textbf{Model 2a}};
+\draw [->] ([yshift=3pt]A2.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B2.west) ;
+\draw [->] ([yshift=-3pt]B2.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A2.east) ;
+
+\draw [->] ([xshift=-2pt]A2.south) --  node[left] {\small{$k_3$}} ([xshift=-2pt]C2.north) ;
+\draw [<-] ([xshift=2pt]A2.south) --  node[right] {\small{$k_4$}} ([xshift=2pt]C2.north) ;
+
+
+%%% Model 2b Burnham Anderson
+\node [vspecies, right of = B2, node distance = 1.75 cm] (A3) {$W$} ;
+\node [vspecies, right of = A3] (B3) {$P$} ;
+\node [vspecies, below of = A3] (C3) {$F$} ;
+\node [vspecies, below of = C3] (A3pr) {$W'$} ;
+\node [vspecies, above of = A3,node distance = 1cm] (model3) {\textbf{Model 2b}};
+\draw [->] ([yshift=3pt]A3.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B3.west) ;
+\draw [->] ([yshift=-3pt]B3.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A3.east) ;
+
+\draw [->] ([xshift=0]A3.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C3.north) ;
+\draw [->] ([xshift=0]C3.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A3pr.north) ;
+
+
+%%% Model 3a Burnham Anderson
+\node [vspecies, below of = C, node distance = 3 cm] (A4) {$W$} ;
+\node [vspecies, right of = A4] (B4) {$P$} ;
+\node [vspecies, below of = A4] (C4) {$F$} ;
+\node [vspecies, below of = C4] (A4pr) {$W'$} ;
+\node [vspecies, right of = A4pr] (B4pr) {$P'$} ;
+
+
+\node [vspecies, above of = A4,node distance = 1cm] (model4) {\textbf{Model 3a}};
+\draw [->] ([yshift=3pt]A4.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B4.west) ;
+\draw [->] ([yshift=-3pt]B4.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A4.east) ;
+
+\draw [->] ([xshift=0]A4.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C4.north) ;
+
+\draw [->] ([xshift=0]C4.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A4pr.north) ;
+
+\draw [->] ([yshift=0pt]A4pr.east) --  node[above] {\small{$k_5$}} ([yshift=0pt]B4pr.west) ;
+
+
+
+
+%%% Model 3b Burnham Anderson
+\node [vspecies, right of = B4, node distance = 1.75 cm] (A5) {$W$} ;
+\node [vspecies, right of = A5] (B5) {$P$} ;
+\node [vspecies, below of = A5] (C5) {$F$} ;
+\node [vspecies, below of = C5] (A5pr) {$W'$} ;
+\node [vspecies, right of = A5pr] (B5pr) {$P'$} ;
+
+
+\node [vspecies, above of = A5,node distance = 1cm] (model5) {\textbf{Model 3b}};
+\draw [->] ([yshift=3pt]A5.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B5.west) ;
+\draw [->] ([yshift=-3pt]B5.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A5.east) ;
+
+\draw [->] ([xshift=0]A5.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C5.north) ;
+
+\draw [->] ([yshift=-3pt]B5pr.west) --  node[below] {\small{$k_6$}} ([yshift=-3pt]A5pr.east) ;
+\draw [<-] ([yshift=3pt]B5pr.west) --  node[above] {\small{$k_5$}} ([yshift=3pt]A5pr.east) ;
+
+
+\draw [->] ([xshift=0]C5.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A5pr.north) ;
+
+
+%%% Model 4a Burnham Anderson
+\node [vspecies, below of = A4pr, node distance = 2.25 cm] (A6) {$W$} ;
+\node [vspecies, right of = A6] (B6) {$P$} ;
+\node [vspecies, below of = A6] (C6) {$F$} ;
+\node [vspecies, right of = C6] (C6pr) {$F'$} ;
+\node [vspecies, below of = C6] (A6pr) {$W'$} ;
+\node [vspecies, right of = A6pr] (B6pr) {$P'$} ;
+
+
+\node [vspecies, above of = A6,node distance = 1cm] (model6) {\textbf{Model 4a}};
+
+
+\draw [->] ([yshift=3pt]A6.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B6.west) ;
+\draw [->] ([yshift=-3pt]B6.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A6.east) ;
+
+
+\draw [->] ([yshift=3pt]C6.east) --  node[above] {\small{$k_8$}} ([yshift=3pt]C6pr.west) ;
+\draw [->] ([yshift=-3pt]C6pr.west) --  node[below] {\small{$k_9$}} ([yshift=-3pt]C6.east) ;
+
+\draw [->] ([yshift=0pt]A6pr.east) --  node[above] {\small{$k_5$}} ([yshift=0pt]B6pr.west) ;
+
+\draw [->] ([yshift=0pt]C6.south) --  node[left] {\small{$k_4$}} ([yshift=0pt]A6pr.north) ;
+
+
+\draw [->] ([xshift=0]A6.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C6.north) ;
+
+%%% Model 4b Burnham Anderson
+\node [vspecies, right of = B6, node distance = 1.75 cm] (A7) {$W$} ;
+\node [vspecies, right of = A7] (B7) {$P$} ;
+\node [vspecies, below of = A7] (C7) {$F$} ;
+
+\node [vspecies, below of = C7] (A7pr) {$W'$} ;
+\node [vspecies, right of = A7pr] (B7pr) {$P'$} ;
+
+\node [vspecies, above of = A7,node distance = 1cm] (model7) {\textbf{Model 4b}};
+\draw [->] ([yshift=3pt]A7.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B7.west) ;
+\draw [->] ([yshift=-3pt]B7.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A7.east) ;
+
+\draw [->] ([xshift=0]A7.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C7.north) ;
+
+\draw [->] ([xshift=-3pt]C7.south) --  node[left] {\small{$k_4$}} ([xshift=-3pt]A7pr.north) ;
+\draw [<-] ([xshift=3pt]C7.south) --  node[right] {\small{$k_7$}} ([xshift=3pt]A7pr.north) ;
+
+\draw [->] ([xshift=0]A7pr.east) --  node[above] {\small{$k_5$}} ([xshift=0pt]B7pr.west) ;
+
+\end{tikzpicture}
+
+
+
+\end{document}

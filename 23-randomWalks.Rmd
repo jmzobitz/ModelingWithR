@@ -1,9 +1,9 @@
 # Random Walks {#random-walks-23}
 
-Sections \@ref(stoch-sys-21) and \@ref(stoch-sim-22) introduced the concept of stochastic dynamical systems and ways to compute ensembles averages. In this section we will begin to develop some tools about how to understand stochastics by studying the concept of _random walks_. An excellent, highly readable book on random walks in biology is @berg_random_1993.
+Chapters \@ref(stoch-sys-21) and \@ref(stoch-sim-22) introduced the concept of stochastic dynamical systems and ways to compute ensemble averages. In this chapter we will begin to develop some tools to understand stochastic differential equations by studying the concept of _random walks_.\index{random walk} While exploring random walks may seem like a diversion from understanding stochastic differential equations, there are deep connections between the two topics. We will do some interesting computational exercises that may lead to some non-intuitive results. Curious? Let's get started!
 
 ## Random walk on a number line
-The conceptual idea of a random walk begins on a number line.  Let's begin at the origin (so at $t=0$ then $x=0$).  Based on this number line we can only to the left or the right, with equal probability.  At a given time we decide to move in a direction based on a random number $r$ drawn between 0 and 1 (in `R` we do this with the command `runif(1)`).  Figure \@ref(fig:random-walk) conceptually illustrates this random walk
+The conceptual idea of a random walk begins on a number line. Let's begin at the origin (so at $t=0$ then $x=0$). Based on this number line we can only move to the left or the right, with equal probability. At a given time we decide to move in a direction based on a random number $r$ drawn between 0 and 1 (in `R` we do this with the command `runif(1)`). Figure \@ref(fig:random-walk) conceptually illustrates this random walk
 
 ```{tikz, random-walk,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram for one-dimensional random walk."}
 \begin{tikzpicture}
@@ -20,13 +20,13 @@ The conceptual idea of a random walk begins on a number line.  Let's begin at th
 ```
 
 
-For each iteration of this process we will draw a random number using `runif(1)`.  We can code this process using a `for` loop:
+For each iteration of this process we will draw a random number using `runif(1)`. We can code this process using a `for` loop. Try the following code out on your own:
 
-```{r,fig.width=4,fig.height=3}
-### Number of steps our random walk takes
+```{r,eval=FALSE}
+# Number of steps our random walk takes
 number_steps <- 100
 
-### Set up vector of results
+# Set up vector of results
 x <- array(0, dim = number_steps)
 
 for (i in 2:number_steps) {
@@ -42,196 +42,300 @@ for (i in 2:number_steps) {
 
 plot(x, type = "l")
 
-print(mean(x)) # Where our average position was over the time interval
-print(sd(x)) # Where our standard deviation was over the time interval
+print(mean(x)) # Average position over the time interval
+print(sd(x)) # Standard deviation over the time interval
 ```
 
 
 Let's remind ourselves what this code does:
 
 - `number_steps <- 100`: The number of times we draw a random number, referred to *steps*.
-- `x <- array(0,dim=number_steps)`: We are going to pre-allocate a vector (`array`) of our results.  Values in this array are all set at 0 for convenience.
+- `x <- array(0,dim=number_steps)`: We are going to pre-allocate a vector (`array`) of our results. Values in this array are all set at 0 for convenience.
 - The for loop starts at the second step and then either adds or subtracts one from the prevoius position `x[i-1]` and updates the result to `x[i]`.
 - `plot(x,type='l')` makes a simple line plot of the results.
 
-Now that you have run this code, try running it again. Do you get the same result?  I hope you didn't - because this process is random!  It is interesting to run it several times because there can be a wide variance in our results - for some realizations of the sample path, we end up being strictly positive, other times we go negative, and other times we just hover around the middle.
+Now that you have run this code, try running it again. Do you get the same result?  I hope you didn't - because this process is random!  It is interesting to run it several times because there can be a wide variance in our results - for some realizations of the sample path, we end up being strictly positive, other times we go negative, and other times we just hover around the middle line ($x=0$) in the plot.
 
-## More realizatons
-Similar to section on stochastic simulation, One thing that would be helpful is if we ran the simulation for multiple times, or multiple realizations.  The code `random_walk` can help us do that:
+## Iteration and ensemble averages
+We can apply the workflow (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize) from Chapter \@ref(stoch-sim-22) on this random walk process to investigate what happens when we run additional simulations and compute the ensemble average. Let's apply this workflow:
 
-```{r,fig.width=4,fig.height=3}
-number_steps <- 200 # How long we run our random walk
-number_realizations <- 20 # How many separate realizations we do
 
-random_walk(number_steps, number_realizations)
+For the "Do once" step, we will define a function called `random_walk` that has the number of steps as an input:
+
+```{r}
+random_walk <- function(number_steps) {
+
+  # Set up vector of results
+  x <- array(0, dim = number_steps)
+
+  for (i in 2:number_steps) {
+    if (runif(1) < 0.5) {
+      x[i] <- x[i - 1] - 1
+    } # Move right
+    else {
+      x[i] <- x[i - 1] + 1
+    } # Move left
+  }
+
+  out_x <- tibble(t = 0:(number_steps - 1), x)
+  return(out_x)
+}
 ```
 
-You will notice two plots get produced: (1) A **spaghetti plot** that plots all the different sample paths for this realization, and (2) a **ensemble plot** that takes the median and 95% confidence interval of the results. (While we learned how to visualize spaghetti plots and compute ensemble averages in the Section \@ref(stoch-sim-22), for ease of use this code does it all in one.)
+Next to "Do several times" we will run this random walk function for 100 steps and 500 simulations and display the spaghetti plot in Figure \@ref(fig:spaghetti-rw-23):
 
-Something interesting looks like it is going on here.  The ensemble plot looks like a sideways parabola, but let's check to make sure that is the case.  Perhaps rerun `random_walk` but set `number_realizations` to be 100:
+```{r eval=FALSE}
+number_steps <- 100 # Then number of steps in random walk
+n_sims <- 500 # The number of simulations
 
-```{r,fig.width=4,fig.height=3}
-number_steps <- 200
-number_realizations <- 100
+# Compute solutions
+random_walk_sim <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ random_walk(number_steps)) %>%
+  map_dfr(~.x, .id = "simulation")
 
-random_walk(number_steps, number_realizations)
+# Plot these all together
+ggplot(data = random_walk_sim, aes(x = t, y = x)) +
+  geom_line(aes(color = simulation)) +
+  ggtitle("Random Walk") +
+  guides(color = "none") +
+  labs(x="Steps")
 ```
 
-As the confidence interval increases as the number of steps increase, we get an interesting observation. These results suggest that on *average* you go nowhere (in other words, the average position is $x=0$), but as the number of steps increase, you are very likely to be *somewhere* (in other words, the confidence interval increases as the number of steps increase).  The more realizations we can do the more robust this pattern becomes.  Consider what occurs to the spaghetti and ensemble plots when the number of realizations is 1000:
+```{r spaghetti-rw-23,fig.cap="Spaghetti plot of 500 simulations for the random walk.",echo=FALSE,message=FALSE,warning=FALSE}
+number_steps <- 100 # Then number of steps in random walk
+n_sims <- 500 # The number of simulations
 
-```{r,fig.width=4,fig.height=3}
-random_walk(2000, 1000)
+# Compute solutions
+random_walk_sim <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ random_walk(number_steps)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+# Plot these all together
+ggplot(data = random_walk_sim, aes(x = t, y = x)) +
+  geom_line(aes(color = simulation)) +
+  ggtitle("Random Walk") +
+  guides(color = "none") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
 ```
 
 
-Let's investigate our observations a little more mathematically.
+For the "Summarize" and "Visualize" steps we will compute the 95% confidence interval, structuring the code similar to Figure \@ref(fig:logistic-conf) from Chapter \@ref(stoch-sim-22). Try writing this code out on your own, but the results are shown in Figure \@ref(fig:ensemble-ave-23).
+
+```{r ensemble-ave-23,fig.cap="Ensemble average of 500 simulations for the random walk.",echo=FALSE,warning=FALSE,message=FALSE}
+# Compute Quantiles
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+random_walk_quantile <- random_walk_sim %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+
+# Plot Ensemble Average
+ggplot(data = random_walk_quantile) +
+  geom_line(aes(x = t, y = q0.5),
+    color = "red", size = 1, inherit.aes = FALSE
+  ) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),
+    alpha = 0.2, fill = "red", inherit.aes = FALSE
+  ) +
+  guides(color = "none") +
+  labs(x = "Steps", y = "x") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  ggtitle("Ensemble average")
+```
+
+
+
+Two interesting things are occurring in Figures \@ref(fig:spaghetti-rw-23) and \@ref(fig:ensemble-ave-23). First, Figure \@ref(fig:ensemble-ave-23) suggests that on *average* you go nowhere (in other words, the average position is $x=0$), but as the number of steps increases, you are very likely to be *somewhere* (in other words, the confidence interval increases as the number of steps increases). Second, the 95% confidence interval appears to be a square root function $y=a\sqrt{t}$. One way that we could confirm this is by running more realizations and investigating the ensemble average (Exercise \@ref(exr:rw-sim)).
+
 
 ## Random walk mathematics
-Call $x^{i}$ the position $x$ at step $i$ in a random walk. While we have set this up to be a unit walk, more generally $x^{i}=x^{i-1}+p(r) \; \Delta x$, with $\Delta x$ being the jump size (in this case $\Delta x=1$) and $r$ being a random variable:
+Another way to corroborate our observations in Figures \@ref(fig:spaghetti-rw-23) and \@ref(fig:ensemble-ave-23) is with mathematics.
+First we define some terminology and notation. Call $x^{n}$ the position $x$ at step $n$ in a random walk that increments with step size $\Delta x$ (Equation \@ref(eq:evol-eqn):
 
 \begin{equation}
-r=\begin{cases} -1 & p(-1)=0.5 \\
+x^{n}=x^{n-1}+r_{s} \; \Delta x = \sum_{s=1}^{n} \Delta x \; r_{s}, (\#eq:evol-eqn)
+\end{equation}
+
+with $\Delta x$ being the jump size (in our example above $\Delta x=1$), and $s$ the particular step in our random walk. We denote $r_{s}$ as a random variable that takes the value of $-1$ or $1$. Another way to write $r_{s}$ is with Equation \@ref(eq:equal-prob):
+
+\begin{equation}
+r_{s}=\begin{cases} -1 & p(-1)=0.5 \\
 1 & p(1)=0.5 \end{cases} (\#eq:equal-prob)
 \end{equation}
 
-Note that in Equation \@ref(eq:equal-prob) $r$ is an example of a (https://en.wikipedia.org/wiki/Bernoulli_distribution)[*Bernoulli Random Variable*] - it can be either 0 or 1, with equal probability. Equation \@ref(eq:equal-prob) is sometimes referred to as the *evolution equation*. If we have multiple simulations then $x_{j}^{i}$ is the position at step $i$ for simulation $j$. 
+The way to interpret Equation \@ref(eq:evol-eqn) is that the variable $r_{s}$ equals $-1$ ($r_{s}=-1$) with probability 0.5 ($p(-1)=0.5$). We can write Equation \@ref(eq:evol-eqn) as a single summation because the position depends on the different values of $-1$ or 1 generated at each step, only as long as we keep track of the sequence of $-1$ or 1 for each step $s$.
 
-Let's introduce some terminology to help us out here.  $\displaystyle \big \langle x^{i} \big \rangle = \frac{1}{n} \sum_{j=1}^{n} x_{j}^{i}$ is the *expected value* of our position at step $i$, summed over all of the simulations at that timestep.  Notice the connection here to the ensemble average at a given point.
+When we run multiple simulations we will use the notation $x_{j}^{n}$, which is the position at step $n$ for simulation $j$. 
 
-You will learn in a probability theory class that the expected value is a linear operator.  Because of this, we can compute the expected value of our evolution equation:
 
-\begin{equation}
-\big \langle x^{i} \big \rangle = \big \langle x^{i-1}+r \;\Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r \;  \Delta x \big \rangle = \big \langle x^{i-1} \big \rangle + \big \langle r  \big \rangle \; \Delta x
-\end{equation}
-
-Let's focus in particular on the second term of this expression: $\big \langle r \big \rangle$.  Because $r$ is a discrete random variable we can also compute its expected value as well.  To calculate $\langle r \rangle$ we adding up the possible outcomes for $r$ (either 1 or -1) when multiplied by their associated probabilities (for this case 0.5 ($r=1$) or 0.5 ($r=-1$) - note how these probabilities sum to 1):^[Generally speaking for a discrete random variable $x$, $\displaystyle \langle x \rangle = \sum p_{i} \cdot x_{i}$, with $\displaystyle \sum p_{i}=1$. ]
+Let's introduce some terminology to help us out here. The quantity $\displaystyle \big \langle X \big \rangle = \sum_{i=1}^{n} p(X) \cdot X$ is the *expected value* \index{expected value} for a discrete random variable. What we do is weight the value of each possibility by its probability. For the random variable $r_{s}$ we have:
 
 \begin{equation}
-\big \langle r \big \rangle = 1 \cdot 0.5 - 1 \cdot 0.5 = 0
+\big \langle r_{s} \big \rangle = (1) \cdot 0.5 + (- 1) \cdot 0.5 = 0
 \end{equation}
 
-So, the expected value of the evolution equation is $\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle$. This may not seem helpful, but let's start thinking of this value from the beginning (that is when $i=0$, or when we begin at $x=0$). Now let's evolve to the next timestep.  By what we found, then $\big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle =0$.  Connect these together: $\big \langle x^{1} \big \rangle = 0$ as well. What do you think happens at $\big \langle x^{2} \big \rangle$? If you guessed 0, you are correct, because $\big \langle x^{2} \big \rangle = \big \langle x^{1} \big \rangle = \big \langle x^{0} \big \rangle = 0$.  In fact, this pattern continues so that $\big \langle x^{i} \big \rangle = \big \langle x^{i-1} \big \rangle=0$. 
+Nice! The expected value is a linear operator^[This means that for random variables $X$ and $Y$ with constants $a$ and $b$: $\displaystyle \big \langle aX+bY \big \rangle = a \cdot \big \langle X \big \rangle + b \cdot \big \langle Y \big \rangle$.]\index{linear operator}.
 
-What does this tell us?  Between all of this notation, $\big \langle x^{i} \big \rangle$ is the expected value at each timestep, so we showed that *the expected value at any time* is zero.  In other words, *random walk goes nowhere*!
+The next step is to determine the expected value of $x^{n}$. Here we have $J$ different simulations; this will be computed as $\displaystyle \big \langle x^{n} \big \rangle = \frac{1}{J} \sum_{j=1}^{J} p(x_{j}^{n}) \cdot x_{j}^{n}$. We can further compute the expected value using Equation \@ref(eq:evol-eqn):
+
+\begin{equation}
+\big \langle x^{n} \big \rangle = \big \langle \sum_{j=1}^{J} \left( \Delta x \; r_{s} \right) \big \rangle = \sum_{j=1}^{J} \left( \big \langle \Delta x \; r_{s} \big \rangle \right) = \sum_{j=1}^{J} \Delta x  \cdot \big \langle \; r_{s} \big \rangle  = 0
+\end{equation}
+
+Imagine that! All of this mathematics leads to the conclusion that the expected value of $x^{n}$ is zero! In other words, on average a *random walk goes nowhere*!
 
 ### Random walk variance
-Now that we have characterized the expected value or the average displacement let's do the variance of this random walk.  We calculate this by computing the mean square displacement, or $\langle (x^{i})^{2} \rangle$.  First we compute the square displacement using the evolution equation and multiplying out:
+Now that we have characterized the expected value we will determine the variance^[The definition of the variance of a random variable $X$ is $\big \langle (X-\mu)^{2} \big \rangle$, where $\mu$ is the expected value. For our case $\mu$ equals 0.] \index{variance} of $x^{n}$, or $\langle (x^{n})^{2} \rangle$. This is still a lot of work with summations, but it is worth it! First, multiply out the square of Equation \@ref(eq:evol-eqn) using properties of summation:
 
 \begin{equation}
-(x^{i})^{2} = (x^{i-1} + r \; \Delta x)^2 = (x^{i-1})^{2} + 2 x^{i-1} \; r \; \Delta x + r^{2} \; \Delta x^{2} .
+(x^{n})^{2} = \left( \sum_{s=1}^{n} \left( \Delta x \; r_{s} \right) \right)^{2} = \left( \Delta x \right)^{2}  \sum_{s=1}^{n} \sum_{t=1}^{n}  (r_{s} \cdot r_{t} )
 \end{equation}
 
-Next what we will compute the expectation $\langle (x^{i})^{2} \rangle$ of our multiplied expression term by term:
+Now when we compute the expected value for $\displaystyle \big \langle (x^{n})^{2} \big \rangle$ we need to consider the double summation - so this means there are two different indices $s$ and $t$. However because of summation properties we have:
 
-- $\langle (x^{i-1})^{2} \rangle$: There is not much we can do with this term.
-- $\langle  2 x^{i-1} \; r \; \Delta x \rangle$: This term is zero from the expected value:
 \begin{equation}
-\langle 2 x^{i-1} \; r \; \Delta x \rangle = 2 x^{i-1} \; \Delta x \cdot 0.5 - 2 x^{i-1} \; \Delta x \cdot 0.5 = 0
-\end{equation}
-
-- $\langle r^{2} \; (\Delta x)^{2} \rangle$: We know that $r$ be either $-1$ or $1$, but we then square the value of $r$ in Equation \@ref(eq:equal-prob):
-\begin{equation}
-r^{2}=\begin{cases} -1 \rightarrow (-1)^{2}=1 & p(-1)=0.5 \\
-1 \rightarrow (1)^{2}=1 & p(1)=0.5 \end{cases} (\#eq:equal-prob-square)
-\end{equation}
-So when we compute the expected value of this term we obtain:
-\begin{equation}
-\langle r^{2} \; (\Delta x)^{2} \rangle = 1 \; (\Delta x)^{2} \cdot 0.5 + 1 \; (\Delta x)^{2} \cdot 0.5 = (\Delta x)^{2}
+\big \langle (x^{n})^{2}  \big \rangle =  \left( \Delta x \right)^{2}  \sum_{s=1}^{n} \sum_{t=1}^{n}  \big \langle r_{s} \cdot r_{t} \big \rangle
 \end{equation}
 
 
-So the end result for the variance is:
+So really we need to consider the term $\displaystyle \big \langle r_{s} \cdot r_{t}  \big \rangle$. While that may seem scary, let's break it down into two cases: when $t=s$ and $t \neq s$:
+
+| - Case $t \neq s$: Here we need to multiply together all the possible combinations for the random variable $r_{s} \cdot r_{t}$. There are four possibilities: $r_{s} \cdot r_{t}=(-1) \cdot (1)$, $r_{s} \cdot r_{t}=(-1) \cdot (-1)$, $r_{s} \cdot r_{t}=(1) \cdot (1)$, $r_{s} \cdot r_{t}=(1) \cdot (-1)$. When we multiply these results and consider the different probabilities associated with them we get the following random variable for $r_{s} \cdot r_{t}$:
 
 \begin{equation}
-\big \langle (x^{i})^{2} \big \rangle = \big \langle (x^{i-1})^{2}) \big \rangle +( \Delta x)^{2}
+r_{s} \cdot r_{t} =\begin{cases} -1 & p(-1)=0.5 \\
+1 & p(1)=0.5 \end{cases} (\#eq:equal-prob-two)
 \end{equation}
 
-In order to understand this let's write out the first few terms of this recursive relationship:
+| Then the expected value is the following:
+
+\begin{equation}
+\big \langle r_{s} \cdot r_{t} \big \rangle = (1) \cdot 0.5 + (-1) \cdot 0.5 = 0
+\end{equation}
+
+
+| - Case $t = s$: This case is a little easier. In both instances (when $r_{t}=1$ or $r_{t}=-1$) the variable $r_{t} \cdot r_{t}$ equals 1, so the expected value $\displaystyle \big \langle r_{s} \cdot r_{t} \big \rangle$ is simply 1! So as a result:
 
 \begin{equation}
 \begin{split}
-\big \langle (x^{0})^{2} \big \rangle &=0 \\
-\langle (x^{1})^{2} \big \rangle &= \big \langle (x^{0})^{2}) \big \rangle + (\Delta x)^{2} = (\Delta x)^{2} \\
-\big \langle (x^{2})^{2} \big \rangle &= \big \langle (x^{1})^{2}) \big \rangle + (\Delta x)^{2} = 2  (\Delta x)^{2} \\
-\big \langle (x^{3})^{2} \big \rangle &= \big \langle (x^{2})^{2}) \big \rangle + (\Delta x)^{2} = 3  (\Delta x)^{2}
-\end{split}
+\big \langle (x^{n})^{2} \big \rangle &= \left( \Delta x \right)^{2}  \sum_{s=1}^{n} \big \langle r_{s}^{2} \big \rangle \\
+& = \left( \Delta x \right)^{2}  \sum_{s=1}^{n} 1\\
+&= n \left( \Delta x \right)^{2}
+\end{split} (\#eq:rw-variance-final)
 \end{equation}
 
+| Equation \@ref(eq:rw-variance-final) tells us that the variance, or the mean square displacement, is proportional to $n$. Another way to state this is that the standard deviation (the square root of the variance) is equal to $\pm \sqrt{n} \; \Delta x$, where $n$ is the current step. This matches up with our graphs from earlier since $\Delta x =1$!  Informally, the variance tells us that on *average* you go nowhere, but *eventually* you travel everywhere - how cool!
 
-There is a pattern here, in fact $\langle (x^{i})^{2} \rangle = i ( \Delta x)^{2}$.  So the variance, or the mean square displacement grows, proportional to the step size.  Another way to state this is that the standard deviation (the square root of the variance) is equal to $\pm \sqrt{n} \; \Delta x$, where $n$ is the current step. This matches up with our graphs from earlier since $\Delta x =1$!  Informally this tells us that on *average* you go nowhere, but *eventually* you travel everywhere - how cool!
+## Continuous random walks and diffusion
+On a final note, we can extend the discrete random walk to continuous time. This process is perhaps similar to how you may have seen that the Riemann sum to (discretely) approximate the area underneath a curve and the horizontal axis becomes a definite integral.
 
-## Continuous random walks (diffusion)
-One final thought can be made here.  We are taking discrete steps but we can transform our results to a continuous time analog.  Let $t= n \Delta t$ be the approximation from discrete time to continuous time. Equivalently $\displaystyle n = \frac{t}{\Delta t}$.  With this information we can rearrange the square displacement equation to the following:
+Define the variable $t$ such that $t= n \Delta t$. Equivalently $\displaystyle n = \frac{t}{\Delta t}$. With this information we can use Equation \@ref(eq:rw-variance-final) to do the following:
 
 \begin{equation}
-\big \langle (x^{n})^{2} \big \rangle = \frac{t}{\Delta t} ( \Delta x)^{2}.
+\big \langle (x^{n})^{2} \big \rangle = \frac{t}{\Delta t} ( \Delta x)^{2}. (\#eq:rw-diffusion)
 \end{equation}
 
-The quantity $\displaystyle D = \frac{( \Delta x)^{2}}{2 \Delta t}$ is known as the *diffusion coefficent*.  So then the mean square displacement can be arranged as $\langle (x^{n})^{2} \rangle  = 2Dt$, confirming again that the variance grows proportional to $t$.
+The quantity $\displaystyle D = \frac{( \Delta x)^{2}}{2 \Delta t}$ is known as the *diffusion coefficent*.\index{diffusion}  So then the mean square displacement can be arranged as $\langle (x^{n})^{2} \rangle  = 2Dt$, confirming again that the variance grows proportional to $t$.
 
-To connect this back to our discussion of stochastics, understanding a random walk helps us to understand how demographic and environmental stochasticity affect a dynamical system and the types of behaviors in the solution this random walk introduces to the system.  In the following sections we will investigate the ways in which the random walk connects to stochastic differential equations.
-
-\newpage
+To connect this back to our discussion of stochastic differential equations, understanding random walks helps us to understand how demographic and environmental stochasticity may affect a differential equation. An excellent, highly readable book on random walks in biology is @berg_random_1993. Since there is a randomness to solution trajectories, we will repeatedly use ensemble averages (developed in Chapter \@ref(stoch-sim-22)) to understand the expected behaviors of a stochastic differential equation. The next chapters will apply the workflows studied here to investigate the connections between random walks and stochastic differential equations.
 
 ## Exercises
 
 ```{exercise}
-In class we found that the diffusion coefficient is equal to $\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}$.   
-
-
-a. Solve the expression for $D$ in terms of $\Delta t$.
-b. The diffusion coefficient for oxygen in water is approximately $10^{-5}$ cm$^{2}$ sec$^{-1}$.  Use that value to complete the following table: 
-
-| Distance ($\Delta x$) | $\mu$m = 10$^{-6}$ m  | 10 $\mu$m | 1 mm  | 1 cm | 1 m  | 
-|:------:|:-----:|:------:|:-----:|:------:|:-----:|
-| *Diffusion time ($\Delta t$)* |  |  |   | |  | 
-
-Report your the diffusion time in an appropriate unit (seconds, minutes, hours, years) accordingly.
-
-c. Navigate to the following website, which lists sizes of different cells: (https://en.wikibooks.org/wiki/Cell_Biology/Introduction/Cell_size)[LINK].  For what cells would diffusion be a reasonable process to transport materials?
-
+When doing the random walk mathematics, we made the claim that $\displaystyle x^{n} = \sum_{s=1}^n \Delta x \, r_{s}$, where $r_{s}$ takes on the value of $-1$ or $1$. Set $\Delta x = 1$ and do a random walk for 5 steps, keeping track whether the value of $r$ is $-1$ or $1$ at each step. Does the final position equal the sum of all the values of $-1$ or $1$?
 ```
-
-&nbsp;
 
 ```{exercise}
-You are playing a casino game.  If you win the game earn a dollar.  If you lose the game you lose one dollar. The probability of winning or losing is 50-50 (0.50). You start the game with $100.
+Let $r_{s}$ be the random variable defined by Equation \@ref(eq:equal-prob).
 
 
-a. Write a one-dimensional random walk to simulate your money after playing the game 50 times. Make a few sample plots.
-b. Based on the results of this section, what do you think your long-term expected winnings will be?
-c. Now assume the house win probability is 0.52.  Modify your random walk to simulate your money after playing the game 50 times.  Make a few sample plots. 
-d. What do you think your long-term expected winnings of this modified game will be? (You may need to play the game for 100, 200 times to see a pattern.)
+a. Multiply out the following summation: $\displaystyle \sum_{s=1}^{2} \sum_{t=1}^{2} (r_{s} r_{t} )$.
+b. Use the previous result to compute the expected value $\displaystyle \big \langle \sum_{s=1}^{2} \sum_{t=1}^{2} r_{s} \cdot r_{t} \big \rangle$
 
 ```
 
-&nbsp;
+```{exercise rw-sim}
+Re-run the code used to generate Figure \@ref(fig:ensemble-ave-23), but where the number of realizations is set to 1000 and 5000 (this may take some time to compute). Do your results conform to the observation that the expected position is zero, but the uncertainty grows as the number of steps increases? Can you determine the value of $a$ such that $y=a\cdot\sqrt{n}$ that parameterizes the 95% confidence interval as a function of $n$?
+```
+
+```{exercise}
+Use the fact that the diffusion coefficient is equal to $\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}$ to answer the following questions.  
+
+
+a. Solve $\displaystyle D = \frac{ (\Delta x)^{2}}{2\Delta t}$ to isolate $\Delta t$ on one side of the expression.
+b. The diffusion coefficient for oxygen in water is approximately $10^{-5}$ cm$^{2}$ sec$^{-1}$. Use that value to complete the following table: 
+
+| **Distance ($\Delta x$)** | 1 $\mu$m = 10$^{-6}$ m  | 10 $\mu$m | 1 mm  | 1 cm | 1 m  | 
+|:------:|:-----:|:------:|:-----:|:------:|:-----:|
+| **Diffusion time ($\Delta t$)** |  |  |   | |  | 
+
+Report the diffusion time in an appropriate unit (seconds, minutes, hours, years) accordingly.
+
+c. Navigate to the following website, which lists [sizes of different cells:](https://en.wikibooks.org/wiki/Cell_Biology/Introduction/Cell_size). For what cells would diffusion be a reasonable process to transport materials?
+
+```
+
+```{exercise}
+Consider Equation \@ref(eq:rw-diffusion). Evaluate separately the effect of $\Delta x$ and $\Delta t$ on the variance. How would you characterize the variance if either of them independently is small or large?
+```
+
 
 ```{exercise}
 Compute $\langle r \rangle$ for the following random variable:
+  
 \begin{equation} 
-r=\begin{cases} -1 & p(r)=0.52 \\
-1 & p(r)=0.48 \end{cases}
+r=\begin{cases} -1 & p(-1)=0.52 \\
+1 & p(1)=0.48 \end{cases}
 \end{equation}
 
 ```
 
-&nbsp;
+
 
 ```{exercise}
 Compute $\langle r \rangle$ for the following random variable:
+  
 \begin{equation} 
 r=\begin{cases} -1 & p(-1)=q \\
 1 & p(1)=(1-q) \end{cases}
 \end{equation}
 ```
 
-&nbsp;
+
 
 ```{exercise}
 Consider the following random variable:
+  
 \begin{equation}
-r=
+r_{q}=
 \begin{cases}
 -1 & p(-1) = 1/3 \\
 0 & p(0)= 1/3\\
@@ -240,14 +344,15 @@ r=
 \end{equation}
 
 
-a. Modify the code for the one dimensional random walk to generate a simulation of this random walk and plot your result.  You can do this by applying a `if` `else` statement as shown in the code chunk below.:
-
-b. Compute $\displaystyle \langle r \rangle$ and $\displaystyle \langle r^{2} \rangle$.
-c. Based on your last answer, explain how this random variable introduces a different random walk than the one described in this section. In what ways do you tihnk this would change our calculations for the mean and variance of the ensemble simulations?
+a. Modify the code for the one-dimensional random walk to generate a simulation of this random walk and plot your result. You can do this by applying an `if` `else` statement as shown in the code chunk below.
+b. Compute $\displaystyle \langle r_{q} \rangle$ and $\displaystyle \langle r_{q}^{2} \rangle$.
+c. Based on your last answer, explain how this random variable introduces a different random walk than the one described in this chapter. In what ways would this random walk change the calculations for the mean and variance of the ensemble simulations?
 
 ```
-&nbsp;
+
+
 ```{r,eval=FALSE}
+# Code for random variable r_q:
 p <- runif(1)
 if (p < 1 / 3) {
   x[i] <- x[i - 1] - 1
@@ -258,12 +363,13 @@ if (p < 1 / 3) {
 }
 ```
  
-```{exercise}
-In this exercise you will write code for a two dimensional random walk.
+```{exercise random-2d-23}
+In this exercise you will write code and simulate a two-dimensional random walk. In a given step you can either move (1) left, (2) right, (3) up, or (4) down. (You cannot move up and left for example). The random walk starts at $(x,y)=(0,0)$. With $\Delta x = 1$, the random walk at step $n$ can be described by $\displaystyle (x,y)^{n} = \sum_{s=1}^{n} r_{d}$, where $r_{d}$ is one of the four motions, represented as a coordinate pair. (A movement up is $r_{d}=(0,1)$ for example.) 
 
 
-a. Modify the code for the one dimensional random walk to have both an $x$ and a $y$ position.  One way to do this is to create a variable $y$ structured similar to $x$, and to make a second `if` statement in your for loop that moves `y`.
-b. Plot a few different realizations of your sample paths.
-c. If we were to compute the mean and variance of the ensemble simulations, what do you think they would be?
+a. Define a variable $r_{d}$ that models the motion from step to step.
+b. Modify the code for the one-dimensional random walk to incorporate this two-dimensional random walk. One way to do this is to create a variable $y$ structured similar to $x$, and to have multiple `if` statements in the `for` loop that moves `y`.
+c. Plot a few different realizations of your sample paths.
+d. If we were to compute the mean and variance of the ensemble simulations, what do you think they would be?
 
 ```

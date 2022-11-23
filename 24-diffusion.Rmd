@@ -1,14 +1,14 @@
-# Diffusion {#diffusion-24}
+# Diffusion and Brownian Motion {#diffusion-24}
 
-By studying random walks in Section \@ref(random-walks-23) you saw how randomness led to some surprising results, namely that for an unbiased random walk the mean displacement was zero but the variance increased proportional to the step size.  In this section we will revisit the random walk problem from another perspective that further strengthens its connection todiffusion.
+Studying random walks in Chapter \@ref(random-walks-23) led to some surprising results, namely that for an unbiased random walk the mean displacement was zero but the variance increased proportional to the step number. In this chapter we will revisit the random walk problem from another perspective that further strengthens its connection to understanding diffusion. Let's get started!
 
 ## Random walk redux
-In our random walk derivation in Section \@ref(random-walks-23) we focused on the *position* of a particle on the random walk, based upon prescribed rules.  In this scenario we instead are going to consider the *probability* that a particle is at position $x$ in time $t$. We will denote this probability as $p(x,t)$. In other words, rather than focusing on where the particle is, we focus on the chance that the particle is at a given spot.
+The random walk derivation in Chapter \@ref(random-walks-23) focused on the *position* of a particle on the random walk, based upon prescribed rules of moving to the left and the right.\index{random walk} To revisit this random walk we consider the *probability* (between 0 and 1) that a particle is at position $x$ in time $t$, denoted as $p(x,t)$.\index{probability distribution!stochastic differential equation solution} In other words, rather than focusing on where the particle *is*, we focus on the *chance* that the particle will be at a given spot.
 
-A way to conceptualize this is at any given position $x$, a particle can arrive there from either the left or the right, illustrated in Figure \@ref(fig:random-walk-25).
+A way to conceptualize a random walk is that any given position $x$, a particle can arrive to that position from either the left or the right (Figure \@ref(fig:random-walk-24)):
 
 
-```{tikz,random-walk-25,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Schematic diagram for one-dimensional random walk."}
+```{tikz,random-walk-24,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Schematic diagram for the one-dimensional random walk."}
 \begin{tikzpicture}
     \draw (-3,0) -- (3,0);
     \foreach \i in {-3,-2,...,3} % numbers on line
@@ -26,19 +26,19 @@ A way to conceptualize this is at any given position $x$, a particle can arrive 
 \end{tikzpicture}
 ```
 
-Notice how the the particle in Figure \@ref(fig:random-walk-25) could only move in unit increments. To generalize this setup a little more where to increments $\Delta x$, the equation that defines the probability $p$ of being at position $x$ at any time $t$ is the following:
+We can generalize Figure \@ref(fig:random-walk-24) further where the particle moves in increments $\Delta x$, as defined in Equation \@ref(eq:master-diff):
 
 \begin{equation}
 p(x,t+\Delta t) = \frac{1}{2} p(x-\Delta x,t) + \frac{1}{2} p(x+\Delta x,t) (\#eq:master-diff)
 \end{equation}
 
-The next step to analyze this expression is apply Taylor approximations on each side of Equation \@ref(eq:master-diff).  First let’s do a locally linear approximation for $p(x,t+\Delta t)$:
+To analyze Equation \@ref(eq:master-diff) we apply Taylor approximations on each side of Equation \@ref(eq:master-diff).\index{Taylor approximation}  First let’s do a locally linear approximation for $p(x,t+\Delta t)$:
 
 \begin{equation}
 p(x,t+\Delta t)  \approx p(x,t) + \Delta t \cdot p_{t},
 \end{equation}
 
-where we have dropped the shorthand $p_{t}(x,t)$ as $p_{t}$.  On the right hand side of Equation \@ref(eq:master-diff) we will compute the 2nd degree (quadratic) Taylor polynomial:
+where we have dropped the shorthand $p_{t}(x,t)$ as $p_{t}$. On the right hand side of Equation \@ref(eq:master-diff) we will compute the 2nd degree (quadratic) Taylor polynomial:
 
 \begin{align*}
 \frac{1}{2} p(x-\Delta x,t)  & \approx \frac{1}{2} p(x,t) -   \frac{1}{2} \Delta x \cdot p_{x} + \frac{1}{4} (\Delta x)^{2}\cdot  p_{xx} \\
@@ -51,20 +51,20 @@ With these approximations we can re-write Equation \@ref(eq:master-diff) as Equa
 \Delta t \cdot p_{t} = \frac{1}{2} (\Delta x)^{2} p_{xx} \rightarrow  p_{t} = \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t} \cdot p_{xx} (\#eq:new-master-diff)
 \end{equation}
 
-Equation \@ref(eq:new-master-diff) is called a partial differential equation - what this means is that it is a differential equation with derivatives that depend on two variables ($x$ and $t$ (two derivatives). Equation \@ref(eq:new-master-diff) is called the **diffusion equation**. Cool!
+Equation \@ref(eq:new-master-diff) is called a partial differential equation - what this means is that it is a differential equation with derivatives that depend on two variables ($x$ and $t$ (two derivatives).\index{partial differential equation} As studied in Chapter \@ref(random-walks-23), Equation \@ref(eq:new-master-diff) is called the **diffusion equation**.\index{diffusion} In Equation \@ref(eq:new-master-diff) we can also define $\displaystyle D =  \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}$ so $p_{t}=D \cdot p_{xx}$.
 
-We can also simplify Equation \@ref(eq:new-master-diff) even more by defining $\displaystyle D =  \frac{1}{2} \frac{(\Delta x)^{2}}{\Delta t}$, so we have $p_{t}=D \cdot p_{xx}$. Other derivations of the diffusion equation let $\Delta t \rightarrow 0$ and $\Delta x \rightarrow 0$ in the limit, but because of Equation \@ref(eq:new-master-diff) is connected to a random walk we will not make that limiting argument.
+The solution to Equation \@ref(eq:new-master-diff) is given by Equation \@ref(eq:diff-eq-soln).^[Determining an exact solution to the diffusion equation requires more study in techniques of partial differential equations (see @keener_biology_2021).]
 
-Determining an exact solution to the diffusion equation requires more study in techniques of partial differential equations, so we will leave that for another time.  However, the solution to Equation \@ref(eq:new-master-diff) is given by Equation \@ref(eq:diff-eq-soln):
 \begin{equation}
  p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} (\#eq:diff-eq-soln)
  \end{equation}
 
-Figure \@ref(fig:diffusion-profile) shows plots for $p(x,t)$ when $D=0.5$ (we will call these plots profiles) for different values of $t$:
-What Equation \@ref(eq:diff-eq-soln) represents is the probability that the particle is at the position $x$ at time $t$. In the exercises for this section you will examine more properties of the diffusion equation.
 
 
-```{r diffusion-profile,echo=FALSE,fig.width=4,fig.height=3,fig.align='center',fig.cap="Profiles of $p(x,t)$ (solution to the diffusion equation) for different values of $t$ with $D = 0.5$."}
+What Equation \@ref(eq:diff-eq-soln) represents is the probability that the particle is at the position $x$ at time $t$. Figure \@ref(fig:diffusion-profile) shows *profiles* for $p(x,t)$ when $D=0.5$ at different values of $t$.
+
+
+```{r diffusion-profile,echo=FALSE,fig.cap="Profiles of $p(x,t)$ (Equation \\@ref(eq:diff-eq-soln)) for different values of $t$ with $D = 0.5$."}
 # sigma = sqrt(2*D*t) set #D = 1/2
 x <- seq(-10, 10, length.out = 100)
 y1 <- dnorm(x, mean = 0, sd = 1) # t = 1
@@ -75,18 +75,28 @@ y4 <- dnorm(x, mean = 0, sd = sqrt(32)) # t = 32
 data.frame(x, y1, y2, y3, y4) %>%
   gather(key = run, value = y, -1) %>%
   ggplot(aes(x = x, y = y, color = as.factor(run))) +
-  geom_line(size = 2) +
+  geom_line(size = 1) +
   theme(legend.position = "bottom") +
-  scale_color_discrete(name = NULL, labels = c("t = 1", "t = 2", "t = 16", "t = 32")) +
-  ylab("p(x,t)")
+  ylab("p(x,t)") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(name = NULL, labels = c("t = 1", "t = 2", "t = 16", "t = 32"))
 ```
 
- As you can see that as time increases the graph of $p(x,t)$ gets flatter - or more uniform. What this tells you is that the longer $t$ increases it is less likely to find the particle at the origin.
+As you can see, as time increases the graph of $p(x,t)$ gets flatter - or more uniform. What this tells you is that the longer $t$ increases it is less likely to find the particle at the origin.
 
 ### Verifying the solution to the diffusion equation
-Verifying Equation \@ref(eq:diff-eq-soln) is the solution to Equation \@ref(eq:new-master-diff) is a good review of your multivariable calculus skills!  As a first step to verifying this solution, let's take the partial derivative with respect to $x$ and $t$.
+Verifying that Equation \@ref(eq:diff-eq-soln) is the solution to Equation \@ref(eq:new-master-diff) is a good review of your multivariable calculus skills!  As a first step to verifying this solution, let's take the partial derivative with respect to $x$ and $t$.
 
-First we will compute $\displaystyle \frac{\partial p}{\partial x}$ (also represented as $p_{x}$):
+First we will compute the partial derivative of $p$ with respect to the variable $x$ (represented as $p_{x}$):
+
 \begin{align*}
 p_{x} &= \frac{\partial }{\partial x} \left( \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \right) \\
 &= \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)} \cdot \frac{-2x}{4Dt}
@@ -104,7 +114,7 @@ p_{xx} &= p_{x} \cdot \left( \frac{-x}{2Dt} \right) - p(x,t) \cdot \left( \frac{
 \end{align*}
 
 
-So far so good.  Now computing $p_{t}$ gets a little tricky because this derivative involves both the product rule with the chain rule in two places (the variable $t$ appears twice in the formula for $p(x,t)$).  To aid in computing the derivative we identify two functions $\displaystyle f(t) = \frac{1}{\sqrt{4 \pi Dt} } = (4 \pi D t)^{-1/2}$ and $\displaystyle g(t)= \frac{-x^{2}}{4Dt} = -x^{2} \cdot (4Dt)^{-1}$.  This changes $p(x,t)$ into $p(x,t) = f(t) \cdot e^{g(t)}$.  In this way $p_{t} = f'(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g'(t)$.  Now we can focus on computing the individual derivatives $f'(t)$ and $g'(t)$ (after simplification - be sure to verify these on your own!):
+So far so good. Now computing $p_{t}$ gets a little tricky because this derivative involves both the product rule with the chain rule in two places (the variable $t$ appears twice in the formula for $p(x,t)$).\index{chain rule}\index{product rule}  To aid in computing the derivative we identify two functions $\displaystyle f(t) = (4 \pi D t)^{-1/2}$ and $\displaystyle g(t) = -x^{2} \cdot (4Dt)^{-1}$. This changes $p(x,t)$ into $p(x,t) = f(t) \cdot e^{g(t)}$. In this way $p_{t} = f'(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g'(t)$. Now we can focus on computing the individual derivatives $f'(t)$ and $g'(t)$ (after simplification - be sure to verify these on your own!):
 
 \begin{align*}
 f'(t) &= -\frac{1}{2} (4 \pi D t)^{-3/2} \cdot 4 \pi D = -2\pi D \; (4 \pi D t)^{-3/2}  \\
@@ -122,33 +132,125 @@ p_{t} &= f'(t) \cdot e^{g(t)} + f(t) \cdot e^{g(t)} \cdot g'(t) \\
 \end{align*}
 
 
-Wow.  Verifying Equation \@ref(eq:diff-eq-soln) is a solution to the diffusion equation is getting complicated, but also notice that through algebraic simplification, $\displaystyle p_{t} = p(x,t)  \left(\frac{x^{2}-2Dt}{4Dt^{2}} \right)$.  If we compare $p_{t}$ to $D p_{xx}$, they are equal!
+Wow. Verifying that Equation \@ref(eq:diff-eq-soln) is a solution to the diffusion equation is getting complicated, but also notice that through algebraic simplification, $\displaystyle p_{t} = p(x,t)  \left(\frac{x^{2}-2Dt}{4Dt^{2}} \right)$. When we compare $p_{t}$ to $D p_{xx}$, they are equal!
 
 
- The connections between diffusion and probability are so strong. Equation \@ref(eq:diff-eq-soln) is related to the formula for a normal probability density function (you might want to refer back to Section \@ref(likelihood-09))! In this case, the standard deviation in Equation \@ref(eq:diff-eq-soln) dependent on time (Exercise \@ref(exr:normal-compare)). Even though we approached the random walk differently here compared to Section \@ref(random-walks-23), we also saw that the variance grew proportional to the time spent, so there is some consistency.
+ The connections between diffusion and probability are so strong. Equation \@ref(eq:diff-eq-soln) is related to the formula for a normal probability density function (Equation \@ref(eq:normal-09) from Chapter \@ref(likelihood-09))! In this case, the standard deviation in Equation \@ref(eq:diff-eq-soln) equals $\sqrt{2Dt}$ and is time dependent (see Exercise \@ref(exr:normal-compare)). Even though we approached the random walk differently here compared to Chapter \@ref(random-walks-23), we also saw that the variance grew proportional to the time spent, so there is some consistency.
 
-## Concluding Thoughts
+## Simulating Brownian motion
+Another name for the process of a particle undergoing small random movements is *Brownian Motion*.\index{Brownian motion}  We can simulate Brownian motion similar to the random walk as discussed in Chapter \@ref(random-walks-23). Brownian motion is connected to the diffusion equation (Equation \@ref(eq:new-master-diff)) and its solution (Equation \@ref(eq:diff-eq-soln)). These connections are helpful when simulating stochastic differential equations. To simulate Brownian motion we will also apply the workflow from Chapter \@ref(stoch-sim-22) (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize).
 
-You may be wondering how this discussion of random walks connects back into stochastic differential equations.  With the ideas of a random walk developed here and in Section \@ref(random-walks-23), we can now understand how small changes in a variable or parameter affect the solutions to a differential equation.
+### Do once
+First we define a function called `brownian_motion` that will compute a sample path given the:
 
-For example if we consider the following logistic differential equation $\displaystyle \frac{dx}{dt} = rx \left(1-\frac{x}{K} \right)$, a naive way to add stochasticity is to add an additional term (which we call "Noise")
+- number of steps to run the stochastic process;
+- diffusion coefficient $D$;
+- timestep $\Delta t$;
 
-\begin{equation}
-\frac{dx}{dt} = rx \left(1-\frac{x}{K} \right) + \mbox{ Noise }.
-\end{equation}
+a sample path will be computed (see Figure \@ref(fig:sample-brownian)).
 
-One way that we examine this is by multiplying the $dt$ term over to the right hand side:
+```{r sample-brownian, fig.cap="Sample trajectory for a realization of Brownian motion. The horizontal axis represents a step of the random walk."}
+brownian_motion <- function(number_steps, D, deltaT) {
+  # D: diffusion coefficient
+  # deltaT: timestep length
+  ### Set up vector of results
+  x <- array(0, dim = number_steps)
 
-\begin{equation}
-dx = rx \left(1-\frac{x}{K} \right) \; dt + \mbox{ Noise } \; dt
-\end{equation}
+  for (i in 2:number_steps) {
+    x[i] <- x[i - 1] + sqrt(2 * D * deltaT) * rnorm(1)
+  }
 
-The first term ($\displaystyle rx \left(1-\frac{x}{K} \right) \; dt$) is called the "deterministic part" of the equation.  The second term ($\mbox{ Noise } \; dt$) is the "stochastic part".  If this "Noise" term represents a random walk, this will affect the solution trajectory.  However, we would expect that the *average* ensemble of solutions to behave similarly to the deterministic solution.
+  out_x <- tibble(t = 0:(number_steps - 1), x)
+  return(out_x)
+}
+
+# Run a sample trajectory and plot
+try1 <- brownian_motion(100, 0.5, 0.1)
+
+plot(try1, type = "l")
+```
+
+### Do several times
+Once we have the function for Brownian motion defined we can then run this process several times and plot the spaghetti plot (try the following code out on your own):
+
+```{r eval = FALSE}
+
+number_steps <- 200 # Then number of steps in random walk
+D <- 0.5 # The value of the diffusion coefficient
+dt <- 0.1 # The timestep length
+
+n_sims <- 500 # The number of simulations
+
+# Compute solutions
+brownian_motion_sim <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ brownian_motion(number_steps, D, dt)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+# Plot these all together
+ggplot(data = brownian_motion_sim, aes(x = t, y = x)) +
+  geom_line(aes(color = simulation)) +
+  ggtitle("Random Walk") +
+  guides(color = "none")
+```
+
+### Summarize and visualize
+Finally, the 95% confidence interval is computed and plotted in Figure \@ref(fig:ensemble-ave-24), using similar code from Chapter \@ref(stoch-sim-22) to compute the ensemble average. Note that the horizontal axis is time so each step is scaled by `dt`.
 
 
-A model for this Noise process ties directly into Equation \@ref(eq:diff-eq-soln).  and how to build this into our simulation models will be the focus of the final sections.
+```{r ensemble-ave-24, warning=FALSE,message=FALSE,fig.cap="Ensemble average of 500 simulations for the random walk. Each step on the horizontal axis is scaled by `dt`.",echo=FALSE}
+number_steps <- 200 # Then number of steps in random walk
+D <- 0.5 # The value of the diffusion coefficient
+dt <- 0.1 # The timestep length
 
-\newpage
+n_sims <- 500 # The number of simulations
+
+# Compute solutions
+brownian_motion_sim <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ brownian_motion(number_steps, D, dt)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+brownian_motion_quantile <- brownian_motion_sim %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+# Plot Ensemble Average
+ggplot(data = brownian_motion_quantile) +
+  geom_line(aes(x = t*dt, y = q0.5),
+    color = "red", size = 1, inherit.aes = FALSE
+  ) +
+  geom_ribbon(aes(x = t*dt, ymin = q0.025, ymax = q0.975),
+    alpha = 0.2, fill = "red", inherit.aes = FALSE
+  ) +
+  guides(color = "none") +
+  labs(x = "Time", y = "Ensemble average") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
+```
+
+I sure hope the results are very similar to ones generated in Chapter \@ref(random-walks-23) (especially Figure \@ref(fig:ensemble-ave-23)) - this is no coincidence! With the ideas of a random walk developed here and in Chapter \@ref(random-walks-23), we will now be able to understand and simulate how small changes in a variable or parameter affect the solutions to a differential equation. Looking ahead to Chapters \@ref(sdes-25) and \@ref(simul-stoch-26), we will simulate stochastic processes using numerical methods (Euler's method in Chapter \@ref(euler-04)) with Brownian motion. Onward!
+
+
 
 ## Exercises
 ```{exercise}
@@ -159,16 +261,16 @@ b. When $\displaystyle g(t)=\frac{-x^{2}}{4Dt}$, then $\displaystyle g'(t)=\frac
 c. Verify that $\displaystyle \left( -\frac{1}{2t} +  \frac{x^{2}}{4Dt^{2}} \right)= \left( \frac{x^{2}-2Dt}{(2Dt)^{2}}\right)$
 
 ```
-&nbsp;
+
 ```{exercise normal-compare}
-The equation for the normal distribution is $\displaystyle f(x)=\frac{1}{\sqrt{2 \pi} \sigma } e^{-(x-\mu)^{2}/(2 \sigma^{2})}$, with mean $\mu$ and variance $\sigma^{2}$. Examine the formula for the diffusion equation (Equation \@ref(eq:diff-eq-soln)) and compare it to the formula for the normal distribution. If Equation \@ref(eq:diff-eq-soln) represents a normal distribution, what does $\mu$ equal?  $\sigma^{2}$?
+The equation for the normal distribution is $\displaystyle f(x)=\frac{1}{\sqrt{2 \pi} \sigma } e^{-(x-\mu)^{2}/(2 \sigma^{2})}$, with mean $\mu$ and variance $\sigma^{2}$. Examine the formula for the diffusion equation (Equation \@ref(eq:diff-eq-soln)) and compare it to the formula for the normal distribution. If Equation \@ref(eq:diff-eq-soln) represents a normal distribution, what do $\mu$ and $\sigma^{2}$ equal?
 ```
-&nbsp;
+
 
 ```{exercise}
-For this problem you will investigate $p(x,t)$ (Equation \@ref(eq:diffusion-equation}) with $\displaystyle D=\frac{1}{2}$.
+For this problem you will investigate $p(x,t)$ (Equation \@ref(eq:diff-eq-soln)) with $\displaystyle D=\frac{1}{2}$.
 
-a. Evaluate $\displaystyle \int_{-1}^{1} p(x,10) \; dx$.  Write a one sentence description what this quantity represents.
+a. Evaluate $\displaystyle \int_{-1}^{1} p(x,10) \; dx$. Write a one sentence description of what this quantity represents.
 b. Using desmos or some other numerical integrator, complete the following table:
 
 | **Equation** | **Result**  |
@@ -182,14 +284,14 @@ b. Using desmos or some other numerical integrator, complete the following table
 |$\displaystyle \int_{-1}^{1} p(x,0.001) \; dx=$ |  |
 
 c. Based on the evidence from your table, what would you say is the value of $\displaystyle \lim_{t \rightarrow 0^{+}} \int_{-1}^{1} p(x,t) \; dx$?
-d. Now make graphs of $p(x,t)$ at each of the values of $t$ in your table.  What would you say is occuring in the graph as $\displaystyle \lim_{t \rightarrow 0^{+}} p(x,t)$? Does anything surprise you? (The results you computed here lead to the foundation of what is called the Dirac delta function.)
+d. Now make graphs of $p(x,t)$ at each of the values of $t$ in your table. What would you say is occuring in the graph as $\displaystyle \lim_{t \rightarrow 0^{+}} p(x,t)$? Does anything surprise you? (The results you computed here lead to the foundation of what is called the Dirac delta function.)
 
 ```
-&nbsp;
+
 
 
 ```{exercise}
-Consider the function $\displaystyle  p(x,t) = \frac{1}{\sqrt{4 \pi D t}}  e^{-x^{2}/(4 D t)}$.  Let $x=1$.
+Consider the function $\displaystyle  p(x,t) = \frac{1}{\sqrt{4 \pi D t}}  e^{-x^{2}/(4 D t)}$. Let $x=1$.
 
 
 a. Explain in your own words what the graph $p(1,t)$ represents as a function of $t$.
@@ -197,7 +299,9 @@ b. Graph several profiles of $p(1,t)$ when $D = 1$, $2$, and $0.1$. How does the
 
 ```
 
-&nbsp;
+```{exercise}
+In statistics an approximation for the 95% confidence interval is twice the standard deviation. Confirm this by adding the curve $y=2\sqrt{2Dt}$ to the ensemble average plot in Figure 24.4. Recall that $D$ was equal to $0.5$ and $\Delta t = 0.1$, so the horizontal axis will need to be scaled appropriately.
+```
 
 ```{exercise}
 Consider the function $\displaystyle  p(x,t) = \frac{1}{\sqrt{\pi t}} e^{-x^{2}/t}$:
@@ -208,10 +312,12 @@ b. Verify $p(x,t)$ is consistent with the diffusion equation $\displaystyle p_{t
 
 ```
 
-&nbsp;
+```{exercise}
+Modify the code used to generate Figure \@ref(fig:ensemble-ave-24) with $D=10, \; 1, \; 0.1, \; 0.01$. Generally speaking, what happens to the resulting ensemble average when $D$ is small or large? In which scenarios are stochastic effects more prevalent?
+```
 
 ```{exercise}
-For the one-dimensional random walk we discussed where there was an equal chance of moving to the left or the right.  Here is a variation on this problem.
+For the one-dimensional random walk we discussed where there was an equal chance of moving to the left or the right. Here is a variation on this problem.
 
 Let's assume there is a chance $v$ that it moves to the left (position $x - \Delta x$), and therefore a chance is $1-v$ that the particle remains at position $x$. The basic equation that describes the particle's position at position $x$ and time $t + \Delta t$ is:
 
@@ -220,7 +326,7 @@ p(x,t + \Delta t) = (1-v) \cdot p(x,t) + v \cdot p(x- \Delta x,t)
 \end{equation}
 
 
-Apply the techniques of local linearization in $x$ and $t$ to show that this random walk to derive the following partial differential equation, called the *advection equation*:
+Apply the techniques of local linearization in $x$ and $t$ to show that this random walk is used to derive the following partial differential equation, called the *advection equation*:
 
 \begin{equation}
 p_{t} = - \left( v \cdot \frac{ \Delta x}{\Delta t} \right) \cdot p_{x}
@@ -229,7 +335,6 @@ p_{t} = - \left( v \cdot \frac{ \Delta x}{\Delta t} \right) \cdot p_{x}
 *Note: you only need to expand this equation to first order*
 ```
 
-
-
-
-
+```{exercise}
+Complete Exercise \@ref(exr:random-2d-23) if you haven't already. If Equation \@ref(eq:diff-eq-soln) (a normal distribution) is the solution to the one-dimensional diffusion equation, what do you think the solution would be in the bivariate case?
+```

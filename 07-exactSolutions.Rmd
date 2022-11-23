@@ -1,176 +1,20 @@
 # Exact Solutions to Differential Equations {#exact-solns-07}
 
-We have already discussed some tools that can analyze differential equations numerically (Section \@ref(euler-04)) and qualitatively (Sections \@ref(phase-05) and \@ref(coupled-06)).  The phase plane allowed us to evaluate equilibrium solutions and their stability.  Beyond this graphical approach it is also helpful to know the exact solution to an equation. In this section we will study a few techniques to find exact solutions to differential equation.  We will apply some of the tools you may have learned from calculus.  
+Chapters \@ref(euler-04), \@ref(phase-05), and \@ref(coupled-06) studied numerical and qualitative tools to analyze differential equations. Phase planes and slope fields helped to determine the long-term stability of an equilibrium solution. Beyond these approaches, it is also helpful to know the *exact* solution to a differential equation. In this chapter we will study three techniques to determine exact solutions to differential equations, making connections to some tools that you know from calculus. We briefly illustrate the methods but also have lots of exercises for you to practice these techniques, with problems in and out of a given context. Let's get started!
 
-## Separable Differential Equations
-One technique to solve differential equations is the method of *separation of variables*. Let's look at an example:
-
-What is the general solution to $\displaystyle \frac{dy}{dx} = yx^{2}$?  To solve this expression we collect the variables involving $x$ and one side of the equation, and the variables involving $y$ on the other:
+## Verify a solution
+The first approach is direct verification also known as the guess and check method.\index{differential equation!direct verification} Consider the differential equation shown in Equation \@ref(eq:exp-growth-07):
 
 \begin{equation}
-\frac{1}{y} dy = x^{2} dx.
+\frac{dS}{dt} = 0.7 S (\#eq:exp-growth-07)
 \end{equation}
 
-Now the next step is to determine the antiderivative of both sides of expression:
+Direct verification starts with a candidate solution and then checks to see if the candidate solution is consistent with the differential equation. If we have an initial value problem (e.g. $S(0)=4$), then the candidate solution is also consistent with the initial condition.
 
-\begin{equation}
-\begin{split}
-\int  \frac{1}{y} dy = \ln(y) + C. \\
-\int x^{2} dx  = \frac{1}{3} x^{3} + C.
-\end{split}
-\end{equation}
+For example, let's verify if the function $\tilde{S}(t) = 5 e^{0.7t}$ is a solution to Equation \@ref(eq:exp-growth-07). We do this by differentiating $\tilde{S}(t)$, which, using our knowledge of calculus, is $0.7 \cdot 5 e^{0.7t}$. Finally, by rearrangement, $\displaystyle \frac{d\tilde{S}}{dt} = 0.7 \cdot 5 e^{0.7t} = 0.7 e^{0.7t}$. Therefore the function $\tilde{S}$ *is* a solution to the differential equation. Let's build off this to try other candidate functions:
 
-Finally since both sides are equal we can solve for the dependent variable $y$.  One thing to note: usually for antiderivatives we always include a $+C$.  For solving differential equations it is okay just to keep only one $+C$, which usually is best on the side of the independent variable:
-
-\begin{equation}
-\ln(y) =\frac{1}{3} x^{3} + C \rightarrow e^{\ln(y)} = e^{\frac{1}{3} x^{3} + C} \rightarrow y = Ce^{\frac{1}{3} x^{3}}.
-\end{equation}
-
-
-
-We are in business!  So here is a general technique approach to solving a differential equation via separation of variables:
-
-1. **Separate** the variables on one side of the equation.
-2. **Integrate** both sides individually.
-3. **Solve** for the dependent variable.
-
-
-
-
-If we solve this equation using separation of variables we havUsing your work above as a guide, solve this differential equation to determine a solution $y(x)$.
-
-## Integrating factors
-One model that we have looked at is the the $SI$ model where the spread of the disease is proportional to the number infected:
-
-\begin{equation}
-\frac{dI}{dt} = .03(1000-I) = 30  - .03I (\#eq:infected-07)
-\end{equation}
-
-
-While this differential equation can be solved via separation of variables, let's try a different approach as an illustration of another useful technique.  First let's write the terms involving $I$ on one side of the equation:
-
-\begin{equation}
-\frac{dI}{dt} + .03I = 30.
-\end{equation}
-
-What we are going to do is multiply both sides of this equation by $e^{.03t}$ (I'll explain more about that later):
-
-\begin{equation}
-\frac{dI}{dt} \cdot e^{.03t} + .03I \cdot e^{.03t} = 30  \cdot e^{.03t}
-\end{equation}
-
-Hmmm - this seems like we are making our equation harder to solve, doesn't it?  However the left hand side is actually the derivative of the expression $I \cdot e^{kt}$!  Let's take a look:
-
-
-\begin{equation}
-\frac{d}{dt} \left( I \cdot e^{.03t} \right) = \frac{dI}{dt} \cdot e^{.03t} + I \cdot .03 e^{.03t}
-\end{equation}
-
-This derivative is courtesy of the product rule from calculus.  Ok, so what does this do to the differential equation?  Well, by re-writing the differential equation as a derivative and integrating:
-
-\begin{equation}
-\begin{split}
-\frac{d}{dt} \left( I \cdot e^{.03t} \right) &= 30 \cdot e^{.03t} \rightarrow \\
-\int \frac{d}{dt} \left( I \cdot e^{.03t} \right) \; dt &= \int 30 \cdot e^{.03t} \; dt \rightarrow \\
-I \cdot e^{.03t} &= 30 \cdot e^{.03t} + C
-\end{split}
-\end{equation}
-
-Notice how by writing the left hand side in terms of the product rule and integrating we could find the solution.  We added the $+C$ to the right hand side.  All that is left to do is to solve in terms of $I(t)$ by dividing by $e^{kt}$.  We will label this solution $I_{1}(t)$:
-
-\begin{equation}
-I_{1}(t) = 1000 + Ce^{-.03t}  (\#eq:i1)
-\end{equation}
-
-Cool!  The function $f(t)=e^{.03t}$ is called an _integrating factor_.  
-
-To see what is meant by that, let's try one more example.
-
-```{example}
-Modifying Equation \@ref(eq:infected-07), now let's assume that the rate of infection is time dependent, or $k(t) = .03t$.  Apply the method of integrating factors to determine a solution to this differential equation.
-```
-
-```{solution}
-How this would work in practice is that initially (at $t=0$) there is no infection, but the infection rate increases as time goes on.
-
-Our differential equation in this case is:
-
-\begin{equation*}
-\frac{dI}{dt} + .03 t \cdot I = 30 t.
-\end{equation*}
-
-So if we want to write the left hand side as a product, what we will do is multiply the _entire_ differential equation by $\displaystyle e^{\int .03t \; dt} = e^{ 0.015 t^{2}}$  This term is called the _integrating factor_:
-
-\begin{equation}
-\frac{dI}{dt} \cdot e^{ 0.015 t^{2}} + .03 t \cdot I \cdot e^{0.015 t^{2}} = 30 t \cdot e^{0.015 t^{2}}
-\end{equation}
-
-First we rewrite the left hand side using the product rule:
-\begin{equation}
-\frac{dI}{dt} \cdot e^{ 0.015 t^{2}} + .03 t \cdot I \cdot e^{0.015 t^{2}} = \frac{d}{dt} \left( I \cdot e^{0.015  t^{2}} \right). 
-\end{equation}
-
-Now we can integrate this equation with the product rule in reverse:
-
-\begin{equation}
-\begin{split}
-\frac{d}{dt} \left( I \cdot e^{0.015 t^{2}} \right) &= 30 t \cdot e^{0.015 t^{2}}  \rightarrow \\
-\int \frac{d}{dt} \left( I \cdot e^{0.015  t^{2}} \right) \; dt &= \int 30t \cdot e^{0.015 t^{2}}  \; dt \rightarrow \\
-I \cdot e^{0.015 t^{2}} &= 1000 \cdot e^{0.015 t^{2}} + C
-\end{split}
-\end{equation}
-
-All right!  So the last step is to write the equation in terms of $I(t)$, which we will label $I_{2}(t)$:
-
-\begin{equation}
-I_{2}(t) =  1000 + C e^{-0.015 t^{2}}  (\#eq:i2)
-\end{equation}
-
-Figure \@ref(fig:if-compare) compares solutions $I_{1}(t)$ and $I_{2}(t)$ when the initial condition (in both cases) is 10 (so $I_{1}(0)=I_{2}(0)=10$).
-```
-
-
-```{r if-compare,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Comparison of two integrating factor solutions, Equation \\@ref(eq:i1) in red and Equation \\@ref(eq:i2) in blue.', fig.width=4,fig.height=3}
-t <- seq(0,100,by=0.05)
-
-# I_{1}(t) = 1000 + Ce^{-.03t} \\
-# I_{2}(t) =  1000 + C e^{-0.015 t^{2}}
-
-solutions <- tibble(t,
-                    soln1 = 1000-990*exp(-.03*t),
-                    soln2 = 1000-990*exp(-.015*t^2))
-
-
-solutions %>%
-  pivot_longer(cols=c("soln1","soln2"),names_to="type",values_to="value") %>%
-  ggplot(aes(x=t,y=value,color=type)) + geom_line(size=2) +
-  labs(x="Time",y="Infected") +
-  guides(color="none")
-```
-
-
-
-Ok, let's summarize this integrating factor approach for differential equations that can be written in the form $$\frac{dy}{dt} + f(t) \cdot y = g(t)$$
-
-1. Calculate the _integrating factor_ $\displaystyle e^{\int f(t) \; dt}$.  Hopefully the integral $\displaystyle \int f(t) \; dt$ is easy to compute!
-2. Next multiply the integrating factor across your equation to rewrite the differential equation as $\displaystyle \frac{d}{dt} \left( y \cdot e^{\int f(t) \; dt} \right) = g(t) \cdot e^{\int f(t) \; dt}$.
-3. Then compute the integral $\displaystyle H(t) = \int g(t) \cdot e^{\int f(t) \; dt} \; dt$.  This looks intimidating - but hopefully is manageable to compute!  Don't forget the $+C$!
-4. Then solve for $y(t)$:  $\displaystyle y(t) = H(t) \cdot e^{-\int f(t) \; dt} + C e^{-\int f(t) \; dt}$.
-
-This technique is a handy way to work with equations that aren't easily separable.
-
-
-## Guess and Check
-A final approach is called the guess and check method.  Say for example we have the following equation that describes the rate of change above:  The first approach if a function is a solution to a differential equation is the guess and check method, or by direct substitution.
-
-\[ \frac{dS}{dt} = 0.7 S \]
-
-We know that we can apply separation of variables, but instead  let's try to see if the function $\tilde{S}(t) = 5 e^{0.7t}$ is a solution in order to do that, we need to differentiate $\tilde{S}(t)$, which using our knowledge of calculus is $0.7 \cdot 5 e^{0.7t}$.  If we note that $\displaystyle \frac{d\tilde{S}}{dt} = 0.7 \tilde{S} = 0.7 e^{0.7t}$ than the function $\tilde{S}$ does solve the differential equation.
-
-Super cool!  Let's try an example:
-
-```{example}
-Verify the following functions are solutions to the differential equation $\displaystyle \frac{dS}{dt} = 0.7 S$:
+```{example verify-07}
+Verify if the following functions are solutions to Equation \@ref(eq:exp-growth-07):
         
 - $\tilde{R}(t) = 10e^{0.7t}$
 - $\tilde{P}(t) = e^{0.7t}$
@@ -182,15 +26,15 @@ Verify the following functions are solutions to the differential equation $\disp
 ```
 
 ```{solution}
-Let's apply direct differentiation to each of these functions:
+First apply direct differentiation to each of these functions (this represents the left hand side of each differential equation):
 
 - $\tilde{R}(t) = 10e^{0.7t} \rightarrow \tilde{R}'(t) = 7e^{0.7t}$
-- $\tilde{P}(t) = e^{0.7t} \rightarrow \tilde{P}'(t) = e^{0.7t}$
+- $\tilde{P}(t) = e^{0.7t} \rightarrow \tilde{P}'(t) = 0.7e^{0.7t}$
 - $\tilde{Q}(t) = 5e^{0.7t} \rightarrow \tilde{Q}'(t) = 3.5e^{0.7t}$
 - $\tilde{F}(t)=3 \rightarrow \tilde{F}'(t) = 0$
 - $\tilde{G}(t)=0 \rightarrow \tilde{G}'(t) = 0$
 
-Now we will compare each of these solutions to the right hand side:
+Next compare each of these solutions to the right hand side of Equation \@ref(eq:exp-growth-07):
         
 - $0.7\tilde{R}(t) = 0.7 \cdot 10e^{0.7t} \rightarrow  7e^{0.7t}$
 - $0.7\tilde{P}(t) = 0.7 e^{0.7t}$
@@ -198,145 +42,325 @@ Now we will compare each of these solutions to the right hand side:
 - $0.7 \tilde{F}(t)=0.7 \cdot 3 \rightarrow 2.1$
 - $0.7 \tilde{G}(t)=0.7 \cdot 0 \rightarrow  0$        
 
-Notice how the right hand sides of each equation equals the left hand sides.  When that is the case, our candidate functions are indeed solutions to the differential equation!
+Notice how in the candidate functions (with the exception of $\tilde{F}(t)$) the right hand side of each equation equals the left hand side. When that is the case, our candidate functions are indeed solutions to Equation \@ref(eq:exp-growth-07)!
 ```
 
-## Superposition of solutions
-Related to the Guess and Check method is this concept called superposition of solutions.  Here how this works: if you have two known solutions to a differential equation, then the sum (or difference) is a solution as well.  Let's look at an example:
 
-```{example}
-Show that $\tilde{S}(t) = 5e^{0.7t} + e^{0.7t}$ is a solution to the differential equation $\displaystyle \frac{dS}{dt} = 0.7 S$
+Verifying a solution to a differential equation relies on your knowledge of differentiation versus other more involved methods, which may be an under-appreciated approach. In some instances you may not be given a candidate function as in Example \@ref(exm:verify-07). Deciding "what function to try" is the hardest step, but a safe bet would be an exponential equation (especially if the right hand side involves the dependent variable). As we will see in Chapter \@ref(eigenvalues-18) the guess and check approach will help us to determine general solutions to systems of linear differential equations.
+
+### Superposition of solutions
+Related to the verification method is a concept called superposition of solutions. Here is how this works: if you have two known solutions to a differential equation, then the sum (or difference) is a solution as well. Let's look at an example:
+
+```{example super-07}
+Show that $\tilde{R}(t) + \tilde{Q}(t) = 5e^{0.7t} + e^{0.7t}$ from Example \@ref(exm:verify-07) is a solution to Equation \@ref(eq:exp-growth-07).
 ```
 
 ```{solution}
-By direct differentiation, $\tilde{S}'(t) = 3.5e^{0.7t} + 0.7e^{0.7t}$.  Also we have that $0.7 \cdot \tilde{S}(t) = 0.7 \cdot (5e^{0.7t} + e^{0.7t}) = 3.5 e^{0.7t} + 0.7 e^{0.7t}$, which equals $\tilde{S}$.
+By direct differentiation, $\tilde{R}'(t) + \tilde{Q}'(t) = 3.5e^{0.7t} + 0.7e^{0.7t}$. Furthermore, $0.7 \cdot (\tilde{R}(t) + \tilde{Q}(t)) = 0.7 \cdot (5e^{0.7t} + e^{0.7t}) = 3.5 e^{0.7t} + 0.7 e^{0.7t}$, which equals $\tilde{R}'(t) + \tilde{Q}'(t)$.
 ```
 
-What this example illustrates is the principle that if you have two solutions to a differential equation, they can be added together and produce a new solution.  This is an example of a *linear combinations* of solutions, and we can state this more formally:
+Example \@ref(exm:super-07) illustrates the principle that different solutions to a differential equation can be added together and produce a new solution. More generally, adding two solutions together is an example of a *linear combination* of solutions, and we can state this more formally:
 
 > If $x(t)$ and $y(t)$ are solutions to the differential equation $z' = f(t,z)$, then $c(t) = a \cdot x(t) + b \cdot y(t)$ are also solutions, where $a$ and $b$ are constants.
 
+  
+
+## Separable differential equations
+The next techninque is called *separation of variables*.\index{differential equation!solution technique!separation of variables} This method has a defined workflow (Separate $\rightarrow$ Integrate $\rightarrow$ Solve), which we illustrate by considering the following differential equation:
+
+\begin{equation}
+\frac{dy}{dt} = yt^{2} (\#eq:sep-de-07)
+\end{equation}
+
+**Separate:** This step uses algebra to collect variables involving $x$ on one side of the equation, and the variables involving $y$ on the other (Equation \@ref(eq:sep1-07)):
+
+\begin{equation}
+\frac{1}{y} dy = t^{2} \; dt (\#eq:sep1-07)
+\end{equation}
+
+**Integrate:** This step computes the antiderivative of both sides of Equation \@ref(eq:sep1-07):
+
+\begin{equation}
+\begin{split}
+\int  \frac{1}{y} dy = \ln(y) + C_{1}. \\
+\int t^{2} \; dt  = \frac{1}{3} t^{3} + C_{2}
+\end{split} (\#eq:int1-07)
+\end{equation}
+
+You may remember from calculus that whenever you compute antiderivatives to always include a $+C$ (hence the $C_{1}$ and $C_{2}$ in Equation \@ref(eq:int1-07)). For separable differential equations it is okay just to keep only one of the $+C$ terms in Equation \@ref(eq:int1-07), which usually is best on the side of the independent variable (in this case $t$). Since both sides of the separated equation are equal, we can rewrite Equation \@ref(eq:int1-07) on a single line (Equation \@ref(eq:int3-07)):
+
+\begin{equation}
+\ln(y) = \frac{1}{3} t^{3} + C (\#eq:int3-07)
+\end{equation}
+
+**Solve:** This last step solves Equation \@ref(eq:int3-07) for the dependent variable $y$:
+
+\begin{equation}
+\ln(y) =\frac{1}{3} t^{3} + C \rightarrow e^{\ln(y)} = e^{\frac{1}{3} t^{3} + C} = e^{C} \cdot e^{\frac{1}{3} t^{3}} \rightarrow y = Ce^{\frac{1}{3} t^{3}}  (\#eq:sol1-07)
+\end{equation}
+
+We are in business! Notice how in Equation \@ref(eq:sol1-07) at each step we just kept the constant to be $C$, since exponentiating a constant will still be constant.
+
+To summarize, the workflow for the separating of variables technique is the following:
+
+1. **Separate** the variables on one side of the equation.
+2. **Integrate** both sides individually.
+3. **Solve** for the dependent variable.
 
 
-Hopefully you were able to verify that $\tilde{R}$ and $\tilde{Q}$ and $\tilde{G}$ all were solutions to the differential equation, and that $\tilde{R} + \tilde{Q}$ was a solution as well. The most general solution to this differential equation is $S(t)=Ce^{0.7t}$, where the initial condition would determine the value of $C$.  
+## Integrating factors
+Chapters \@ref(intro-01) and \@ref(euler-04) examined a model for the spread of Ebola where that was proportional to the number infected:\index{differential equation!solution technique!integrating factor}
 
-## Applying guess and check more broadly
-As noted earlier, the guess and check method may seem to be trivial - if you have a differential equation, and solution, why verify it?  Well, this method helps to introduce a useful solution technique to a differential equation, and one that we can build up through direct verification.
+\begin{equation}
+\frac{dI}{dt} = .023(13600-I) = 312.8  - .023I (\#eq:infected-07)
+\end{equation}
 
-We are going to revisit the lynx hare model, but simplified a little bit.  Here we are going to assume that lynx and hares both decline at a rate proportional to the population size, but the lynx population increases according to the rate of hare decline:
+
+While Equation \@ref(eq:infected-07) can be solved via separation of variables, let's try a different approach to illustrate another useful technique. First let's write the terms in Equation \@ref(eq:infected-07) that involve $I$ on one side of the equation:
+
+\begin{equation}
+\frac{dI}{dt} + .03I = 30. (\#eq:infected-2-07)
+\end{equation}
+
+What we are going to do is multiply both sides of this Equation \@ref(eq:infected-2-07) by $e^{.023t}$ (I'll explain more about that later):
+
+\begin{equation}
+\frac{dI}{dt} \cdot e^{.023t} + .023I \cdot e^{.023t} = 312.8  \cdot e^{.023t} (\#eq:infected-3-07)
+\end{equation}
+
+Hmmm - this seems like we are making the differential equation harder to solve, doesn't it?  However the left hand side of Equation \@ref(eq:infected-3-07) is actually the derivative of the expression $I \cdot e^{.023t}$ (courtesy of the product rule from calculus). Let's take a look:
+
+
+\begin{equation}
+\frac{d}{dt} \left( I \cdot e^{.023t} \right) = \frac{dI}{dt} \cdot e^{.023t} + I \cdot .023 e^{.023t} (\#eq:infected-4-07)
+\end{equation}
+
+Equation \@ref(eq:infected-4-07) allows us to express the left hand side of Equation \@ref(eq:infected-3-07) as a derivative and then integrate both sides:
+
+\begin{equation}
+\begin{split}
+\frac{d}{dt} \left( I \cdot e^{.023t} \right) &= 312.8 \cdot e^{.023t} \rightarrow \\
+\int \frac{d}{dt} \left( I \cdot e^{.023t} \right) \; dt &= \int 312.8 \cdot e^{.023t} \; dt \rightarrow \\
+I \cdot e^{.023t} &= 13600 \cdot e^{.023t} + C
+\end{split} (\#eq:infected-5-07)
+\end{equation}
+
+All that is left to do is to solve Equation \@ref(eq:infected-5-07) in terms of $I(t)$ by dividing by $e^{.023t}$, labeled as $I_{1}(t)$ (Equation \@ref(eq:i1)):
+
+\begin{equation}
+I_{1}(t) = 13600 + Ce^{-.023t}  (\#eq:i1)
+\end{equation}
+
+Cool!  The function $f(t)=e^{.023t}$ is called an _integrating factor_.\index{differential equation!solution technique!integrating factor} Let's explore this technique with a second example:
+
+```{example}
+Apply the integrating factor technique to determine a general solution to the differential equation:
+
+\begin{equation}
+\frac{dI}{dt} = .023t (13600-I) = 312.8 t  - .023 t \cdot I (\#eq:infected-v2-07)
+\end{equation}
+
+(Equation \@ref(eq:infected-v2-07) is a modification of Equation \@ref(eq:infected-07), where the rate of infection is time dependent.)
+```
+
+```{solution}
+Re-writing Equation \@ref(eq:infected-v2-07) we have:
+
+\begin{equation}
+\frac{dI}{dt} + .023 t \cdot I = 312.8 t (\#eq:infected-v2-2-07)
+\end{equation}
+
+To write the left hand side of Equation \@ref(eq:infected-v2-2-07) as the derivative of a product of functions, multiply the _entire_ differential equation by $\displaystyle e^{\int .023t \; dt} = e^{.0115 t^{2}}$. This term is called the _integrating factor_ (Equation \@ref(eq:infected-v2-3-07)):
+
+\begin{equation}
+\frac{dI}{dt} \cdot e^{ .0115 t^{2}} + .023 t \cdot I \cdot e^{0.0115 t^{2}} = 312.8 t \cdot e^{0.0115 t^{2}} (\#eq:infected-v2-3-07)
+\end{equation}
+
+Rewrite the left hand side of Equation \@ref(eq:infected-v2-3-07) with the product rule:
+  
+\begin{equation}
+\frac{dI}{dt} \cdot e^{ 0.0115 t^{2}} + .023 t \cdot I \cdot e^{0.0115 t^{2}} = \frac{d}{dt} \left( I \cdot e^{0.0115  t^{2}} \right) (\#eq:infected-v2-4-07)
+\end{equation}
+
+Next integrate Equation \@ref(eq:infected-v2-4-07):
+
+\begin{equation}
+\begin{split}
+\frac{d}{dt} \left( I \cdot e^{.0115 t^{2}} \right) &= 312.8 t \cdot e^{.0115 t^{2}}  \rightarrow \\
+\int \frac{d}{dt} \left( I \cdot e^{.0115  t^{2}} \right) \; dt &= \int 312.8t \cdot e^{.0115 t^{2}}  \; dt \rightarrow \\
+I \cdot e^{0.0115 t^{2}} &= 27200 \cdot e^{.0115 t^{2}} + C
+\end{split} (\#eq:infected-v2-5-07)
+\end{equation}
+
+The final step is to write the Equation \@ref(eq:infected-v2-5-07) in terms of $I(t)$; we will label this solution as $I_{2}(t)$:
+
+\begin{equation}
+I_{2}(t) =  27200 + C e^{-.0115 t^{2}}  (\#eq:i2)
+\end{equation}
+
+Figure \@ref(fig:if-compare) compares the solutions $I_{1}(t)$ and $I_{2}(t)$ when the initial condition (in both cases) is 10 (so $I_{1}(0)=I_{2}(0)=10$). Notice how the extra time-dependent factor in Equation \@ref(eq:infected-v2-07) makes the cases grow quickly before leveling off.
+```
+
+
+```{r if-compare,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Comparison of two integrating factor solutions, Equation \\@ref(eq:i1) in red and Equation \\@ref(eq:i2) in blue.'}
+t <- seq(0,100,by=0.05)
+
+# I_{1}(t) = 13600 + Ce^{-.023t}  (\#eq:i1)
+# I_{2}(t) =  27200 + C e^{-.0115 t^{2}}  (\#eq:i2)
+
+solutions <- tibble(t,
+                    soln1 = 13600-13590*exp(-.023*t),
+                    soln2 = 27200-27190*exp(-.0115*t^2))
+
+
+solutions %>%
+  pivot_longer(cols=c("soln1","soln2"),names_to="type",values_to="value") %>%
+  ggplot(aes(x=t,y=value,color=type)) + geom_line(size=1) +
+  labs(x="Time",y="Number Infected") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 10),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(name = "Infection rate:", labels = c("Constant", "Time-dependent")) 
+```
+
+
+
+The integrating factor approach can be applied for differential equations that can be written in the form $\displaystyle \frac{dy}{dt} + f(t) \cdot y = g(t)$, using the following workflow:
+
+1. **Determine** the _integrating factor_ $\displaystyle e^{\int f(t) \; dt}$. Hopefully the integral $\displaystyle \int f(t) \; dt$ is easy to compute!
+2. **Multiply** the integrating factor across your equation to rewrite the differential equation as $\displaystyle \frac{d}{dt} \left( y \cdot e^{\int f(t) \; dt} \right) = g(t) \cdot e^{\int f(t) \; dt}$.
+3. **Evaluate** the integral $\displaystyle H(t) = \int g(t) \cdot e^{\int f(t) \; dt} \; dt$. This looks intimidating - but hopefully is manageable to compute!  Don't forget the $+C$!
+4. **Solve** for $y(t)$:  $\displaystyle y(t) = H(t) \cdot e^{-\int f(t) \; dt} + C e^{-\int f(t) \; dt}$.
+
+
+
+## Applying the verification method to coupled equations {#verify-broad-07}
+Finally, the method of verifying a solution helps to introduce a useful solution technique for systems of differential equations. We are going to study a simplified version of the lynx-hare model from Chapter \@ref(coupled-06). Equation \@ref(eq:lh-07) assumes both lynx and hares decline at a rate proportional to their respective population sizes, with the decline in the lynx population representing predation:
 
 \begin{equation}
 \begin{split}
 \frac{dH}{dt} &= -b H  \\
 \frac{dL}{dt} & = b H  - d L
-\end{split}
+\end{split} (\#eq:lh-07)
 \end{equation}
 
 
-Based on these simplified assumptions a good approach is to assume a solution that is exponential for both $H$ and $L$:
+Based on these simplified assumptions a good approach is to assume a solution that is exponential for both $H$ and $L$ (Equation \@ref(eq:lh-sol-07)):
 
 \begin{equation}
 \begin{split}
 \tilde{H}(t) &= C_{1} e^{\lambda t} \\
 \tilde{L}(t) &= C_{2} e^{\lambda t}
-\end{split}
+\end{split} (\#eq:lh-sol-07)
 \end{equation}
 
-The form of this solution has three unknowns: $C_{1}$, $C_{2}$, and $\lambda$. If you have taken a course in Linear Algebra, you may recognize that we are assuming the solution is a vector of the form $\vec{v} = \vec{C} e^{\lambda t}$ . Let's apply Guess and Check to solve these equations.  By differentiation, we have the following:
+Notice that Equation \@ref(eq:lh-sol-07) has $C_{1}$, $C_{2}$, and $\lambda$ as parameters.^[If you have taken a course in linear algebra, you may recognize that we are assuming the solution is a vector of the form $\vec{v} = \vec{C} e^{\lambda t}$.] Let's apply the verification method to determine expressions for $C_{1}$, $C_{2}$, and $\lambda$ that are consistent with Equation \@ref(eq:lh-07). By differentiation of Equation \@ref(eq:lh-sol-07), we have the following (Equation \@ref(eq:lh-sol-diff-07)):
 
 \begin{equation}
 \begin{split}
 \frac{d\tilde{H}}{dt} &= \lambda C_{1} e^{\lambda t} \\
-\frac{d\tilde{L}}{dt}  &= \lambda C_{2} e^{\lambda t}.
-\end{split} 
+\frac{d\tilde{L}}{dt}  &= \lambda C_{2} e^{\lambda t}
+\end{split} (\#eq:lh-sol-diff-07)
 \end{equation}
 
 
-Comparing to our differential equation we can show that
+Comparing Equation \@ref(eq:lh-sol-diff-07) to Equation \@ref(eq:lh-07) we can show that
 
 \begin{equation}
 \begin{split}
-\lambda C_{1} e^{\lambda t} &= - b C_{1} e^{\lambda t} \rightarrow  (\lambda +\delta) C_{1} e^{\lambda t} = 0\\
+\lambda C_{1} e^{\lambda t} &= - b C_{1} e^{\lambda t} \\
  \lambda C_{2} e^{\lambda t} &= b  C_{1} e^{\lambda t} - d C_{2} e^{\lambda t}
-\end{split} 
+\end{split} (\#eq:lh-sol-diff2-07)
 \end{equation}
 
-Let's rearrange this expression a little bit:
+Let's rearrange Equation \@ref(eq:lh-sol-diff-07) some more:
 
 \begin{equation}
 \begin{split}
  (\lambda + b) C_{1} e^{\lambda t} &= 0\\
  (\lambda + d) C_{2} e^{\lambda t} &=b  C_{1} e^{\lambda t}
+\end{split} (\#eq:lh-sol-diff2a-07)
+\end{equation}
+
+Notice that for the second expression in Equation \@ref(eq:lh-sol-diff2a-07) we can express $\displaystyle C_{1} e^{\lambda t}$ as $\displaystyle\frac{(\lambda + d)}{b} C_{2} e^{\lambda t}$. Next, we can substitute this expression for $C_{1} e^{\lambda t}$ into the first expression of Equation \@ref(eq:lh-sol-diff2a-07):
+
+\begin{equation}
+ (\lambda + b) \frac{(\lambda + d)}{b} C_{2} e^{\lambda t} = 0 
+\end{equation}
+
+If we assume that $b \neq 0$, then we have the following simplified expression (Equation \@ref(eq:lh-sol-diff3-07)):
+
+\begin{equation}
+(\lambda +b) (\lambda +d) C_{2} e^{\lambda t}  = 0 (\#eq:lh-sol-diff3-07)
+\end{equation}
+
+
+Because the exponential function in Equation \@ref(eq:lh-sol-diff3-07) never equals zero, the only possibility is that $(\lambda + b)(\lambda + d)=0$, or that $\lambda = -b$ or $\lambda = -d$.^[Remember: if expressions multiply to zero, then the only possibility is that at least one of them is zero. The process outlined here finds the *eigenvalues* and *eigenvectors* of a system of equations. We will study these concepts in Chapter \@ref(eigenvalues-18).]
+
+Next we need to determine values of $C_{1}$ and $C_{2}$. We can do this by going back to the the second expression in Equation \@ref(eq:lh-sol-diff2-07), which we rearrange to Equation \@ref(eq:lh-sol-diff4-07):
+
+\begin{equation}
+(\lambda + d) C_{2} e^{\lambda t} -b  C_{1} e^{\lambda t}=0 (\#eq:lh-sol-diff4-07)
+\end{equation}
+
+Let's analyze Equation \@ref(eq:lh-sol-diff4-07) for each of the values of $\lambda$:
+
+- Case $\lambda = -d$  
+For this case we have Equation \@ref(eq:lh-sol-case1-07):
+
+\begin{equation}
+(-d +d) C_{2} e^{-d t} - b  C_{1} e^{-d t} =0 \rightarrow   -b  C_{1} e^{-d t} =0 (\#eq:lh-sol-case1-07)
+\end{equation}
+
+The only way for Equation \@ref(eq:lh-sol-case1-07) to be consistent and remain zero is if $C_{1}=0$. We don't have any restrictions on $C_{2}$, so the general solution is given with Equation \@ref(eq:lh-sol-f1-07): 
+
+\begin{equation}
+\begin{split}
+\tilde{H}(t) &=0 \\
+\tilde{L}(t) &= C_{2} e^{-d t}
+\end{split} (\#eq:lh-sol-f1-07)
+\end{equation}
+
+- Case $\lambda = -d$
+For this situation, Equation \@ref(eq:lh-sol-diff4-07) becomes Equation \@ref(eq:lh-sol-case2-07): 
+
+\begin{equation}
+\left( (-d +b) C_{2} - d  C_{1} \right) e^{-d t} =0 (\#eq:lh-sol-case2-07)
+\end{equation}
+
+
+The only way for Equation \@ref(eq:lh-sol-case2-07) to be consistent is if $\left( (-d +b) C_{2} - d  C_{1} \right)=0$, or if $\displaystyle C_{2} = \left( \frac{d}{-d + b} \right) C_{1}$. In this case, Equation \@ref(eq:lh-sol-f2-07) then represents the general solution: 
+
+\begin{equation}
+\begin{split}
+\tilde{H}(t) &=  C_{1} e^{-d t} \\
+\tilde{L}(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t} (\#eq:lh-sol-f2-07)
 \end{split}
 \end{equation}
 
-Notice that for the second equation we can solve for $C_{1} e^{\lambda t}$, or $\displaystyle C_{1} e^{\lambda t} =  \frac{(\lambda + d)}{b} C_{2} e^{\lambda t}$.
+The parameter $C_{2}$ in Equation \@ref(eq:lh-sol-f2-07) can be determined by the initial condition. Notice that we need to have $d \neq b$ or our solution will be undefined.
 
-This allows for something neat to happen.  We can substitute this expression for $C_{1} e^{\lambda t}$ into the first equation:
-
-\begin{equation}
- (\lambda + b) \frac{(\lambda + d)}{b} C_{2} e^{\lambda t} = 0
-\end{equation}
-
-If we assume that $b \neq 0$, then we have the following simplified expression:
+Finally we can write down a general solution to Equation \@ref(eq:lh-07) by combining our Equations \@ref(eq:lh-sol-f1-07) and \@ref(eq:lh-sol-f2-07) by superposition (Equation \@ref(eq:lh-sol-f3-07)):
 
 \begin{equation}
-(\lambda +b) (\lambda +d) C_{2} e^{\lambda t}  = 0
-\end{equation}
-
-
-Because the exponential function never equals zero, with this new equation, the only possibility is that $(\lambda + b)(\lambda + d)=0$, or that $\lambda = -b$ or $\lambda = -d$. Remember: if expressions multiply to zero, then the only possibility is that at least one of them is zero. The process outlined here finds the *eigenvalues* and *eigenvectors* of a system of equations.  We will study these concepts in Section \@ref(eigenvalues-18).
-
-Next we need to determine values of $C_{1}$ and $C_{2}$.  We can do this by going back to the equation $(\lambda + d) C_{2} e^{\lambda t} =b  C_{1} e^{\lambda t}$, or $(\lambda + d) C_{2} e^{\lambda t} -b  C_{1} e^{\lambda t}=0$ rearranged.
-
-
-
-Let's analyze this equation for each of the values of $\lambda$:
-
-### Case $\lambda = -d$  
-For this situation, we have 
-
-$$(-d +d) C_{2} e^{-d t} - b  C_{1} e^{-d t} =0 \rightarrow   -b  C_{1} e^{-d t} =0.$$
-
-The only way for this equation to be consistent and remain zero is if $C_{1}=0$.  We don't have any restrictions on $C_{2}$, so the general solution will be 
-
-\begin{align}
-\tilde{H}(t) &=0 \\
-\tilde{L}(t) &= C_{2} e^{-d t}.
-\end{align} 
-
-
-### Case $\lambda = -d$
-For this situation, we have $(-d +b) C_{2} e^{-d t} - d  C_{1} e^{-d t} =0$ which leads to the following equation: 
-\begin{equation}
-\left( (-d +b) C_{2} - d  C_{1} \right) e^{-d t} =0
-\end{equation}
-
-
-The only way for this equation to be consistent and remain zero is if $\left( (-d +b) C_{2} - d  C_{1} \right)=0$, or if $\displaystyle C_{2} = \left( \frac{d}{-d + b} \right) C_{1}$.  In this case, the general solution will be 
-
-
-\begin{align}
-\tilde{H}(t) &=  C_{1} e^{-d t} \\
-\tilde{L}(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t},
-\end{align} 
-
-The parameter $C_{2}$ can be determined by the initial condition.  Notice that we need to have $d \neq b$ or our solution will be undefined.
-
-Now we can write down a general solution to the system by combining our two solutions together.  Here we can you the fact that two solutions can be added together (superposition) to generate a solution.
-
-
-\begin{align}
+\begin{split}
 H(t) &=  C_{1} e^{-d t} \\
 L(t) &= \left( \frac{d}{-d + b} \right) C_{1} e^{-d t} + C_{2} e^{-b t}
-\end{align} 
+\end{split} (\#eq:lh-sol-f3-07)
+\end{equation}
 
 
-This method only works on *linear* differential equations (i.e. it wouldn't work if there was a term such as $kHL$ in our dynamics.  Later on in the course we will look a more systematic method (i.e eigenvalues) to determine solutions to linear systems of equations.
+The method outlined here only works on *linear* differential equations (i.e. it wouldn't work if there was a term such as $kHL$ in Equation \@ref(eq:lh-07)). In Chapter \@ref(eigenvalues-18) explores this method more systematically to determine general solutions to linear systems of equations.
 
 
+As you can see, there are a variety of techniques that can be applied in the solution of differential equations. Many more solution techniques exist - but by and large the techniques presented here probably will be your "go-tos" when working to find an exact solution to a differential equation.
 
-\newpage
 ## Exercises
 
 ```{exercise}
@@ -351,16 +375,36 @@ I_{2}(t) =  1000 + C e^{-0.015 t^{2}}
 
 ```
 
-&nbsp;
-
 ```{exercise}
-Verify that $I_{2}(t) =  N + C e^{-0.5 k t^{2}}$ is the solution to the differential equation $\displaystyle \frac{dI}{dt} = kt (N-I)$.  Plot your dolution for various values of $k$ ranging from .001 to .1.  What effect does $k$ have on the solution?
+Solve Equation \@ref(eq:infected-07) using the separation of variables technique.
 ```
 
-&nbsp;
+```{exercise}
+Verify that $I_{2}(t) =  N + C e^{-0.5 k t^{2}}$ is the solution to the differential equation $\displaystyle \frac{dI}{dt} = kt (N-I)$.  Set $N=3$ and $C=1$. Plot $I_{2}(t)$ with various values of $k$ ranging from .001 to .1. What effect does $k$ have on the solution?
+```
 
 ```{exercise}
-A chemical reaction $2A \rightarrow C + D$ can be modeled with the following differential equation [@scholz_first-order_2014]:
+Consider the following model of an infection:
+  
+  \begin{equation}
+\begin{split}
+\frac{dS}{dt} &= -k SI \\
+\frac{dI}{dt} &= k SI - \beta I
+\end{split}
+\end{equation}
+
+Use this equation to solve the following questions:
+  
+  a. Show that $\displaystyle \frac{I'}{S'} = -1 + \frac{\beta}{k} \frac{1}{S}$, where $\displaystyle S'=\frac{dS}{dt}$ and $\displaystyle I'=\frac{dI}{dt}$. We will call $\displaystyle \frac{I'}{S'} = \frac{dI}{dS}$.
+b. Using separation of variables, show that the general solution to  $\displaystyle \frac{I'}{S'} = -1 + \frac{\beta}{k} \frac{1}{S}$ is $\displaystyle I(S) = -S + \frac{\beta}{k} \ln (S) + C$.
+c. At the beginning of the epidemic, $S_{0}+I_{0} = N$, where $N$ is the total population size. Use this fact to determine $C$ in the equation $\displaystyle I_{0} = - S_{0} +  \frac{\beta}{k} \ln (S_{0}) + C$.
+d. Using your previous answer, show that $\displaystyle I(S) = N- S + \frac{\beta}{k} \ln \left(\frac{S}{S_{0}} \right)$.
+e. Plot a solution curve for $I(S)$ with $\beta = 1$, $k=0.1$, $N=100$, and $S_{0}=5$.
+  
+```
+
+```{exercise}
+(Inspired by @scholz_first-order_2014) A chemical reaction $2A \rightarrow C + D$ can be modeled with the following differential equation:
         
 \begin{equation}
 \frac{dA}{dt} = -2 k A^{2}
@@ -369,52 +413,50 @@ A chemical reaction $2A \rightarrow C + D$ can be modeled with the following dif
 Apply the method of separation of variables to determine a general solution for this differential equation.
 ```
 
-&nbsp;
+```{exercise}
+(Inspired by @berg_mathematical_2011) Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of $S$ in the blood is the following:
+
+\begin{equation}
+\frac{dS}{dt} = I + p \cdot (W - S)
+\end{equation}
+
+where the parameter $I$ represents the active uptake of salt, $p$ is the permeability of the skin, and $W$ is the salinity in the water. For this problem, set $I = 0.1$ (10% / hour), $p = 0.05$ hr$^{-1}$, $W = 0.4$ (40% salt concentration), and $S(0)=0.6$ (60% salt concentration).
+
+a. Generate a slope field of the differential equation $\displaystyle \frac{dS}{dt} = 0.1 + 0.05 \cdot (.6 - S)$.
+b. Apply integrating factors to solve the differential equation $\displaystyle \frac{dS}{dt} = 0.1 + 0.05 \cdot (.6 - S)$.
+c. Does your solution conform to the slope field diagram?
+
+```
+
 
 ```{exercise}
-Which of the following differential equations be solved via separation of variables?
+Which of the following differential equations can be solved via separation of variables?
 
-a. $\displaystyle \frac{dy}{dx} = x \cdot (y^{2}+2)$
-b. $\displaystyle \frac{dy}{dx} = x^{2} + xy$
-c. $\displaystyle \frac{dy}{dx} = e^{x+y}$
-d. $\displaystyle \frac{dy}{dx} = y \cdot \cos(2+x)$
-e. $\displaystyle \frac{dy}{dx} = \ln x + \ln y$
+a. $\displaystyle \frac{dy}{dx} = x^{2} + xy$
+b. $\displaystyle \frac{dy}{dx} = e^{x+y}$
+c. $\displaystyle \frac{dy}{dx} = y \cdot \cos(2+x)$
+d. $\displaystyle \frac{dy}{dx} = \ln x + \ln y$
+e. $\displaystyle \frac{dy}{dx} = x \cdot (y^{2}+2)$
 
 
 Once you have identified which ones can be solved via separation of variables, apply that technique to solve each differential equation.
 ```
 
-&nbsp;
-
- <!-- Taken from Schaums outlines -->
- 
-```{exercise}
-Solve the following differential equations by separation of variables:
-
-a. $\displaystyle \frac{dy}{dx} = \frac{y^{3}}{x}$
-b. $\displaystyle \frac{dy}{dx} = 1+y^{2}$
-c. $\displaystyle \frac{dy}{dx} = 8-y$
-
-```
-
-
-&nbsp;
 
 ```{exercise}
 Consider the following differential equation $\displaystyle \frac{dP}{dt} = - \delta P$, $P(0)=P_{0}$, where $\delta$ is a constant parameter.
 
 
 a. Solve this equation using the method of separation of variables.
-b. Solve this euqation using an integrating factor.
+b. Solve this equation using an integrating factor.
 c. Your two solutions from the two methods should be the same - are they?
 
 
 ```
 
-&nbsp;
 
 ```{exercise}
-Here we return to the problem of how animals consume food. A differential equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: 
+A differential equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: 
 
 \begin{equation}
 \frac{dy}{dx} = \frac{1}{\theta} \frac{y}{x},
@@ -423,24 +465,26 @@ Here we return to the problem of how animals consume food. A differential equati
 where $\theta \geq 1$ is a constant. Apply separation of variables to determine the general solution to this differential equation.
 ```
 
-&nbsp;
 
 ```{exercise}
 Apply separation of variables to determine general solutions to the following systems of differential equations:
+  
 \begin{equation}
 \begin{split} 
 \frac{dx}{dt} &= x \\ 
 \frac{dy}{dt} &= y
-\end{split}
+\end{split} (\#eq:uncoupled-07)
 \end{equation}
-(This system is an example of an *uncoupled* system of equations.)
+
+(Equation \@ref(eq:uncoupled-07) is an example of an *uncoupled* system of equations.)
 ```
 
-&nbsp;
+
 
 <!-- %Thornley pg 80 -->
 ```{exercise}
-A plant grows propritional to its current length $L$.  Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value.  The system of equations that models this plant growth is the following:
+(Inspired by @thornley_plant_1990) A plant grows proportional to its current length $L$. Assume this proportionality constant is $\mu$, whose rate also decreases proportional to its current value. The system of equations that models this plant growth is the following:
+  
 \begin{equation}
 \begin{split}
 \frac{dL}{dt}  = \mu L \\ 
@@ -448,14 +492,16 @@ A plant grows propritional to its current length $L$.  Assume this proportionali
  \mbox{($k$ is a constant parameter)}
 \end{split}
 \end{equation}
+
 Apply separation of variables to determine the general solutions to this system of equations.
 
 ```
 
-&nbsp;
+
 
 ```{exercise}
-Use the method developed in this section determine the general solution to the following system of differential equations:
+Apply the verification method developed in Chapter \@ref(verify-broad-07) to determine the general solution to the following system of differential equations:
+  
 \begin{equation}
 \begin{split}
 \frac{dx}{dt} &= x-y   \\
@@ -465,13 +511,10 @@ Use the method developed in this section determine the general solution to the f
 
 ```
 
-&nbsp;
 
 ```{exercise}
-Apply the method of integrating factors to determine the solution to the differential equation $\displaystyle \frac{dI}{dt} = (N-I) = kN  - kI$, where $k$ and $N$ are parameters.
+Apply the integrating factors technique to determine the solution to the differential equation $\displaystyle \frac{dI}{dt} = (N-I) = kN  - kI$, where $k$ and $N$ are parameters.
 ```
-
-&nbsp;
 
 
 
@@ -480,39 +523,46 @@ Apply the method of integrating factors to determine the solution to the differe
 For each of the following differential equations:
 
 - Determine equilibrium solutions for the differential equation.
-- Apply separation of variables to determine general solutions to the following differential equations:
+- Apply separation of variables to determine general solutions to the following differential equations.
 - Choose reasonable values of any parameters and plot the solution curve for an initial condition that you select.
 
 
 a. $\displaystyle \frac{dy}{dx} = -\frac{x}{y}$
+  
 b. $\displaystyle \frac{dy}{dx} = 8-y$
+  
 c. $\displaystyle \frac{dW}{dt} = k (N-W)$  ($k$ and $N$ are constant parameters)
+
 d. $\displaystyle \frac{dR}{dt} =-aR \ln \frac{R}{K}$  ($a$ and $K$ are constant parameters)
 
 ```
 
-&nbsp;
 
 ```{exercise}
 Consider the following differential equation, where $M$ represents a population of mayflies and $t$ is time (given in months), and $\delta$ is a mortality rate (units % mayflies / month):
+  
 \begin{equation}
 \frac{dM}{dt} = - \delta \cdot M
 \end{equation}
-Determine the general solution to this differential equation and plot a few different solution curves with different values of $\delta$. Assume that $M(0) = 10,000$. Also identify the equilibrium solution to the differential equation and classify the stability of the equilibrium solution based on your solution curves.
+
+Determine the general solution to this differential equation and plot a few different solution curves with different values of $\delta>0$. Assume that $M(0) = 10,000$. Describe the effect of changing $\delta$ on your solution.
 ```
 
-&nbsp;
+
 ```{exercise}
 An alternative model of mayfly mortality is the following:
+  
 \begin{equation}
 \displaystyle \frac{dM}{dt} = - \delta(t) \cdot M,
 \end{equation}
-where $\delta(t)$ is a time dependent mortality function. Determine a solution and plot a solution curve (assuming $M(0)=10,000$ and over the interval from $0 \leq t \leq 1$) for this differential equation when $\delta(t)$ has the following forms:
+where $\delta(t)$ is a time dependent mortality function. Determine a solution and plot a solution curve (assuming $M(0)=10,000$ and over the interval from $0 \leq t \leq 5$, assuming time is scaled appropriately) for this differential equation when $\delta(t)$ has the following forms:
 
   
-a. $\delta(t) = t^{2}$
-b. $\delta(t) = 1-t^{2}$
+a. $\delta(t) = 1$
+b. $\delta(t) = 2t$
+c. $\delta(t) = 1-e^{-t}$
+d. $\delta(t) = 1+e^{-t}$
 
-Provide a reasonable biological explanation justifying the use of this alternative mayfly model. 
+Provide a reasonable biological explanation justifying the use of these alternative mayfly models. 
 ```
 

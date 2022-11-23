@@ -1,125 +1,150 @@
-# The Metropolis-Hastings Algorithm
+# The Metropolis-Hastings Algorithm {#metropolis-12}
 
-In Sections \@ref(likelihood-09) and \@ref(cost-fns-10) we discussed likelihood and cost functions, and Section \@ref(bootstrap-11) introduced the idea of sampling.  For this section we will combine all these concepts to discover a powerful algorithm that can efficiently sample a probability distribution (think likelihood function) to estimate model parameters.
+Cost or likelihood functions (Chapters \@ref(likelihood-09) and \@ref(cost-fns-10)) are a powerful approach to estimate model parameters for a dataset. Bootstrap sampling (Chapter \@ref(bootstrap-11)) is an efficient computational method to extend the reach of a dataset to estimate population level parameters. With all these elements in place we will discuss a powerful algorithm that will efficiently sample a likelihood function to estimate parameters for a model. Let's get started!
+
 
 ## Estimating the growth of a dog
 
-The problem we are considering is fitting the following data to a logistic model, adapted from  [here](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/). We initially plotted these data in Section \@ref(r-intro-02), but here is the code again.
+In Chapter \@ref(r-intro-02) we introduced the dataset `wilson`, which reported data on the [weight of the puppy Wilson](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/) as he grew, shown again in Figure \@ref(fig:wilson-data-12). Because we will re-use the scatter plot in Figure \@ref(fig:wilson-data-12) several times, we define the variable `wilson_data_plot` so we don't have to re-copy the code over and over.^[Making a base plot and repeatedly adding to it is a really good coding practice for `R`.]
 
-```{r wilson-data-12,fig.width=4,fig.height=3,fig.cap="Weight of the dog Wilson over time."}
+```{r eval = FALSE}
 wilson_data_plot <- ggplot(data = wilson) +
-  geom_point(aes(x = days, y = mass)) +
+  geom_point(aes(x = days, y = weight), size = 1, color = "red") +
   labs(
-    x = "Days since birth",
-    y = "Weight (pounds)"
+    x = "D (Days since birth)",
+    y = "W (Weight in pounds)"
   )
 
 wilson_data_plot
 ```
 
-Notice that for Figure \@ref(fig:wilson-data-12) we stored the plot in the variable `wilson_data_plot`.  We will be using this plot several times here, so storing it will help us save some typing.
+```{r wilson-data-12,fig.cap="Weight of the dog Wilson over time.",echo=FALSE}
+wilson_data_plot <- ggplot(data = wilson) +
+  geom_point(aes(x = days, y = weight), size = 1, color = "red") +
+  labs(
+    x = "D (Days since birth)",
+    y = "W (Weight in pounds)"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind() + ylim(c(0,80))
 
-The function we wish to fit from the data is the following 
+wilson_data_plot
+```
+
+Let $D$ be the days since birth and $W$ Wilson's weight in pounds, Equation \@ref(eq:wilson-sat-12) is a model that describes Wilson's weight over time:
+
 \begin{equation}
-W =f(D,p_{1})= \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}},
+W =f(D,p_{1})= \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}} (\#eq:wilson-sat-12)
 \end{equation}
-where we have the parameters $p_{1}$, $p_{2}$, and $p_{3}$. Notice how $W$ is a function of $D$ and $p_{1}$. For convenience we will set $p_{2}= 2.461935$ and  $p_{3} = 0.017032$. Now we are only estimating the parameter $p_{1}$ which represents the maximum possible weight of the dog.
 
+Equation \@ref(eq:wilson-sat-12) has three different parameters $p_{1}$, $p_{2}$, and $p_{3}$ to be estimated. For convenience we will set $p_{2}= 2.461935$ and  $p_{3} = 0.017032$ and estimate $p_{1}$, which for this model represents the long-term weight for Wilson, or a horizontal asymptote for Equation \@ref(eq:wilson-sat-12) (Exercise \@ref(exr:limit-12)).
 
-Let's take an initial guess for the parameter $p_{1}$.  You may recognize that $p_{1}$ is the horizontal asymptote of this the function $W$.  So at first glance let's set $p_{1}=78$.  Let's plot that result along with the data:
+Let's take an initial guess for the parameter $p_{1}$. From Figure \@ref(fig:wilson-data-12) a reasonable guess for $p_{1}$ would be 78. As we did with Figure \@ref(fig:wilson-data-12), we are going to store the updated plot as a variable. Try this code out on your own. 
 
-```{r wilson-with-guess,fig.width=4,fig.height=3,fig.cap="Weight of the dog Wilson with initial guess $p_{1}=78$."}
+```{r wilson-with-guess-12,fig.cap="Weight of the dog Wilson with initial guess $p_{1}=78$.",eval = FALSE}
+
+# Define a data frame for W = f(D,78)
 days <- seq(0, 1500, by = 1)
 
 p1 <- 78
 p2 <- 2.461935
 p3 <- 0.017032
-mass <- p1 / (1 + exp(p2 - p3 * days))
 
-my_guess <- tibble(days, mass)
+weight <- p1 / (1 + exp(p2 - p3 * days))
+my_guess_78 <- tibble(days, weight)
 
+### Now add our guess of p1 = 78 to the plot.
 my_guess_plot <- wilson_data_plot +
-  geom_line(data = my_guess, color = "red", aes(x = days, y = mass))
+  geom_line(
+    data = my_guess_78, color = "red",
+    aes(x = days, y = weight)
+  )
 
 my_guess_plot
 ```
 
-As we did with Figure \@ref(fig:wilson-data-12), we are going to store the updated plot as a variable.  It seems that this value of $p_{1}$ does a good job capturing the initial rate of growth initially but perhaps predicts too high of a mass towards the end. 
 
-For comparison let's also examine the plot of the data when $p_{1}=65$:
-```{r wilson-with-guess-three,fig.width=4,fig.height=3,fig.cap="Weight of the dog Wilson with initial guess $p_{1}=78$ (red) and $p_{1}=65$ (blue)."}
-days <- seq(0, 1500, by = 1)
 
-p1 <- 65
-p2 <- 2.461935
-p3 <- 0.017032
+Perhaps let's try another guess for $p_{1}$ a little lower than $p_{1}=78$. Re-run the prior code, but this time set $p_{1}=65$. Does that model better represent the `wilson` data?
 
-mass <- p1 / (1 + exp(p2 - p3 * days))
-
-my_guess_two <- tibble(days, mass)
-
-my_guess_plot +
-  geom_line(data = my_guess_two, color = "blue", aes(x = days, y = mass))
-```
-
-## Applying the likelihood to evaluate parameters
-So with $p_{1}=65$ the modeled long-term trend seems to underestimate the data. Despite this, is the modeled growth with $p_{1}=65$ more plausible?  We have nineteen measurements of the dog's weight over time.  Assuming these measures are all independent and identically distributed, we have the following likelihood function:
+## Likelihood ratios for parameter estimation {#lr-12}
+We have two potential values for $p_{1}$ (78 or 65). While you may be able to decide which parameter is better "by eye", let's discuss a way to quantify this some more. How we do that is with the likelihood function for these data. We will apply the standard assumptions that the nineteen measurements of Wilson's weight over time are all independent and identically distributed, creating the following likelihood function (Equation \@ref(eq:wilson-like-12)): 
 
 \begin{equation}
-L(p_{1}) = \prod_{i=1}^{19} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{(W_{i}-f(D_{i},p_{1}))^{2}}{2 \sigma^{2}}}
+L(p_{1}) = \prod_{i=1}^{19} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{(W_{i}-f(D_{i},p_{1}))^{2}}{2 \sigma^{2}}} (\#eq:wilson-like-12)
 \end{equation}
 
-We can easily compute the associated likelihood values with the function `compute_likelihood`:
+We can easily compute the associated likelihood values for Equation \@ref(eq:wilson-like-12) with the `R` function `compute_likelihood` from Chapter \@ref(likelihood-09):
 
 
 ```{r}
 # Define the model we are using
-my_model <- mass ~ p1 / (1 + exp(p2 - p3 * days))
+my_model <- weight ~ p1 / (1 + exp(p2 - p3 * days))
 
 
-# This allows for all the possible combinations of parameters
-parameters <- tibble(p1 = c(78, 65), 
-                     p2 = 2.461935, 
-                     p3 = 0.017032
-                     )
+# Define a tibble for the two different estimates of p1
+parameters <- tibble(
+  p1 = c(78, 65),
+  p2 = 2.461935,
+  p3 = 0.017032
+)
 
 # Compute the likelihood and return the likelihood from the list
-out_values <- compute_likelihood(my_model, wilson, parameters)$likelihood
+out_values <-
+  compute_likelihood(my_model, wilson, parameters)$likelihood
 
 # Return the likelihood from the list:
 out_values
 ```
 
-Hopefully this code seems familiar to you from Section \@ref(likelihood-09).  We made some modifications to streamline things:
+Hopefully this code seems familiar to you from Chapter \@ref(likelihood-09), but of note are the following:
 
-- We want to compare two values of `p1`, so when we defined `parameters` we included the two values of $p_{1}$ when defining `parameters`.  The same values of `p2` and `p3` will apply to both.  Don't believe me? Type `parameters` at the console line to see!
-- Recall that when we apply `compute_likelihood` a list is returned (`likelihood` and `opt_value` .  For this case we just want the `likelihood` data frame, hence the `$likelihood` at the end of `compute_likelihood`.
+- We want to compare two values of `p1`, so when we defined `parameters` we included the two values of $p_{1}$ when defining `parameters`. The same values of `p2` and `p3` will apply to both. Don't believe me? Type `parameters` at the console line to see!
+- Recall that when we apply `compute_likelihood` a list is returned (`likelihood` and `opt_value`). For this case we just want the `likelihood` data frame, hence the code `$likelihood` at the end of `compute_likelihood`.
 
-So we computed $L(78)$=`r out_values$l_hood[[1]]` and $L(65)$=`r out_values$l_hood[[2]]`. As you can see the value of $L(65)$ is a larger number compared to $p_{1}=78$.  One way we can get a sense for the magnitude of the scale  is by examining the *ratio* of the likelihoods:
+So we computed $L(78)$=`r out_values$l_hood[[1]]` and $L(65)$=`r out_values$l_hood[[2]]`. Since $L(65)>L(78)$ we would say $p_{65}$ is the more likely parameter value.
+
+Notice how we computed $L(65)$ and $L(78)$ separately and then compared the two values. Another approach is to examine the *ratio* of the likelihoods (Equation \@ref(eq:like-ratio-12)):
 
 \begin{equation}
-\mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) },
+\mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) } (\#eq:like-ratio-12)
 \end{equation}
 
-So let's compute this ratio: $\displaystyle \frac{ L(65) }{ L(78) }=$`r `round(out_values$l_hood[[2]]/out_values$l_hood[[1]])`. So with this comparison we would say that $p_{1}=65$ is  more likely compared to the value of $p_{1}=78$.
+The utility of the likelihood ratio is that we can say that if the likelihood ratio is *greater* than 1, $p_{1}^{proposed}$ is preferred.\index{likelihood!ratio} If this ratio is *less* than 1, $p_{1}^{current}$ is preferred.
 
+Applying Equation \@ref(eq:like-ratio-12) with $p_{1}^{proposed}=65$ and $p_{1}^{current}=78$, we have $\displaystyle \frac{ L(65) }{ L(78) }=$ `r round(out_values$l_hood[[2]]/out_values$l_hood[[1]])`, further confirming $p_{1}=65$ is more likely compared to the value of $p_{1}=78$.
 
-Can we do better?  What we can do is examine the likelihood ratio for another value.  Since we might need to iterate through things let's define a function that we can reuse:
+### Iterative improvement with likelihood ratios
+We can improve on estimating $p_{1}$ for Equation \@ref(eq:wilson-sat-12) by continuing to compute likelihood ratios. However, since $p_{1}=65$ is the more likely value (currently), then we will set $p_{1}^{current}=65$ for Equation \@ref(eq:like-ratio-12).
+
+To simplify things, let's define a function that will quickly compute Equation \@ref(eq:wilson-sat-12) for this dataset:
 
 ```{r}
-
-# Define a function that computes the likelihood ratio for Wilson's weight
+# A function that computes the likelihood ratio for Wilson's weight
 likelihood_ratio_wilson <- function(proposed, current) {
 
   # Define the model we are using
-  my_model <- mass ~ p1 / (1 + exp(p2 - p3 * days))
+  my_model <- weight ~ p1 / (1 + exp(p2 - p3 * days))
 
 
   # This allows for all the possible combinations of parameters
-  parameters <- tibble(p1 = c(current, proposed), p2 = 2.461935, p3 = 0.017032)
+  parameters <- tibble(
+    p1 = c(current, proposed),
+    p2 = 2.461935,
+    p3 = 0.017032
+  )
 
   # Compute the likelihood and return the likelihood from the list
-  out_values <- compute_likelihood(my_model, wilson, parameters)$likelihood
+  out_values <-
+    compute_likelihood(my_model, wilson, parameters)$likelihood
 
   # Return the likelihood from the list:
   ll_ratio <- out_values$l_hood[[2]] / out_values$l_hood[[1]]
@@ -131,47 +156,55 @@ likelihood_ratio_wilson <- function(proposed, current) {
 likelihood_ratio_wilson(65, 78)
 ```
 
-You should notice that the reported likelihood ratio matches up with our computation - yes!  So let's try to compute the likelihood ratio for $p_{1}=70$ compared to $p_{1}=65$.  Try computing `likelihood_ratio_wilson(70,65)` - you should see that it is about 7.5 million times more likely!
+You should notice that the reported likelihood ratio matches up with our earlier computations!  Perhaps a better guess for $p_{1}$ would be somewhere between 65 and 78. Let's try to compute the likelihood ratio for $p_{1}=70$ compared to $p_{1}=65$. Try computing `likelihood_ratio_wilson(70,65)` - you should see that it is about 7.5 million times more likely!
 
 
 I think we are onto something - Figure \@ref(fig:all-three-wilson) compares the modeled values of Wilson's weight for the different parameters:
 
-```{r all-three-wilson,echo=FALSE,fig.width=5,fig.height=4,fig.cap="Comparison of our three estimates for Wilson's weight over time."}
+```{r all-three-wilson,fig.cap="Comparison of our three estimates for Wilson's weight over time.",echo=FALSE,warning=FALSE,message = FALSE}
+# Define a data frame for W = f(D,65)
 days <- seq(0, 1500, by = 1)
 
-p1 <- 78
 p2 <- 2.461935
 p3 <- 0.017032
-mass <- 78 / (1 + exp(p2 - p3 * days))
 
-mass2 <- 65 / (1 + exp(p2 - p3 * days))
+mass_1 <- 78 / (1 + exp(p2 - p3 * days))
+mass_2 <- 65 / (1 + exp(p2 - p3 * days))
+mass_3 <- 70 / (1 + exp(p2 - p3 * days))
 
-mass3 <- 70 / (1 + exp(p2 - p3 * days))
-my_data <- data.frame(days, mass, mass2, mass3)
-ggplot() +
-  geom_point(data = wilson, aes(x = days, y = mass)) +
-  geom_line(data = my_data, aes(x = days, y = mass, color = "red")) +
-  geom_line(data = my_data, aes(x = days, y = mass2, color = "blue")) +
-  geom_line(data = my_data, aes(x = days, y = mass3, color = "green")) +
-  labs(x = "Days since birth", y = "Weight in pounds") +
-  scale_color_manual(
-    name = expression(p[1]),
-    labels = c(red="78", green="70", blue="65"),
-    values = c(red="red",green="green",blue="blue")
-  )
+my_guess_all <- tibble(days, `78` = mass_1, `65` = mass_2, `70` = mass_3) %>%
+  pivot_longer(cols = c(-"days"))
+
+# Now add our guess of p1 = 70 to the plot.
+wilson_data_plot +
+  geom_line(data = my_guess_all, aes(x = days, y = value, color = name)) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(name = expression(Value ~ of ~ p[1]))
 ```
 
 
-So now, let's try $p_{1}=74$ and compare the likelihoods: $\displaystyle \frac{ L(74) }{ L(70) }$=`r likelihood_ratio_wilson(64,70)`.  This seems to be *less* likely because the ratio was significantly less than one.  If we are doing a hunt for the *best* optimum value, then we would reject $p_{1}=74$ and keep moving on, perhaps selecting another value closer to 70.
+So now, let's try $p_{1}=74$ and compare the likelihoods: $\displaystyle \frac{ L(74) }{ L(70) }$=`r likelihood_ratio_wilson(64,70)`. This seems to be *less* likely because the ratio was significantly less than one. If we are doing a hunt for the *best* optimum value, then perhaps we would reject $p_{1}=74$ and keep moving on, perhaps selecting another value closer to 70.
 
-However, the reality is a little different.  For non-linear problems we want to be extra careful that we do not accept a parameter value that leads us to a *local* (not global) optimum.  A way to avoid this is compare the likelihood ratio to a uniform random number $r$ between 0 and 1. We can do this very easily in `R` - remember the discussion of probability models in Section \@ref(likelihood-09)?  At the `R` console type `runif(1)` - this creates one random number from the uniform distribution (remember the default range of the uniform distribution is $0 \leq p_{1} \leq 1$).  The `r` in `runif(1)` stands for *random*. When I tried `runif(1)` I received a value of 0.126.  Since the likelihood ratio is smaller than the random number we generated, we will *reject* the value of $p_{1}$ and try again, keeping 70 as our value.
+While rejecting $p_{1}=74$ as less likely, a word of caution is warranted. For non-linear problems we want to be extra careful that we do not accept a parameter value that leads us to a *local* (not global) optimum. A way to avoid this is to compare the calculated likelihood ratio to a uniform random number $r$ between 0 and 1.
 
-The process keep the proposed value based on some decision metric is called a *decision step*.
+At the `R` console type `runif(1)` - this creates one random number from the uniform distribution (remember the default range of the uniform distribution is $0 \leq p_{1} \leq 1$). The `r` in `runif(1)` stands for *random*. When I tried `runif(1)` I received a value of 0.126. Since the likelihood ratio is smaller than the random number I generated, we will *reject* the value of $p_{1}=74$ and try again, keeping 70 as our value.
 
-### An iterative method to estimate parameters
-The neat part of the previous discussion is that we can automate this process, such as in the following table:
+The process to keep the proposed value based on some decision metric is called a *decision step*.
 
-| *Iteration* | *Current value of* $p_{1}$  | *Proposed value of* $p_{1}$ | $\displaystyle\frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$ | Value of `runif(1)` | *Accept proposed* $p_{1}$?
+## The Metropolis-Hastings algorithm for parameter estimation
+Section \@ref(lr-12) outlined an iterative approach of applying likelihood ratios to estimate $p_{1}$. Let's organize all the work in a table (Table \@ref(tab:mh-table-12)).
+
+Table: (\#tab:mh-table-12) Organizational table of Metropolis-Hastings algorithm to estimate $p_{1}$ from the `wilson` dataset.
+
+| Iteration | Current value of $p_{1}$  | Proposed value of $p_{1}$ | $\displaystyle\frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$ | Value of `runif(1)` | Accept proposed $p_{1}$?
 |:------:|:-----:|:-----|:-----:|:-----:|:-----:|
 | 0 | 78 | NA | NA | NA | NA
 | 1 | 78 | 65 | 17.55936 | NA | yes
@@ -179,63 +212,85 @@ The neat part of the previous discussion is that we can automate this process, s
 | 3 | 70 | 74 | 0.09985308 | 0.126 | no
 | 4 | 70 | ... | ... | ... | ...
 
-This table is the essence of what is called the [Metropolis-Hastings algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).  Here are the following components:
+Table \@ref(tab:mh-table-12) is the essence of what is called the [Metropolis-Hastings algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).\index{Metropolis-Hastings algorithm} The goal of this algorithm method is to determine the parameter set that optimizes the likelihood function, or makes the likelihood ratio greater than unity. Here are the key components for this algorithm:
 
 
 1. A defined likelihood function.
 2. A starting value for your parameter.
-3. A proposal value for your parameter.
-4. Comparison of the likelihood ratios for the proposed to the current value ($\displaystyle \mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$).  The goal of this algorithm method is to determine the parameter set that optimizes the likelihood function, or makes the likelihood ratio greater than unity.  We will prefer values of $p_{1}$ that increase the likelihood. 
-5. A decision to accept the proposed parameter value.  If the likelihood ratio is greater than 1, then we accept this value.  However if the likelihood ratio is less than 1, we generate a random number $r$ (using `runif(1)`) and use this following process:
+3. A proposed value for your parameter.
+4. Comparison of the likelihood ratios for the proposed to the current value ($\displaystyle \mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$). Parameter values that increase the likelihood will be preferred. 
+5. A decision to accept the proposed parameter value. If the likelihood ratio is greater than 1, then we accept this value. However if the likelihood ratio is less than 1, we generate a random number $r$ (using `runif(1)`) and use this following process:
   - If $r$ is less than the likelihood ratio we **accept** (keep) the proposed parameter value. 
   - If $r$ is greater than the likelihood ratio we **reject** the proposed parameter value.
 
-## Concluding points
-While we have done Metropolis-Hastings "by hand", you may realize that we can automate this process.  We will explore that in the next section.  However there are several modifications we can do to make this algorithm more sophisticated:
+
+### Improving the Metropolis-Hastings algorithm
+We have done the Metropolis-Hastings algorithm "by hand", which may seem tedious to do, but it helps build your own iterative understanding of the underlying process. Here's the good news: we can easily automate the Metropolis-Hastings algorithm, which we will explore in Chapter \@ref(mcmc-13). To note, there are several modifications we can do to make the Metropolis-Hastings algorithm a more efficient and robust method:
 
 
-- While we have focused on implementation of the Metropolis-Hastings algorithm with one parameter, this is easily extended to sets of parameter values, but we just change one parameter at a time.
-- We can select parameter values from multiple starting points to make sure we don't happen to start a chain near a local optimum.  These starting points are called chains, and we can select the chain that has the highest likelihood value.
-- We can use log likelihoods to make the likelihood ratio computation easier.  By this way, instead of division we compute a difference of log likelihoods.  This becomes numerically easier for R to handle, especially when the likelihood values are near zero.  Here is some sample code that you can do this:
+- While we have focused on implementation of the Metropolis-Hastings algorithm with one parameter, this is easily extended to sets of parameter values (e.g. estimating $p_{1}$, $p_{2}$, and $p_{3}$ in Equation \@ref(eq:wilson-sat-12)). However it may take longer to determine the global optimum because we change one parameter value at a time.
+- As you would expect, the more times we iterate through this process, the better. Your initial guesses probably weren't that great (or close to the global optimum), so a common procedure is to throw out the first percentage of iterations and call that the "burn-in" period.
+- Different (usually in parallel) "chains" of parameter estimates are used. Each chain starts from a different starting point. Once the number of iterations is reached, the final parameter set is chosen from the chain with the optimized likelihood. The practice of running multiple chains is a safeguard to prevent the algorithm converging on a local optimum.
+- Since the likelihood ratio may generate large or small numbers, the ratio of log-likelihoods is usually implemented. A log-likelihood ratio then computes the *difference* between the proposed and current parameter values. Computing the difference between two numbers is computationally easier than dividing two numbers. Here is some sample code that implements the log-likelihood ratio:
 
 ```{r eval=FALSE}
 
-# Define a function that computes the LOG likelihood ratio for Wilson's weight
+# A function to computes the LOG likelihood ratio for Wilson's weight
 log_likelihood_ratio_wilson <- function(proposed, current) {
 
   # Define the model we are using
-  my_model <- mass ~ p1 / (1 + exp(p2 - p3 * days))
+  my_model <- weight ~ p1 / (1 + exp(p2 - p3 * days))
 
 
   # This allows for all the possible combinations of parameters
-  parameters <- tibble(p1 = c(current, proposed), p2 = 2.461935, p3 = 0.017032)
+  parameters <- tibble(
+    p1 = c(current, proposed),
+    p2 = 2.461935,
+    p3 = 0.017032
+  )
 
   # Compute the likelihood and return the likelihood from the list
   # Notice we've set logLikely = TRUE to compute the log likelihood
-  out_values <- compute_likelihood(my_model, wilson, parameters, logLikely = TRUE)$likelihood
+  out_values <-
+    compute_likelihood(my_model,
+      wilson,
+      parameters,
+      logLikely = TRUE
+    )$likelihood
 
-  # Return the likelihood from the list - here we compute the DIFFERENCE of likelihoods:
+  # Return the likelihood from the list
+  # here we compute the DIFFERENCE of likelihoods:
   ll_ratio <- out_values$l_hood[[2]] - out_values$l_hood[[1]]
 
   return(ll_ratio)
 }
 ```
 
+- We can systematically explore the parameter space, where the jump distance changes depending on if we are always accepting new parameters or not. This process has several different implementations, but one is called *simulated annealing*.\index{simulated annealing}
 
-
-
-- As you would expect, the more times we iterate through this process, the better.  Your initial guesses probably weren't that great (or close to the global optimum), so a common procedure is to throw out the first percentage of iterations and call that the "burn-in" period.
-- We can systematically explore the parameter space, where the jump distance changes depending on if we are always accepting new parameters or not.  This process has several different implementations, but one is called *simulated annealing*.
-
-
-\newpage
 
 ## Exercises
+```{exercise}
+Using `likelihood_ratio_wilson`, explain why `likelihood_ratio_wilson(65,78)`$\neq$`likelihood_ratio_wilson(78,65)`.
+```
+
+
+```{exercise limit-12}
+Show that $\displaystyle \lim_{D \rightarrow \infty} \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}} = p_{1}$. *Hint: use the fact that* $e^{A-B}= e^{A}e^{-B}$. Note that $p_{1}$, $p_{2}$, and $p_{3}$ are all positive parameters.
+```
 
 ```{exercise}
-Using the dataset `wilson` as in this section, do 10 additional iterations of the Metropolis-Hastings Algorithm by continuing the table.  See if you can get the value of $p_{1}$ to 2 decimal places of accuracy.
+Simplify the expression $\displaystyle \ln \left( \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) } \right)$.
 ```
-&nbsp;
+
+```{exercise wilson-more-12}
+Using the dataset `wilson` from this chapter, complete 10 iterations of the Metropolis-Hastings algorithm by continuing Table \@ref(tab:mh-table-12). See if you can get the value of $p_{1}$ to 2 decimal places of accuracy. Be sure to include a plot of the data and the model with the final estimated value of $p_{1}$.
+```
+
+
+```{exercise}
+Apply 10 iterations of the Metropolis-Hastings Algorithm to estimate $\theta$ for the nutrient equation $\displaystyle y=1.737 x^{1/\theta}$  using the dataset `phosphorous`, where $y=$`daphnia` and $x=$`algae`. You will first need to construct a likelihood ratio similar to the function `likelihood_ratio_wilson` or `log_likelihood_ratio_wilson` in this chapter. Compare your final estimated value of $\theta$ with the data in one plot.
+```
 
 
 ```{exercise}
@@ -246,31 +301,27 @@ An alternative model for the dog's mass is the following differential equation:
 \end{equation}
 
 
-a. Apply separation of variables and $W(0)=5$ and the value of $p_{1}$ from the previous problem to write down the solution to this equation.  Your final answer will depend on $k$.
-b. With the function `compute_likelihood` and the Metropolis-Hastings algorithm to estimate the value of $k$ to three decimal places accuracy.  The true value of $k$ is between 0 and 1.
+a. Apply separation of variables and $W(0)=5$ and the value of $p_{1}$ from Exercise \@ref(exr:wilson-more-12) to determine the solution for this differential equation.
+b. Apply 10 iterations of the Metropolis-Hastings algorithm to estimate the value of $k$ to three decimal places accuracy. The true value of $k$ is between 0 and 1.
+c. Compare your final estimated value of $k$ with the data in one plot.
 
 ```
-&nbsp;
+
 
 ```{exercise full-linear-12}
 Consider the linear model $y=6.94+bx$ for the following dataset:
 
 
-| *x* | *y*  | 
-|:------:|:-----:|
-| -0.365 | 6.57 |
-| -0.14 | 6.78 |
-| -0.53 | 6.39 |
-| -0.035 | 6.96 |
-| 0.272 | 7.20 |
+| *x* | -0.365  | -0.14 | -0.53  | -0.035 | 0.272  |
+|:------:|:-----:|:------:|:-----:|:------:|:-----:|
+| *y* | 6.57 | 6.78  | 6.39  | 6.96  | 7.20 |
+
   
-With the function `compute_likelihood` apply 10 steps the Metropolis-Hastings algorithm to determine $b$.
+Apply 10 iterations of the Metropolis-Hastings algorithm to determine $b$.
 ```
 
-&nbsp;
+
 
 ```{exercise}
-For the `wilson` dataset, repeat three steps of the parameter estimation to determine $p_{1}$ as in this section, but this time use the log-likelihood (so you will compare the *difference* of log likelihoods). Which method do you think is easier?
+For the `wilson` dataset, repeat three steps of the parameter estimation to determine $p_{1}$ as in this chapter, but this time use `log_likelihood_ratio_wilson` to estimate $p_{1}$. Which function (`likelihood_ratio_wilson` or `log_likelihood_ratio_wilson`) do you think is easier in practice?
 ```
-
-

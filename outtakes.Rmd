@@ -1,0 +1,488 @@
+---
+title: "Untitled"
+author: "John Zobitz"
+date: "3/17/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Chapter 9
+
+
+### Other continuous probability density functions
+Beyond the normal distribution some of the more common ones we utilize in the parameter estimation are the following:
+
+- **Uniform:**  For this distribution we must specify between a minimum value $a$ and maximum value $b$, specified in \@ref(eq:uniform-09) and displayed in Figure \@ref(fig:uniform-09).
+
+```{r uniform-09,fig.cap='The uniform density function with $a=1$ and $b=5$.'}
+ggplot() +
+  geom_area(
+    data = data.frame(x_val = seq(0, 7, length = 200),
+                      y_val = dunif(seq(0, 5, length = 200), min = 1, max = 5)),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  xlab("x") +
+  ylab("f(x)") +
+  ylim(c(0, 0.5)) +
+  ggtitle("Uniform Probability Density Function")
+```
+
+\begin{equation}
+f(x)=\frac{1}{b-a} \mbox{ for } a \leq x \leq b (\#eq:uniform-09)
+\end{equation}
+
+The uniform distribution is useful when specifying an initial (known) range of a parameter. We will use this distribution for the parameter estimation methods in Section \@ref(mcmc-13).
+
+- **Exponential:** An example of this function is shown in Figure \@ref(fig:exponential-09), with the formula specified in \@ref(eq:exponential-09), where $\lambda$ is the rate parameter.
+
+
+```{r exponential-09,fig.cap='The exponential distribution with $\\lambda = 5$.'}
+ggplot() +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200),
+                      y_val = dexp(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  xlab("x") +
+  ylab("f(x)") +
+  ylim(c(0, 0.5)) +
+  ggtitle("Exponential Probability Distribution")
+```
+
+
+\begin{equation}
+f(x)=\lambda e^{-\lambda x} \mbox{ for } x \geq 0 (\#eq:exponential-09)
+\end{equation}
+
+The exponential distribution is useful for problems that involve events, such as the waiting time for an event to occur.
+
+
+- **Lognormal:** This distirbution is for positive values, with mean $\mu$ and standard deviation $\sigma$.
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The lognormal distribution'}
+ggplot() +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200),
+                      y_val = dlnorm(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  xlab("x") +
+  ylab("f(x)") +
+  ggtitle("Lognormal Probability Distribution")
+```
+
+
+
+The formula for the lognormal distribution is given in Equation \@ref(eq:lognormal-09).
+\begin{equation}
+f(x)=\frac{1}{\sqrt{2 \pi} \sigma x } e^{-(\ln(x)-\mu)^{2}/(2 \sigma^{2})} \mbox{ for } x \geq 0 (\#eq:lognormal-09)
+\end{equation}
+
+
+### Computing and graphing probabilities in R
+Here is some good news: `R` has functions that will compute values of a probability density function!  There are a variety of implementations: both for the density, cumulative distribution^[Reminder: the cumulative distribution function represents the area underneath a density curve up to a given point, so $\displaystyle F(x)=\int_{-\infty}^{x} f(t) \; dt$, where $f(t)$ is the probability density function. I suspect you may have encountered a cumulative distribution function in Calculus studying the Fundamental Theorem of Calculus.]  For the moment, the following table summarizes some common probability distributions in `R`.
+
+Distribution | Key Parameters | R command | Density Example
+------------- | ------------- | ------------- | -------------
+Normal | $\mu \rightarrow$ `mean`, $\sigma \rightarrow$ `sd` | `norm` | `dnorm(mu=0,sd=1,seq(-5,5,length=200))`
+Uniform | $a \rightarrow$ `min`, $b \rightarrow$ `max` | `unif` | `dunif(seq(-5,5,length=200),min = -5,max=5)`
+Exponential | $\lambda \rightarrow$ `rate` | `exp` | `dexp(seq(0,5,length=200))`
+Lognormal | $\mu \rightarrow$ `meanlog`, $\sigma \rightarrow$ `sdlog` | `lnorm` | `dlnorm(seq(0,5,length=200))`
+
+
+To make the graphs of these density functions in `R` we use the prefix `d + ` the name (`norm`, `exp`) etc of the distribution we wish to specify, including any of the key parameters.  If we don't include any of the parameters then it will just use the defaults (which you can see by typing `?NAME` where `NAME` is the name of the command (i.e. `?dnorm`). In many cases the function will have some built in default values, which should also be documented as well.  The normal distribution defaults has `mean=0` and `sd=1` (the standard normal distribution).
+
+```{example}
+Make a graph of the lognormal density function with $\mu=0$ and $\sigma=1$ from $0 \leq x \leq 5$.
+```
+
+```{solution}
+For this case we are using the defaults of the lognormal distribution ($\mu=0$ and $\sigma=1$).  The code is shown below plotted in Figure \@ref(fig:log-norm-plot).
+```
+
+```{r log-norm-plot,fig.cap='Code to plot the lognormal distribution'}
+
+x <- seq(0, 5, length = 200)
+y <- dlnorm(x) # Just use the mean defaults
+
+# Define your data frame to plot
+lognormal_data <- tibble(x, y)
+
+ggplot() +
+  geom_line(
+    data = lognormal_data,
+    aes(x = x, y = y)
+  ) +
+  labs(x = "x", y = "Lognormal density")
+```
+
+
+To determine the area between two values in a density function we use the prefix `p`.
+
+
+```{example exp-area}
+Use `R` to evaluate $\displaystyle \int_{1}^{2} e^{-x} \; dx$.
+```
+
+```{solution}
+The function $e^{-x}$ is the exponential probability distribution with $\lambda=1$. For this example if we wanted to find the area between two values in the exponential density in the shaded graph we would type `pexp(2)-pexp(1)` at the `R` console, which would give the value of 0.233.  A visual representation of this area is shown in Figure \@ref(fig:exp-area-plot).
+```
+
+
+```{r exp-area-plot,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='The area for the exponential distribution', fig.width=4,fig.height=3}
+ggplot() +
+  geom_area(
+    data = data.frame(x_val = seq(0, 5, length = 200), y_val = dexp(seq(0, 5, length = 200))),
+    aes(x = x_val, y = y_val), alpha = .6, fill = "#FF6666"
+  ) +
+  geom_area(
+    data = data.frame(x_val = seq(1, 2, length = 20), y_val = dexp(seq(1, 2, length = 20))),
+    aes(x = x_val, y = y_val), alpha = .8, fill = "#000CCC"
+  ) +
+  xlab("x") +
+  ylab("f(x)") +
+  annotate("text", x = 1.5, y = 0.5, label = "Area of region: 0.233")
+```
+
+
+
+
+```{exercise}
+Evaluate $\displaystyle \int_{0}^{5} 2 e^{-2x} \; dx$ by hand.  Then use `R` to compute the value of $\displaystyle \int_{0}^{5} 2 e^{-2x} \; dx$.  Does your computed answer match with what you found in `R`?
+```
+
+
+
+```{exercise}
+Make a plot of the normal density distribution with $\mu=2$ and $\sigma=0.1$ for $0 \leq x \leq 4$.  Then use `R` to compute the following integral: $\displaystyle \int_{0}^{4} f(x) \; dx$, where $f(x)$ is the normal density function.
+```
+
+### Section 10
+```{exercise}
+Navigate to this [desmos file](https://tinyurl.com/day9linearRegression), which you will use to answer the following questions:
+
+
+a. By adjusting the sliders for $a$ and $b$, determine the values of $a$ and $b$ that you think best minimizes the objective function.
+b. Desmos can do linear regression!  To do that, you need to start a new cell and enter in the regression formula: $y_{1} \sim c + d x_{1}$.  (We need to use different parameters $c$ and $d$ because $a$ and $b$ are defined above).  How do the values of $c$ and $d$ compare to what you found with $a$ and $b$?
+c. Alternatively, you can also define an objective function with absolute value: $\displaystyle S_{mod}(a,b) = \sum_{i=1}^{n} | y_{i}-(a+bx_{i}) |$
+Implement the absolute value objective function in Desmos and manipulate the slider values for $a$ and $b$ to determine where $S_{mod}$ is minimized.  How do those values compare to the least squares estimate?
+
+
+```
+
+# Section 11
+
+
+## Bootstapping with linear regression
+
+Hopefully you can see how much more useful the bootstrap is in terms calculating sample statistics, which allows us to better estimate population level parameters. When doing linear regression, a dataset is an estimate of the regression parameters (such as a slope and intercept). Can we use bootstrapping to understand the distribution of parameters - YES! In this case, the "population" represents of estimated regression parameters. A set of measurements is a *sample* of these parameters.
+
+We are going to return to our example of the global temperature anomaly dataset from Section \@ref(linear-regression-08), and do the following steps:
+
+-   Do a bootstrap sample of the data 100 times.
+-   With each sample, fit a quadratic function ($T = a + bY + cY^{2}$).
+-   Following each fit, examine the histogram of each fitting coefficient.
+
+Rather than use the command `slice_sample`, here we can use an optimized bootstrap sampler (called `bootstrap`) from the `modelr` pacakge:
+
+```{r coeff-plot-11,fig.cap="Distribution of bootstrap regression coefficients from the `global_temperature` dataset.",warning=FALSE,message=FALSE}
+
+# Define the regression formula
+regression_formula <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2)
+
+# Generate the bootstrap samples
+boot <- modelr::bootstrap(global_temperature, n = 100)
+
+# You might not need to modify this code as much
+models <- purrr::map(boot$strap, ~ lm(regression_formula, data = .))
+tidied <- purrr::map_df(models, broom::tidy, .id = "id")
+
+# Make the histogram.  We will make a facetted plot
+ggplot(data = tidied) +
+  geom_histogram(aes(x = estimate)) +
+  facet_grid(term~., scales = "free")
+```
+
+There several new elements of this code, so let's break this down bit by bit:
+
+-   The code `boot <- modelr::bootstrap(global_temperature, n=100)` creates 100 bootstrap samples of the `global_temperature` dataset, expressed as a list. The list `boot` has two entries: (1) `.id` which is a reference (1 to 100) of a particular bootstrap sample and (2) `strap` which contains the information about the bootstrap sample.
+-   The next portion of the code applies the `map` command (similar to `map_df`) to first compute the linear regression for each bootstrap sample. The linear regression fits are stored in the data frame `models`.
+-   Finally we extract out the information about parameters using the command `tidy` from the `broom` package. The data frame `tidied` is organized by the bootstrap sample `.id` and has several columns, but we are going to focus on two of them: `estimate`, which tells you the numerical value of the coefficient in the column `term`. Other information about error estimates and statistical significance are included.
+- Figure \@ref(fig:coeff-plot-11) is an example of a "small multiples" plot - the title of each subplot is the value of the coefficient multiplying each term in our model (Table \@ref(tab:r-corr-12)). Notice that with the bootstrap we can get information about the distribution of the estimated parameters, which includes the median and the 95% confidence interval. This is super useful in reporting results from parameter estimates.
+
+Table: (\#tab:r-corr-12) Correspondence between terms of `R` linear regression and the quadratic model $T=a + bY + cY^{2}$.
+
+| **Small multiple title** | **Coefficient of** $T=a + bY + cY^{2}$ |
+|--------------------------|----------------------------------------|
+| `Intercept`              | $a$                                    |
+| `year_since_1880`          | $b$                                    |
+| `I(year_since_1880^2)`     | $c$                                    |
+
+-  To make Figure \@ref(fig:coeff-plot-11) we use the command `facet_grid(term~.,scales="free")`, which says "plot a histogram for each regression parameter in the row term". We use `scales="free"` because each coefficient has a different range of values. (You can see the difference if you remove `scales="free"` from the plotting command.)
+
+
+
+```{exercise}
+This question tackles the dataset `global_temperature` to determine plausible models for a relationship between time and average global temperature anomaly.  For this exercise we are going to look the variability in bootstrap estimates for models up to fourth degree.
+
+Using the function `bootstrap_model`, generate a bootstrap sample of $n=1000$ for each of the following functions.
+
+- Linear: $T=a+bY$
+- Quadratic:  $T=a+bY+cY^{2}$
+- Cubic: $T=a+bY+cY^{2}+dY^{3}$
+- Quartic: $T=a+bY+cY^{2}+dY^{3}+eY^{4}$
+
+
+Your solution should include graphs of the data with the bootstrap predictions and the prediction from the linear regression model.  How does the variability in the parameters change ($a,b,c,d,e$) as more terms in the model are added? How does the variability in the bootstrap predictions change as more terms in the model are added?
+
+```
+
+
+
+```{exercise phos-11}
+Similar to the problems we have worked with before, the equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c>0$ are both constants.  We will be using the dataset `phosphorous`.
+
+
+a. Do 1000 bootstrap samples for this dataset.
+b. To find $c$ and $\theta$ we can apply logrithms to express this as a linear equation of this equation.  (See Exercise \@ref{exr:log-linear-08}). Do a linear model fit for this log-transformed equation.
+c. Generate histograms for bootstrap-fitted parameters for your log-transformed equation.
+d. What are the median and 95% confidence intervals for the  bootstrap-fitted parameters?
+e. Using the function `bootstrap_model`, generate a bootstrap sample of $n=1000$ for the linear (log transformed) equation.
+f. Translate these bootstrap confidence intervals of your fitted slope and intercept back into the values of $c$ and $\theta$.
+g. These confidence intervals seem pretty large.  What would be some strategies we could employ to narrow these confidence intervals?
+
+```
+
+Chapter 19
+Let's consider the system shown in Equation \@ref(eq:sys-sn-bifurc-20):
+
+\begin{equation}
+\begin{pmatrix} \frac{dx}{dt} \\ \frac{dy}{dt} \end{pmatrix} =  \begin{pmatrix} c-x^{2} \\ -y  \end{pmatrix}(\#eq:sys-sn-bifurc-20)
+\end{equation}
+
+Equilibrium solutions to Equation \@ref(eq:sys-sn-bifurc-20) are $y=0$ and $x=\pm \sqrt{c}$. This is an uncoupled system of equations, however in the $x$ direction the system has a saddle-node bifurcation: if $c<0$, then there are no equilibrium solutions, $c = 0$, then there is only one equilibrium solution, and when $c >0$, 2 equilibrium solutions.  Figures \@ref(fig:bifuc-sn-20) - \@ref(fig:bifuc-sn-c-20) shows the progression of phase portraits as the parameter $c$ changes.
+
+```{r bifuc-sn-20, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phaseplane for Equation \\@ref(eq:sys-sn-bifurc-20) when $c=-1$"}
+eq_snsys <- c( dx ~ -1-x^2, dy~-y)
+
+initialCondition <- tibble(x = c(4,4,4,4,4),
+                           y = c(2,4,-2,0,-4),
+                           sim = 1:5) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_snsys,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.05,
+                                      n_steps = 60))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+phaseplane(eq_snsys,'x','y',c(-5,5),c(-5,5)) +
+  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("c = -1"))
+
+
+```
+
+
+```{r bifuc-sn-b-20, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phaseplane for Equation \\@ref(eq:sys-sn-bifurc-20) when $c=0$"}
+eq_snsys <- c( dx ~ -x^2, dy~-y)
+
+initialCondition <- tibble(x = c(-0.5,4,-0.5,4,4),
+                           y = c(4,4,-4,0,-4),
+                           sim = 1:5) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_snsys,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.02,
+                                      n_steps = 90))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+phaseplane(eq_snsys,'x','y',c(-5,5),c(-5,5)) +
+  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("c = 0")) + geom_point(data=tibble(x=0,y=0),aes(x=x,y=y),color='red',size=2)
+
+```
+
+
+
+```{r bifuc-sn-c-20, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phaseplane for Equation \\@ref(eq:sys-sn-bifurc-20) when $c=1$"}
+eq_snsys <- c( dx ~ 1-x^2, dy~-y)
+
+initialCondition <- tibble(x = c(0,4,-1.1,4),
+                           y = c(3,2,4,-2),
+                           sim = 1:4) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_snsys,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.01,
+                                      n_steps = 150))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+phaseplane(eq_snsys,'x','y',c(-5,5),c(-5,5)) +
+  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("c = 1")) +
+  geom_point(data=tibble(x=c(1,-1),y=0),aes(x=x,y=y),color='red',size=2)
+
+
+###
+
+```
+
+### Chapter 27
+## Limiting distributions
+A limiting (or steady-state) distribution occurs when $p_{t}$ in Equation \@ref(eq:fpe-27) equals 0 (Equation \@ref(eq:fpe-ld-27)).
+
+\begin{equation}
+0 = - \frac{\partial}{\partial x} \left(p(x,t) \cdot a(x,t) \right) + \frac{1}{2}\frac{\partial^{2} }{\partial x^{2}} \left(\; p(x,t) \cdot (b(x,t))^{2}  \;\right) (\#eq:fpe-ld-27)
+\end{equation}
+
+Equation \@ref(eq:fpe-ld-27) is useful when one is less concerned about the transient solution.  Here is the benefit: this equation may be solved using techniques from ordinary differential equations. However, one might also need to think about additional initial conditions.
+
+Consider for example the SDE $dx = dW(t)$. The limiting distribution for this stochastic process is determined by solving the differential equation $0 = p_{xx}$. This equation is fairly straightforward to solve: $p(x)=Ax+B$, with $A$ and $B$ constants that are determined from initial conditions (you will explore this in Exercise \@ref(exr:diff-ss))
+
+
+In other cases Equation \@ref(eq:fpe-ld-27) requires more nuanced initial conditions. In the exercises you will examine some different aspects of these limiting distributions.
+
+
+
+```{exercise}
+The limiting distribution for the SDE $dx = dW(t)$ is $p(x)=Ax+B$, where $A$ and $B$ are constants. Use this information to answer the following questions:
+  
+  a. If $p(0)=5$ and $p(1)=2$, what is the formula for $p(x)$?
+  b. Sketch a picture of $p(x)$. If we think of $p(x)$ as a concentration of a material, how would you describe the limiting distribution?
+  c. The quantity $J=-p_{x}$ is related to the *flux* or movement of material (see @keener_biology_2021 for more explanation). What is $J$ for this limiting distribution?
+  d. Describe how the flux $J$ corresponds to the graph of $p(x)$.
+
+```
+
+```{exercise diff-ss}
+The limiting distribution for the SDE $dx = dW(t)$ is $p(x)=Ax+B$, where $A$ and $B$ are constants. Use this information to answer the following questions:
+  
+  a. If $p(0)=p_{0}$ and $p(L)=p_{L}$, what is the formula for $p(x)$?
+  b. Compute the flux or the quantity $J=-p_{x}$ from your solution in part a.
+  c. Sketch a conceptual picture of $p(x)$ for three cases: $p_{0} > p_{L}$, $p_{0} < p_{L}$ and $p_{0}=p_{L}$ If we think of $p(x)$ as a concentration of a material, how would you describe the limiting distribution in all three cases?
+  d. Describe how the flux $J$ corresponds to the different cases from part c.
+ 
+```
+
+<!-- Based off Example 7.24 pg 355 LW -->
+```{exercise}
+(Inspired by @logan_mathematical_2009) Consider the differential equation $\displaystyle x' = \lambda x - c \mu x^{2}$, which is similar to a logistic differential equation.  The *per capita* rate equation for this differential equation is $\displaystyle \frac{x'}{x} = \lambda - c \mu x$.
+
+a. Assume there is noise to this per capita rate, i.e. $\displaystyle \frac{x'}{x} \rightarrow \displaystyle \frac{x'}{x} + \mbox{ Noise}$.  With this revised equation, what are the deterministic and stochastic parts?
+b. What is the Fokker-Planck partial differential equation for the probability distribution $p(x,t)$?
+c. Through direct verification, show that $p(x)=Dx^{\alpha-1} e^{-\beta x}$ is a solution to the limiting distribution, where $\alpha = 2 \lambda - 1$ and $\beta = 2c\mu$.
+d. With $\lambda = c = \mu = D = 1$, make a graph of $p(x)$.
+
+```
+
+
+<!-- Gardinier, pg 126 limiting distribution $p(X) = e^{-2X}(A+X)^{4A-1}X^{-1}$ -->
+```{exercise}
+(Inspired by @gardiner_handbook_2004) A type of chemical reaction is $X + A \leftrightarrow 2X$, where $A$ acts like an enzyme.  The stochastic differential equation that describes this scenario is:
+  
+\begin{equation}
+dX = \left( A X - X^{2} \right) \; dt + \left( AX + X^{2} \right) dW(t)
+\end{equation}
+
+
+a. What is the differential equation that describes $E[p(X,t)]$ for this stochastic processes?^[Note: the Fokker-Planck equation for the SDE is tricky - but a good practice in differentiation!]
+b. Conduct an equilibrium analysis for $E[p(X,t)]$.
+c. Set $A=1$. The limiting distribution for this process is $\displaystyle p(X) = e^{-2X}\left(\frac{(1+X)^{3}}{X} \right)$.  With $A=1$ make a plot of this distribution.
+
+
+```
+
+
+```{exercise}
+Models of cell membranes take account for the energy needed for ions and other materials to cross the cell membrane, usually expressed as a membrane potential $U(x)$, where $x$ is the current position of a particle distance.  The probability $p$ of the particle being at position $x$ at time $t$  is given by the Fokker-Planck equation:
+  
+  \begin{equation}
+v \frac{\partial p}{\partial t} = \frac{\partial}{\partial x} \left( U'(x) p \right) + k T \frac{\partial^{2} p}{\partial x^{2}},
+\end{equation}
+
+where $k$ is Boltzmann's constant and $T$ is the temperature.
+
+a. Verify that a solution for the limiting distribution is $p(x)=C e^{-\frac{U(x)}{kT}}$, with $C$ being a constant.
+b. If $U(x)=x^{2}$, make a representative graph of $p(x)$ for positive and negative values of $x$. What function is $p(x)$ similar to?
+
+
+
+```
+
+### Section 25
+
+```{exercise}
+Consider the following Lotka-Volterra (predator prey) model:
+
+\begin{equation}
+\begin{split}
+\frac{dV}{dt} &= r V - kVP \\
+\frac{dP}{dt} &= e k V P - dP 
+\end{split}
+\end{equation}
+
+
+a. Assume that the parameter $k$ is stochastic.  Write down the stochastic differential equation, identifying the deterministic and stochastic parts to this system of equations.  
+b. Apply the Euler-Maruyama method to generate a spaghetti plot and ensemble avearage plot with the following values:
+
+- Initial condition: $V(0)=1$, $P(0)=3$
+- Parameters: $r = 2$, $k = 0.5$, $e = 0.1$, and $d = 1$.
+- Set $\Delta t = 0.05$ and $N=400$.
+- Set $D=0.001$
+- Set the number of simulations to be 200.
+
+
+```
+ 
+&nbsp; 
+
+### Chapter 26
+
+```{tikz,sis-bd,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
+
+\node [vspecies] (S) {$S$} ;
+\node [vspecies, right of = S] (I) {$I$} ;
+\draw [->] ([yshift=3pt]S.east) --  node[above] {\small{$b$}} ([yshift=3pt]I.west) ;
+\draw [<-] ([yshift=-3pt]S.east) --  node[below] {\small{$r$}} ([yshift=-3pt]I.west) ;
+\end{tikzpicture}
+
+
+
+```
+
+
+<!-- Adapted from LW pg 346 #4 -->
+```{exercise}
+FIX
+(Inspired by @logan_mathematical_2009) An $SIS$ model is one where susceptibles $S$ become infected $I$, and then after recovering from an illness, become susceptible again.  The schematic representing this is shown in Figure \@ref(fig:sis-bd).  While you can write this as a system of differential equations, assuming the population size is constant $N$ we have the following differential equation:
+
+\begin{equation}
+\frac{dI}{dt} = b(N-I) I - r I
+\end{equation}
+
+
+a. Identify $\alpha(I)$ and $\delta(I)$ for this model.
+b. What is $E[p(S,t)]$ and the variance of this stochastic process?
+b. Assuming $N=1000$, $r=0.01$, and $b=0.005$, $I(0)=1$, simulate this stochastic differential equation using 200 timesteps with $\Delta t = 0.1$. You will need to determine an appropriate value of $D$.  Be sure to include the spaghetti plot and ensemble averages.
+
+```
+
+

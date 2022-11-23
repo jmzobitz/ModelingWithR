@@ -1,151 +1,182 @@
 # Information Criteria {#information-criteria-14}
 
 ```{r echo=FALSE}
+# Load this up here because we need the rmse function
 library(modelr)
 ```
 
-Sometimes we have not just one model but several different models to describe a context or situation.  While having these different options are good, but we also like to know which is the *best* model.  How would you decide that?  
+In Exercises \@ref(exr:yeast-v1-13) and \@ref(exr:yeast-v2-13) of Chapter \@ref(mcmc-13) we introduced two different empirical models for fitting the growth of `yeast` $V$ over time $t$. One model is a logistic model ($\displaystyle V = \frac{K}{1+e^{a-bt}}$), whereas the second model is a saturating function ($\displaystyle V= K + Ae^{-bt}$). A plot comparing MCMC parameter estimates for the two models is shown in Figure \@ref(fig:yeast-compare-14).
 
-This first step is to develop some guidelines. Here would be a list of they types of things that would go into evaluating which model would be best:
+```{r yeast-compare-14,fig.cap="Comparison of models for the growth of yeast in culture. Dots represent measured values from @gause_experimental_1932.",echo=FALSE}
+yeast_out <- tibble(
+  time = seq(0, 60, length.out = 200),
+  model1 = 12.8 / (1 + exp(log(12.8 / 0.45 - 1) - 0.242 * time)),
+  model2 = 14.7 + (0.45 - 14.7) * exp(-0.0493 * time)
+) %>%
+  pivot_longer(cols = c(-"time"))
+
+ggplot() +
+  geom_point(data = yeast, aes(x = time, y = volume), size = 2, color = "red") +
+  geom_line(data = yeast_out, aes(x = time, y = value, color = name, linetype = name), size = 1) +
+  labs(x = "Time (days)", y = bquote("Volume " (cm^3)), color = "Model", linetype = "Model") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(
+    breaks = c("model1", "model2"),
+    labels = c("Logistic model", "Saturating model"),
+    name = NULL
+  ) +
+  scale_linetype_discrete(
+    breaks = c("model1", "model2"),
+    labels = c("Logistic model", "Saturating model"),
+    name = NULL
+  )
+```
+
+
+Figure \@ref(fig:yeast-compare-14) raises an interesting question. Sometimes we have multiple, convergent models to describe a context or situation. While having these different options is good, we also like to know which is the *best* model. How would you decide that?
+
+This chapter focuses on objective criteria to assess what is called the *best approximating model* [@burnham_model_2002]. We will explore what are called *information criteria*, which is developed from statistical theory.\index{information criteria} Let's get started!
+
+## Model assessment guidelines
+
+The first step is to develop some guidelines and metrics for model evaluation. Here would be the start of a list of things to consider, represented as questions: 
 
 - The model complexity - how many equations do we have?
 - The number of parameters - a few or many?
 - Do the model outputs match the data?
-- (For timeseries data) are the trends accurately represented?
-- Is the model easy to use?
-- How will model outputs compare the newly collected measurements?
-
-These questions are related to one another - and answering these questions (or ranking criteria for them) is at the heart of the topic of _model selection_ which is the study of deciding the **best approximating model**.  Let's start to dig into this topic
-
-## Why bother with more models?
-
-Recall the key problem of _parameter estimation_, which can be generally stated as the following:
-
-> Determine the set of parameters $\vec{\alpha}$ that minimize the difference between data $\vec{y}$ and the output of the function $f(\vec{x}, \vec{\alpha})$ and measured error $\vec{\sigma}$.
+- How will model prediction compare to any newly collected measurements?
+- Are the trends accurately represented (especially for timeseries data)?
+- Is the selected model easy to use, simulate, and forecast?
 
 
-Let's say we have not just one model $f(\vec{x}, \vec{\alpha})$, but an alternative model for the data $\vec{y}$ that can be represented as $g(\vec{x}, \vec{\beta})$.  Between these two models ($f$ and $g$), how would we determine which one is "best"?
+I may have hinted at some of these guidelines in earlier chapters. These questions are related to one another - and answering these questions (or ranking criteria for them) is at the heart of the topic of _model selection_.
 
-Let's talk about a specific example. Let's focus on the dataset `global_temperature` in the `demodelr` library.  This dataset represents the average global temperature determined by NASA using local temperature data. When we did linear regression on the global temperature dataset the quadratic and cubic models were approximately the same (Figure \@ref(fig:global-temp-14)):
+Perhaps you may be asking, why bother? Aren't more models better? Let's talk about a specific example, for which we return to the dataset `global_temperature` in the `demodelr` library. Recall this dataset represents the average global temperature anomaly relative to 1951-1980. When we did linear regression with this dataset in Chapter \@ref(linear-regression-08) the quadratic and cubic models were approximately the same (Figure \@ref(fig:global-temp-14)):
 
-```{r global-temp-14,echo=FALSE,fig.width=5,fig.height=4,fig.cap="Comparison of global temperature data with various polynomial fitted models."}
-regression_formula0 <-  globalTemp ~ 1 + yearSince1880 
-regression_formula1 <-  globalTemp ~ 1 + yearSince1880 + I(yearSince1880^2) 
-regression_formula2 <-  globalTemp ~ 1 + yearSince1880 + I(yearSince1880^2) + I(yearSince1880^3)
-regression_formula3 <-  globalTemp ~ 1 + yearSince1880 + I(yearSince1880^2) + I(yearSince1880^3)+I(yearSince1880^4)
- fit0=lm(regression_formula0, data = global_temperature)
- fit1=lm(regression_formula1, data = global_temperature)
-  fit2=lm(regression_formula2, data = global_temperature)
-  fit3=lm(regression_formula3, data = global_temperature)
-  
-  smooth_data0 <- data.frame(x=global_temperature[[1]],y=predict(fit0))
-  smooth_data1 <- data.frame(x=global_temperature[[1]],y=predict(fit1))
-  smooth_data2 <- data.frame(x=global_temperature[[1]],y=predict(fit2))
-  smooth_data3 <- data.frame(x=global_temperature[[1]],y=predict(fit3))
-  
-  ggplot(data=global_temperature,aes(x=yearSince1880,y=globalTemp)) +
-    geom_point(color='black',size=2) +
-    geom_line(data=smooth_data0,aes(x=x,y=y,color="0"),size=1.0,linetype=1)+
-    geom_line(data=smooth_data1,aes(x=x,y=y,color="1"),size=1.0,linetype=2)+
-    geom_line(data=smooth_data2,aes(x=x,y=y,color="2"),size=1.0,linetype=3)+
-    geom_line(data=smooth_data2,aes(x=x,y=y,color="3"),size=1.0,linetype=4)+
-    theme(plot.title = element_text(size=20),
-          axis.title.x=element_text(size=20),
-          axis.text.x=element_text(size=15),
-          axis.text.y=element_text(size=15),
-          axis.title.y=element_text(size=20)) +
-   # stat_smooth(method = "lm", col = "black", formula = regression_formula) +
-    labs(x = "Year Since 1880",y = "Temperature") +
-    scale_color_manual(values=c("deeppink2","blue","darkolivegreen4","coral"),labels=c("Linear","Quadratic", "Cubic","Quartic"))
+```{r global-temp-14,echo=FALSE,fig.cap="Comparison of global temperature anomaly dataset with various polynomial fitted models."}
+regression_formula0 <- temperature_anomaly ~ 1 + year_since_1880
+regression_formula1 <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2)
+regression_formula2 <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2) + I(year_since_1880^3)
+regression_formula3 <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2) + I(year_since_1880^3) + I(year_since_1880^4)
+fit0 <- lm(regression_formula0, data = global_temperature)
+fit1 <- lm(regression_formula1, data = global_temperature)
+fit2 <- lm(regression_formula2, data = global_temperature)
+fit3 <- lm(regression_formula3, data = global_temperature)
 
+smooth_data0 <- data.frame(x = global_temperature[[1]], y = predict(fit0))
+smooth_data1 <- data.frame(x = global_temperature[[1]], y = predict(fit1))
+smooth_data2 <- data.frame(x = global_temperature[[1]], y = predict(fit2))
+smooth_data3 <- data.frame(x = global_temperature[[1]], y = predict(fit3))
 
-#plotRegression_Data(global_temperature,regression_formula)
+ggplot(data = global_temperature, aes(x = year_since_1880, y = temperature_anomaly)) +
+  geom_point(color = "red", size = 1) +
+  geom_line(data = smooth_data0, aes(x = x, y = y, color = "0"), size = 1.0, linetype = 1) +
+  geom_line(data = smooth_data1, aes(x = x, y = y, color = "1"), size = 1.0, linetype = 2) +
+  geom_line(data = smooth_data2, aes(x = x, y = y, color = "2"), size = 1.0, linetype = 3) +
+  geom_line(data = smooth_data2, aes(x = x, y = y, color = "3"), size = 1.0, linetype = 4) +
+  labs(
+    x = "Year Since 1880",
+    y = expression("Temperature anomaly "~`(`^o~C~`)`)
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 10),
+    axis.title.x = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  scale_color_colorblind(labels = c("Linear", "Quadratic", "Cubic", "Quartic"), name = NULL)
 ```
 
-The variation in the different models fits for Figure \@ref(fig:global-temp-14) shows how different, but similar, the model results can be depending on the choice of regression function.  In some cases, the Log likelihood decreases (indicating a more likely model), with a smaller root mean square error (RMSE, indicating the fitted model more closely matches the observations).
+The variation in the different model fits for Figure \@ref(fig:global-temp-14) shows how different, but similar, the model results can be depending on the choice of regression function. Table \@ref(tab:gt-ll-14) displays summary results for the log-likelihood and the root mean square error (RMSE).^[The root mean square error is the computed as $\displaystyle \sqrt{\frac{\sum (y_{i}-f(x_{i}))^{2}}{N}}$.] In some cases, the log-likelihood decreases (indicating a more likely model), supported by the decrease in the RMSE indicating the fitted model more closely matches the observations. However the decrease in the log-likelihood and the RMSE is changing less as the complexity of the model (i.e. a higher degree polynomial) increases.
 
-Model  | Log Likelihood | RMSE
-------------- | ------------- | -------------
-Linear    | `r round(logLik(fit0),digits=3)` | `r round(rmse(fit0,data=global_temperature),digits=3)`
-Quadratic    | `r round(logLik(fit1),digits=3)` | `r round(rmse(fit1,data=global_temperature),digits=3)`
-Cubic        | `r round(logLik(fit2),digits=3)` |`r round(rmse(fit2,data=global_temperature),digits=3)`
-Quartic        | `r round(logLik(fit3),digits=3)` | `r round(rmse(fit3,data=global_temperature),digits=3)`
+Table: (\#tab:gt-ll-14) Comparison of model fits for global temperature anomaly dataset shown in Figure \@ref(fig:global-temp-14).
 
-
+| Model | Log-likelihood^[Remember, log-likelihoods can be positive or negative; see Chapter \@ref(likelihood-09).] | RMSE |
+| :-----------: | :-----------: | :-----------: |
+Linear | `r round(logLik(fit0),digits=3)` | `r round(rmse(fit0,data=global_temperature),digits=3)` |
+Quadratic | `r round(logLik(fit1),digits=3)` | `r round(rmse(fit1,data=global_temperature),digits=3)` |
+Cubic | `r round(logLik(fit2),digits=3)` |`r round(rmse(fit2,data=global_temperature),digits=3)` |
+Quartic | `r round(logLik(fit3),digits=3)` | `r round(rmse(fit3,data=global_temperature),digits=3)` |
 
 Further model evaluation can be examined by the following:
 
-- Compare the measured values of $\vec{y}$ to the modeled values of $\vec{y}$ in a 1:1 plot.  Does $g$ does a better job predicting $\vec{y}$ than $f$?
-- Related to that, compare the likelihood function values of $f$ and $g$. We would favor the model that has the lower log likelihood.
-- Compare the number of parameters in each model $f$ and $g$.  We would favor the model that has the fewest number of parameters.
+- Compare the measured values of $\vec{y}$ to the modeled values of $\vec{y}$ in a 1:1 plot. Does $g$ do a better job predicting $\vec{y}$ than $f$?
+- Related to that, compare the likelihood function values of $f$ and $g$. We would favor the model that has the lower log-likelihood.
+- Compare the number of parameters in each model $f$ and $g$. We would favor the model that has the fewest number of parameters.
+
+Given the above question, we can state the model selection problem as the following:
+
+> When we have two $f(\vec{x}, \vec{\alpha})$ and $g(\vec{x}, \vec{\beta})$ for the data $\vec{y}$, how would we determine which one ($f$ or $g$ or perhaps another alternative model) is the best approximating model?
 
 
-## The Information on Information Criterion
-Building off the previous work, one approach to model assessment examines the number of parameters in the model $f$ and $g$ and evaluates the tradeoff between model complexity (i.e. the number of parameters used) and the overall likelihood. _Information criteria_ are used to assess the tradeoffs between model complexity and the number of parameters.  The goal of information criteria is to determine the _best approximating model_.
+## Information criteria for assessing competing models
+_Information criteria_ evaluate the tradeoff between model complexity (i.e. the number of parameters used) and with the log-likelihood (a measure of how well the model fits the data). There are several types of information criteria, but we are going to focus on two:
 
-There are several types of information criteria, but we are going to focus on two::
-
-- The _Akaike Information Criteria_ (AIC, @akaike_new_1974) is a commonly used information criteria: 
+- The __Akaike Information Criterion__ ($AIC$, @akaike_new_1974) is the most commonly used information criteria: 
 
 \begin{equation} 
 AIC = -2 LL_{max} + 2 P
 (\#eq:aic)
 \end{equation}
 
-- An alternative to the AIC is the __Bayesian Information Criterion__ (BIC, @schwartz_estimating_1978)
+- An alternative to the $AIC$ is the __Bayesian Information Criterion__ ($BIC$, @schwartz_estimating_1978)
 
 \begin{equation}
-BIC = -2 LL_{max} + P \ln (N),
+BIC = -2 LL_{max} + P \ln (N)
 (\#eq:bic)
 \end{equation}
-In  Equations \@ref(eq:aic) and \@ref(eq:bic) $N$ is the number of data points, $P$ is the number of estimated parameters, and $LL_{max}$ is
-the log-likelihood for the parameter set that maximized the likelihood function. In both cases, a lower value of the information criteria indicates greater support for the model from the data.  For both Equations \@ref(eq:aic) and \@ref(eq:bic) show the dependence on the log likelihood function and the number of parameters.
 
-Let's evaluate how the AIC and BIC compare for the global temperature data.  When we have a statistical model fit, computing these are fairly easy to compute.  
+In Equations \@ref(eq:aic) and \@ref(eq:bic), $N$ is the number of data points, $P$ is the number of estimated parameters, and $LL_{max}$ is the log-likelihood for the parameter set that maximized the likelihood function. Equations \@ref(eq:aic) and \@ref(eq:bic) show the dependence on the log-likelihood function and the number of parameters. For both the $AIC$ and $BIC$  a lower value of the information criteria indicates greater support for the model from the data.
 
-For you `R` purists, you could also use the function `AIC` or `BIC`.  To apply them you need to first do the model fit (with the function `lm`^[You can compute the log likelihood with the function `logLik(fit)`, where `fit` is the result of your linear model fits.]:
+Notice how easy the $AIC$ and $BIC$ are to compute in Equations \@ref(eq:aic) and \@ref(eq:bic) (assuming you have the information at hand). When an empirical model fit is computed (i.e. using the command `lm`), `R` computes these easily with the functions `AIC` or `BIC`. To apply them you need to first do the model fit (with the function `lm`. Try this out by running the following code on your own:^[You can compute the log-likelihood with the function `logLik(fit)`, where `fit` is the result of your linear model fits.]:
 
-```{r}
-regression_formula <- globalTemp ~ 1 + yearSince1880 
-fit <- lm(regression_formula,data=global_temperature)
+```{r,eval=FALSE}
+regression_formula <- temperature_anomaly ~ 1 + year_since_1880
+fit <- lm(regression_formula, data = global_temperature)
 AIC(fit)
 BIC(fit)
-
 ```
 
 
-We can then make a table comparing the different models and their AIC:
+Table \@ref(tab:gt-ic-14) compares $AIC$ and $BIC$ for the models fitted using the global temperature anomaly dataset:
 
-Model  | AIC
-------------- | ------------- 
-Linear    | `r round(AIC(fit0),digits=3)` 
-Quadratic    | `r round(AIC(fit1),digits=3)` 
-Cubic        | `r round(AIC(fit2),digits=3)` 
-Quartic        | `r round(AIC(fit3),digits=3)` 
+<!-- Table: (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly data shown in Figure \@ref(fig:global-temp-14). -->
 
-These results show that the cubic model is the better approximating model.
+Table:  (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly dataset shown in Figure \@ref(fig:global-temp-14).
+
+| Model      | $AIC$                          | $BIC$                         |
+| :--------: | :----------------------------: | :----------------------------:| 
+| Linear     | `r round(AIC(fit0),digits=3)`  | `r round(BIC(fit0),digits=3)` | 
+| Quadratic  | `r round(AIC(fit1),digits=3)`  | `r round(BIC(fit1),digits=3)` | 
+| Cubic      | `r round(AIC(fit2),digits=3)`  | `r round(BIC(fit2),digits=3)` | 
+| Quartic    | `r round(AIC(fit3),digits=3)`  | `r round(BIC(fit3),digits=3)` | 
+
+Table \@ref(tab:gt-ic-14) shows that the cubic model is the better approximating model for both the $AIC$ and the $BIC$.
 
 
 ## A few cautionary notes
 
-- Information criteria a relative measures.  In a study it may be more helpful to report the change in the information criteria, or even a ratio (see @burnham_model_2002 for a detailed analysis).
-- Information criteria are not cross-comparable across studies.  If you are pulling in a model from another study, it is helpful to re-calculate the information criteria.
-- An advantage to the $BIC$ is that it measures tradeoffs between favoring a model that has the fewer number of data needed to estimate parameters.  Other information criteria examine the distribution of the likelihood function and parameters.
+- Information criteria are relative measures. In a study it may be more helpful to report the change in the information criteria, or even a ratio (see @burnham_model_2002 for a detailed analysis).
+- Information criteria are not cross-comparable across studies. If you are pulling in a model from another study, it is helpful to re-calculate the information criteria.
+- An advantage to the $BIC$ is that it measures tradeoffs between favoring a model that has the fewer number of data needed to estimate parameters. Other information criteria examine the distribution of the likelihood function and parameters.
 
 
-__The upshot:__ Information criteria are _one_ piece of evidence to help you to evaluate the best approximating model.  You should do additional investigation (parameter evaluation, model-data fits, forecast values) in order to help determine the best model.
-
-\newpage
+__The upshot:__ Information criteria are _one_ piece of evidence to help you to evaluate the best approximating model. You should do additional investigation (parameter evaluation, model-data fits, forecast values) in order to help determine the best model.
 
 ## Exercises
 ```{exercise}
-Use the dataset `global_temperature` and for a linear, quadratic, cubic, and quartic polynomial and compute the BIC. What is the best approximating polynomial for the BIC?  How does that compare to the best approximating model with the AIC?
-```
-
-&nsbp;
-
-```{exercise}
-You are investigating different models for the growth of a yeast species in population where $V$ is the rate of reaction and $s$ is the added substrate:
+You are investigating different models for the growth of a yeast species in a population where $V$ is the rate of reaction and $s$ is the added substrate:
 
 \begin{equation*}
 \begin{split}
@@ -155,186 +186,43 @@ You are investigating different models for the growth of a yeast species in popu
 \end{split}
 \end{equation*}
 
-With a dataset of 7 observations you found that the log-likelihood for Model 1 `26.426`, for Model 2 the log-likelihood is `15.587`, and for Model 3 the the log-likelihood is `21.537`.  Apply the AIC and the BIC to evaluate which model is the best approximating model.
+With a dataset of 7 observations you found that the log-likelihood for Model 1 is `26.426`, for Model 2 the log-likelihood is is `15.587`, and for Model 3 the the log-likelihood is `21.537`. Apply the $AIC$ and the $BIC$ to evaluate which model is the best approximating model. Be sure to identify the number of estimated parameters for each model.
 ```
 
-&nbsp;
+
 ```{exercise}
-An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta},$ where $\theta \geq 1$ and $c$ are both constants is a constant.  We can apply linear regression to the dataset $(x, \; \ln(y) )$, so the intercept of the linear regression equals $\ln(c)$ and the slope equals $1 / \theta$.
+An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c$ are parameters. We can apply linear regression to the dataset $(x, \; \ln(y) )$, so the intercept of the linear regression equals $\ln(c)$ and the slope equals $1 / \theta$.
 
 
-a. Show that you can write this equation as linear equation by applying a logarithm to both sides and simplifying.
-b. With the dataset `phosphorous`, take the logarithim the `daphnia` variable and then to determine a linear regression fit for your new linear equation.  What are the reported values of the slope and intercept from the linear regression, and by association, $c$ and $\theta$?
-c. Use the function `logLik` to report the likelihood of the fit.
-d. What are the reported values of the AIC and the BIC?
-e. An alternative linear model is the equation $y = a + b \sqrt{x}$.  Use the R command `model2 <- lm(daphnia~I(sqrt(algae),data = phosphorous))` to first obtain a linear fit.  Then compute the log likelihood and the AIC and the BIC.  Of the two models, which one is the better approximating model?
-
-
+a. Show that you can write this equation as a linear equation by applying a logarithm to both sides and simplifying.
+b. With the dataset `phosphorous`, take the logarithm of the `daphnia` variable and then determine a linear regression fit for your new linear equation. What are the reported values of the slope and intercept from the linear regression, and by association, $c$ and $\theta$?
+c. Apply the function `logLik` to report the log-likelihood of the fit.
+d. What are the reported values of the $AIC$ and the $BIC$?
+e. An alternative linear model is the equation $y = a + b \sqrt{x}$. Use the R command `sqrt_fit <- lm(daphnia~I(sqrt(algae)),data = phosphorous)` to first obtain a fit for this model. Then compute the log-likelihood and the $AIC$ and the $BIC$. Of the two models (the log-transformed model and the square root model), which one is the better approximating model?
 
 ```
-&nbsp;
-
-
-
-```{tikz,pesticides-ic,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Reaction schemes."}
-
-
-\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
-\begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
-
-%% Model 1  Burnham Anderson
-\node [vspecies] (A) {$W$} ;
-\node [vspecies, right of = A] (B) {$P$} ;
-\node [vspecies, below of = A] (C) {$F$} ;
-\node [vspecies, above of = A,node distance = 1cm] (model) {\textbf{Model 1}};
-\draw [->] ([yshift=3pt]A.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B.west) ;
-\draw [->] ([yshift=-3pt]B.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A.east) ;
-
-\draw [->] ([xshift=0]A.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C.north) ;
-
-%%% Model 2a  Burnham Anderson
-\node [vspecies, right of = B, node distance = 1.75 cm] (A2) {$W$} ;
-\node [vspecies, right of = A2] (B2) {$P$} ;
-\node [vspecies, below of = A2] (C2) {$F$} ;
-\node [vspecies, above of = A2,node distance = 1cm] (model2) {\textbf{Model 2a}};
-\draw [->] ([yshift=3pt]A2.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B2.west) ;
-\draw [->] ([yshift=-3pt]B2.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A2.east) ;
-
-\draw [->] ([xshift=-2pt]A2.south) --  node[left] {\small{$k_3$}} ([xshift=-2pt]C2.north) ;
-\draw [<-] ([xshift=2pt]A2.south) --  node[right] {\small{$k_4$}} ([xshift=2pt]C2.north) ;
-
-
-%%% Model 2b Burnham Anderson
-\node [vspecies, right of = B2, node distance = 1.75 cm] (A3) {$W$} ;
-\node [vspecies, right of = A3] (B3) {$P$} ;
-\node [vspecies, below of = A3] (C3) {$F$} ;
-\node [vspecies, below of = C3] (A3pr) {$W'$} ;
-\node [vspecies, above of = A3,node distance = 1cm] (model3) {\textbf{Model 2b}};
-\draw [->] ([yshift=3pt]A3.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B3.west) ;
-\draw [->] ([yshift=-3pt]B3.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A3.east) ;
-
-\draw [->] ([xshift=0]A3.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C3.north) ;
-\draw [->] ([xshift=0]C3.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A3pr.north) ;
-
-
-%%% Model 3a Burnham Anderson
-\node [vspecies, below of = C, node distance = 3 cm] (A4) {$W$} ;
-\node [vspecies, right of = A4] (B4) {$P$} ;
-\node [vspecies, below of = A4] (C4) {$F$} ;
-\node [vspecies, below of = C4] (A4pr) {$W'$} ;
-\node [vspecies, right of = A4pr] (B4pr) {$P'$} ;
-
-
-\node [vspecies, above of = A4,node distance = 1cm] (model4) {\textbf{Model 3a}};
-\draw [->] ([yshift=3pt]A4.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B4.west) ;
-\draw [->] ([yshift=-3pt]B4.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A4.east) ;
-
-\draw [->] ([xshift=0]A4.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C4.north) ;
-
-\draw [->] ([xshift=0]C4.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A4pr.north) ;
-
-\draw [->] ([yshift=0pt]A4pr.east) --  node[above] {\small{$k_5$}} ([yshift=0pt]B4pr.west) ;
-
-
-
-
-%%% Model 3b Burnham Anderson
-\node [vspecies, right of = B4, node distance = 1.75 cm] (A5) {$W$} ;
-\node [vspecies, right of = A5] (B5) {$P$} ;
-\node [vspecies, below of = A5] (C5) {$F$} ;
-\node [vspecies, below of = C5] (A5pr) {$W'$} ;
-\node [vspecies, right of = A5pr] (B5pr) {$P'$} ;
-
-
-\node [vspecies, above of = A5,node distance = 1cm] (model5) {\textbf{Model 3b}};
-\draw [->] ([yshift=3pt]A5.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B5.west) ;
-\draw [->] ([yshift=-3pt]B5.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A5.east) ;
-
-\draw [->] ([xshift=0]A5.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C5.north) ;
-
-\draw [->] ([yshift=-3pt]B5pr.west) --  node[below] {\small{$k_6$}} ([yshift=-3pt]A5pr.east) ;
-\draw [<-] ([yshift=3pt]B5pr.west) --  node[above] {\small{$k_5$}} ([yshift=3pt]A5pr.east) ;
-
-
-\draw [->] ([xshift=0]C5.south) --  node[left] {\small{$k_4$}} ([xshift=0pt]A5pr.north) ;
-
-
-%%% Model 4a Burnham Anderson
-\node [vspecies, below of = A4pr, node distance = 2.25 cm] (A6) {$W$} ;
-\node [vspecies, right of = A6] (B6) {$P$} ;
-\node [vspecies, below of = A6] (C6) {$F$} ;
-\node [vspecies, right of = C6] (C6pr) {$F'$} ;
-\node [vspecies, below of = C6] (A6pr) {$W'$} ;
-\node [vspecies, right of = A6pr] (B6pr) {$P'$} ;
-
-
-\node [vspecies, above of = A6,node distance = 1cm] (model6) {\textbf{Model 4a}};
-
-
-\draw [->] ([yshift=3pt]A6.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B6.west) ;
-\draw [->] ([yshift=-3pt]B6.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A6.east) ;
-
-
-\draw [->] ([yshift=3pt]C6.east) --  node[above] {\small{$k_8$}} ([yshift=3pt]C6pr.west) ;
-\draw [->] ([yshift=-3pt]C6pr.west) --  node[below] {\small{$k_9$}} ([yshift=-3pt]C6.east) ;
-
-\draw [->] ([yshift=0pt]A6pr.east) --  node[above] {\small{$k_5$}} ([yshift=0pt]B6pr.west) ;
-
-\draw [->] ([yshift=0pt]C6.south) --  node[left] {\small{$k_4$}} ([yshift=0pt]A6pr.north) ;
-
-
-\draw [->] ([xshift=0]A6.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C6.north) ;
-
-%%% Model 4b Burnham Anderson
-\node [vspecies, right of = B6, node distance = 1.75 cm] (A7) {$W$} ;
-\node [vspecies, right of = A7] (B7) {$P$} ;
-\node [vspecies, below of = A7] (C7) {$F$} ;
-
-\node [vspecies, below of = C7] (A7pr) {$W'$} ;
-\node [vspecies, right of = A7pr] (B7pr) {$P'$} ;
-
-\node [vspecies, above of = A7,node distance = 1cm] (model7) {\textbf{Model 4b}};
-\draw [->] ([yshift=3pt]A7.east) --  node[above] {\small{$k_1$}} ([yshift=3pt]B7.west) ;
-\draw [->] ([yshift=-3pt]B7.west) --  node[below] {\small{$k_2$}} ([yshift=-3pt]A7.east) ;
-
-\draw [->] ([xshift=0]A7.south) --  node[left] {\small{$k_3$}} ([xshift=0pt]C7.north) ;
-
-\draw [->] ([xshift=-3pt]C7.south) --  node[left] {\small{$k_4$}} ([xshift=-3pt]A7pr.north) ;
-\draw [<-] ([xshift=3pt]C7.south) --  node[right] {\small{$k_7$}} ([xshift=3pt]A7pr.north) ;
-
-\draw [->] ([xshift=0]A7pr.east) --  node[above] {\small{$k_5$}} ([xshift=0pt]B7pr.west) ;
-
-\end{tikzpicture}
-
-
-
-```
-
 
 
 <!-- From Burnham and Anderson pg 135 of pdf -->
 ```{exercise}
-(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem.  Different models can be created that investigate the effect of the pesticide.  Different types of reaction schemes for this system are shown in Figure \@ref(fig:pesticides-ic), where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil.  The prime (e.g. $F'$, $W'$, and $S'$ represent other bound forms of the respective state).  In all seven different models can be derived.
+(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in Figure \@ref(fig:pesticide-ch3), where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$) represent other bound forms of the respective state. In all seven different models can be derived.
 
 These models were applied to a dataset with 36 measurements of the water, fish, and plants. The table for the log-likelihood for each model is shown below:
 
-Model  | Log Likelihood 
-------------- | ------------- 
-1    | -90.105  
-2a    | -71.986 
-2b       | -56.869 
-3a        | -31.598 
-3b    | -31.563 
-4a       | -8.770 
-4b    | -14.238 
+| Model  | 1a  | 2a | 2b | 3a | 3b |4a | 4b |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Log-likelihood    | -90.105  | -71.986 | -56.869 |  -31.598 | -31.563 | -8.770 | -14.238 |
 
 
 
 
-a. Use Figure \ref{fig:pesticides-ic} to identify the number of parameters for each model.
-b. Apply the AIC and the BIC to the data in the above table to determine which is the best approximating model.
+
+a. Use Figure \@ref(fig:pesticide-ch3) to identify the number of parameters for each model.
+b. Apply the $AIC$ and the $BIC$ to the data in the above table to determine which is the best approximating model.
 
 
 ```
 
-
+```{exercise}
+Use the information shown in Table \@ref(tab:gt-ll-14) to compute (by hand) the $AIC$ and the $BIC$ for each of the models for the `global_temperature` dataset (there are 142 observations). Do your results conform to what is presented in Table \@ref(tab:gt-ic-14)? How far off are your results? What would be a plausible explanation for the difference?
+```

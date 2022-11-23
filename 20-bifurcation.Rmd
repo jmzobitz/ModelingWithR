@@ -1,20 +1,25 @@
 # Bifurcation {#bifurcation-20}
 
-In this section we will study a key topic that applies qualititative stability analysis from Section \@ref(stability-19) to examine how stability of an equilibrium solution is sensitivity to parameters. This general topic is called *bifurcation*, and to illustrate what bifurcation is we will examine several examples.
+In this chapter we will use *bifurcation* to examine how the stability of an equilibrium solution changes as the value of a parameter changes. This is a great topic of study that (by necessity) requires you to think of stability of an equilibrium solution on multiple levels. You are up for the challenge; let's get started!
+
 
 ## A series of equations
-First let's consider the differential equation $\displaystyle \frac{dx}{dt} = 1-x^{2}$. This equation has an equibrium solution at $x=\pm 1$.  To classify the stability of the equilibrium solutions we apply the following test (developed in Section \@ref(phase-05)):
+Consider the differential equation $\displaystyle x' = 1-x^{2}$. This differential equation has an equilibrium solution at $x=\pm 1$. To classify the stability of the equilibrium solutions we apply the following test for stability of an equilibrium solution that we developed in Chapter \@ref(phase-05):
 
 
-- If $f'(y_{*})’>0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be unstable.
-- If $f'(y_{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y_{*}$ will be stable.
-- If $f'(y_{*}) = 0$, we cannot conclude anything about the stability of $y=y_{*}$.
+- If $f'(y^{*})>0$ at an equilibrium solution, the equilibrium solution $y=y^{*}$ will be unstable.
+- If $f'(y^{*}) <0$ at an equilibrium solution, the equilibrium solution $y=y^{*}$ will be stable.
+- If $f'(y^{*}) = 0$, we cannot conclude anything about the stability of $y=y^{*}$.
 
-Applying this test, we know $f(x)=1-x^2$ and $f'(x)=-2x$.  Since $f'(1)=-2$ and $f'(-1)=2$, then the equilibrium solution $x=1$ is stable and $x=-1$ unstable.
+Applying this test, we know $f(x)=1-x^2$ and $f'(x)=-2x$. Since $f'(1)=-2$ and $f'(-1)=2$, then the respective equilibrium solution $x=1$ is stable and the equilibrium solution at $x=-1$ is unstable.
 
-Figure \@ref(fig:eq1-x2) shows a plot of the phase plane along with some solutions. Notice how the solutions seem to flow to $x=1$ and away from $x=-1$.
+Let's modify and extend this example further. Consider two more differential equations:
 
-```{r eq1-x2, echo=FALSE,fig.width=5,fig.height=4,results='hide',warning=FALSE,fig.cap="Phase plane of $x'=1-x^{2}$"}
+ - $\displaystyle x' = -1-x^{2}$: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.
+ - $\displaystyle x' = -x^{2}$:  This differential equation has an equilibrium solution at $x=0$; the stability test cannot apply because $f'=-2x$ and $f'(0)=0$. The general solution to this differential equation is $\displaystyle x(t)=\frac{1}{t+C}$ (Exercise \@ref(exr:dxdt-x2-20)), which apart from the vertical asymptote at $t=-C$ is always decreasing for $t>0$. So the equilibrium solution at $x=0$ is not stable.
+
+
+```{r eq1-ex2-3, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phase plane with associated solutions for $\\displaystyle x'=c-x^{2}$ for different values of $c$. The dashed grey lines are equilibrium solutions.",fig.width=4,fig.height=12,fig.pos="!p"}
 system_eq <- c(dxdt ~ 1,
                dydt ~ 1-y^2)
 
@@ -30,25 +35,29 @@ out_values <- initialCondition %>%
   mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
                                       initial_condition=deframe(.x),
                                       deltaT=.1,
-                                      n_steps = 200))) %>%
+                                      n_steps = 20))) %>%
   select(-data) %>%
   unnest(cols=c(result))
 
 
-phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
-  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt = 1"~-x^2)) + xlab("t") + ylab("x")
+p1 <- phaseplane(system_eq,'x','y',x_window = c(-0.1,2),y_window = c(-2,2)) +
+  geom_path(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) + 
+  scale_x_continuous(limits=c(-0.1,2)) +
+    scale_y_continuous(limits=c(-2,2)) +
+ guides(color="none")+ ggtitle(expression("A: x' = 1"~-x^2)) + xlab("t") + ylab("x") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  geom_hline(yintercept = c(-1,1),linetype='dashed',color='grey')
 
-```
 
 
-Let's modify and extend this example further. Consider two more differential equations:
-
- - $\displaystyle \frac{dx}{dt} = -1-x^{2}$: This differential equation does not have any equilibrium solutions, so we do not need to apply the stability test.
- - $\displaystyle \frac{dx}{dt} = -x^{2}$:  The stability of the second equation is a little more tricky.  While it has an equilibrium solution at $x=0$, the stability test cannot apply because $f'=-2x$ and $f'(0)=0$.  However investigating the sign of $f(x)$ to the left and right of $x=0$, we see that this solution is constantly decreasing, so the equilibrium is unstable.
-
-So let's also take a look at the phaseplanes for $\displaystyle \frac{dx}{dt} = -1-x^{2}$ and $\displaystyle \frac{dx}{dt} = -x^{2}$ along with the some solution curves (see also the accompanying figure).
-
-```{r eq1-x2-2, echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.ncol=1,fig.cap="Phase plane of $x'=-1-x^{2}$ and $x'=-x^{2}$"}
 system_eq <- c(dxdt ~ 1,
                dydt ~ -1-y^2)
 
@@ -64,22 +73,35 @@ out_values <- initialCondition %>%
   mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
                                       initial_condition=deframe(.x),
                                       deltaT=.1,
-                                      n_steps = 200))) %>%
+                                      n_steps = 20))) %>%
   select(-data) %>%
   unnest(cols=c(result))
 
 
-phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
-  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt = -1"~-x^2)) + xlab("t") + ylab("x")
-
+p2 <- phaseplane(system_eq,'x','y',x_window=c(-0.1,2),y_window=c(-2,2)) +
+  geom_path(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) + 
+  scale_x_continuous(limits=c(-0.1,2)) +
+    scale_y_continuous(limits=c(-2,2)) +
+  guides(color="none")+ ggtitle(expression("B: x' = -1"~-x^2)) + xlab("t") + ylab("x") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
 ###
+
+
 system_eq <- c(dxdt ~ 1,
                dydt ~ -y^2)
 
 
 system_eq_rev <- c(dxdt ~ -x^2)
 
-initialCondition <- tibble(value = c(2,1.5,1,0.5,0,-0.5,-1,-1.5,-2),sim=1:9,vector="x") %>% relocate(vector) %>%
+initialCondition <- tibble(value = c(2,1.5,1,0.5,0,-0.5,-1,-1.5),sim=1:8,vector="x") %>% relocate(vector) %>%
   group_by(sim) %>%
   nest()
 
@@ -88,22 +110,38 @@ out_values <- initialCondition %>%
   mutate(result = map(.x=data,.f=~rk4(system_eq_rev,
                                       initial_condition=deframe(.x),
                                       deltaT=.1,
-                                      n_steps = 200))) %>%
+                                      n_steps = 20))) %>%
   select(-data) %>%
   unnest(cols=c(result))
 
 
-phaseplane(system_eq,'x','y',c(-0.1,2),c(-2,2)) +
-  geom_line(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-0.1,2)) + ylim(c(-2,2)) + guides(color="none")+ ggtitle(expression("dx/dt ="~-x^2)) + xlab("t") + ylab("x")
+p3 <- phaseplane(system_eq,'x','y',x_window=c(-0.1,2),y_window=c(-2,2)) +
+  geom_path(data=out_values,aes(x=t,y=x,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) + 
+  scale_x_continuous(limits=c(-0.1,2)) +
+    scale_y_continuous(limits=c(-2,2)) +
+  guides(color="none")+ ggtitle(expression("C: x' ="~-x^2)) + xlab("t") + ylab("x") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  geom_hline(yintercept = 0,linetype='dashed',color='grey')
 
+
+gridExtra::grid.arrange(p1,p2,p3, 
+             ncol = 1, nrow = 3)
 ```
 
 
-There is an interesting pattern going on here. Let's build on these three examples in a more general context. Consider the differential equation $\displaystyle \frac{dx}{dt} = c-x^{2}$. In our first example, $c=1$. In the second example, $c=-1$, and the third example $c=0$. The phaseplanes from these examples illustrates how the value of $c$ influences the phase line and the resulting solution.
+Figure \@ref(fig:eq1-ex2-3) builds on an interesting pattern in our series of differential equations. Let's build on these three examples in a more general context. Consider the differential equation $\displaystyle x' = c-x^{2}$, which is a generalization of our examples. (For our examples $c=1$ $-1$, and $0$ respectively.)
 
-Steady states to $\displaystyle \frac{dx}{dt} = c-x^{2}$ are at $x^{*}=\pm \sqrt{c}$. We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$: 
+The value of $c$ influences the phase line and the resulting solution. Steady states to $\displaystyle x' = c-x^{2}$ are at $x^{*}=\pm \sqrt{c}$. We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$. 
 
-- If $c>0$ we have two steady states, summarized in the following table:
+If $c>0$ we have two steady states, summarized in the following table:
 
 Equilibrium solution | $f'(x^{*})$  | Tendency of solution | 
 -------------| ------------- | ------------- | 
@@ -112,21 +150,20 @@ Equilibrium solution | $f'(x^{*})$  | Tendency of solution |
 
 (You should verify that the stability result we initially found when $c=1$ matches the table.)
 
-- If $c=0$ there is only one steady state, summarized, in the following table:
+If $c=0$ there is only one steady state, summarized, in the following table:
 
 Equilibrium solution | $f'(x^{*})$  | Tendency of solution | 
 -------------| ------------- | ------------- | 
    $x^{*}=0$  | 0 | Inconclusive 
 
-Based on the phaseplane for $x'=-x^{2}$, the equilibrium solution $x^{*}=0$ is unstable.  If the initial condition $x(0)$ is greater than 0, the solution flows towards $x=0$, but if the initial condition is less than zero, the solution flows away from $x=0$.  This is similar to a one-dimensional analogue to a saddle node from Section \@ref(stability-19).
+Even though in this case the stability test is inconclusive, based on the phase plane for $x'=-x^{2}$ (Figure \@ref(fig:eq1-ex2-3)), the equilibrium solution $x^{*}=0$ is unstable. If the initial condition $x(0)$ is greater than 0, the solution flows towards $x=0$, but if the initial condition is less than zero, the solution flows away from $x=0$. This type of behavior is similar to a one-dimensional analogue to a saddle node from Chapter \@ref(eigenvalues-18).
 
-- Finally, if $c<0$, then there are no steady states because $\sqrt{c}$ is does not have a real solution when $c<0$.  (Note: eigenvalues can be imaginary, but equilibrium solutions for our contexts can only be real). We can also test out the stability of our steady states using the stability test, with $f(x)=c-x^{2}$ and $f'(x)=-2x$:
+Finally, when $c<0$ then there are no steady states because the $\sqrt{c}$ will be an imaginary number.^[While eigenvalues can be imaginary, equilibrium solutions for the contexts studied here can only be real.] 
 
 
+Notice how different values of $c$ influence both the *value* $(x^{*}=\pm \sqrt{c})$ and the *stability* of the equilibrium solution (stable / unstable). Rather than making a series of tables, we can represent the dependence of the equilibrium solution and its stability in what is called a *bifurcation diagram* (Figure \@ref(fig:saddle-bifur-20)).
 
-Notice how different values of $c$ influence both the *value* $(x^{*}=\pm \sqrt{c})$ and the *stability* of the equilibrium solution. Rather than making a series of tables, we can represent the dependence of the equilibrium solution and its stability in what is called a *bifurcation diagram* (Figure \@ref(fig:saddle-bifur-20)).
-
-```{r saddle-bifur-20,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap='A saddle-node bifurcation',fig.align='center'}
+```{r saddle-bifur-20,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="A saddle node bifurcation for the differential equation $\\displaystyle x'=c-x^{2}$.",fig.align='center'}
 
 
 \begin{tikzpicture}
@@ -142,25 +179,20 @@ Notice how different values of $c$ influence both the *value* $(x^{*}=\pm \sqrt{
 
 
 ```
-Let's talk about Figure \@ref(fig:saddle-bifur-20). The graph represents the value of the equilibrium solution ($x^{*}$, vertical axis) as a function of the parameter $c$ (horizontal axis).  Since equilibrium solutions are characterized by $x^{*}=\pm \sqrt{c}$ we have the "sideways parabola", traced in blue in Figure \@ref(fig:saddle-bifur-20).  When $c<0$, there is no equilibrium solution, (so nothing is plotted in the second and third quadrants of Figure \@ref(fig:saddle-bifur-20)). The difference between the solid and dashed lines in Figure \@ref(fig:saddle-bifur-20) is used to distinguish between a stable equilibrium solution ($x^{*}=\sqrt{c}$ when $c>0$) and unstable equilibrium solution ($x^{*}=-\sqrt{c}$ when $c>0$). That is so cool that *all* the information about the equilibrium solution and its stability is contained in this diagram!
 
-This particular example is called a *saddle-node* bifurcation.  It might be helpful to think of this $c$ like a tuning knob.  As $c>0$ we will always have two different equilibrium solutions that are symmetrical based on the value of $c$.  The positive one will be stable, the other unstable.  As $c$ gets smaller these equilbrium solutions will collapse into one, which will be unstable.  If $c$ is negative, the equilibrium solution disappears.
+Let's talk about Figure \@ref(fig:saddle-bifur-20). The graph represents the value of the equilibrium solution ($x^{*}$, vertical axis) as a function of the parameter $c$ (horizontal axis). Since equilibrium solutions are characterized by $x^{*}=\pm \sqrt{c}$ we have the "sideways parabola", traced in blue in Figure \@ref(fig:saddle-bifur-20). When $c<0$, there is no equilibrium solution, (so nothing is plotted in the second and third quadrants of Figure \@ref(fig:saddle-bifur-20)). The difference between the solid and dashed lines in Figure \@ref(fig:saddle-bifur-20) is used to distinguish between a stable equilibrium solution ($x^{*}=\sqrt{c}$ when $c>0$) and an unstable equilibrium solution ($x^{*}=-\sqrt{c}$ when $c>0$). It is so cool that *all* the information about the equilibrium solution and its stability is contained in Figure \@ref(fig:saddle-bifur-20)!
 
-## Bifurcations with systems of equations 
+The bifurcation structure of $\displaystyle x'=c-x^{2}$ is called a *saddle-node* bifurcation. To give another context, it might be helpful to think of this $c$ like a tuning knob. As $c>0$ we will always have two different equilibrium solutions that are symmetrical based on the value of $c$. The positive equilibrium solution will be stable, the other unstable. As $c$ approaches zero these equilibrium solutions will collapse into each other. If $c$ is negative, the equilibrium solution disappears.
 
-As another example, let's determine the behavior of solutions near the origin for the system of equations:
- \begin{equation}
- \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}. (\#eq:b-bifurc-20)
- \end{equation}
+\newpage
 
-Let's take a look at the phase plane with solution curves.
+```{r bifuc-b-20, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phase plane for Equation \\@ref(eq:b-bifurc-20) when $b=-2$"}
+eq_1 <- c( dx ~ 3*x -2*y, dy~x+y)
 
-```{r bifuc-b-20, echo=FALSE,fig.width=3.5,fig.height=3,results='hide',warning=FALSE,fig.cap="Comparison of two phase planes for Equation \\@ref(eq:b-bifurc-20)"}
-eq_1 <- c( dx ~ 3*x + -1, dy~x+y)
-
-initialCondition <- tibble(x = c(1,-1,1,-1),
-                           y = c(1,1,-1,-1),
-                           sim = 1:4) %>%
+theta <- seq(0,2*pi,length.out=20)
+initialCondition <- tibble(x = sin(theta),
+                           y = cos(theta),
+                           sim = 1:20) %>%
   pivot_longer(cols=c("x","y")) %>%
   group_by(sim) %>%
   nest()
@@ -171,19 +203,35 @@ out_values <- initialCondition %>%
                                       deltaT=.1,
                                       n_steps = 200))) %>%
   select(-data) %>%
-  unnest(cols=c(result))
+  unnest(cols=c(result)) %>%
+  arrange(sim,t)
+  
 
-phaseplane(eq_1,'x','y',c(-5,5),c(-5,5)) +
-  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("b = -1"))
+pb1 <- phaseplane(eq_1,'x','y',c(-5,5),c(-5,5)) +
+  geom_path(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) +   scale_x_continuous(limits=c(-5,5)) +
+    scale_y_continuous(limits=c(-5,5)) + guides(color="none")+ ggtitle(expression("A: b = -2")) + geom_point(data=tibble(x=0,y=0),aes(x=x,y=y),color='red',size=2) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  )
+
 
 ###
 
+```
 
-eq_2 <- c( dx ~ 3*x + 4, dy~x+y)
+```{r bifuc-b-20-2, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phase plane for Equation \\@ref(eq:b-bifurc-20) when $b=0$"}
+eq_2 <- c( dx ~ 3*x +0*y, dy~x+y)
 
-initialCondition <- tibble(x = c(1,-1,1,-1),
-                           y = c(1,1,-1,-1),
-                           sim = 1:4) %>%
+theta <- seq(0,2*pi,length.out=20)
+initialCondition <- tibble(x = sin(theta),
+                           y = cos(theta),
+                           sim = 1:20) %>%
   pivot_longer(cols=c("x","y")) %>%
   group_by(sim) %>%
   nest()
@@ -196,27 +244,116 @@ out_values <- initialCondition %>%
   select(-data) %>%
   unnest(cols=c(result))
 
-phaseplane(eq_2,'x','y',c(-5,5),c(-5,5)) +
-  geom_line(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-5,5)) + ylim(c(-5,5)) + guides(color="none")+ ggtitle(expression("b = 4"))
+pb2<- phaseplane(eq_2,'x','y',c(-5,5),c(-5,5)) +
+  geom_path(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) +
+  scale_x_continuous(limits=c(-5,5)) +
+    scale_y_continuous(limits=c(-5,5)) +
+  guides(color="none")+ ggtitle(expression("B: b = 0")) + geom_point(data=tibble(x=0,y=0),aes(x=x,y=y),color='red',size=2) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  )
 
 ```
 
 
-This equation has one free parameter $b$ that we will analyze using the trace determinant conditions developed in Section \@ref(stability-19). Let's call the matrix $A$, so the tr$(A)=4$ and $\det(A)=3-b$.  Since the trace is always positive either it will be a saddle if the $\det(A)<0$, or when $3<b$.  We have a unstable spiral when $3>b$ and $(\mbox{tr}(A))^2-4 \det(A)<0$, or when $4^2-4\cdot(3-b) = 16-12+4b = 4+4b<0$, which leads to $b<-1$.  Notice this is a contradictory condition - we have already assumed $b>3$, so we will not have any unstable spirals.
 
-To summarize, we have the following dynamics:
+```{r bifuc-b-20-3, echo=FALSE,results='hide',warning=FALSE,fig.cap="Phase planes for Equation \\@ref(eq:b-bifurc-20) for different values of $b$.",fig.width=4,fig.height=12}
+eq_2 <- c( dx ~ 3*x +4*y, dy~x+y)
 
-- When $b<3$ the equilibrium solution will be a saddle.
-- When $b=3$ we will have an unstable solution.
-- When $b>3$ we will have a unstable node.
+theta <- seq(0,2*pi,length.out=20)
+initialCondition <- tibble(x = sin(theta)*runif(20,min=1,max=2),
+                           y = cos(theta)*runif(20,min=1,max=2),
+                           sim = 1:20) %>%
+  pivot_longer(cols=c("x","y")) %>%
+  group_by(sim) %>%
+  nest()
+
+out_values <- initialCondition %>%
+  mutate(result = map(.x=data,.f=~rk4(eq_2,
+                                      initial_condition=deframe(.x),
+                                      deltaT=.1,
+                                      n_steps = 200))) %>%
+  select(-data) %>%
+  unnest(cols=c(result))
+
+pb3 <- phaseplane(eq_2,'x','y',x_window = c(-5,5),y_window = c(-5,5)) +
+  geom_path(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) + 
+  scale_x_continuous(limits=c(-5,5)) +
+    scale_y_continuous(limits=c(-5,5)) +
+  guides(color="none")+ 
+  ggtitle(expression("C: b = 4")) + geom_point(data=tibble(x=0,y=0),aes(x=x,y=y),color='red',size=2) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  )
+
+grid.arrange(pb1,pb2,pb3,nrow=3,ncol=1)
+```
 
 
-The benefit of a bifurcation diagram is that is provides a complete understanding of the dynamics of the system *as a function of the parameters*.  In this section we examined *one-parameter* bifurcations (for example we looked the stability of the equilibrium solution as it depends on *c* or *b*), but bifurcations can also be extended further to two parameter bifurcation families, applying similar methods.  In general the methods are similar to what we have done.
 
-## Limit Cycles and Bifurcations with systems of equations 
-The previous examples we have studied examine the stability of an equilibrium solution as a parameter changes. An extension of an equilibrium solution (as a point in space) is an equilibrium solution that is a *function*. 
+## Bifurcations with systems of equations 
+We can also examine how bifurcation plays a role with systems of differential equations. 
 
- Consider the following highly nonlinear system:
+As another example, let's determine the behavior of solutions near the origin for the system of equations:
+ \begin{equation}
+ \frac{\vec{dx}}{dt} = \begin{pmatrix} 3 & b \\ 1 & 1 \end{pmatrix} \vec{x}. (\#eq:b-bifurc-20)
+ \end{equation}
+
+This equation has one free parameter $b$ that we will analyze using the trace determinant conditions developed in Chapter \@ref(stability-19). Let's call the matrix $A$, so the tr$(A)=4$ and $\det(A)=3-b$. Since the trace is always positive either the equilibrium solution will be a saddle if $\det(A)<0$, or when $3<b$. We have a spiral source when $\det(A)>0$ (this means $3 > b$) and $\det(A) > (\mbox{tr}(A))^{2}/4$, or when $3-b > 4$, which leads to $b<-1$. Figure \@ref(fig:bifuc-b-20-3)A-C displays the phase planes for different values of $b$ along with sample solution curves.
+
+To summarize, Equation \@ref(eq:b-bifurc-20) has the following dynamics depending on the value of $b$:
+
+- When $b < -1$, the equilibrium solution will be a spiral source.
+- When $-1 < b < 3$, the equilibrium solution will be a source.
+- When $3<b$, the equilibrium solution will a saddle.
+
+
+Another approach to analyzing Equation \@ref(eq:b-bifurc-20) is to compute the eigenvalues directly, which in this case are $\displaystyle \lambda_{1,2}(b)=2 \pm \sqrt{b+1}$. Creating a plot of the eigenvalues (Figure \@ref(fig:bifurc-b-lambda)) can also help explain the bifurcation structure. When $b<-1$, the eigenvalues are imaginary, with Re$(\lambda_{1,2}(b)=2)=2$, so the equilibrium solution is a spiral source. When $-1 < b < 3$, both eigenvalues are positive, so the equilibrium solution is a source. Finally, when $3 < b$, one eigenvalue is positive and the other is negative, confirming our analyses with the trace-determinant plane.
+
+```{r bifurc-b-lambda,echo=FALSE,results='hide',warning=FALSE,fig.cap="Bifurcation diagram for Equation \\@ref(eq:b-bifurc-20). The vertical axis shows the value of the eigenvalues $\\lambda$ (red and blue curves) as a function of the parameter $b$. The annotations represent the stability of the original equilibrium solution." }
+
+in_data <- tibble(b=seq(-1,5,length.out=100),y1=2+sqrt(1+b),y2=2-sqrt(1+b))
+
+text_vals <- tibble(x=c(-2.25,1,4),y=3,val=c("Spiral\nsource","Source","Saddle"))
+
+p1 <- in_data %>%
+  ggplot() + 
+  geom_line(aes(x=b,y=y1),color='red',size=1) +
+  geom_line(aes(x=b,y=y2),color='blue',size=1) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = c(-1,3),linetype='dashed') +
+  labs(y=expression(lambda)) + xlim(c(-2.4,5)) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 18)
+  )
+p1 +
+  geom_text(data = text_vals,aes(x=x,y=y,label=val),hjust='left',vjust='bottom')
+```
+
+The benefit of a bifurcation diagram is to provide a complete understanding of the dynamics of the system *as a function of the parameters*. In this chapter we examined *one-parameter* bifurcations (for example we looked the stability of the equilibrium solution as it depends on *c* or *b*), but bifurcations can also be extended further to two parameter bifurcation families, applying similar methods. In general the methods are similar to what we have done.
+
+## Functions as equilibrium solutions: limit cycles 
+In the previous examples the stability of an equilibrium solution changed depending on the value of a parameter. Typically equilibrium solutions are a single point in the phase plane. Another way we can represent an equilibrium solution is with a *function*. As an example, consider the following highly nonlinear system in Equation \@ref(eq:limit-cycle-20):
+ 
 \begin{equation}
 \begin{split}
 \frac{dx}{dt} =-y-x(x^2+y^2-1) \\ 
@@ -224,16 +361,9 @@ The previous examples we have studied examine the stability of an equilibrium so
 \end{split} (\#eq:limit-cycle-20)
 \end{equation}
 
-The phase plane for Equation \@ref(eq:limit-cycle-20) is shown in Figure \@ref(fig:phase-limit-20). You can verify that Equation \@ref(eq:limit-cycle-20) system has an equilibrium solution at the point  $x=0$, $y=0$. 
+The phase plane for Equation \@ref(eq:limit-cycle-20) is shown in Figure \@ref(fig:limit-cycle-20-f). You can verify that Equation \@ref(eq:limit-cycle-20) has an equilibrium solution at the point  $x=0$, $y=0$. However Figure \@ref(fig:limit-cycle-20-f) suggests there might be other equilibrium solutions when various solution curves are plotted with the phase plane.
 
-```{r phase-limit-20, echo=FALSE,out.width = "4in",fig.cap="Phase plane for Equation \\ref(eq:limit-cycle-20)"}
-knitr::include_graphics("figures/20-bifurcation/limitCycles.png")
-```
-
- 
-However the phase plane suggests there might be other equilibrium solutions. To further explore this, let's look at the phase plane with some solution curves in Figure \@ref(fig:limit-cycle-20-f):
-
-```{r limit-cycle-20-f, warning=FALSE,echo=FALSE,fig.width=4,fig.height=4,fig.cap="Phase plane with solutions curves for Equation \\@ref(eq:limit-cycle-20)"}
+```{r limit-cycle-20-f, warning=FALSE,echo=FALSE,fig.width=3,fig.height=3,fig.cap="Phase plane for Equation \\@ref(eq:limit-cycle-20) with different solution curves. Notice the equilibrium solution described by the equation $x^{2}+y^{2}=1$."}
 mu <- 1
 
 mu_eq <- c( dx ~ -y-x*(x^2+y^2-1), dy~x-y*(x^2+y^2-1))
@@ -255,29 +385,48 @@ out_values <- initialCondition %>%
   select(-data) %>%
   unnest(cols=c(result))
 
-phaseplane(mu_eq,'x','y',c(-1.5,1.5),c(-1.5,1.5)) +
-  geom_point(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1.5) + xlim(c(-1.5,1.5)) + ylim(c(-1.5,1.5)) + guides(color="none")
+phaseplane(mu_eq,'x','y',x_window=c(-1.5,1.5),y_window=c(-1.5,1.5),plot_points = 10) +
+  geom_path(data=out_values,aes(x=x,y=y,color=as.factor(sim),group=sim),inherit.aes = TRUE,size=1) + xlim(c(-1.5,1.5)) + ylim(c(-1.5,1.5)) + guides(color="none") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  )
+  
 
 
 ```
 
-What is interesting in Figure \@ref(fig:limit-cycle-20-f) that the solution is tending towards a circle of radius 1 (or the equation $x^{2}+y^{2}=1$). This is an example of an equilibrium solution that is a *curve* rather than a specific point.  We can transform this system from $x$ and $y$ to a single new variables $X$ (see Exercise \@ref(exr:limit-transform-20)).
+What is interesting in Figure \@ref(fig:limit-cycle-20-f) is that the solution tends towards a circle of radius 1 (or the equation $x^{2}+y^{2}=1$). This is an example of an equilibrium solution that is a *curve* rather than a specific point. We can describe the phase plane with a new variable $X$ that represents the distance from the origin (a radius $r$) by transforming this system from $x$ and $y$ to a single new variable $X$ (see Exercise \@ref(exr:limit-transform-20)).
 
 \begin{equation}
-\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}. (\#eq:limit-X-20)
+\frac{dX}{dt} = -X(X-1) \mbox{ where } X=r^{2} (\#eq:limit-X-20)
 \end{equation}
 
-How Equation \@ref(eq:limit-cycle-20) transforms to Equation \@ref(eq:limit-X-20) is by applying a polar coordinate transformation to this system.  By applying stability analysis for Equation \@ref(eq:limit-X-20) we can show that the equilibrium solution $X=0$ is unstable (meaning the origin $x=0$ and $y=0$ is an unstable solution) and the circle of radius 1 is stable (which is the equation $x^{2}+y^{2}=1$). In this case we would say $r=1$ is a *stable limit cycle*.  You will study a similar system in Exercises \@ref(exr:limit-transform-20) and \@ref(exr:hopf-20).
+How Equation \@ref(eq:limit-cycle-20) transforms to Equation \@ref(eq:limit-X-20) is by applying a polar coordinate transformation to this system. With stability analysis for Equation \@ref(eq:limit-X-20) we can show that the equilibrium solution $X=0$ is unstable (meaning the origin $x=0$ and $y=0$ is an unstable equilibrium solution) and the circle of radius 1 is a stable equilibrium solution (which is the equation $x^{2}+y^{2}=1$). In this case we would say $r=1$ is a *stable limit cycle*.\index{limit cycle}\index{limit cycle!stable}  You will study a similar system in Exercises \@ref(exr:limit-transform-20) and \@ref(exr:hopf-20).
 
-Equation \@ref(eq:limit-X-20) is an example of next steps with studying the qualitative analysis of systems.  While we have focused on bifurcation of equilibrium solutions, hopefully this brief introduction will pique your interest in further study of bifurcations.
+Equation \@ref(eq:limit-X-20) is an example of next steps with studying the qualitative analysis of systems. We can extend out Equation \@ref(eq:limit-cycle-20) further to introduce a parameter $\mu$ that, as $\mu$ changes, undergoes a bifurcation as $\mu$ increases. This is an example of a *Hopf bifurcation*.\index{bifurcation!Hopf} 
 
-The most important part in studying bifurcations is analyzing examples.  I've provided a lot of exercises where you will construct bifurcation diagrams for one and two-dimensional equations.  Given an equation with a parameter, it is helpful to construct some sample phaselines / phaseplanes before analyzing stability in general using the stability test or the trace-determinant plane.
+## Bifurcations as analysis tools
+The most important part in studying bifurcations is analyzing examples. This chapter has several exercises where you will construct bifurcation diagrams for one- and two-dimensional systems of differential equations. As a reminder, constructing sample phase lines / phase planes before analyzing stability and the bifurcation structure is always helpful to build understanding.
+
+Bifurcation analysis is a fascinating field of study that combines knowledge of differential equations, geometry, and other types of advanced mathematics. For further information, please see the texts by @strogatz_nonlinear_2015, @perko_differential_2001, and @kuznetsov_elements_2004.
 
 
-
-\newpage
 
 ## Exercises
+```{exercise}
+Explain why $\displaystyle x'= 1+x^{2}$ does not have any equilibrium solutions.
+```
+
+```{exercise dxdt-x2-20}
+Use separation of variables to verify that the general solution to $\displaystyle x' = -x^{2}$ is $\displaystyle x(t)=\frac{1}{t+C}$.
+```
+
 ```{exercise}
 Apply local linearization to classify stability of the following differential equations:
 
@@ -286,38 +435,80 @@ b. $\displaystyle \frac{dx}{dt} = -x^{2}$
 c. $\displaystyle \frac{dx}{dt} = -x-x^{2}$
 
 ```
-&nbsp;
+
 ```{exercise}
-Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{2}$.  What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out plot the bifurcation diagram, with the parameter $c$ along the horizontal axis.  This bifurcation is called a \emph{transcritical} bifurcation.
+Consider the differential equation $\displaystyle x' = cx-x^{2}$. What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out, plot the bifurcation diagram, with the parameter $c$ along the horizontal axis. This bifurcation is called a *transcritical* bifurcation.\index{bifurcation!transcritical}
 ```
-&nbsp;
+
 ```{exercise}
-Consider the differential equation $\displaystyle \frac{dx}{dt} = cx-x^{3}$.  What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out plot the bifurcation diagram, with the parameter $c$ along the horizontal axis.  This bifurcation is called a \emph{pitchfork} bifurcation.
+Consider the differential equation $\displaystyle x' = cx-x^{3}$. What are equations that describe the dependence of the equilibrium solution on the value of $c$?  Once you have that figured out plot the bifurcation diagram, with the parameter $c$ along the horizontal axis. This bifurcation is called a *pitchfork* bifurcation.\index{bifurcation!pitchfork}
 ```
-&nbsp;
+
+
 ```{exercise}
-(Inspired by @logan_mathematical_2009) Through constructing a bifurcation diagram, determine the behavior of solutions near the origin for the following system:
+Construct a bifurcation diagram for the differential equation $\displaystyle x'=c+x^{2}$
+```
+
+
+
+```{exercise}
+Consider the differential equation $\displaystyle x' = x(x-1)(b-x)$. The differential equation has equilibrium solutions at $x^{*}=0$, $x^{*}=1$, and $x^{*}=b$, where $b > 0$.
+
+a. Use desmos or some other plotting software to investigate the effect of the number of roots as $b$ increases from a value of 0.
+b. Analyze the stability of each of these equilibrium solutions. (You may want to multiply out the right hand side of the differential equation.) Whether a given equilibrium solution is stable may depend on the value of $b$.
+c. Construct a bifurcation diagram for all three solutions together, with $b$ on the horizontal axis and the value of $x^{*}$ on the vertical axis.
+
+
+```
+
+```{exercise}
+Consider the system of differential equations:
+
+\begin{equation}
+\begin{pmatrix} x' \\ y' \end{pmatrix} =  \begin{pmatrix} -x  \\ cy - y^{2}  \end{pmatrix}
+\end{equation}
+
+a. What are the equilibrium solutions for this (uncoupled) system of equations?
+b. Evaluate stability of the equilibrium solutions as a function of the parameter $c$.
+c. Construct a few representative phase planes to verify your analysis.
+
+```
+
+
+```{exercise}
+Consider the following linear system of differential equations:
   
  \begin{equation}
- \frac{\vec{x}}{dt} = \begin{pmatrix} 3 & b \\ b & 1 \end{pmatrix} \vec{x}.
+ \frac{d}{dt}\vec{x} = \begin{pmatrix} 3 & b \\ b & 1 \end{pmatrix} \vec{x}.
  \end{equation}
+
+a. Verify that the characteristic polynomial is $f(\lambda,b)=\lambda^{2}-4\lambda+(3-b^{2})$.
+b. Solve $f(\lambda,b)=0$ with the quadratic formula to obtain an expression for the eigenvalues as a function of $b$, that is $\lambda_{1,2}(b)$.
+c. Using the eigenvalues, classify the stability of the equilibrium solution as $b$ changes.
+d. Generate a few representative phase planes to verify your analysis.
+e. Create a plot similar to Figure \@ref(fig:bifurc-b-lambda) showing the bifurcation structure.
+
 ```
-&nbsp;
+
 <!-- LW pg 164 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) Consider the linear system of equations:
+Consider the linear system of differential equations:
 
 \begin{equation}
 \begin{split}
-\frac{dx}{dt}&=-ax-y \\
-\frac{dy}{dt} &= -x-ay
+\frac{dx}{dt}&=cx-y \\
+\frac{dy}{dt} &= -x+cy
 \end{split}
 \end{equation}
 
-Construct a bifurcation diagram for this system of equations.
+a. Determine the characteristic polynomial ($f(\lambda,c)$) for this system of equations.
+b. Solve $f(\lambda,c)=0$ with the quadratic formula to obtain an expression for the eigenvalues as a function of $c$, that is $\lambda_{1,2}(c)$.
+c. Using the eigenvalues, classify the stability of the equilibrium solution as $c$ changes.
+d. Generate a few representative phase planes to verify your analysis.
+e. Create a plot similar to Figure \@ref(fig:bifurc-b-lambda) showing the bifurcation structure.
 
 ```
-&nbsp;
+
 
 ```{exercise limit-transform-20}
  Consider the following highly nonlinear system:
@@ -329,23 +520,29 @@ Construct a bifurcation diagram for this system of equations.
 \end{split}
 \end{equation}
 
-We are going to transform the system by defining new variables $x=r \cos \theta$ and $y=r \sin \theta$.  Observe that $r^2=x^2+y^2$.
+We are going to transform the system by defining new variables $x=r \cos \theta$ and $y=r \sin \theta$. Observe that $r^2=x^2+y^2$.
 
 
 a. Consider the equation $r^2=x^2+y^2$, where $r$, $x$, and $y$ are all functions of time. Apply implicit differentiation to determine a differential equation for $\displaystyle \frac{d(r^{2})}{dt}$, expressed in terms of $x$, $y$, $\displaystyle \frac{dx}{dt}$ and $\displaystyle \frac{dy}{dt}$.
-b. Multiply $\displaystyle \frac{dx}{dt}$ by $2x$ and $\displaystyle \frac{dy}{dt}$ by $2y$ on both sides of the equation.  Then add the two equations together.  You should get an expression for $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $x$ and $y$.
-c. Re-write the equation for the right hand side of $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $r^{2}$.
+
+b. Multiply the above equations $\displaystyle \frac{dx}{dt}$ by $2x$ and $\displaystyle \frac{dy}{dt}$ by $2y$ on both sides of the equation. Then add the two equations together. You should get an expression for $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $x$ and $y$.
+
+c. Rewrite the equation for the right hand side of $\displaystyle \frac{d(r^{2})}{dt}$ in terms of $r^{2}$.
+
 d. Use your equation that you found to verify that 
+
 \begin{equation}
-\frac{dX}{dt} = -X(X-1), \mbox{ where } X=r^{2}
+\frac{dX}{dt} = -2X(X-1), \mbox{ where } X=r^{2}
 \end{equation}
+
 e. Verify that $X=1$ is a stable node and $X=0$ is unstable.
-f. As discussed in this section this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is a unstable limit cycle?  Justify your work.
+
+f. As discussed in this chapter, this system has a stable limit cycle. What quick and easy modification to our system could you do to the system to ensure that this is an unstable limit cycle?  Justify your work.
 
 ```
-&nbsp;
+
 ```{exercise hopf-20}
-Construct a bifurcation diagram for $\displaystyle \frac{dX}{dt} = - X(X-\mu)$, $\mu$ is a parameter.  Explain how you can apply that result to understanding the bifurcation diagram of the system:
+Construct a bifurcation diagram for $\displaystyle \frac{dX}{dt} = - 2X(X-\mu)$,; $\mu$ is a parameter. Explain how you can apply that result to understanding the bifurcation diagram of the system:
 
 \begin{equation}
 \begin{split}
@@ -358,30 +555,10 @@ This system is an example of a \emph{Hopf bifurcation}.
 ```
 
 
-&nbsp;
 
-<!-- adapted LW pg 183 -->
-```{exercise}
-(Inspired by @logan_mathematical_2009) Consider following predator-prey model:
-
-\begin{equation}
-\begin{split}
-\frac{dx}{dt}&=\frac{2}{3}x\left(1 - \frac{x}{4} \right) - \frac{xy}{1+x} \\
-\frac{dy}{dt} &= ry\left(1 - \frac{y}{x} \right)
-\end{split}
-\end{equation}
-
-
-a. Explain the various terms in this model and their biological meaning.
-b. Determine the equilibrium solutions.
-c. Evaluate the Jacobian at each of the equilibrium solutions.
-d. Construct a bifurcation diagram (with the parameter $r$) for each of the equilibrium solutions.
-
-```
-&nbsp;
 <!-- adapted LW pg 185, get some more citations in here -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) The immune response to HIV has been described with differential equations.  In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where $v$ is the virus load and $x$ the immune response:
+(Inspired by @logan_mathematical_2009) The immune response to HIV can be described with differential equations. In the early stages (before the body is swamped by the HIV virions) the dynamics of the virus can be described by the following system of equations, where $v$ is the virus load and $x$ the immune response:
   
 \begin{equation}
 \begin{split}
@@ -390,11 +567,13 @@ d. Construct a bifurcation diagram (with the parameter $r$) for each of the equi
 \end{split}
 \end{equation}
 
+You may assume that all parameters are positive.
 
 a. Explain the various terms in this model and their biological meaning.
 b. Determine the equilibrium solutions.
-c. Evaluate the Jacobian at each of the equilibrium solutions.
+c. Evaluate the Jacobian for each of the equilibrium solutions.
 d. Construct a bifurcation diagram for each of the equilibrium solutions.
 
 ```
+
 

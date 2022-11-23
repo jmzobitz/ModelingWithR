@@ -1,52 +1,45 @@
-# Solving Stochastic Differential Equations {#solvingSDEs-27}
+# Solutions to Stochastic Differential Equations {#solvingSDEs-27}
 
-Stochastic differential equations arise when we consider variation (think randomness) in a biological model. Through simulation and examining the ensemble average we found that the solution to a stochastic differential equation is an *distribution* of solutions.  For this final section we will examine how we can characterize solutions to stochastic differential equations. We will introduce methods to develop exact solutions to a stochastic differential equation. You will learn about some powerful mathematics that hopefully you will want to study at some point in the future!
+Chapters \@ref(sdes-25) and \@ref(simul-stoch-26) simulated SDEs. Visualizing the ensemble average of solution trajectories revealed a *distribution* of solutions that evolves in time. This final chapter examines methods to characterize exact solutions to stochastic differential equations by developing formulas to characterize the evolution of the distribution of solutions in time. There are a lot of mathematics here that can be a stepping stone for further study in the field of stochastics. Let's (for one last time) get started!
 
-## Meet the Fokker-Planck Equation
+## Meet the Fokker-Planck equation
 Let's start with a general way to express a stochastic differential equation:
 
 \begin{equation}
-dx = a(x,t) \; dt + b(x,t) \; dW(t)
+dx = a(x,t) \; dt + b(x,t) \; dW(t) (\#eq:generic-sde-27)
 \end{equation}
 
-The "solution" to this SDE will be a probability density function $f(x,t)$. 
-Our goal is to have a function that describes the evolution of $f(x,t)$ in both time and space. Based on our work with birth-death processes, the probability density function $f(x,t)$ should have the following properties:
+The "solution" to this SDE will be a probability density function $p(x,t)$, describing the evolution of $p(x,t)$ in both time and space. Based on our work with Brownian motion in Chapters \@ref(sdes-25) and \@ref(simul-stoch-26), the probability density function $p(x,t)$ should have the following properties:
 
-- $E[f(x,t)]$ is the deterministic solution to $\displaystyle \frac{dx}{dt} = a(x,t)$.
-- Var$[f(x,t)]$ is proportional to $b(x,t)$.
+- $E[p(x,t)]$ is the deterministic solution to $\displaystyle \frac{dx}{dt} = a(x,t)$.
+- The variance $\sigma^{2}$ incorporates the function $b(x,t)$.
 
 
-We determine the probability density function through solution of the following differential equation, which is called the **Fokker-Planck Equation**:
+A way to determine the probability density function is by solving the following partial differential equation, termed the **Fokker-Planck Equation** (Equation \@ref(eq:fpe-27)).\index{Fokker-Planck equation}
 
 \begin{equation}
-\frac{\partial f}{\partial t} = - \frac{\partial}{\partial x} \left(f(x,t) \cdot a(x,t) \right) + \frac{1}{2}\frac{\partial^{2} }{\partial x^{2}} \left(\; f(x,t) \cdot (b(x,t))^{2}  \;\right)
+\frac{\partial p}{\partial t} = - \frac{\partial}{\partial x} \left(p(x,t) \cdot a(x,t) \right) + \frac{1}{2}\frac{\partial^{2} }{\partial x^{2}} \left(\; p(x,t) \cdot (b(x,t))^{2}  \;\right) (\#eq:fpe-27)
 \end{equation}
 
-We can write this equation in shorthand, dropping the dependence of $x$ and $t$ for $f(x,t)$, $a(x,t)$ and $b(x,t)$: $\displaystyle f_{t} = -  (f \cdot a)_{x} + \frac{1}{2} (f \cdot b^{2})_{xx}$.
+We can write Equation \@ref(eq:fpe-27) in shorthand, dropping the dependence of $x$ and $t$ for $p(x,t)$, $a(x,t)$ and $b(x,t)$: $\displaystyle p_{t} = -  (p \cdot a)_{x} + \frac{1}{2} (p \cdot b^{2})_{xx}$. We do not include the derivation of the Fokker-Planck Equation here, as the proof requires concepts from  advanced calculus (see @logan_mathematical_2009 for more discussion and derivation of the Fokker-Planck equation). However, let's build up understanding of Equation \@ref(eq:fpe-27) through some examples.
 
-```{example}
-Consider the SDE $dx = dW(t)$ and apply the Fokker-Planck equation to characterize the solution $f(x,t)$. 
-```
-
-```{solution}
-In this case $a(x,t)=0$ and $b(x,t)=1$, so the Fokker-Planck Equation is:
+### Diffusion (again)
+Consider the SDE $dx = dW(t)$ with $x(0)=0$ and apply the Fokker-Planck equation to characterize the solution $p(x,t)$. We know from Chapter \@ref(diffusion-24) that SDE $dx = dW(t)$ characterizes Brownian motion. When we compare this SDE to the Fokker-Planck equation and Equation \@ref(eq:generic-sde-27), we have $a(x,t)=0$ and $b(x,t)=1$, yielding Equation \@ref(eq:fpe-diff-27):
 
 \begin{equation*}
-f_{t} = \frac{\sigma^{2}}{2} f_{xx}.
+p_{t} = \frac{1}{2} p_{xx}. (\#eq:fpe-diff-27)
 \end{equation*}
 
-This equation should look familiar - it is the partial differential equation for diffusion!^[To remind you, the solution to $p_{t} = D p_{xx}$ is $\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}$.  So in this case $D = \sigma^{2}/2$.]  The solution to this SDE is given by Equation \@ref(eq:diffuse-sde-27).
+This equation should look familiar - it is the partial differential equation for diffusion (Equation \@ref(eq:new-master-diff))!^[To remind you, the solution to $p_{t} = D p_{xx}$ is $\displaystyle p(x,t) = \frac{1}{\sqrt{4 \pi Dt} } e^{-x^{2}/(4 D t)}$. So in this case $D = 1/2$.]  The solution to this SDE is given by Equation \@ref(eq:diffuse-sde-27). Figure \@ref(fig:diracdelta-27) shows the evolution of $p(x,t)$ in time.
 
 \begin{equation}
-f(x,t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-x^{2}/(2 \sigma^{2} t)} (\#eq:diffuse-sde-27)
+p(x,t) = \frac{1}{\sqrt{2 \pi t}} e^{-x^{2}/(2 t)} (\#eq:diffuse-sde-27)
 \end{equation}
 
-```
-
-I didn't mention the initial condition for Equation \@ref(eq:diffuse-sde-27). For this SDE the initial condition is a special function called the [Dirac delta Function](https://en.wikipedia.org/wiki/Dirac_delta_function).  We denote the Diract delta function as $\delta(x)$. This function is a special type of probability density function, which you may study in a courses such as Functional Analysis (or Analysis). We can plot the evolution of this solution in Figure \@ref(fig:dirac-delta):
+One way to describe Equation \@ref(eq:diffuse-sde-27) is a normally distributed random variable, with $E[p(x,t)]=0$ and $\sigma^{2}$ (the variance) equal to $t$. Notice how the mean and variance for Equation \@ref(eq:diffuse-sde-27) connect back to our previous work with random walks and diffusion in Chapters \@ref(random-walks-23) and \@ref(diffusion-24). Namely, simulations and random walk mathematics showed that the expected value of a random walk or Brownian motion was zero and the variance grew in time, which is the same for this SDE.
 
 
-```{r dirac-delta,echo=FALSE,fig.width=4,fig.height=3,fig.align='center',fig.cap="The solution to SDE $dx = dW(t)$."}
+```{r diracdelta-27,echo=FALSE,fig.cap="Profiles for the solution to SDE $dx = dW(t)$ (given by Equation \\@ref(eq:diffuse-sde-27)) for different values of $t$."}
 # sigma = sqrt(2*D*t) set #D = 1/2
 x <- seq(-10,10,length.out=100)
 y1 <- dnorm(x,mean=0,sd=1) # t = 1 
@@ -56,40 +49,48 @@ y4 <- dnorm(x,mean=0,sd=sqrt(32)) # t = 32
 
 data.frame(x,y1,y2,y3,y4) %>%
   gather(key=run,value=y,-1) %>%
-  ggplot(aes(x=x,y=y,color=as.factor(run))) + geom_line(size=2) +
-  theme(legend.position="bottom") +
-  scale_color_discrete(name=NULL,labels=c("t = 1", "t = 2","t = 16","t = 32")) +
-  ylab('p(x,t)')
+  ggplot(aes(x=x,y=y,color=as.factor(run))) + geom_line(size=1) +
+  ylab('p(x,t)') +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(name=NULL,labels=c("t = 1", "t = 2","t = 16","t = 32"))
 
 
 ```
-&nbsp;
 
-Now that we have a handle on the SDE $dx = dW(t)$, let's extend this next example a little more. 
 
-### Another Fokker-Planck Equation
-Consider the SDE $dx = r \; dt + \sigma \; dW(t)$, where r and $\sigma$ are constants. As a first step, let's take a look at the deterministic equation:  $dx = r \; dt$.  This is the differential equation $\displaystyle \frac{dx}{dt} = r$, which has a linear function $x(t) = rt + x_{0}$ as its solution.
+Let's discuss the initial condition for Equation \@ref(eq:diffuse-sde-27). Our SDE had the initial condition $x(0)=0$. How this initial condition translates to Equation \@ref(eq:diffuse-sde-27) is that $x(0)$ is the same as $p(x,0)$. For this example the initial condition $p(x,0)$ is a special function called the [Dirac delta function](https://en.wikipedia.org/wiki/Dirac_delta_function), written as $p(x,0)=\delta(x)$.\index{Dirac delta function} The function $\delta(x)$ is a special type of probability density function, which you may study in a course that explores the theory of functions. Applications of the Dirac delta function include modeling an impulse (such as the release of a particle from a specific point) and watching its evolution in time. 
 
-We will apply the Fokker-Planck equation to characterize the solution $f(x,t)$. In this case, the Fokker-Planck equation is
+### Diffusion with drift
+Now that we have a handle on the SDE $dx = dW(t)$, let's extend this next example a little more. Consider the SDE $dx = r \; dt + \sigma \; dW(t)$, where $r$ and $\sigma$ are constants. As a first step, let's examine the deterministic equation:  $dx = r \; dt$, which has a linear function $x(t) = rt + x_{0}$ as its solution.^[This example is similar to the SDE $\displaystyle dX = 0.2 \; dt + dW(t)$ in Chapter \@ref(simul-stoch-26), where $r=0.2$ and $\sigma = 1$. In that example we found that the variance $\sigma^{2}$ grew linearly in time.] As before, the initial condition for this SDE is $p(x,0)=\delta(x)$.
+
+Applying Equation \@ref(eq:fpe-27) to this SDE we obtain Equation \@ref(eq:diffuse-advect-sde-27):
 
 \begin{equation}
-f_{t} = -r f_{x}+ \frac{\sigma^{2}}{2} f_{xx} (\#eq:diffuse-advect-sde-27)
+p_{t} = -r \, p_{x}+ \frac{\sigma^{2}}{2} \, p_{xx} (\#eq:diffuse-advect-sde-27)
 \end{equation}
 
-Equation \@ref(eq:diffuse-advect-sde-27) is an example of a *diffusion-advection equation*.   Amazingly this equation can be reduced to a diffusion equation through a change of variables and application of the multivariable change of variables. Let's get to work to figure this out.
+Equation \@ref(eq:diffuse-advect-sde-27) is an example of a *diffusion-advection equation*.\index{diffusion-advection equation}   Amazingly through a change of variables we will reduce Equation \@ref(eq:diffuse-advect-sde-27) to an example of Equation \@ref(eq:diffuse-sde-27). Here's how to do this:
 
-First, let $z=x-rt$ and $\tau = t$.  This change of variables may seem odd, but our goal here is to write $f(x,t)=f(z,\tau)$ and to develop expressions for $f_{t}$ $f_{x}$, and $f_{xx}$ with this change of variables. But in order to do that, we will need to apply the *multivariate chain rule* (see Figure \@ref(fig:chain-rule)).
+- First, let $x=z+r \, \tau$ and $t=\tau$. This change of variables may seem odd, but our goal here is to write $p(x,t)=p(z,\tau)$ and to develop expressions for $p_{\tau}$ $p_{z}$, and $p_{zz}$ from this change of variables. But in order to do that, we will need to apply the *multivariable chain rule* (see Figure \@ref(fig:chain-rule)).\index{chain rule!multivariable}
 
 
-```{tikz,chain-rule,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Multivariable chain rule',fig.width=4,fig.height=3}
+```{tikz,chain-rule,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Multivariable chain rule.',fig.width=4,fig.height=3}
 
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
-\node (A) {$f$};
-\node [below of = A, left of = A] (B) {$z$} ;
-\node [below of = A, right of = A] (C) {$\tau$} ;
+\node (A) {$p$};
+\node [below of = A, left of = A] (B) {$x$} ;
+\node [below of = A, right of = A] (C) {$t$} ;
 %\node [below of = C] (D) {$t$};
-\node [below of = B, left of = B] (E) {$x$} ;
-\node [below of = B, right of = B] (F) {$t$} ;
+\node [below of = B, left of = B] (E) {$z$} ;
+\node [below of = B, right of = B] (F) {$\tau$} ;
 
 \draw [-] (A) -- (B);
 \draw [-] (B) -- (E);
@@ -105,45 +106,46 @@ First, let $z=x-rt$ and $\tau = t$.  This change of variables may seem odd, but 
 
 ```
 
-By the multivariable chain rule we can develop expressions for $f_{t}$ and $f_{x}$: 
-
-\begin{align*}
-\frac{\partial f}{\partial t} & = \frac{\partial f}{\partial \tau} \cdot \frac{ \partial \tau}{\partial t} + \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial t}  \\
-\frac{\partial f}{\partial x} & = \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial x}
-\end{align*}
-
-
-Now let's consider the partial derivatives $\displaystyle \frac{ \partial \tau}{\partial t}$, $\displaystyle \frac{ \partial z}{\partial t}$, and $\displaystyle \frac{ \partial z}{\partial x}$.
-
-Remember that $z=x-r\tau$.  By direct differentiation $z_{\tau} = -r$ and $z_{x} = 1$. Also since $\tau=t$ then $\tau_{t}=1$.  With these substitutions, we can now re-write $f_{t}$ and $f_{xx}$: 
-
-
-
-\begin{align*}
-\frac{\partial f}{\partial t} & = \frac{\partial f}{\partial \tau} \cdot \frac{ \partial \tau}{\partial t} + \frac{\partial f}{\partial z} \cdot \frac{ \partial z}{\partial t}  = \frac{\partial f}{\partial \tau} -r \frac{\partial f}{\partial z} \\
-\frac{\partial f}{\partial x} & = \frac{\partial f}{\partial z} \rightarrow
-\frac{\partial^{2} f}{\partial x^{2}} = \frac{\partial^{2} f}{\partial z^{2}} 
-\end{align*}
-
-
-So if we re-write our original Fokker-Planck equation with the variables $z$ and $\tau$ we have:
-
-\begin{align*}
-f_{t} &=-r f_{x}+ \frac{\sigma^{2}}{2} f_{xx} \\
-f_{\tau} - r f_{z} &= -r f_{z} + \frac{\sigma^{2}}{2} f_{zz} \\
-f_{\tau} &=  \frac{\sigma^{2}}{2} f_{zz}
-\end{align*}
-
-Ok: I'll admit that doing change of variables may seem like it doesn't help the situation.  But guess what: with this change of variables our Fokker-Planck equation becomes a diffusion equation in the variables $z$ and $\tau$!  So if we can write down the solution with the variables $z$ and $\tau$, we can write the solution $f(x,t)$! Here how we do this: $\displaystyle f(z, \tau) = \frac{1}{\sqrt{2 \pi \sigma^{2} \tau}} e^{-z^{2}/(2 \sigma^{2} \tau)}$, and then transform back into the original variables $x$ and $t$:
+- By the multivariable chain rule we can develop expressions for $p_{\tau}$ and $p_{z}$: 
 
 \begin{equation}
-f(x, t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-(x-rt)^{2}/(2 \sigma^{2} t)}
+\begin{split}
+\frac{\partial p}{\partial \tau} & = \frac{\partial p}{\partial x} \cdot \frac{ \partial x}{\partial \tau} + \frac{\partial p}{\partial t} \cdot \frac{ \partial t}{\partial \tau}  \\
+\frac{\partial p}{\partial z} & = \frac{\partial p}{\partial x} \cdot \frac{ \partial x}{\partial z}
+\end{split}
+\end{equation}
+
+
+- Now let's consider the partial derivatives $\displaystyle \frac{\partial x}{ \partial \tau}$, $\displaystyle \frac{\partial x}{ \partial z}$, and $\displaystyle \frac{\partial t}{ \partial z}$. Remember that $x=z+r \, \tau$. By direct differentiation $x_{\tau} = r$ and $x_{z} = 1$. Also since $t=\tau$ then $\tau_{t}=1$. With these substitutions, we can now re-write $p_{\tau}$ and $p_{z}$: 
+
+\begin{equation}
+\begin{split}
+\frac{\partial p}{\partial \tau} & = \frac{\partial p}{\partial x} \cdot \frac{ \partial x}{\partial \tau} + \frac{\partial p}{\partial t} \cdot \frac{ \partial t}{\partial z}  = \frac{\partial p}{\partial x} \cdot r + \frac{\partial p}{\partial t} \cdot 1 \\
+\frac{\partial p}{\partial z} & = \frac{\partial p}{\partial x} \cdot \frac{ \partial x}{\partial z} = \frac{\partial p}{\partial x} \cdot 1 \rightarrow
+\frac{\partial^{2} p}{\partial z^{2}} = \frac{\partial^{2} p}{\partial x^{2}} 
+\end{split} (\#eq:cov-27)
+\end{equation}
+
+
+- Finally if re-write Equation \@ref(eq:diffuse-advect-sde-27) with the variables $z$, $\tau$, and the change of variables (Equation \@ref(eq:cov-27)) we obtain Equation \@ref(eq:diffuse-advect-cov-sde-27).
+
+\begin{equation}
+\begin{split}
+\underbrace{p_{t} + r p_{x}} &=\frac{\sigma^{2}}{2} p_{xx} \\
+p_{\tau} &=  \frac{\sigma^{2}}{2} p_{zz}
+\end{split} (\#eq:diffuse-advect-cov-sde-27)
+\end{equation}
+
+All this work and transformation of variables to obtain Equation \@ref(eq:diffuse-advect-cov-sde-27) yielded a diffusion equation in the variables $z$ and $\tau$!  Applying Equation \@ref(eq:diffuse-sde-27) with the variables $z$ and $\tau$, we have $\displaystyle p(z, \tau) = \frac{1}{\sqrt{2 \pi \sigma^{2} \tau}} e^{-z^{2}/(2 \sigma^{2} \tau)}$, which we then transform back into the original variables $x$ and $t$ (Equation \@ref(eq:diffuse-advect-soln-27)):
+
+\begin{equation}
+p(x, t) = \frac{1}{\sqrt{2 \pi \sigma^{2} t}} e^{-(x-rt)^{2}/(2 \sigma^{2} t)} (\#eq:diffuse-advect-soln-27)
 \end{equation}
 
 Now that we have an equation, next let's visualize the solution. Let's take a look at some representative plots in Figure \@ref(fig:diff-advec):
 
 
-```{r diff-advec,echo=FALSE,fig.width=4,fig.height=3,fig.align='center',fig.cap="Representative plots for the solution to the SDE $dx = r \\; dt + \\sigma \\; dW(t)$."}
+```{r diff-advec,echo=FALSE,fig.cap="Profiles for the solution to SDE $dx = r \\; dt + \\sigma \\; dW(t)$ (given with Equation \\@ref(eq:diffuse-advect-soln-27)) for different values of $t$."}
 # sigma = sqrt(2*D*t) set #D = 1/2
 r <- 0.1
 x <- seq(-10,10,length.out=100)
@@ -154,108 +156,79 @@ y4 <- dnorm(x,mean=r*32,sd=sqrt(32)) # t = 32
 
 data.frame(x,y1,y2,y3,y4) %>%
   gather(key=run,value=y,-1) %>%
-  ggplot(aes(x=x,y=y,color=as.factor(run))) + geom_line(size=2) +
-  theme(legend.position="bottom") +
-  scale_color_discrete(name=NULL,labels=c("t = 1", "t = 2","t = 16","t = 32")) +
-  ylab('f(x,t)')
+  ggplot(aes(x=x,y=y,color=as.factor(run))) + geom_line(size=1) +
+  ylab('p(x,t)') +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_color_colorblind(name=NULL,labels=c("t = 1", "t = 2","t = 16","t = 32"))
 
 
 ```
 
-Based on what we know of this distribution is that it should look like a normal distribution with mean $\mu = rt$ and variance $\sigma^{2} t$.  What the mean and variance tells us that the mean is shifting and growing more diffuse as time increases. Remember that our solution to the deterministic equation was linear, and the mean of our distribution grows linearly as well!
-
-Also notice in Figure \@ref(fig:diff-advec) as $t$ increases the solution shifts ("advects") to the right.  The differential equation is an example of a *diffusion-advection* equation, or a solution that drifts as time increases.
-
-The examples we study here are just a few examples of how to build a deeper understanding of stochastic processes and differential equations.  There is a lot of power in understanding the theoretical distribution for some test cases. Stochastic differential equations is a fascinating field of study with a lot of interesting mathematics - I hope what you learned here will make you want to study it further!
+Based on what we know of this distribution, it should look like a normal distribution with mean (expected value) equal to $rt$ and variance equal to $\sigma^{2}t$. What the mean and variance tell us is that the mean is shifting and growing more diffuse as time increases. Remember that our solution to the deterministic equation was linear, and the mean of our distribution grows linearly as well! Also notice in Figure \@ref(fig:diff-advec) as $t$ increases the solution drifts ("advects") to the right.
 
 
-\newpage
+
+## Deterministically the end
+The examples in this chapter scratch the surface of developing a deeper understanding of stochastic processes and differential equations. Even though we looked at a few test cases, there is a lot of power in understanding them (and integration across much of the mathematics you may have learned). Stochastic differential equations and stochastic processes are a fascinating field of study with a lot of interesting mathematics - I hope what you learned here will make you want to study it further!
+
 
 ## Exercises
+
+```{exercise}
+Consider the SDE $dx = dW(t)$ with initial condition $x(0)=2$. Using the results from this chapter, what is the solution $p(x,t)$ for this SDE?
+```
+
+```{exercise}
+What is the solution to the SDE $\displaystyle dX = 0.2 \; dt + dW(t)$ with initial condition $X(0)=0$? Plot a few sample profiles (in $X$) of $p(X,t)$ at different times. Using your solution, what is E$[p(X,t)]$ (expected value) and $\sigma^{2}$ (variance)?
+```
+
+
 <!-- Based off LW pg 346 #3 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) Let $R(t)$ denote the rainfall at a location at time $t$, which is a random process.  Assume that probability of the change in rainfall from day $t$ to day $t+\Delta t$ is the following:
+Let $S(t)$ denote the cumulative snowfall at a location at time $t$, which we will assume to be a random process. Assume that probability of the change in the cumulative amount of snow from day $t$ to day $t+\Delta t$ is the following:
 
   | change | probability  | 
 |:------:|:-----:|
-| $\Delta R = \rho$ | $\lambda \Delta t$ |
-| $\Delta R = 0$ | $1- \lambda \Delta t$ |
+| $\Delta S = \sigma$ | $\lambda \Delta t$ |
+| $\Delta S = 0$ | $1- \lambda \Delta t$ |
+
+The parameter $\lambda$ represents the frequency of snowfall and $\sigma$ the amount of the snowfall in inches. For example, during January in Minneapolis, Minnesota, the probability $\lambda$ of it snowing 4 inches or more is 0.016, with $\sigma=4$. (This assumes a Poisson process with rate = 0.5/31, according to the [Minnesota DNR.](https://www.dnr.state.mn.us/climate/twin_cities/snow_event_counts.html)) The stochastic differential equation generated by this process is $dS = \lambda \sigma \; dt + \sqrt{\lambda \sigma^{2}} \; dW(t) = .064 \; dt + .506 \; dW(t)$.
 
 
-The stochastic differential equation generated by this process is $dR = \lambda \rho \; dt + \sqrt{\lambda \rho^{2}} \; dW(t)$.
-
-
-a. What is the Fokker-Planck partial differential equation for the probability distribution $f(R,t)$?
-b. What is a formula that solves the Fokker-Planck partial differential equation?
-c. Make some representative plots of the solution as it evolves over time
+a. What is the Fokker-Planck equation for the probability distribution $p(S,t)$?
+b. What is the solution $p(S,t)$ for the Fokker-Planck equation?
+c. What are $E[p(S,t)]$ and the variance of $p(S,t)$?
+d. Generate representative plots of the solution as it evolves over time.
 
 ```
 
-&nbsp;
 <!-- Gardinier, pg 126 -->
 ```{exercise}
-A particle is moving in a gravitational field but still allowed to diffuse randomly. In this case the stochastic differential equation is $dx = -g \; dt + \sqrt{D} \; dW(t)$.
+A particle is moving in a gravitational field but is still allowed to diffuse randomly. In this case the stochastic differential equation is $dx = -g \; dt + \sqrt{D} \; dW(t)$, where $g$ and $D$ are constants.
 
 
-a. What is the Fokker-Planck partial differential equation for the probability distribution $f(x,t)$?
-b. Based on the work done in this section, what is the equation for the probability distribution $f(x,t)$?
+a. What is the Fokker-Planck partial differential equation for the probability distribution $p(x,t)$?
+b. Based on the work done in this chapter, what is the equation for the probability distribution $p(x,t)$?
 
 ```
-&nbsp
+
 <!-- Ornstein uhlenbeck process -->
 ```{exercise}
-Consider the stochastic differential equation $\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)$, where $\sigma$ controls the amount of stochastic noise. 
+Consider the stochastic differential equation $\displaystyle dS = \left( 1 - S \right) \; dt + \sigma \; dW(t)$, where $\sigma$ controls the amount of stochastic noise. 
 
 
-a. First let $\sigma = 0$ so the equation is entirely deterministic.  Classify the stability of the equilibrium solutions for this differential equation.
-b. Still let $\sigma = 0$.  Apply separation of variables to solve this differential equation.
-c. Now let $\sigma = 0.1$.  Do 100 realizations of this stochastic process, with initial condition $S(0)=0.5$.  What do you notice?
-d. Now try different values of $\sigma$ larger and smaller than 0.1.  What do you notice?
-e. What is the Fokker-Planck partial differential equation for the probability distribution $f(S,t)$?
-
-```
-&nbsp;
-
-
-<!-- Based off Example 7.24 pg 355 LW -->
-```{exercise}
-(Inspired by @logan_mathematical_2009) Consider the differential equation $\displaystyle x' = \lambda x - c \mu x^{2}$, which is similar to a logistic differential equation.  The *per capita* rate equation for this differential equation is $\displaystyle \frac{x'}{x} = \lambda - c \mu x$.
-
-a. Assume there is noise to this per capita rate, i.e. $\displaystyle \frac{x'}{x} \rightarrow \displaystyle \frac{x'}{x} + \mbox{ Noise}$.  With this revised equation, what are the deterministic and stochastic parts?
-b. What is the Fokker-Planck partial differential equation for the probability distribution $f(x,t)$?
-c. The \emph{steady-state distribution} assumes that $f_{t} = 0$, so $f(x,t) \rightarrow f(x)$.  Through direct verification, show that $f(x)=Dx^{\alpha-1} e^{-\beta x}$ is a solution to the steady-state distribution, where $\alpha = 2 \lambda - 1$ and $\beta = 2c\mu$.
-d. With $\lambda = c = \mu = D = 1$, make a graph of $f(x)$ and graph it below:
-
-```
-&nbsp;
-
-<!-- Gardinier, pg 126 -->
-```{exercise}
-(Inspired by @gardiner_handbook_2004) A type of chemical reaction is $X + A \leftrightarrow 2X$, where $A$ acts like an enzyme.  The stochastic differential equation that describes this scenario is:
-  
-\begin{equation}
-dX = \left( A X - X^{2} \right) \; dt + \left( AX + X^{2} \right) dW(t)
-\end{equation}
-
-
-a. What is the Fokker-Planck equation for this stochastic differential equation?
-b. The steady-state distribution for this process is $p(X) = e^{-2X}(A+X)^{4A-1}X^{-1}$.  With $A=1$ make a plot of this distribution.
-
-
-```
-
-```{exercise}
-Models of cell membranes take account for the energy needed for ions and other materials to cross the cell membrane, usually expressed as a membrane potential $U(x)$, where $x$ is the current position of a particle distance.  The probability $p$ of the particle being at position $x$ at time $t$  is given by the Fokker-Planck equation:
-  
-  \begin{equation}
-v \frac{\partial p}{\partial t} = \frac{\partial}{\partial x} \left( U'(x) p \right) + k T \frac{\partial^{2} p}{\partial x^{2}},
-\end{equation}
-
-where $k$ is Boltzmann's constant and $T$ is the temperature.
-
-
-a. Write the Fokker-Planck equation in steady state.
-\item Show that a solution for the steady-state equation is $p(x)=C e^{-\frac{U(x)}{kT}}$
-b. If the steady-state distribution is normal, what is function will $U(x)$ be?
+a. First let $\sigma = 0$ so the equation is entirely deterministic. Classify the stability of the equilibrium solutions for this differential equation.
+b. Still let $\sigma = 0$. Apply separation of variables to solve this differential equation.
+c. Now let $\sigma = 0.1$. Do 100 realizations of this stochastic process, with initial condition $S(0)=0.5$. What do you notice?
+d. Now try different values of $\sigma$ larger and smaller than 0.1. What do you notice?
+e. What is the Fokker-Planck partial differential equation for the probability distribution $p(S,t)$?
 
 ```

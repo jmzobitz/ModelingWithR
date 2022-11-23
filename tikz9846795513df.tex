@@ -1,0 +1,22 @@
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{matrix}
+%% EXTRA_TIKZ_PREAMBLE_CODE %%
+\begin{document}
+%% TIKZ_CODE %%
+
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
+
+\node [vspecies] (H) {$H$} ;
+\node [vspecies, right of = H] (L) {$L$} ;
+\draw [->] ([yshift=3pt]H.east) --  node[above] {\small{$ebH$}} ([yshift=3pt]L.west) ;
+% \draw [->] ([yshift=-3pt]L.west) --  node[below] {\small{$ebL$}} ([yshift=-3pt]H.east) ;
+\draw [->] (L.east) --  node[above] {\small{$d$}} +(1cm,0pt) ;
+\draw [<-] (H.west) --  node[above] {\small{$r$}} +(-1cm,0pt) ;
+
+\end{tikzpicture}
+
+
+\end{document}

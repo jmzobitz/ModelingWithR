@@ -1,10 +1,312 @@
-# Simulating Stochastic Dynamics {#simul-stoch-26}
+# Statistics of a Stochastic Differential Equation {#simul-stoch-26}
 
-In Section \@ref(sdes-25) we built up a stochastic differential equation from adding in stochasticity (noise) to the parameter values.  Another approach is to assume instead the variables are stochastic.  Here is the good news: we can still simulate SDEs with stochastic variables, setting them up in a similar way to Section \@ref(sdes-25). We will generate realizations and then compute the ensemble averages.
+In Chapter \@ref(sdes-25) you explored ways to incorporate stochastic processes into a differential equation. The workflow  (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize) generated ensemble averages of several different realizations of a stochastic process, which allowed you to visually characterize the solution.
+
+The ensemble average indicates that the solution to a stochastic process is a probability distribution (similar to what we studied in Chapter \@ref(likelihood-09)). More importantly, this probability distribution may evolve and change in time. This chapter examines how this distribution changes in time by computing statistics from these stochastic processes. Additionally we will also investigate stochastic processes with tools from Markov modeling (such as the random walk mathematics from Chapter \@ref(random-walks-23). Let's get started!
+
+## Expected value of a stochastic process
+Chapter \@ref(sdes-25) introduced a general form of a stochastic differential equation for a single variable $X$:
+
+\begin{equation}
+dX = a(X,t) \; dt + b(X,t) \, dW(t) (\#eq:general-sde-26)
+\end{equation}
+
+We will now look at a few idealized examples of Equation \@ref(eq:general-sde-26) to understand the behavior of simulated solutions.
+
+### A purely stochastic process
+The first example is when $a(X,t)=0$ and $b(X,t)=1$ (a constant) in Equation \@ref(eq:general-sde-26), so $\displaystyle dX =  dW(t)$. We call this example a purely stochastic process. Let's code this up using the function `sde` to examine one realization (Figure \@ref(fig:b-once)) with $\Delta t =0.2$ and $X(0)=0$.
+
+```{r eval=FALSE}
+
+sde <- function(number_steps, dt) {
+  x0 <- 0 # The initial condition
+
+  # Set up vector of results
+  x <- array(x0, dim = number_steps)
+
+  # Iterate through this random process.
+  for (i in 2:number_steps) {
+    x[i] <- x[i - 1] + rnorm(1) * sqrt(dt)
+  }
+
+  # Create the time vector
+  t <- seq(0, length.out = number_steps, by = dt)
+  out_x <- tibble(t, x)
+  return(out_x)
+}
+
+out <- sde(1000, .2)
+
+ggplot(data = out) +
+  geom_line(aes(x = t, y = x))
+```
 
 
-## The stochastic logistic model redux
-Let’s go back to the logistic population model but re-written in a specific way:
+```{r b-once,fig.cap="One realization of the stochastic differential equation $dX = 2 \\; dW(t)$.",echo=FALSE}
+
+sde <- function(number_steps, dt) {
+  x0 <- 0 # The initial condition
+
+  # Set up vector of results
+  x <- array(x0, dim = number_steps)
+
+  # Iterate through this random process.
+  for (i in 2:number_steps) {
+    x[i] <- x[i - 1] + rnorm(1) * sqrt(dt)
+  }
+
+  # Create the time vector
+  t <- seq(0, length.out = number_steps, by = dt)
+  out_x <- tibble(t, x)
+  return(out_x)
+}
+
+out <- sde(1000, .2)
+
+ggplot(data = out) +
+  geom_line(aes(x = t, y = x)) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) + ylab('X')
+```
+
+Let's highlight two parts from the function `sde`:
+
+1. Notice the line `x[i] <- x[i-1] + rnorm(1)*sqrt(dt)` where we iterate through the random process with the term $\sqrt{dt}$, similar to what we did in Chapter \@ref(sdes-25).
+2. To produce the correct time intervals in Figure \@ref(fig:b-once) we defined a time vector:
+`t <- seq(0,length.out=number_steps,by=dt)`. 
+
+
+When we repeat this process several times and plot of the results, we have the following ensemble average in Figure \@ref(fig:b-many):
+
+```{r eval = FALSE}
+
+# Many solutions
+n_sims <- 1000 # The number of simulations
+
+# Compute solutions
+sde_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ sde(1000, .2)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
+# Summarize the variables
+summarized_sde <- sde_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE # remove NA values
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+# Make the plot
+ggplot(data = summarized_sde) +
+  geom_line(aes(x = t, y = q0.5)) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), alpha = 0.2)
+```
+
+
+
+```{r b-many,fig.cap="Ensemble average of 1000 realizations of the stochastic differential equation $dX = dW(t)$." ,warning=FALSE,message=FALSE,echo=FALSE}
+
+# Many solutions
+n_sims <- 1000 # The number of simulations
+
+# Compute solutions
+sde_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ sde(1000, .2)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
+### Summarize the variables
+summarized_sde <- sde_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE # remove NA values
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+### Make the plot
+ggplot(data = summarized_sde) +
+  geom_line(aes(x = t, y = q0.5), color = "red", size = 1) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), alpha = 0.2, fill = "red") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  ylab("X")
+```
+
+I sure hope (again!) the results are very similar to ones generated in Chapters \@ref(random-walks-23) and Chapter \@ref(diffusion-24) (especially Figures \@ref(fig:ensemble-ave-23) and \@ref(fig:ensemble-ave-24)) - this is no coincidence! Figure \@ref(fig:ensemble-ave-24) is another simulation of Brownian motion with $D = 1/2$.
+
+### Stochastics with drift
+The second example is a modification where $a(X,t)=2$ and $b(X,t)=1$ in Equation \@ref(eq:general-sde-26), yielding $\displaystyle dX = 0.2 \; dt + dW(t)$. To simulate this stochastic process you can easily modify this approach by modifying the function `sde`, which I will call `sde_v2`. The code to simulate the stochastic process and visualize the ensemble average (Figure \@ref(fig:a-ensemble)) is shown below:
+
+```{r eval = FALSE}
+sde_v2 <- function(number_steps, dt) {
+  a <- 2
+  b <- 1 # The value of b
+  x0 <- 0 # The initial condition
+
+  ### Set up vector of results
+  x <- array(x0, dim = number_steps)
+
+  for (i in 2:number_steps) {
+    x[i] <- x[i - 1] + a * dt + b * rnorm(1) * sqrt(dt)
+  }
+
+  # Create the time vectror
+  t <- seq(0, length.out = number_steps, by = dt)
+  out_x <- tibble(t, x)
+  return(out_x)
+}
+
+
+# Many solutions
+n_sims <- 1000 # The number of simulations
+
+# Compute solutions
+sde_v2_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ sde_v2(1000, .2)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
+### Summarize the variables
+summarized_sde_v2 <- sde_v2_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE # Remove NA values
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+### Make the plot
+ggplot(data = summarized_sde_v2) +
+  geom_line(aes(x = t, y = q0.5)) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), alpha = 0.2)
+```
+
+```{r,a-ensemble,warning=FALSE,echo=FALSE,message=FALSE,fig.cap="Ensemble average of 1000 realizations of the stochastic process $dX = 2 \\; dt + dW(t)$."}
+sde_v2 <- function(number_steps, dt) {
+  a <- 2
+  b <- 1 # The value of b
+  x0 <- 0 # The initial condition
+
+  ### Set up vector of results
+  x <- array(x0, dim = number_steps)
+
+  for (i in 2:number_steps) {
+    x[i] <- x[i - 1] + a * dt + b * rnorm(1) * sqrt(dt)
+  }
+
+  # Create the time vectror
+  t <- seq(0, length.out = number_steps, by = dt)
+  out_x <- tibble(t, x)
+  return(out_x)
+}
+
+
+# Many solutions
+n_sims <- 1000 # The number of simulations
+
+# Compute solutions
+sde_v2_run <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ sde_v2(1000, .2)) %>%
+  map_dfr(~.x, .id = "simulation")
+
+
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
+
+
+### Summarize the variables
+summarized_sde_v2 <- sde_v2_run %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE # Remove NA values
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+### Make the plot
+ggplot(data = summarized_sde_v2) +
+  geom_line(aes(x = t, y = q0.5), color = "red", size = 1) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), alpha = 0.2, fill = "red") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  ylab("X")
+```
+
+In Figure \@ref(fig:a-ensemble), the median seems to follow a straight line. Approximating the final position of the median at $t=200$ and $X=400$, the slope of this line $\displaystyle \frac{\Delta X}{\Delta t} \approx \frac{400}{200} = 2$. So we could say that the median of this distribution follows the line $X=2t$. I recognize the ensemble average computes the *median* which is not the *average*. Because we are simulating this process with random variables drawn from a normal distribution we assume the median approximates the average. 
+
+Let's generalize the lessons learned from these examples. The solution to the SDE $\displaystyle dX = a(X,t) \; dt + b(X,t) \, dW(t)$ is probability distribution $p(X,t)$. The expected value, $\mu$, is denoted as $E[p(X,t)]$. The solution to the differential equation $\displaystyle dX = a(X,t) \; dt$ equals the expected value $\mu$. This result should make some intuitive sense: stochastic differential equations should - on the average - converge to the deterministic solution.
+
+The variance is a little harder to compute as the definition of the variance of a random variable $Y$ is $\displaystyle \sigma^{2} = E[(Y - \mu)^{2}] = \sigma^{2}= E[Y^{2}] - (E[Y] )^{2}$. However, what we *can* say is that the variance should be proportional (in some way) to $b(X,t) \; dt$. In both our cases studied here $b(X,t)=1$, so we can infer that the variance grows in time.
+
+
+## Birth-death processes
+In Chapter \@ref(stoch-sys-21) we examined a model of moose population dynamics with stochastic population fluctuations. In many biological contexts this makes sense: rarely do biological processes follow a deterministic curve. On the other hand, models usually start with a differential equation. What are we to do?
+
+To reconcile this, another way to generate a stochastic process is through consideration of the differential equation itself. Let’s go back to the logistic population model but re-written in a specific way (Equation \@ref(eq:log-sde-26)).
 
 \begin{equation}
 \frac{dx}{dt} = r x \left( 1 - \frac{x}{K} \right) = r x - \frac{rx^{2}}{K} (\#eq:log-sde-26)
@@ -16,460 +318,381 @@ From Equation \@ref(eq:log-sde-26), we can obtain a change in the variable $x$ (
 \Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t (\#eq:log-sde-diff-26)
 \end{equation}
 
-$\displaystyle \Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t$.  Equation \@ref(eq:log-sde-diff-26) is separated into two terms - one that increases the variable $x$ (represented by $r x \Delta t$, same units as $x$) and one that decreases the variable (represented by $\displaystyle \frac{rx^{2}}{K} \Delta t$, same units as $x$). We will consider these changes as on a unit scale, organized via the following table:
+Equation \@ref(eq:log-sde-diff-26) is separated into two terms - one that increases the variable $x$ (represented by $r x \Delta t$, the same units as $x$) and one that decreases the variable (represented by $\displaystyle \frac{rx^{2}}{K} \Delta t$, the same units as $x$). We will consider these changes in $x$ with the associated Markov random variable $\Delta X$ organized in Table \@ref(tab:probability-tab-26). (It is okay and understandable if you envison $\Delta x$ and $\Delta X$ as conceptually similar.)
+
+Table: (\#tab:probability-tab-26) Unit increment changes for the Markov variable $\Delta x$, based on Equation \@ref(eq:log-sde-diff-26).
 
 Outcome | Probability | 
 ------------- | ------------- | 
-$\Delta x = 1$ (population change by 1) | $r x \; \Delta t$ |
-$\Delta x = -1$ (population change by -1) | $\displaystyle \frac{rx^{2}}{K} \; \Delta t$ |
-$\Delta x = 0$ (no population change) | $\displaystyle 1 - rx \; \Delta t - \frac{rx^{2}}{K} \; \Delta t$ |
+$\Delta X = 1$ (population change by 1) | $r X \; \Delta t$ |
+$\Delta X = -1$ (population change by $-1$) | $\displaystyle \frac{rX^{2}}{K} \; \Delta t$ |
+$\Delta X = 0$ (no population change) | $\displaystyle 1 - rX \; \Delta t - \frac{rX^{2}}{K} \; \Delta t$ |
 
-It also may be helpful to think of these changes on a random walk number line:
+It also may be helpful to think of these changes on the following number line (Figure \@ref(fig:random-walk-stoch-26)), similar to how we examined the random walk number line (or Markov process) from Chapter \@ref(random-walks-23).
 
-```{tikz,random-walk-stoch,warning=FALSE,message=FALSE,echo=FALSE,fig.width=4,fig.height=3}
+```{tikz,random-walk-stoch-26,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="A random walk for Equation \\@ref(eq:log-sde-diff-26)."}
 \begin{tikzpicture}
     \draw (-3,0) -- (3,0);
     \foreach \i in {-3,-2,...,3} % numbers on line
       \draw (\i,0.1) -- + (0,-0.2) node[below] (\i) {$\i$};
    % \foreach \i in {0.5, 0.7, 0.9}% points on line
     \fill[red] (0,0) circle (1 mm);
-   \node[align=center] at (-1,0.5) {$\displaystyle \frac{rx^{2}}{K} \Delta t$};
+   \node[align=center] at (-1,0.5) {$\displaystyle \frac{rX^{2}}{K} \Delta t$};
+\node[align=center] at (-3.5,0.1) {$\displaystyle \Delta X$};
     \draw [->,red,thick] (0,0.15) to [out=150,in=30] (-1,0.15);
-    \node[align=center] at (1,0.5) {$r x \Delta t$};
+    \node[align=center] at (1,0.5) {$r X \Delta t$};
     \draw [->,red,thick] (0,0.15) to [out=30,in=150] (1,0.15);
   \end{tikzpicture}
 ```
 
 
-It may seem odd to think of the different outcomes ($\Delta x$ equals 1, -1, or 1) as probabilities. Part of the reason why that formulation is useful is to apply concepts from probability theory. Let $Y$ be a random variable with a finite number of finite outcomes $\displaystyle y_{1},y_{2},\ldots ,y_{k}$ with probabilities $\displaystyle p_{1},p_{2},\ldots ,p_{k}$,  respectively, then the expected value $\mu$ of $Y$ is:
-
-\begin{equation*}
-\mu = E[Y] = \sum_{i=1}^{k} y_{i}\,p_{i}=y_{1}p_{1}+y_{2}p_{2}+\cdots +y_{k}p_{k}.
-\end{equation*}
-
-If we apply this definition to the random variable $\Delta x$ we have:
+It may seem odd to think of the different outcomes ($\Delta X$ equals 1, $-1$, or 1) as probabilities. Assuming that the time interval $\Delta t$ is small enough, this won't be a numerical difficulty. Let's compute $E[\Delta X]$ and the variance $\sigma^{2}$ as we did in Chapter \@ref(random-walks-23). The computation of $\mu$ is shown in Equation \@ref(eq:log-sde-mu-26).
 
 \begin{equation}
 \begin{split}
-\mu = E[\Delta x] &= (1) \cdot \mbox{Pr}(\Delta x = 1) + (- 1) \cdot \mbox{Pr}(\Delta x = -1)  + (0) \cdot \mbox{Pr}(\Delta x = 0) \\
-&= (1) \cdot \left( r x \; \Delta t \right) + (-1)  \frac{rx^{2}}{K} \; \Delta t \\
-&= r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t
+\mu = E[\Delta X] &= (1) \cdot \mbox{Pr}(\Delta X = 1) + (- 1) \cdot \mbox{Pr}(\Delta X = -1)  + (0) \cdot \mbox{Pr}(\Delta X = 0) \\
+&= (1) \cdot \left( r X \; \Delta t \right) + (-1)  \frac{rX^{2}}{K} \; \Delta t \\
+&= r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t
 \end{split} (\#eq:log-sde-mu-26)
 \end{equation}
 
-Notice that the right hand side of Equation \@ref(eq:log-sde-mu-26) is the same as the right hand side of the original differential equation (Equation \@ref(eq:log-sde-diff-26)))!
+Observe that the right hand side of Equation \@ref(eq:log-sde-mu-26) is similar to the right hand side of the original differential equation (Equation \@ref(eq:log-sde-diff-26)))!
 
-Next let's also calculate the variance of $\Delta x$, defined for a discrete random variable:
-
-\begin{equation*}
- \sigma^{2} = E[(Y - \mu)^{2}] = \sigma^{2}= E[Y^{2}] - (E[Y] )^{2}.
-\end{equation*}
-
-
+Next let's also calculate the variance of $\Delta X$ (Equation \@ref(eq:log-sde-sigma-26)).
 
 \begin{equation}
 \begin{split}
-\sigma^{2} = E[(\Delta x)^{2}] - (E[\Delta x] )^{2} &= (1)^{2} \cdot \mbox{Pr}(\Delta x = 1) + (- 1)^{2} \cdot \mbox{Pr}(\Delta x = -1)  + (0)^{2} \cdot \mbox{Pr}(\Delta x = 0) - (E[\Delta x] )^{2} \\
-&= (1) \cdot \left( r x \; \Delta t \right) + (1)  \frac{rx^{2}}{K} \; \Delta t  - \left( r x \; \Delta t - \frac{rx^{2}}{K} \; \Delta t \right)^{2}
-\end{split}
+\sigma^{2} &= E[(\Delta X)^{2}] - (E[\Delta X] )^{2} \\
+&= (1)^{2} \cdot \mbox{Pr}(\Delta X = 1) + (- 1)^{2} \cdot \mbox{Pr}(\Delta X = -1)  + (0)^{2} \cdot \mbox{Pr}(\Delta X = 0) - (E[\Delta X] )^{2} \\
+&= (1) \cdot \left( r X \; \Delta t \right) + (1)  \frac{rX^{2}}{K} \; \Delta t  - \left( r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t \right)^{2}
+\end{split} (\#eq:log-sde-sigma-26)
 \end{equation}
 
-Along with the computation of the variance,  We are going to compute the variance to first order in $\Delta t$.  Because of that, we are going to assume that in $\sigma^{2}$ any terms involving $(\Delta t)^{2}$ are small, or in effect negligible.  While this is a huge simplifying assumption for the variance, but it is useful!
+Notice the term $\displaystyle \left( r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t \right)^{2}$ in Equation \@ref(eq:log-sde-sigma-26). While this may seem complicated, we are going to simplify things by only computing the variance to the first order in $\Delta t$. Because of that, we are going to assume that in $\sigma^{2}$ any terms involving $(\Delta t)^{2}$ are small, or in effect negligible. While this is a huge simplifying assumption for the variance, it is useful!
 
-Doing these calcuations we have that $\displaystyle \sigma^{2} = \left( r x \; \Delta t \right) +  \frac{rx^{2}}{K} \; \Delta t$. Computing the mean and variance will help characterize the ensemble average.  In addition the following random walk properties can be applied:
+The combination of the mean (Equation \@ref(eq:log-sde-mu-26)) and variance (Equation \@ref(eq:log-sde-sigma-26)) yields the stochastic process in Equation \@ref(eq:log-markov-26).
 
-- Since $\Delta x$ is the sum of many smaller changes we can apply the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) to characterize $\Delta x$ as a normal random variable.
-- To first order, we assume that $\Delta x$ follows a probability distribution that is normal with mean $\mu$ and variance $\sigma^{2}$.
-- The distribution for $\Delta x$ can be expressed as $\Delta x = \mu + \sigma Z$, where Z is random variable from a unit normal distribution (so in `R` we would use `rnorm(1)`).
-- We can simulate $\Delta x$ as a Wiener process.
-- Since $\Delta x = x_{n+1}-x_{n}$, then we have $x_{n+1} = x_{n} + \mu + \sigma Z$.
+\begin{equation}
+\begin{split}
+dX &= \mu + \sigma \; dW(t) \\
+ &= \left( r X - \frac{rX^{2}}{K} \right) \; dt + \sqrt{\left(  r X  +  \frac{rX^{2}}{K}  \right)} \; dW(t)
+\end{split} (\#eq:log-markov-26)
+\end{equation}
 
+To simulate this stochastic process we will modify `euler_stochastic` from Chapter \@ref(sdes-25), appending `_log` to denote "logistic" for each of the parts and applying the workflow (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize). One realization of this stochastic process is shown in Figure \@ref(fig:log-sde-26).
 
-Notice how the last step provides a way to generate a solution trajectory to our differential equation.  Cool!  To simulate this stochastic process we will use the function `birth_death_stochastic`, which is set up in a similar way to `euler_stochastic` from Section \@ref(sdes-25).  I will append `_log` to denote "logistic" for each of the parts
-
-
-```{r log-sde-26,fig.cap="One realization of the logistic differential equation with stochastic variables.",fig.width=4,fig.height=3}
+```{r eval=FALSE}
 
 # Identify the birth and death parts of the DE:
-birth_rate_log <- c(dx ~ r*x)
-death_rate_log <-  c(dx ~ r*x^2/K)
+deterministic_rate_log <- c(dx ~ r * x - r * x^2 / K)
+stochastic_rate_log <- c(dx ~ sqrt(r * x + r * x^2 / K))
 
 # Identify the initial condition and any parameters
-init_log <- c(x=3)  # Be sure you have enough conditions as you do variables. 
-parameters_log <- c(r=0.8, K=100)   # parameters: a named vector
+init_log <- c(x = 3)
+parameters_log <- c(r = 0.8, K = 100)
 
 # Identify how long we run the simulation
-deltaT_log <- .05    # timestep length
-time_steps_log <- 200   # must be a number greater than 1
+deltaT_log <- .05 # timestep length
+time_steps_log <- 200 # must be a number greater than 1
 
-# Identify the standard deviation of the stochastic noise
-sigma_log <- 1
+# Identify the diffusion coefficient
+D_log <- 1
 
 # Do one simulation of this differential equation
-out_log <- birth_death_stochastic(birth_rate = birth_rate_log,
-                             death_rate = death_rate_log,
-                             init_cond = init_log,
-                             parameters = parameters_log,
-                             deltaT = deltaT_log,
-                             n_steps = time_steps_log,
-                             sigma = sigma_log)
+out_log <- euler_stochastic(
+  deterministic_rate = deterministic_rate_log,
+  stochastic_rate = stochastic_rate_log,
+  initial_condition = init_log,
+  parameters = parameters_log,
+  deltaT = deltaT_log,
+  n_steps = time_steps_log,
+  D = D_log
+)
 
 # Plot out the solution
 ggplot(data = out_log) +
-  geom_line(aes(x=t,y=x))
+  geom_line(aes(x = t, y = x))
 ```
 
-Notice how the resulting spaghetti plot shows variation in the variables.
 
-Making an ensemble average plot is also similar to how we computed them in Section \@ref(sdes-25):
+```{r log-sde-26,fig.cap="One realization of Equation \\@ref(eq:log-markov-26).",echo=FALSE}
 
-```{r spaghetti-r-26,fig.cap="Several different realizations of the logistic SDE with stochasticity in the variables, along with the ensemble average plot.",fig.width=4,fig.height=3}
+# Identify the birth and death parts of the DE:
+deterministic_rate_log <- c(dx ~ r * x - r * x^2 / K)
+stochastic_rate_log <- c(dx ~ sqrt(r * x + r * x^2 / K))
+
+# Identify the initial condition and any parameters
+init_log <- c(x = 3)
+parameters_log <- c(r = 0.8, K = 100)
+
+# Identify how long we run the simulation
+deltaT_log <- .05 # timestep length
+time_steps_log <- 200 # must be a number greater than 1
+
+# Identify the diffusion coefficient
+D_log <- 1
+
+# Do one simulation of this differential equation
+out_log <- euler_stochastic(
+  deterministic_rate = deterministic_rate_log,
+  stochastic_rate = stochastic_rate_log,
+  initial_condition = init_log,
+  parameters = parameters_log,
+  deltaT = deltaT_log,
+  n_steps = time_steps_log,
+  D = D_log
+)
+
+# Plot out the solution
+ggplot(data = out_log) +
+  geom_line(aes(x = t, y = x)) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) + ylab("X")
+```
+
+The following code will produce a spaghetti plot from 100 different simulations. Try this code out on your own.
+
+```{r eval=FALSE}
 # Many solutions
-n_sims <- 100  # The number of simulations
+n_sims <- 100 # The number of simulations
 
 # Compute solutions
 logistic_sim_r <- rerun(n_sims) %>%
   set_names(paste0("sim", 1:n_sims)) %>%
-  map(~ birth_death_stochastic(birth_rate = birth_rate_log,
-                             death_rate = death_rate_log,
-                             init_cond = init_log,
-                             parameters = parameters_log,
-                             deltaT = deltaT_log,
-                             n_steps = time_steps_log,
-                             sigma = sigma_log)
-) %>%
-  map_dfr(~ .x, .id = "simulation")
+  map(~ euler_stochastic(
+    deterministic_rate = deterministic_rate_log,
+    stochastic_rate = stochastic_rate_log,
+    initial_condition = init_log,
+    parameters = parameters_log,
+    deltaT = deltaT_log,
+    n_steps = time_steps_log,
+    D = D_log
+  )) %>%
+  map_dfr(~.x, .id = "simulation")
 
 
-# Plot these all up together
-  ggplot(data = logistic_sim_r) +
-  geom_line(aes(x=t, y=x, color = simulation)) +
-  ggtitle("Spaghetti plot for the logistic SDE") +
-  guides(color="none")
+# Plot these all together
+ggplot(data = logistic_sim_r) +
+  geom_line(aes(x = t, y = x, color = simulation)) +
+  guides(color = "none")
+```
 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# Many solutions
+n_sims <- 100 # The number of simulations
+
+# Compute solutions
+logistic_sim_r <- rerun(n_sims) %>%
+  set_names(paste0("sim", 1:n_sims)) %>%
+  map(~ euler_stochastic(
+    deterministic_rate = deterministic_rate_log,
+    stochastic_rate = stochastic_rate_log,
+    initial_condition = init_log,
+    parameters = parameters_log,
+    deltaT = deltaT_log,
+    n_steps = time_steps_log,
+    D = D_log
+  )) %>%
+  map_dfr(~.x, .id = "simulation")
+```
   
-  ### Summarize the variables
-summarized_logistic_sim_r <- logistic_sim_r %>%
-  group_by(t) %>%  # All simulations will be grouped at the same timepoint.
-  summarise(x = quantile(x, c(0.25, 0.5, 0.75)), q = c("q0.025", "q0.5", "q0.975")) %>%
-  pivot_wider(names_from = q, values_from = x)
+Finally, Figure \@ref(fig:ensemble-r-26) displays the ensemble average plot from all the simulations. Figure \@ref(fig:ensemble-r-26) also includes the solution to the the logistic differential equation for comparison.
+
+```{r eval=FALSE}
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
 
 
-### Make the plot
-ggplot(data = summarized_logistic_sim_r) +
-  geom_line(aes(x = t, y = q0.5)) +
-  geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
-  ggtitle("Ensemble average plot for the logistic SDE")
+# Summarize the variables
+summarized_logistic <- logistic_sim_r %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+logistic_solution <- tibble(
+  t = seq(0, 10, length.out = 100),
+  x = 100 / (1 + 97 / 3 * exp(-0.8 * t))
+)
+
+
+# Make the plot
+ggplot(data = summarized_logistic) +
+  geom_line(aes(x = t, y = q0.5), 
+            color = "red", size = 1) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), 
+              alpha = 0.2, fill = "red") +
+  geom_line(data = logistic_solution, aes(x = t, y = x), 
+            size = 1, linetype = "dashed")
 
 ```
 
 
 
 
-Notice that as before the spaghetti and ensemble average plots are generated.  While there are some simulations that may always be zero, in the *ensemble* the median resembles the (deterministic) solution to the logistic differential equation.
+```{r ensemble-r-26,echo=FALSE,message=FALSE,warning=FALSE,fig.cap="Ensemble average of 100 simulations of Equation \\@ref(eq:log-markov-26) (in red). The red line represents the median with the shading the 95% confidence interval. For comparison, the deterministic solution to the logistic differential equation is the dashed black curve."}
+# Compute Quantiles and summarize
+quantile_vals <- c(0.025, 0.5, 0.975)
 
-The types of stochastic processes we are describing in this section are called "birth-death" processes. Here is another way to think about Equation \@ref(eq:log-sde-diff-26):
+
+# Summarize the variables
+summarized_logistic <- logistic_sim_r %>%
+  group_by(t) %>%
+  summarize(
+    q_val = quantile(x, # x is the column to compute the quantiles
+      probs = quantile_vals,
+      na.rm = TRUE
+    ),
+    q_name = quantile_vals
+  ) %>%
+  pivot_wider(
+    names_from = "q_name", values_from = "q_val",
+    names_glue = "q{q_name}"
+  )
+
+logistic_solution <- tibble(
+  t = seq(0, 10, length.out = 100),
+  x = 100 / (1 + 97 / 3 * exp(-0.8 * t))
+)
+
+
+# Make the plot
+ggplot(data = summarized_logistic) +
+  geom_line(aes(x = t, y = q0.5), color = "red", size = 1) +
+  geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975), alpha = 0.2, fill = "red") +
+  geom_line(data = logistic_solution, aes(x = t, y = x), size = 1, linetype = "dashed") +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  ylab("X")
+```
+
+
+Awesome! Notice how the median in the ensemble average plot in Figure \@ref(fig:ensemble-r-26) closely tracks the deterministic solution. 
+
+The types of stochastic processes we are describing in this chapter are called "birth-death" processes.\index{birth-death process} Here is another way to think about Equation \@ref(eq:log-sde-diff-26):
 
 \begin{equation}
 \begin{split}
-r x \; \Delta t   &= \alpha(x)  \mbox{ (birth) }\\
-\frac{rx^{2}}{K} \; \Delta t &= \delta(x) \mbox{ (death) }
+r x \; \Delta t   &= \alpha(x) \\
+\frac{rx^{2}}{K} \; \Delta t &= \delta(x)
 \end{split} (\#eq:birth-death-log-26)
 \end{equation}
 
-In this way we think of $\alpha(x)$ in Equation \@ref(eq:birth-death-log-26) as a "birth process" and $\delta(x)$ as a "death process". When we computed the mean $\mu$ and variance $\sigma^{2}$ for Equation \@ref(eq:log-sde-diff-26) we had $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2}=\alpha(x)+\delta(x)$ (you should double check to make sure this is the case!). Here is an interesting fact: $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2}=\alpha(x)+\delta(x)$ holds up for *any* differential equation where we have identified a birth or death process.
+In this way, we think of $\alpha(x)$ in Equation \@ref(eq:birth-death-log-26) as a "birth process" and $\delta(x)$ as a "death process". When we computed the mean $\mu$ and variance $\sigma^{2}$ for Equation \@ref(eq:log-sde-diff-26) we had the mean $\mu = \alpha(x)-\delta(x)$ and variance $\sigma^{2}=\alpha(x)+\delta(x)$. (You should double check to make sure this is the case!). Here is an interesting fact: $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2}=\alpha(x)+\delta(x)$ hold up for *any* differential equation where we have identified a birth ($\alpha(x)$) or death ($\delta(x)$) process.
 
+Generalizing birth-death processes for a system of differential equations is a little more involved as there are more possibilities involved when computing $\mu$ and $\sigma$. We don't tackle this complexity here, but some considerations are thinking through *all* possible combinations of increase or decrease in the variables. For example, one variable could increase where the other decreases, both could increase, or one variable decreases and the other remains the same. In addition, the standard deviation is computed by the square root of the variance, and for a linear system of equations the matrix square root involves matrix decompositions. If you are curious to know more, see @logan_mathematical_2009 for more information on implementing birth-death processes for a system of differential equations.
 
+## Wrapping up
+In the exercises for this chapter you will solve problems involving applications of stochastic processes in biological contexts. The nice part is that the framework presented here generalizes to several other contexts where a stochastic process can be identified. This chapter contained several key points about statistics for the SDE $dX = a(X,t) \; dt + b(X,t) \; dW(t)$ and its solution $p(X,t)$, summarized below:
 
-## A stochastic system of equations
-Let's examine a stochastic system of differential equations.  Here we will return to the lynx-hare model:
+- The solution of the deterministic equation $dX = a(X,t) \; dt$ equals $E[p(X,t)]$. The variance is proportional (but not equal) to the solution of $dX = b(X,t) \; dt$.
+- The SDE can be simulated by Brownian motion, so $dX \approx \Delta X = a(X,t) \; \Delta t + b(X,t)\; \sqrt{2D \, \Delta t} \, Z$, where $Z$ is a random variable from a unit normal distribution (so in `R` we would use `rnorm(1)`).
+- Since $\Delta x = x_{n+1}-x_{n}$, then we have $x_{n+1} = x_{n} + \mu + a(X,t) \; \Delta t + b(X,t)\; \sqrt{2D \, \Delta t} \, Z$ (the Euler-Maruyama method).
+- Several realizations of the SDE and subsequent computation of the ensemble average approximately characterize the distribution $p(X,t)$.
 
-\begin{equation}
-\begin{split}
-\frac{dH}{dt} &= r H - b HL \\
-\frac{dL}{dt} &=ebHL -dL
-\end{split}
-\end{equation}
-
-In this case we still split *each equation* into the birth ($\alpha$) and death ($\delta$) parts:
-\begin{align*}
-\alpha & =
-\begin{cases}
-\frac{dH}{dt}: & r H \\
-\frac{dL}{dt}: & ebHL\\
-\end{cases} \\
-\delta & =
-\begin{cases}
-\frac{dH}{dt}: & bHL \\
-\frac{dL}{dt}: & dL\\
-\end{cases} 
-\end{align*}
-
-
-To simulate this stochastic process, the setup of the code is similar to previous ways we solved systems of differential equations.  Since we have a system of equations to compute the expected value and variance requires additional knowledge of matrix algebra, but that is already included in the function `birth_death_stochastic`
-
-```{r stoch-pred-prey-26,fig.width=4,fig.height=5,fig.cap="One realization of the stochastic predator-prey model.",fig.width=4,fig.height=3}
-# Identify the birth and death parts of the DE:
-birth_rate_pred <- c(dH ~ r*H, dL ~ e*b*H*L)
-death_rate_pred <-  c(dH ~ b*H*L, dL ~ d*L)
-
-# Identify the initial condition and any parameters
-init_pred <- c(H=1, L=3)  # Be sure you have enough conditions as you do variables
-
-# Identify the parameters
-parameters_pred <- c(r = 2, b = 0.5, e = 0.1, d = 1)
-
-# Identify how long we run the simulation
-deltaT_pred <- .05    # timestep length
-time_steps_pred <- 200   # must be a number greater than 1
-
-# Identify the standard deviation of the stochastic noise
-sigma_pred <- .1
-
-
-# Do one simulation of this differential equation
-out_pred <- birth_death_stochastic(birth_rate = birth_rate_pred,
-                                       death_rate = death_rate_pred,
-                                       init_cond = init_pred,
-                                       parameters = parameters_pred,
-                                       deltaT = deltaT_pred,
-                                       n_steps = time_steps_pred,
-                                       sigma = sigma_pred)
-
-# Visualize the solution
-ggplot(data = out_pred) +
-  geom_line(aes(x=t,y=H),color='red') +
-  geom_line(aes(x=t,y=L),color='blue') +
-labs(x='Time',
-     y='Lynx (red) or Hares (blue)')
-
-```
-
-Excellent!  Notice how Figure \@ref(fig:stoch-pred-prey-26) has stochasticity in the variables for *both* *H* and *L*. The next step would be to do many simulations and then compute the ensemble average.  First let's compute the individual simulations:
-
-```{r}
-# Many solutions
-n_sims <- 100  # The number of simulations
-
-# Compute solutions
-pred_sim <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
-  map(~ birth_death_stochastic(birth_rate = birth_rate_pred,
-                                       death_rate = death_rate_pred,
-                                       init_cond = init_pred,
-                                       parameters = parameters_pred,
-                                       deltaT = deltaT_pred,
-                                       n_steps = time_steps_pred,
-                                       sigma = sigma_pred)
-) %>%
-  map_dfr(~ .x, .id = "simulation")
-
-```
-
-The above code may take a while to complete - but this is certainly shorter than computing these all by hand!  In order to make the spaghetti plot, we will plot the variables $H$ and $L$ separately.
-
-```{r spaghetti-pred-26,fig.cap="Several different realizations of the stochastic predator-prey system.",fig.width=4,fig.height=3}
-
-# Plot the hares first:
-ggplot(data = pred_sim) +
-  geom_line(aes(x=t,y=H,color=simulation)) +
-  ggtitle("Spaghetti plot for hares in the predator-prey SDE") +
-  guides(color="none")
-
-# Then plot the lynx:
-ggplot(data = pred_sim) +
-  geom_line(aes(x=t,y=L,color=simulation)) +
-  ggtitle("Spaghetti plot for lynx in the predator-prey SDE") +
-  guides(color="none")
-
-```
-
-For the ensemble average plots, we will first utilize the `pivot_longer` command, group and then summarize:
-
-```{r}
- ### Summarize the variables
-summarized_pred_sim <- pred_sim %>%
-  pivot_longer(cols=c("H","L")) %>%
-  group_by(name,t) %>%  # All simulations will be grouped at the same timepoint.
-  summarise(value = quantile(value, c(0.25, 0.5, 0.75)), q = c("q0.025", "q0.5", "q0.975")) %>%
-  pivot_wider(names_from = q, values_from = value)
-
-# Let's take a look at the resulting data frame
-glimpse(summarized_pred_sim)
-```
-
-Let's break this down:
-
-- The data frame `pred_sim` has columns `simulation`, `t`, `H`, and `L`. We want to group *each* variable by the time `t`. In order to do that efficiently we need to pivot the data frame longer.  By applying the command `pivot_longer(cols=c("H","L"))` we will still have 4 columns, but this time they are called `simulation`, `t`, `name`, and `value`.  The column `name` is a categorical variable that is either `H` or `L` (the columns we made longer), and the column `value` has the numerical values for both at each time.
-- We then group by the column `name` first, and then by `time`.
-- The remainder of the code is similar to how we computed the ensemble average above.
-
-The tricky part is that resulting columns of `summarized_pred_sim` are `name`, `t`, and the quantile values. This may seem a challenge to plot, but we can easily make a small multiples plot with the command `facet_grid`:
-
-```{r ensemble-pred-26,fig.cap="Ensemble average plot of the predator-prey system.",fig.width=4,fig.height=3}
-ggplot(data = summarized_pred_sim) +
-  geom_line(aes(x = t, y = q0.5)) +
-  geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
-  facet_grid(. ~ name)
-```
-
-The last command `facet_grid(. ~ name)` splits the plot up into different panels (or facets) by the column `name`.  So easy to make!
-
-If you are feeling a little overwhelmed by all these new plotting commands - don't worry. You can easily modify these examples for a different systme of differential equations. You've got this!
-
-
-
-
-## Generalizing the approach.
-As mentioned previously, another way to think about the logistic differential equation as what as known as a "birth-death process".
-
-Let’s call the part of the differential equation that contributes to a positive rate as a "birth process" and parts that contribute to a negative rate as a "death process".  If we have the differential equation
-
-\begin{equation*}
-\frac{dx}{dt} = \alpha(x)-\delta(x)
-\end{equation*}
-
-Then we would simulate the birth death process with $\mu = \alpha(x)-\delta(x)$ and $\sigma^{2} = \alpha(x)+\delta(x)$.
-
-For a multivariable system of equations the process is the same, however because we have a system of equations the calculations for the expected value and variance require more knowledge of matrix algebra which is beyond the scope here.  The provided code does take this into account.
-
-
-
-
-\newpage
+Chapter \@ref(solvingSDEs-27) will revisit some of the examples studied in this chapter, but apply tools to further characterize the distribution $p(X,t)$ with partial differential equations. There are still more mathematics to investigate, so onward!
 
 ## Exercises
 
 ```{exercise}
-Return back to one simulation of the logistic differential equation. (Figure \@ref(fig:log-sde-26)). For this plot we set $\sigma = 1$. What happens to the resulting spaghetti and ensemble plots when $\sigma =0, \;  0.01, \; .1, \; 10$?
+Simulate the stochastic process $dX = 2 \; dW(t)$ with the following values:
+  
+- $D = 1$
+- $\Delta t= 0.05$
+- Timesteps: 200
+- Initial condition: $X(0)=1$.
+- Set the number of simulations to be 100.
+  
+Generate a spaghetti plot and ensemble average of your simluation results.
 ```
-&nbsp;
+
 
 ```{exercise}
-Return back to the example of one simulation of the stochastic predator prey  (Figure \@ref(fig:stoch-pred-prey-26)).  For these plots we set $\sigma = .1$. What happens to the resulting spaghetti and ensemble plots when $\sigma =0, \;  0.01, \; 1, \; 10$?
+Return to the simulation of the logistic differential equation in this chapter. To generate Figure \@ref(fig:ensemble-r-26) we set $D = 1$. What happens to the resulting ensemble average plots when $D =0, \;  0.01, \; 0.1, \; 1, \; 10$? You may use the following values:
+
+- Set the number of simulations to be 100. 
+- Initial condition: $x(0)=3$
+- Parameters: $r=0.8$, $K=100$.
+- $\Delta t = 0.05$ for 200 time steps.
+
 ```
-&nbsp;
-```{exercise}
-For the predatory-prey simulation of stochastic variables we used `group_by(name,t)` to begin summarizing our variables. Modify the code so you apply `group_by(t,name)` and generate the ensemble plot. Do you receive a similar result?
-```
-&nbsp;
+
+
 
 ```{exercise}
-For the logistic differential equation consider the following splitting of $\alpha(x)$ and $\delta(x)$:
+For the logistic differential equation consider the following splitting of $\alpha(x)$ and $\delta(x)$ as a birth-death process:
 
 \begin{equation}
 \begin{split}
-\alpha(x) &= rx + \frac{rx^{2}}{2K} \\
+\alpha(x) &= rx - \frac{rx^{2}}{2K} \\
 \delta(x) &=  \frac{rx^{2}}{2K}
 \end{split}
 \end{equation}
 
-Simulate this SDE using the same values of parameters for the logistic example and compare your results.
+Simulate this SDE with the following values:
+ 
+- Initial condition: $x(0)=3$
+- Parameters: $r=0.8$, $K=100$.
+- $\Delta t = 0.05$ for 200 time steps.
+- $D=1$.
 
+Generate an ensemble average plot. How does this SDE compare to Figure \@ref(fig:ensemble-r-26)?
 ```
 
-&nbsp;
-
-
-<!-- LW pg 346 #3 -->
+<!-- Based off LW pg 346 #3 -->
 ```{exercise}
-(Inspired by @logan_mathematical_2009) Let $R(t)$ denote the rainfall at a location at time $t$, which is a random process.  Assume that probability of the change in rainfall from day $t$ to day $t+\Delta t$ is the following:
+Let $S(t)$ denote the cumulative snowfall at a location at time $t$, which we will assume to be a random process. Assume that probability of the change in the cumulative amount of snow from day $t$ to day $t+\Delta t$ is the following:
 
   | change | probability  | 
 |:------:|:-----:|
-| $\Delta R = \rho$ | $\lambda \Delta t$ |
-| $\Delta R = 0$ | $1- \lambda \Delta t$ |
+| $\Delta S = \sigma$ | $\lambda \Delta t$ |
+| $\Delta S = 0$ | $1- \lambda \Delta t$ |
 
+The parameter $\lambda$ represents the frequency of snowfall and $\sigma$ the amount of the snowfall in inches. For example, during January in Minneapolis, Minnesota, the probability $\lambda$ of it snowing 4 inches or more is 0.016, with $\sigma=4$. (This assumes a Poisson process with rate = 0.5/31, according to the [Minnesota DNR.](https://www.dnr.state.mn.us/climate/twin_cities/snow_event_counts.html)). The stochastic differential equation generated by this process is $dS = \lambda \sigma \; dt + \sqrt{\lambda \sigma^{2}} \; dW(t) = .064 \; dt + .506 \; dW(t)$$ .
 
-
-a. With this information, compute E[$\Delta R$] and variance of $\Delta R$.
-b. Simulate this stochastic process.  Use $R(0)=0$ and run 500 simulations of this stochastic process.  Set $\lambda \rho = 18$ and $\sqrt{ \lambda \rho^{2}}=16$.
-
-```
-
-&nbsp;
-
-```{exercise}
- Consider the following model for zombie population dynamics [@smith_mathematical_2014]:
-
-\begin{equation}
-\begin{split}
-\frac{dS}{dt} &=-\beta S Z - \delta S  \\
-\frac{dZ}{dt} &= \beta S Z + \xi R - \alpha SZ \\
-\frac{dR}{dt} &= \delta S+ \alpha SZ  - \xi R
-\end{split}
-\end{equation}
-
-
-a. Determine the birth and death terms for the zombie model so that you could encode this as a birth/death process:
-
-- Birth part for $\displaystyle \frac{dS}{dt}$:
-- Death part for $\displaystyle \frac{dS}{dt}$:
-- Birth part for $\displaystyle \frac{dZ}{dt}$:
-- Death part for $\displaystyle\frac{dZ}{dt}$:
-- Birth part for $\displaystyle \frac{dR}{dt}$:
-- Death part for $\displaystyle \frac{dR}{dt}$:
-
-
-b. Use `birth_death_stochastic` to perform 500 simulations of this stochastic differential equation. Please assume the following values of the parameters and stochastic method:
-
-
-- $\sigma = 0.004$
-- $\Delta t= 0.5$.
-- Timesteps: 200.
-- $\beta = 0.0095$, $\delta = 0.0001$ ,$\xi =  0.1$, $\alpha = 0.005$.
-- Initial condition: $S(0)=499$, $Z(0)=1$, $R(0)=0$.
-
+a. With this information, what is $E[\Delta S]$ and the variance of $\Delta S$?
+b. Simulate and summarize this stochastic process. Use $S(0)=0$ and run 500 simulations of this stochastic process. Simulate this process for a month, using $\Delta t = 0.1$ for 300 timesteps and with $D=1$. Show the resulting spaghetti plot and interpret your results.
 
 ```
 
-&nbsp;
 
-```{tikz,sis-bd,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="The $SIS$ model"}
-
-\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
-\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
-
-\node [vspecies] (S) {$S$} ;
-\node [vspecies, right of = S] (I) {$I$} ;
-\draw [->] ([yshift=3pt]S.east) --  node[above] {\small{$b$}} ([yshift=3pt]I.west) ;
-\draw [<-] ([yshift=-3pt]S.east) --  node[below] {\small{$r$}} ([yshift=-3pt]I.west) ;
-\end{tikzpicture}
-
-
-
-```
-&nbsp;
 <!-- Ornstein uhlenbeck process -->
 ```{exercise}
-Consider the stochastic differential equation $\displaystyle dS = \left( 1 - S \right) + \sigma dW(t)$, where $\sigma$ controls the amount of stochastic noise.  For this stochastic differential equation what is $E[S]$ and Var$(S)$?
-```
-&nbsp;
-
-
-<!-- Adapted from LW pg 346 #4 -->
-```{exercise}
-(Inspired by @logan_mathematical_2009) An $SIS$ model is one where susceptibles $S$ become infected $I$, and then after recovering from an illness, become susceptible again.  The schematic representing this is shown in Figure \@ref(fig:sis-bd).  While you can write this as a system of differential equations, assuming the population size is constant $N$ we have the following differential equation:
-
-\begin{equation}
-\frac{dI}{dt} = b(N-I) I - r I
-\end{equation}
-
-
-a. Identify $\alpha(I)$ and $\delta(I)$ for this model.
-b. Assuming $N=1000$, $r=0.01$, and $b=0.005$, $I(0)=1$, simulate this differential equation over two weeks with $\Delta t = 0.1$.  Show the plot of your result.
-
+Consider the stochastic differential equation $\displaystyle dS = \left( 1 - S \right) \; dt + \sigma \; dW(t)$, where $\sigma$ controls the amount of stochastic noise. For this stochastic differential equation what is $E[S]$ and Var$(S)$?
 ```
 
-&nbsp;
+
+
 
 ```{exercise}
 Consider the equation
+
 \begin{equation*}
 \Delta x = \alpha(x) \; \Delta t - \delta(x) \; \Delta t
 \end{equation*}
 
 If we consider $\Delta x$ to be a random variable, show that the expected value $\mu$ equals $\alpha(x) \; \Delta t - \delta(x) \; \Delta t$ and the variance $\sigma^{2}$, to first order, equals $\alpha(x) \; \Delta t + \delta(x) \; \Delta t$.
 ```
-
-
