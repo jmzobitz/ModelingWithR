@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Section 10 Cost Functions &amp; Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R</title>
+  <title>Chapter 10 Cost Functions qnd Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R</title>
   <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Section 10 Cost Functions &amp; Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R" />
+  <meta property="og:title" content="Chapter 10 Cost Functions qnd Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Section 10 Cost Functions &amp; Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R" />
+  <meta name="twitter:title" content="Chapter 10 Cost Functions qnd Bayes’ Rule | Exploring Modeling with Data and Differential Equations Using R" />
   
   <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
   
@@ -30,9 +30,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="exercises-8.html"/>
-<link rel="next" href="cost-functions-likelihood-functions-in-disguise.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<link rel="prev" href="likelihood-09.html"/>
+<link rel="next" href="bootstrap-11.html"/>
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,8 +50,9 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -162,225 +163,234 @@ div.csl-indent {
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<li><a href="index.html#welcome">Welcome<span></span></a>
 <ul>
-<li class="chapter" data-level="" data-path="computational-code.html"><a href="computational-code.html"><i class="fa fa-check"></i>Computational code</a></li>
-<li class="chapter" data-level="" data-path="questions-comments-issues.html"><a href="questions-comments-issues.html"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
-<li class="chapter" data-level="" data-path="acknowledgments.html"><a href="acknowledgments.html"><i class="fa fa-check"></i>Acknowledgments</a></li>
-<li class="chapter" data-level="" data-path="copyright.html"><a href="copyright.html"><i class="fa fa-check"></i>Copyright</a></li>
+<li><a href="index.html#computational-code">Computational code<span></span></a></li>
+<li><a href="index.html#questions-comments-issues">Questions? Comments? Issues?<span></span></a></li>
+<li><a href="index.html#about-the-cover">About the cover<span></span></a></li>
+<li><a href="index.html#acknowledgments">Acknowledgments<span></span></a></li>
 </ul></li>
-<li class="part"><span><b>I Models with Differential Equations</b></span></li>
-<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of rates with data</a>
+<li class="part"><span><b>I Models with Differential Equations<span></span></b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data<span></span></a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="rates-of-change-in-the-world-a-model-is-born.html"><a href="rates-of-change-in-the-world-a-model-is-born.html"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
-<li class="chapter" data-level="1.2" data-path="modeling-in-context-the-spread-of-a-disease.html"><a href="modeling-in-context-the-spread-of-a-disease.html"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
-<li class="chapter" data-level="1.3" data-path="model-solutions.html"><a href="model-solutions.html"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
-<li class="chapter" data-level="1.4" data-path="which-model-is-best.html"><a href="which-model-is-best.html"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
-<li class="chapter" data-level="1.5" data-path="start-here.html"><a href="start-here.html"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
-<li class="chapter" data-level="1.6" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
+<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease<span></span></a></li>
+<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions<span></span></a></li>
+<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?<span></span></a></li>
+<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here<span></span></a></li>
+<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R<span></span></a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="r-and-rstudio.html"><a href="r-and-rstudio.html"><i class="fa fa-check"></i><b>2.1</b> R and RStudio</a></li>
-<li class="chapter" data-level="2.2" data-path="first-steps-getting-acquainted-with-r.html"><a href="first-steps-getting-acquainted-with-r.html"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with R</a></li>
-<li class="chapter" data-level="2.3" data-path="increasing-functionality-with-packages.html"><a href="increasing-functionality-with-packages.html"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
-<li class="chapter" data-level="2.4" data-path="working-with-r-variables-data-frames-and-datasets.html"><a href="working-with-r-variables-data-frames-and-datasets.html"><i class="fa fa-check"></i><b>2.4</b> Working with R: variables, data frames, and datasets</a></li>
-<li class="chapter" data-level="2.5" data-path="visualization-with-r.html"><a href="visualization-with-r.html"><i class="fa fa-check"></i><b>2.5</b> Visualization with R</a></li>
-<li class="chapter" data-level="2.6" data-path="defining-functions.html"><a href="defining-functions.html"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
-<li class="chapter" data-level="2.7" data-path="concluding-thoughts.html"><a href="concluding-thoughts.html"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
-<li class="chapter" data-level="2.8" data-path="exercises-1.html"><a href="exercises-1.html"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
+<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio<span></span></a></li>
+<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code><span></span></a></li>
+<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets<span></span></a></li>
+<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code><span></span></a></li>
+<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions<span></span></a></li>
+<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts<span></span></a></li>
+<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling With Rates of Change</a>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change<span></span></a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="lynx-and-hares.html"><a href="lynx-and-hares.html"><i class="fa fa-check"></i><b>3.1</b> Lynx and Hares</a></li>
-<li class="chapter" data-level="3.2" data-path="the-law-of-mass-action.html"><a href="the-law-of-mass-action.html"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
-<li class="chapter" data-level="3.3" data-path="establishing-species.html"><a href="establishing-species.html"><i class="fa fa-check"></i><b>3.3</b> Establishing species</a></li>
-<li class="chapter" data-level="3.4" data-path="other-types-of-functional-responses.html"><a href="other-types-of-functional-responses.html"><i class="fa fa-check"></i><b>3.4</b> Other types of functional responses</a></li>
-<li class="chapter" data-level="3.5" data-path="exercises-2.html"><a href="exercises-2.html"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
+<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions<span></span></a></li>
+<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action<span></span></a></li>
+<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares<span></span></a></li>
+<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses<span></span></a></li>
+<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method</a>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method<span></span></a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="defining-an-algorithm.html"><a href="defining-an-algorithm.html"><i class="fa fa-check"></i><b>4.1</b> Defining an Algorithm</a></li>
-<li class="chapter" data-level="4.2" data-path="building-an-iterative-method.html"><a href="building-an-iterative-method.html"><i class="fa fa-check"></i><b>4.2</b> Building an iterative method</a></li>
-<li class="chapter" data-level="4.3" data-path="eulers-method-applied-to-systems.html"><a href="eulers-method-applied-to-systems.html"><i class="fa fa-check"></i><b>4.3</b> Euler’s method applied to systems</a></li>
-<li class="chapter" data-level="4.4" data-path="more-refined-numerical-solvers.html"><a href="more-refined-numerical-solvers.html"><i class="fa fa-check"></i><b>4.4</b> More refined numerical solvers</a></li>
-<li class="chapter" data-level="4.5" data-path="exercises-3.html"><a href="exercises-3.html"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
+<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation<span></span></a></li>
+<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation<span></span></a></li>
+<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method<span></span></a></li>
+<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond<span></span></a></li>
+<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions</a>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions<span></span></a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="equilibrium-solutions.html"><a href="equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
-<li class="chapter" data-level="5.2" data-path="phase-lines-for-differential-equations.html"><a href="phase-lines-for-differential-equations.html"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations</a></li>
-<li class="chapter" data-level="5.3" data-path="a-stability-test-for-equilibrium-solutions.html"><a href="a-stability-test-for-equilibrium-solutions.html"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
-<li class="chapter" data-level="5.4" data-path="exercises-4.html"><a href="exercises-4.html"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
+<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions<span></span></a></li>
+<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations<span></span></a></li>
+<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions<span></span></a></li>
+<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations</a>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="model-redux-flu-with-quarantine.html"><a href="model-redux-flu-with-quarantine.html"><i class="fa fa-check"></i><b>6.1</b> Model redux: flu with quarantine</a></li>
-<li class="chapter" data-level="6.2" data-path="determining-stability-of-an-equilbrium-solution.html"><a href="determining-stability-of-an-equilbrium-solution.html"><i class="fa fa-check"></i><b>6.2</b> Determining stability of an equilbrium solution</a></li>
-<li class="chapter" data-level="6.3" data-path="generating-a-phase-plane-in-r.html"><a href="generating-a-phase-plane-in-r.html"><i class="fa fa-check"></i><b>6.3</b> Generating a phase plane in <code>R</code></a></li>
-<li class="chapter" data-level="6.4" data-path="exercises-5.html"><a href="exercises-5.html"><i class="fa fa-check"></i><b>6.4</b> Exercises</a></li>
+<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions<span></span></a></li>
+<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines<span></span></a></li>
+<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes<span></span></a></li>
+<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code><span></span></a></li>
+<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields<span></span></a></li>
+<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="separable-differential-equations.html"><a href="separable-differential-equations.html"><i class="fa fa-check"></i><b>7.1</b> Separable Differential Equations</a></li>
-<li class="chapter" data-level="7.2" data-path="integrating-factors.html"><a href="integrating-factors.html"><i class="fa fa-check"></i><b>7.2</b> Integrating factors</a></li>
-<li class="chapter" data-level="7.3" data-path="guess-and-check.html"><a href="guess-and-check.html"><i class="fa fa-check"></i><b>7.3</b> Guess and Check</a></li>
-<li class="chapter" data-level="7.4" data-path="superposition-of-solutions.html"><a href="superposition-of-solutions.html"><i class="fa fa-check"></i><b>7.4</b> Superposition of solutions</a></li>
-<li class="chapter" data-level="7.5" data-path="applying-guess-and-check-more-broadly.html"><a href="applying-guess-and-check-more-broadly.html"><i class="fa fa-check"></i><b>7.5</b> Applying guess and check more broadly</a></li>
-<li class="chapter" data-level="7.6" data-path="exercises-6.html"><a href="exercises-6.html"><i class="fa fa-check"></i><b>7.6</b> Exercises</a></li>
+<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution<span></span></a></li>
+<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations<span></span></a></li>
+<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors<span></span></a></li>
+<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations<span></span></a></li>
+<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
-<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting</a>
+<li class="part"><span><b>II Parameterizing Models with Data<span></span></b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting<span></span></a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="what-is-parameter-estimation.html"><a href="what-is-parameter-estimation.html"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
-<li class="chapter" data-level="8.2" data-path="fitting-temperature-data.html"><a href="fitting-temperature-data.html"><i class="fa fa-check"></i><b>8.2</b> Fitting temperature data</a></li>
-<li class="chapter" data-level="8.3" data-path="moving-beyond-linear-models.html"><a href="moving-beyond-linear-models.html"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models</a></li>
-<li class="chapter" data-level="8.4" data-path="can-you-linearize-your-model.html"><a href="can-you-linearize-your-model.html"><i class="fa fa-check"></i><b>8.4</b> Can you linearize your model?</a></li>
-<li class="chapter" data-level="8.5" data-path="nonlinear-models.html"><a href="nonlinear-models.html"><i class="fa fa-check"></i><b>8.5</b> Nonlinear models</a></li>
-<li class="chapter" data-level="8.6" data-path="exercises-7.html"><a href="exercises-7.html"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
+<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?<span></span></a></li>
+<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data<span></span></a></li>
+<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation<span></span></a></li>
+<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models<span></span></a></li>
+<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion<span></span></a></li>
+<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions<span></span></a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="linear-regression-part-2.html"><a href="linear-regression-part-2.html"><i class="fa fa-check"></i><b>9.1</b> Linear regression, part 2</a></li>
-<li class="chapter" data-level="9.2" data-path="probability.html"><a href="probability.html"><i class="fa fa-check"></i><b>9.2</b> Probability</a></li>
-<li class="chapter" data-level="9.3" data-path="connecting-probabilities-to-linear-regression.html"><a href="connecting-probabilities-to-linear-regression.html"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression</a></li>
-<li class="chapter" data-level="9.4" data-path="plotting-likelihood-surfaces.html"><a href="plotting-likelihood-surfaces.html"><i class="fa fa-check"></i><b>9.4</b> Plotting likelihood surfaces</a></li>
-<li class="chapter" data-level="9.5" data-path="exercises-8.html"><a href="exercises-8.html"><i class="fa fa-check"></i><b>9.5</b> Exercises</a></li>
+<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset<span></span></a></li>
+<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions<span></span></a></li>
+<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression<span></span></a></li>
+<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces<span></span></a></li>
+<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward<span></span></a></li>
+<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions &amp; Bayes’ Rule</a>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions qnd Bayes’ Rule<span></span></a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="cost-functions-likelihood-functions-in-disguise.html"><a href="cost-functions-likelihood-functions-in-disguise.html"><i class="fa fa-check"></i><b>10.1</b> Cost functions: likelihood functions in disguise</a></li>
-<li class="chapter" data-level="10.2" data-path="connection-to-likelihood-functions.html"><a href="connection-to-likelihood-functions.html"><i class="fa fa-check"></i><b>10.2</b> Connection to likelihood functions</a></li>
-<li class="chapter" data-level="10.3" data-path="extending-the-cost-function.html"><a href="extending-the-cost-function.html"><i class="fa fa-check"></i><b>10.3</b> Extending the cost function</a></li>
-<li class="chapter" data-level="10.4" data-path="conditional-probabilities-and-bayes-rule.html"><a href="conditional-probabilities-and-bayes-rule.html"><i class="fa fa-check"></i><b>10.4</b> Conditional Probabilities and Bayes’ Rule</a></li>
-<li class="chapter" data-level="10.5" data-path="bayes-rule-and-linear-regression.html"><a href="bayes-rule-and-linear-regression.html"><i class="fa fa-check"></i><b>10.5</b> Bayes’ Rule and Linear Regression</a></li>
-<li class="chapter" data-level="10.6" data-path="exercises-9.html"><a href="exercises-9.html"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
+<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals<span></span></a></li>
+<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function<span></span></a></li>
+<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule<span></span></a></li>
+<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action<span></span></a></li>
+<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps<span></span></a></li>
+<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> The Bootstrap Method</a>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method<span></span></a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="plotting-histograms-in-r.html"><a href="plotting-histograms-in-r.html"><i class="fa fa-check"></i><b>11.1</b> Plotting histograms in R</a></li>
-<li class="chapter" data-level="11.2" data-path="statistical-theory-sampling-distributions.html"><a href="statistical-theory-sampling-distributions.html"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: Sampling distributions</a></li>
-<li class="chapter" data-level="11.3" data-path="bootstapping-with-linear-regression.html"><a href="bootstapping-with-linear-regression.html"><i class="fa fa-check"></i><b>11.3</b> Bootstapping with linear regression</a></li>
-<li class="chapter" data-level="11.4" data-path="exercises-10.html"><a href="exercises-10.html"><i class="fa fa-check"></i><b>11.4</b> Exercises</a></li>
+<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization<span></span></a></li>
+<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions<span></span></a></li>
+<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps<span></span></a></li>
+<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="the-metropolis-hastings-algorithm.html"><a href="the-metropolis-hastings-algorithm.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
+<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm<span></span></a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="estimating-the-growth-of-a-dog.html"><a href="estimating-the-growth-of-a-dog.html"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
-<li class="chapter" data-level="12.2" data-path="applying-the-likelihood-to-evaluate-parameters.html"><a href="applying-the-likelihood-to-evaluate-parameters.html"><i class="fa fa-check"></i><b>12.2</b> Applying the likelihood to evaluate parameters</a></li>
-<li class="chapter" data-level="12.3" data-path="concluding-points.html"><a href="concluding-points.html"><i class="fa fa-check"></i><b>12.3</b> Concluding points</a></li>
-<li class="chapter" data-level="12.4" data-path="exercises-11.html"><a href="exercises-11.html"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
+<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog<span></span></a></li>
+<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation<span></span></a></li>
+<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation<span></span></a></li>
+<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation<span></span></a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="mcmc-parameter-estimation-with-an-empirical-model.html"><a href="mcmc-parameter-estimation-with-an-empirical-model.html"><i class="fa fa-check"></i><b>13.1</b> MCMC Parameter Estimation with an Empirical Model</a></li>
-<li class="chapter" data-level="13.2" data-path="mcmc-parameter-estimation-with-a-differential-equation-model.html"><a href="mcmc-parameter-estimation-with-a-differential-equation-model.html"><i class="fa fa-check"></i><b>13.2</b> MCMC Parameter Estimation with a Differential Equation Model</a></li>
-<li class="chapter" data-level="13.3" data-path="timing-your-code.html"><a href="timing-your-code.html"><i class="fa fa-check"></i><b>13.3</b> Timing your code</a></li>
-<li class="chapter" data-level="13.4" data-path="further-extensions-to-mcmc.html"><a href="further-extensions-to-mcmc.html"><i class="fa fa-check"></i><b>13.4</b> Further extensions to MCMC</a></li>
-<li class="chapter" data-level="13.5" data-path="exercises-12.html"><a href="exercises-12.html"><i class="fa fa-check"></i><b>13.5</b> Exercises</a></li>
+<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC<span></span></a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model<span></span></a></li>
+<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model<span></span></a></li>
+<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code<span></span></a></li>
+<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC<span></span></a></li>
+<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria<span></span></a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="why-bother-with-more-models.html"><a href="why-bother-with-more-models.html"><i class="fa fa-check"></i><b>14.1</b> Why bother with more models?</a></li>
-<li class="chapter" data-level="14.2" data-path="the-information-on-information-criterion.html"><a href="the-information-on-information-criterion.html"><i class="fa fa-check"></i><b>14.2</b> The Information on Information Criterion</a></li>
-<li class="chapter" data-level="14.3" data-path="a-few-cautionary-notes.html"><a href="a-few-cautionary-notes.html"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
-<li class="chapter" data-level="14.4" data-path="exercises-13.html"><a href="exercises-13.html"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
+<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines<span></span></a></li>
+<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models<span></span></a></li>
+<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes<span></span></a></li>
+<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
-<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of linear equations</a>
+<li class="part"><span><b>III Stability Analysis for Differential Equations<span></span></b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="equilibrium-solutions-1.html"><a href="equilibrium-solutions-1.html"><i class="fa fa-check"></i><b>15.1</b> Equilibrium solutions</a></li>
-<li class="chapter" data-level="15.2" data-path="the-phase-plane.html"><a href="the-phase-plane.html"><i class="fa fa-check"></i><b>15.2</b> The phase plane</a></li>
-<li class="chapter" data-level="15.3" data-path="stability-of-solutions.html"><a href="stability-of-solutions.html"><i class="fa fa-check"></i><b>15.3</b> Stability of solutions</a></li>
-<li class="chapter" data-level="15.4" data-path="exercises-14.html"><a href="exercises-14.html"><i class="fa fa-check"></i><b>15.4</b> Exercises</a></li>
+<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation<span></span></a></li>
+<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions<span></span></a></li>
+<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane<span></span></a></li>
+<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability<span></span></a></li>
+<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of nonlinear equations</a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="determining-equilibrium-solutions.html"><a href="determining-equilibrium-solutions.html"><i class="fa fa-check"></i><b>16.1</b> Determining equilibrium solutions</a></li>
-<li class="chapter" data-level="16.2" data-path="stability-of-an-equilibrium-solution.html"><a href="stability-of-an-equilibrium-solution.html"><i class="fa fa-check"></i><b>16.2</b> Stability of an equilibrium solution</a></li>
-<li class="chapter" data-level="16.3" data-path="exercises-15.html"><a href="exercises-15.html"><i class="fa fa-check"></i><b>16.3</b> Exercises</a></li>
+<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations<span></span></a></li>
+<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane<span></span></a></li>
+<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines<span></span></a></li>
+<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution<span></span></a></li>
+<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane<span></span></a></li>
+<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian<span></span></a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="a-first-example.html"><a href="a-first-example.html"><i class="fa fa-check"></i><b>17.1</b> A first example</a></li>
-<li class="chapter" data-level="17.2" data-path="the-lynx-hare-revisited.html"><a href="the-lynx-hare-revisited.html"><i class="fa fa-check"></i><b>17.2</b> The lynx hare revisited</a></li>
-<li class="chapter" data-level="17.3" data-path="tangent-plane-approximations.html"><a href="tangent-plane-approximations.html"><i class="fa fa-check"></i><b>17.3</b> Tangent plane approximations</a></li>
-<li class="chapter" data-level="17.4" data-path="the-jacobian-matrix.html"><a href="the-jacobian-matrix.html"><i class="fa fa-check"></i><b>17.4</b> The Jacobian matrix</a></li>
-<li class="chapter" data-level="17.5" data-path="predator-prey-with-logistic-growth.html"><a href="predator-prey-with-logistic-growth.html"><i class="fa fa-check"></i><b>17.5</b> Predator prey with logistic growth</a></li>
-<li class="chapter" data-level="17.6" data-path="concluding-thoughts-1.html"><a href="concluding-thoughts-1.html"><i class="fa fa-check"></i><b>17.6</b> Concluding thoughts</a></li>
-<li class="chapter" data-level="17.7" data-path="exercises-16.html"><a href="exercises-16.html"><i class="fa fa-check"></i><b>17.7</b> Exercises</a></li>
+<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations<span></span></a></li>
+<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations<span></span></a></li>
+<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix<span></span></a></li>
+<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are eigenvalues?</a>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?<span></span></a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="straight-line-solutions.html"><a href="straight-line-solutions.html"><i class="fa fa-check"></i><b>18.1</b> Straight line solutions</a></li>
-<li class="chapter" data-level="18.2" data-path="computing-eigenvalues-and-eigenvectors.html"><a href="computing-eigenvalues-and-eigenvectors.html"><i class="fa fa-check"></i><b>18.2</b> Computing eigenvalues and eigenvectors</a></li>
-<li class="chapter" data-level="18.3" data-path="what-do-eigenvalues-tell-us.html"><a href="what-do-eigenvalues-tell-us.html"><i class="fa fa-check"></i><b>18.3</b> What do eigenvalues tell us?</a></li>
-<li class="chapter" data-level="18.4" data-path="concluding-thoughts-2.html"><a href="concluding-thoughts-2.html"><i class="fa fa-check"></i><b>18.4</b> Concluding thoughts</a></li>
-<li class="chapter" data-level="18.5" data-path="exercises-17.html"><a href="exercises-17.html"><i class="fa fa-check"></i><b>18.5</b> Exercises</a></li>
+<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction<span></span></a></li>
+<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions<span></span></a></li>
+<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors<span></span></a></li>
+<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?<span></span></a></li>
+<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts<span></span></a></li>
+<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis<span></span></a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="two-dimensional-linear-systems-the-general-case.html"><a href="two-dimensional-linear-systems-the-general-case.html"><i class="fa fa-check"></i><b>19.1</b> Two dimensional linear systems: the general case</a></li>
-<li class="chapter" data-level="19.2" data-path="sensitivity-to-parameters-with-the-trace-determinant.html"><a href="sensitivity-to-parameters-with-the-trace-determinant.html"><i class="fa fa-check"></i><b>19.2</b> Sensitivity to parameters with the trace-determinant</a></li>
-<li class="chapter" data-level="19.3" data-path="higher-dimensional-stability.html"><a href="higher-dimensional-stability.html"><i class="fa fa-check"></i><b>19.3</b> Higher dimensional stability</a></li>
-<li class="chapter" data-level="19.4" data-path="exercises-18.html"><a href="exercises-18.html"><i class="fa fa-check"></i><b>19.4</b> Exercises</a></li>
+<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)<span></span></a></li>
+<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant<span></span></a></li>
+<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis<span></span></a></li>
+<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.<span></span></a></li>
+<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation<span></span></a>
 <ul>
-<li class="chapter" data-level="20.1" data-path="a-series-of-equations.html"><a href="a-series-of-equations.html"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
-<li class="chapter" data-level="20.2" data-path="bifurcations-with-systems-of-equations.html"><a href="bifurcations-with-systems-of-equations.html"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
-<li class="chapter" data-level="20.3" data-path="limit-cycles-and-bifurcations-with-systems-of-equations.html"><a href="limit-cycles-and-bifurcations-with-systems-of-equations.html"><i class="fa fa-check"></i><b>20.3</b> Limit Cycles and Bifurcations with systems of equations</a></li>
-<li class="chapter" data-level="20.4" data-path="exercises-19.html"><a href="exercises-19.html"><i class="fa fa-check"></i><b>20.4</b> Exercises</a></li>
+<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations<span></span></a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations<span></span></a></li>
+<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles<span></span></a></li>
+<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools<span></span></a></li>
+<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
-<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
+<li class="part"><span><b>IV Stochastic Differential Equations<span></span></b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems<span></span></a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="a-discrete-system.html"><a href="a-discrete-system.html"><i class="fa fa-check"></i><b>21.1</b> A discrete system</a></li>
-<li class="chapter" data-level="21.2" data-path="environmental-stochasticity.html"><a href="environmental-stochasticity.html"><i class="fa fa-check"></i><b>21.2</b> Environmental Stochasticity</a></li>
-<li class="chapter" data-level="21.3" data-path="discrete-systems-of-equations.html"><a href="discrete-systems-of-equations.html"><i class="fa fa-check"></i><b>21.3</b> Discrete systems of equations</a></li>
-<li class="chapter" data-level="21.4" data-path="exercises-20.html"><a href="exercises-20.html"><i class="fa fa-check"></i><b>21.4</b> Exercises</a></li>
+<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects<span></span></a></li>
+<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system<span></span></a></li>
+<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity<span></span></a></li>
+<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations<span></span></a></li>
+<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness<span></span></a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="ensemble-averages.html"><a href="ensemble-averages.html"><i class="fa fa-check"></i><b>22.1</b> Ensemble Averages</a></li>
-<li class="chapter" data-level="22.2" data-path="computing-ensemble-averages.html"><a href="computing-ensemble-averages.html"><i class="fa fa-check"></i><b>22.2</b> Computing ensemble averages</a></li>
-<li class="chapter" data-level="22.3" data-path="doing-many-simulations-and-visualizing.html"><a href="doing-many-simulations-and-visualizing.html"><i class="fa fa-check"></i><b>22.3</b> Doing many simulations and visualizing</a></li>
-<li class="chapter" data-level="22.4" data-path="exercises-21.html"><a href="exercises-21.html"><i class="fa fa-check"></i><b>22.4</b> Exercises</a></li>
+<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages<span></span></a></li>
+<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration<span></span></a></li>
+<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks<span></span></a>
 <ul>
-<li class="chapter" data-level="23.1" data-path="random-walk-on-a-number-line.html"><a href="random-walk-on-a-number-line.html"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
-<li class="chapter" data-level="23.2" data-path="more-realizatons.html"><a href="more-realizatons.html"><i class="fa fa-check"></i><b>23.2</b> More realizatons</a></li>
-<li class="chapter" data-level="23.3" data-path="random-walk-mathematics.html"><a href="random-walk-mathematics.html"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
-<li class="chapter" data-level="23.4" data-path="continuous-random-walks-diffusion.html"><a href="continuous-random-walks-diffusion.html"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks (diffusion)</a></li>
-<li class="chapter" data-level="23.5" data-path="exercises-22.html"><a href="exercises-22.html"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
+<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line<span></span></a></li>
+<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages<span></span></a></li>
+<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics<span></span></a></li>
+<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion<span></span></a></li>
+<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion</a>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion<span></span></a>
 <ul>
-<li class="chapter" data-level="24.1" data-path="random-walk-redux.html"><a href="random-walk-redux.html"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
-<li class="chapter" data-level="24.2" data-path="concluding-thoughts-3.html"><a href="concluding-thoughts-3.html"><i class="fa fa-check"></i><b>24.2</b> Concluding Thoughts</a></li>
-<li class="chapter" data-level="24.3" data-path="exercises-23.html"><a href="exercises-23.html"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
+<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux<span></span></a></li>
+<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion<span></span></a></li>
+<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Stochastic Differential Equations</a>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="25.1" data-path="the-stochastic-logistic-model.html"><a href="the-stochastic-logistic-model.html"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
-<li class="chapter" data-level="25.2" data-path="the-euler-maruyama-method.html"><a href="the-euler-maruyama-method.html"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama Method</a></li>
-<li class="chapter" data-level="25.3" data-path="adding-stochasticity-to-parameters.html"><a href="adding-stochasticity-to-parameters.html"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
-<li class="chapter" data-level="25.4" data-path="concluding-thoughts-4.html"><a href="concluding-thoughts-4.html"><i class="fa fa-check"></i><b>25.4</b> Concluding thoughts</a></li>
-<li class="chapter" data-level="25.5" data-path="exercises-24.html"><a href="exercises-24.html"><i class="fa fa-check"></i><b>25.5</b> Exercises</a></li>
+<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model<span></span></a></li>
+<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method<span></span></a></li>
+<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters<span></span></a></li>
+<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations<span></span></a></li>
+<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts<span></span></a></li>
+<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Simulating Stochastic Dynamics</a>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation<span></span></a>
 <ul>
-<li class="chapter" data-level="26.1" data-path="the-stochastic-logistic-model-redux.html"><a href="the-stochastic-logistic-model-redux.html"><i class="fa fa-check"></i><b>26.1</b> The stochastic logistic model redux</a></li>
-<li class="chapter" data-level="26.2" data-path="a-stochastic-system-of-equations.html"><a href="a-stochastic-system-of-equations.html"><i class="fa fa-check"></i><b>26.2</b> A stochastic system of equations</a></li>
-<li class="chapter" data-level="26.3" data-path="generalizing-the-approach-.html"><a href="generalizing-the-approach-.html"><i class="fa fa-check"></i><b>26.3</b> Generalizing the approach.</a></li>
-<li class="chapter" data-level="26.4" data-path="exercises-25.html"><a href="exercises-25.html"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
+<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process<span></span></a></li>
+<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes<span></span></a></li>
+<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up<span></span></a></li>
+<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solving Stochastic Differential Equations</a>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations<span></span></a>
 <ul>
-<li class="chapter" data-level="27.1" data-path="meet-the-fokker-planck-equation.html"><a href="meet-the-fokker-planck-equation.html"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck Equation</a></li>
-<li class="chapter" data-level="27.2" data-path="exercises-26.html"><a href="exercises-26.html"><i class="fa fa-check"></i><b>27.2</b> Exercises</a></li>
+<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation<span></span></a></li>
+<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end<span></span></a></li>
+<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li><a href="references.html#references">References<span></span></a></li>
 <li class="divider"></li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
@@ -402,17 +412,379 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cost-fns-10" class="section level1" number="10">
-<h1><span class="header-section-number">Section 10</span> Cost Functions &amp; Bayes’ Rule</h1>
-<p>In Section <a href="likelihood-09.html#likelihood-09">9</a> we examined likelihood functions which were needed when combining a model with data using probability density functions. In this section we will study this idea of parameter estimation using <em>cost functions</em>, which is another approach to the parameter estimation problem.</p>
+<div id="cost-fns-10" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Chapter 10</span> Cost Functions qnd Bayes’ Rule<a href="cost-fns-10.html#cost-fns-10" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Chapter <a href="likelihood-09.html#likelihood-09">9</a> introduced likelihood functions as an approach to tackle parameter estimation. However this is not the only approach to understand model-data fusion. This chapter introduces <em>cost functions</em>, which estimates parameters from data using a least squares approach. Want to know a secret? Cost functions are very closely related to log-likelihood functions. This chapter will explore this idea some more, first by exploring model-data residuals, defining a cost function, and then connecting them back to likelihood functions. To complete the circle, this chapter ends by discussing Bayes’ Rule, which will further strengthen the connection between cost and likelihood functions. Let’s get started!</p>
+<div id="cost-functions-and-model-data-residuals" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> Cost functions and model-data residuals<a href="cost-fns-10.html#cost-functions-and-model-data-residuals" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Let’s revisit the linear regression problem from Chapter <a href="likelihood-09.html#likelihood-09">9</a>. Recall Table <a href="likelihood-09.html#tab:limited-data-09">9.1</a> from Chapter <a href="likelihood-09.html#likelihood-09">9</a>. With these data we wanted to fit a function of the form <span class="math inline">\(y=bx\)</span> (forcing the intercept term to be zero). We will extend Table <a href="likelihood-09.html#tab:limited-data-09">9.1</a> to include the model-data residual computed as <span class="math inline">\(y-bx\)</span> in Table <a href="cost-fns-10.html#tab:md-resid-10">10.1</a>:</p>
+<table>
+<caption><span id="tab:md-resid-10">TABLE 10.1: </span> A small, limited dataset (Table <a href="likelihood-09.html#tab:limited-data-09">9.1</a>) with the computed model-data residual with parameter <span class="math inline">\(b\)</span>, along with model-data residuals for different values of <span class="math inline">\(b\)</span>.</caption>
+<thead>
+<tr class="header">
+<th align="center"><span class="math inline">\(x\)</span></th>
+<th align="center"><span class="math inline">\(y\)</span></th>
+<th align="left"><span class="math inline">\(bx\)</span></th>
+<th align="center"><span class="math inline">\(y-bx\)</span></th>
+<th align="center"><span class="math inline">\(b=1\)</span></th>
+<th align="left"><span class="math inline">\(b=3\)</span></th>
+<th align="left"><span class="math inline">\(b=-1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">3</td>
+<td align="left"><span class="math inline">\(b\)</span></td>
+<td align="center"><span class="math inline">\(3-b\)</span></td>
+<td align="center">2</td>
+<td align="left">0</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">5</td>
+<td align="left"><span class="math inline">\(2b\)</span></td>
+<td align="center"><span class="math inline">\(5-2b\)</span></td>
+<td align="center">3</td>
+<td align="left">-1</td>
+<td align="left">7</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="left"><span class="math inline">\(4b\)</span></td>
+<td align="center"><span class="math inline">\(4-4b\)</span></td>
+<td align="center">0</td>
+<td align="left">-8</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">10</td>
+<td align="left"><span class="math inline">\(4b\)</span></td>
+<td align="center"><span class="math inline">\(10-4b\)</span></td>
+<td align="center">6</td>
+<td align="left">-2</td>
+<td align="left">14</td>
+</tr>
+</tbody>
+</table>
+<p>Also included in Table <a href="cost-fns-10.html#tab:md-resid-10">10.1</a> are the model-data residual values for different values of <span class="math inline">\(b\)</span>. Notably values of the residuals can be negative and some can be positive - which makes it tricky to assess the “best” value of <span class="math inline">\(b\)</span> from the residuals alone. (If we found a value of <span class="math inline">\(b\)</span> where the residuals were all zero, then we would have the “best” value of <span class="math inline">\(b\)</span>!<a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a>).</p>
+<p>To assess the overall residuals as a function of the value of <span class="math inline">\(b\)</span>, we need to take into consideration not just the value of the residual (positive or negative), but rather some way to measure the overall distance of <em>all</em> the residuals from a given value of <span class="math inline">\(b\)</span>. One way to define that is with a function that squares each residual (so that negative and positive values don’t cancel each other) and adds each of those results together. We call this the <em>sum squared residuals</em>. So for example, the sum squared residual when <span class="math inline">\(b=1\)</span> is shown in Equation <a href="cost-fns-10.html#eq:b-1-10">(10.1)</a>:</p>
+<p><span class="math display" id="eq:b-1-10">\[\begin{equation}
+\mbox{ Sum square residual: } 2^{2}+3^{2}+0^{2}+6^{2} = 49 \tag{10.1}
+\end{equation}\]</span></p>
+<p>The other square residuals are <span class="math inline">\(68\)</span> when <span class="math inline">\(b=3\)</span> and <span class="math inline">\(325\)</span> when <span class="math inline">\(b=-1\)</span>. So of these choices for <span class="math inline">\(b\)</span>, the one that minimizes the square residual is <span class="math inline">\(b=1\)</span>.</p>
+<p>Let’s generalize this to determine a function to compute the sum square residual for any value of <span class="math inline">\(b\)</span>. This function, denoted as <span class="math inline">\(S(b)\)</span>, is called the cost function (Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a>):</p>
+<p><span class="math display" id="eq:sb-10">\[\begin{equation}
+S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 \tag{10.2}
+\end{equation}\]</span></p>
+<p>Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a> is a function of one variable (<span class="math inline">\(b\)</span>). Figure <a href="cost-fns-10.html#fig:quadsb">10.1</a> shows a graph of <span class="math inline">\(S(b)\)</span>. Notice how the plot of <span class="math inline">\(S(b)\)</span> is a nice quadratic function, with a minimum at <span class="math inline">\(b=1.865\)</span>. Did you notice that this value for <span class="math inline">\(b\)</span> is the same value for the minimum that we found from Equation <a href="likelihood-09.html#eq:small-data-likely">(9.6)</a> in Chapter <a href="likelihood-09.html#likelihood-09">9</a>? In Exercise <a href="cost-fns-10.html#exr:cost-min-10">10.1</a> you will use calculus to determine the optimum value of <span class="math inline">\(S(b)\)</span>.</p>
+<div class="figure"><span id="fig:quadsb"></span>
+<img src="explore-model-zobitz-220419_files/figure-html/quadsb-1.png" alt="Plot of Equation \@ref(eq:sb-10). The vertical line denotes the minimum value at $b=1.865$." width="672" />
+<p class="caption">
+FIGURE 10.1: Plot of Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a>. The vertical line denotes the minimum value at <span class="math inline">\(b=1.865\)</span>.
+</p>
+</div>
+<div id="accounting-for-uncertainty" class="section level3 hasAnchor" number="10.1.1">
+<h3><span class="header-section-number">10.1.1</span> Accounting for uncertainty<a href="cost-fns-10.html#accounting-for-uncertainty" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The cost function can also incorporate uncertainty in the value of the response variable <span class="math inline">\(y\)</span>. We will define this uncertainty as <span class="math inline">\(\sigma\)</span> and have it be the same for each value <span class="math inline">\(y_{i}\)</span>. In some cases the uncertainty may vary from measurement to measurement - but the concepts presented here can generalize. To account for this uncertainty we divide each of the square residuals in Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a> by <span class="math inline">\(\sigma^{2}\)</span>, as shown in Equation <a href="cost-fns-10.html#eq:sb-general-10">(10.3)</a> using <span class="math inline">\(\sum\)</span> notation.</p>
+<p><span class="math display" id="eq:sb-general-10">\[\begin{equation}
+S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma^{2}} \tag{10.3}
+\end{equation}\]</span></p>
+<p>As an example, comparing Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a> to Equation <a href="cost-fns-10.html#eq:sb-general-10">(10.3)</a> we have <span class="math inline">\(N=4\)</span>, <span class="math inline">\(f(x_{i},\vec{\alpha} ) =bx\)</span>, and <span class="math inline">\(\sigma = 1\)</span>.</p>
+</div>
+<div id="comparing-cost-and-log-likelihood-functions" class="section level3 hasAnchor" number="10.1.2">
+<h3><span class="header-section-number">10.1.2</span> Comparing cost and log-likelihood functions<a href="cost-fns-10.html#comparing-cost-and-log-likelihood-functions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Chapter <a href="likelihood-09.html#likelihood-09">9</a> defined the log-likelihood function (Equation <a href="likelihood-09.html#eq:loglikely">(9.7)</a>), which for the small dataset we are studying is represented with Equation <a href="cost-fns-10.html#eq:loglikely-10">(10.4)</a> where <span class="math inline">\(\sigma = 1\)</span> and <span class="math inline">\(N=4\)</span>:</p>
+<p><span class="math display" id="eq:loglikely-10">\[\begin{equation}
+\begin{split}
+\ln(L(b | \vec{x},\vec{y} )) &amp;= -2 \ln(2) - 2 \ln (\pi) - 2 \ln(1) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
+&amp;-\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2} \\
+&amp;= -2 \ln(2) - 2 \ln (\pi) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
+&amp; -\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2}
+\end{split} \tag{10.4}
+\end{equation}\]</span></p>
+<p>(Note that in Equation <a href="cost-fns-10.html#eq:loglikely-10">(10.4)</a> the expression <span class="math inline">\(-2 \ln(1)\)</span> is 0.) If we compare Equation <a href="cost-fns-10.html#eq:loglikely-10">(10.4)</a> with Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a>, then we have <span class="math inline">\(\ln(L(b | \vec{x},\vec{y} )) = -2 \ln(2) - 2 \ln (\pi) - \frac{1}{2} \cdot S(b)\)</span>. <strong>This is no coincidence</strong>: log-likelihood functions are similar to cost functions! While Equation <a href="cost-fns-10.html#eq:loglikely-10">(10.4)</a> contains some extra factors, they only shift vertically or expand the graph of <span class="math inline">\(\ln(L(b | \vec{x},\vec{y} ))\)</span> compared to <span class="math inline">\(S(b)\)</span>. This “coincidence” is only true when <span class="math inline">\(\sigma\)</span> is the same for all <span class="math inline">\(y_{i}\)</span>. Can you explain why?</p>
+<p>For both log-likelihood or cost functions the goal is optimization. Vertically shifting or expanding a function does not change the <em>location</em> of an optimum value (Why? Think back to derivatives from Calculus I). In fact, a quadratic cost function yields the same results as the log-likelihood function assuming the residuals are normally distributed.</p>
+</div>
+</div>
+<div id="further-extensions-to-the-cost-function" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> Further extensions to the cost function<a href="cost-fns-10.html#further-extensions-to-the-cost-function" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The cost function <span class="math inline">\(S(b)\)</span> can be extended additionally to incorporate other types of data. For example, if we knew there was a given range of values that would make sense (say <span class="math inline">\(b\)</span> is near 1.3 with a standard deviation of 0.1), we should be able to incorporate this information into the cost function. We do this by adding an additional term to Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a> (<span class="math inline">\(\tilde{S}(b)\)</span>, Equation <a href="cost-fns-10.html#eq:priorcost-10">(10.5)</a>, also is graphed in Figure <a href="cost-fns-10.html#fig:priorcost">10.2</a>).</p>
+<p><span class="math display" id="eq:priorcost-10">\[\begin{equation}
+\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{0.1^2} \tag{10.5}
+\end{equation}\]</span></p>
+<div class="figure"><span id="fig:priorcost"></span>
+<img src="explore-model-zobitz-220419_files/figure-html/priorcost-1.png" alt="Comparing two cost functions $S(b)$ (black) and $\tilde{S}(b)$ (black dashed line)" width="672" />
+<p class="caption">
+FIGURE 10.2: Comparing two cost functions <span class="math inline">\(S(b)\)</span> (black) and <span class="math inline">\(\tilde{S}(b)\)</span> (black dashed line)
+</p>
+</div>
+<p>Aha! Figure <a href="cost-fns-10.html#fig:priorcost">10.2</a> shows how the revised cost function <span class="math inline">\(\tilde{S}(b)\)</span> changes the optimum value. Numerically this works out to be <span class="math inline">\(\tilde{b}=\)</span> 1.45. In Exercise <a href="cost-fns-10.html#exr:cost-min-10">10.1</a> you will verify this new minimum value and compare the results to the fitted value of <span class="math inline">\(b=1.86\)</span>.</p>
+<p>Adding this prior information seems like an effective approach. Many times a study wants to build upon the existing body of literature and to take that into account. This approach of including prior information into the cost function can also be considered a <em>Bayesian</em> approach.</p>
+</div>
+<div id="conditional-probabilities-and-bayes-rule" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> Conditional probabilities and Bayes’ rule<a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!-- Adapted from Silver, *The Signal and the Noise*, 2012. -->
+<p>We first need to understand Bayes’ rule and conditional probability, with an example.</p>
+
+<div class="example">
+<p><span id="exm:president-pop" class="example"><strong>Example 10.1  </strong></span>The following table shows results from a survey of people’s views on the economy (optimistic or pessimistic) and whether or not they voted for the incumbent President in the last election. Percentages are reported as decimals. Probability tables are a clever way to organize this information.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Probability</th>
+<th align="center">Optimistic</th>
+<th align="left">Pessimistic</th>
+<th align="left">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Voted for the incumbent President</td>
+<td align="center">0.20</td>
+<td align="left">0.20</td>
+<td align="left">0.40</td>
+</tr>
+<tr class="even">
+<td align="center">Did not vote for incumbent President</td>
+<td align="center">0.15</td>
+<td align="left">0.45</td>
+<td align="left">0.60</td>
+</tr>
+<tr class="odd">
+<td align="center">Total</td>
+<td align="center">0.35</td>
+<td align="left">0.65</td>
+<td align="left">1.00</td>
+</tr>
+</tbody>
+</table>
+Compute the probability of having an optimistic view on the economy.
+</div>
+
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> Based on the probability table, we define the following probabilities:</p>
+<ul>
+<li>The probability you voted for the incumbent President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the incumbent President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.15</li>
+<li>The probability you voted for the incumbent President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the incumbent President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.45</li>
+</ul>
+<p>We calculate the probability of having an <strong>optimistic view on the economy</strong> by adding the probabilities with an optimistic view, whether or not they voted for the incumbent President. For this example, this probability sums to 0.20 + 0.15 = 0.35, or 35%.</p>
+<p>On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65, or 65%. Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)</p>
+</div>
+<div id="conditional-probabilities" class="section level3 hasAnchor" number="10.3.1">
+<h3><span class="header-section-number">10.3.1</span> Conditional probabilities<a href="cost-fns-10.html#conditional-probabilities" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Next, let’s discuss conditional probabilities. A conditional probability is the probability of an outcome given some previous outcome, or <span class="math inline">\(\mbox{Pr} (A | B)\)</span>, where Pr means “probability of an outcome” and <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are two different outcomes or events. In probability theory you might study the following law of conditional probability:</p>
+<p><span class="math display" id="eq:law-cond-prop">\[\begin{equation}
+\begin{split}
+\mbox{Pr}(A \mbox { and } B) &amp;= \mbox{Pr} (A \mbox{ given } B) \cdot  \mbox{Pr}(B) \\
+ &amp;= \mbox{Pr} (A | B) \cdot  \mbox{Pr}(B) \\
+  &amp;= \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)
+\end{split} \tag{10.6}
+\end{equation}\]</span></p>
+<p>Typically when expressing conditional probabilities we remove “and” and write <span class="math inline">\(P(A \mbox{ and } B)\)</span> as <span class="math inline">\(P(AB)\)</span> and “given” as <span class="math inline">\(P(A \mbox{ given } B)\)</span> as <span class="math inline">\(P(A|B)\)</span>.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-135" class="example"><strong>Example 10.2  </strong></span>Continuing with Example <a href="cost-fns-10.html#exm:president-pop">10.1</a>, sometimes people believe that your views of the economy <a href="https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/">influence whether you are going to vote for the incumbent President in an election.</a> Use the information from the table in Example <a href="cost-fns-10.html#exm:president-pop">10.1</a> to compute the probability you voted for the incumbent President <em>given</em> you have an optimistic view of the economy.
+</div>
+
+<div class="solution">
+<p> <span class="solution"><em>Solution. </em></span> To compute the probability you voted for the incumbent President <em>given</em> you have an optimistic view of the economy is a rearrangement of Equation <a href="cost-fns-10.html#eq:law-cond-prop">(10.6)</a>:</p>
+<p><span class="math display" id="eq:econ-cond-prop">\[\begin{equation}
+\begin{split}
+\mbox{Pr(Voted for incumbent President | Optimistic View on Economy)} = \\
+\frac{\mbox{Pr(Voted for incumbent President and Optimistic View on Economy)}}{\mbox{Pr(Optimistic View on Economy)}} = \\
+\frac{0.20}{0.35} = 0.57
+\end{split} \tag{10.7}
+\end{equation}\]</span></p>
+So if you have an optimistic view on the economy, there is a 57% chance you will vote for the incumbent President. Contrast this result to the probability that you voted for the incumbent President (Example <a href="cost-fns-10.html#exm:president-pop">10.1</a>), which is only 40%. Perhaps your view of the economy does indeed influence whether or not you would vote to re-elect the incumbent President.
+</div>
+</div>
+<div id="bayes-rule" class="section level3 hasAnchor" number="10.3.2">
+<h3><span class="header-section-number">10.3.2</span> Bayes’ rule<a href="cost-fns-10.html#bayes-rule" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Using the incumbent President and economy example as a framework, we will introduce <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a>, which is a re-arrangment of the rule for conditional probability:</p>
+<p><span class="math display" id="eq:bayes-rule-10">\[\begin{equation}
+\mbox{Pr} (A | B) = \frac{ \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)}{\mbox{Pr}(B) } \tag{10.8}
+\end{equation}\]</span></p>
+<p>It turns out Bayes’ Rule is a really helpful way to understand how we can systematically incorporate this prior information into the likelihood function (and by association the cost function). For parameter estimation our goal is to estimate parameters, given the data. Another way to state Bayes’ Rule in Equation <a href="cost-fns-10.html#eq:bayes-rule-10">(10.8)</a> is using terms of parameters and data:</p>
+<p><span class="math display" id="eq:bayes-rule-data-10">\[\begin{equation}
+\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) = \frac{\mbox{Pr}( \mbox{ data } | \mbox{ parameters }) \cdot \mbox{ Pr}( \mbox{ parameters }) }{\mbox{Pr}(\mbox{ data }) } \tag{10.9}
+\end{equation}\]</span></p>
+<p>While Equation <a href="cost-fns-10.html#eq:bayes-rule-data-10">(10.9)</a> seems pretty conceptual, here are some key highlights:</p>
+<ul>
+<li>In practice, the term <span class="math inline">\(\mbox{Pr}( \mbox{ data } | \mbox{ parameters })\)</span> in Equation <a href="cost-fns-10.html#eq:bayes-rule-data-10">(10.9)</a> is the likelihood function (Equation <a href="likelihood-09.html#eq:likelihood-prod-param-09">(9.5)</a>).</li>
+<li>The term <span class="math inline">\(\mbox{Pr}( \mbox{ parameters })\)</span> is the probability distribution of the <em>prior information</em> on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as <span class="math inline">\(\mbox{Pr}( \mbox{ data } | \mbox{ parameters })\)</span> (typically normally distributed), prior information has a multiplicative effect on the likelihood function (<span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span>). (Or an additive effect on the log-likelihood function.) <em>This is good news!</em> When we added that additional term for prior information into <span class="math inline">\(\tilde{S}(b)\)</span> in Equation <a href="cost-fns-10.html#eq:priorcost-10">(10.5)</a>, we accounted for the prior information correctly. In Exercise <a href="cost-fns-10.html#exr:log-cost-verify">10.6</a> you will explore how the log-likelihood is related to the cost function.</li>
+<li>The expression <span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span> is the start of a framework for a probability density function, which should integrate to unity. (You will explore this more if you study probability theory.) This denominator term is called a <a href="https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem">normalizing constant</a>. Since our overall goal is to select parameters that optimize <span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span>, the expression in the denominator (<span class="math inline">\(\mbox{Pr}(\mbox{ data })\)</span> ) does not change the <em>location</em> of the optimum values.</li>
+</ul>
+</div>
+</div>
+<div id="bayes-rule-in-action" class="section level2 hasAnchor" number="10.4">
+<h2><span class="header-section-number">10.4</span> Bayes’ rule in action<a href="cost-fns-10.html#bayes-rule-in-action" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Wow - we made some significant progress in our conceptual understanding of how to incorporate models and data! Let’s see how this applies to our linear regression problem (<span class="math inline">\(y=bx\)</span>). We have the following assumptions:</p>
+<ul>
+<li><strong>Assumption 1:</strong> The data are independent, identically distributed. We can then write the likelihood function as the following:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+\mbox{Pr}(\vec{y} | b) = \left( \frac{1}{\sqrt{2 \pi} \sigma}\right)^{4} e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}}
+\end{equation}\]</span></p>
+<ul>
+<li><strong>Assumption 2:</strong> Prior knowledge expects us to say that <span class="math inline">\(b\)</span> is normally distributed with mean 1.3 and standard deviation 0.1. Incorporating this information allows us to write the following:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+\mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi} \cdot 0.1} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\end{equation}\]</span></p>
+<p>When we combine the two pieces of information, the probability of <span class="math inline">\(b\)</span>, given the data <span class="math inline">\(\vec{y}\)</span>, is the following:</p>
+<p><span class="math display" id="eq:likelihood-bayes-10">\[\begin{equation}
+\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}} \tag{10.10}
+\end{equation}\]</span></p>
+<p>Notice we are ignoring the terms <span class="math inline">\(\displaystyle \left( \frac{1}{\sqrt{2 \pi} \cdot \sigma }\right)^{4}\)</span> and <span class="math inline">\(\displaystyle \frac{1}{\sqrt{2 \pi} \cdot 0.1}\)</span>, because per our discussion above not including them does not change the <em>location</em> of the optimum value, only the value of the likelihood function. The plot of <span class="math inline">\(\mbox{Pr}(b | \vec{y})\)</span>, assuming <span class="math inline">\(\sigma = 1\)</span> is shown in Figure <a href="cost-fns-10.html#fig:likelihoodbayes">10.3</a>:</p>
+<div class="figure"><span id="fig:likelihoodbayes"></span>
+<img src="explore-model-zobitz-220419_files/figure-html/likelihoodbayes-1.png" alt="Equation \@ref(eq:likelihood-bayes-10) with optimum value at $b=1.45$ denoted in a blue dashed line. " width="672" />
+<p class="caption">
+FIGURE 10.3: Equation <a href="cost-fns-10.html#eq:likelihood-bayes-10">(10.10)</a> with optimum value at <span class="math inline">\(b=1.45\)</span> denoted in a blue dashed line.
+</p>
+</div>
+<p>It looks like the value that optimizes our posterior probability is <span class="math inline">\(b=\)</span> 1.45. This is similar the value of <span class="math inline">\(\tilde{b}\)</span> from Equation <a href="cost-fns-10.html#eq:priorcost-10">(10.5)</a>. Again, <em>this is no coincidence</em>. Adding in prior information to the cost function or using Bayes’ Rule are equivalent approaches.</p>
+</div>
+<div id="next-steps" class="section level2 hasAnchor" number="10.5">
+<h2><span class="header-section-number">10.5</span> Next steps<a href="cost-fns-10.html#next-steps" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now that we have seen the usefulness of cost functions and Bayes’ Rule we can begin to apply this to larger problems involving more equations and data. In order to do that we need to explore some computational methods to scale this problem up - which we will do in subsequent chapters.</p>
+</div>
+<div id="exercises-9" class="section level2 hasAnchor" number="10.6">
+<h2><span class="header-section-number">10.6</span> Exercises<a href="cost-fns-10.html#exercises-9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!-- Other potential problems: -->
+<!-- - Do some likelihood functions with uniform prior (the simple ones) -->
+<!-- -  -->
+<!-- HW: they adjust the distribution to a uniform on the simple linear regression -->
+<!-- Write out the likelihood function (try programming for something simple) -->
+<!-- Verify that dividing by the data doesn't affect the location of the optimum -->
+<!-- Prove a uniform distribution doesn't affect the function -->
+
+<div class="exercise">
+<p><span id="exr:cost-min-10" class="exercise"><strong>Exercise 10.1  </strong></span>The following problem works with Table <a href="likelihood-09.html#tab:limited-data-09">9.1</a> to determine the value of <span class="math inline">\(b\)</span> with the function <span class="math inline">\(y=bx\)</span> as in this chapter.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Using calculus, show that the cost function <span class="math inline">\(S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2\)</span> has a minimum value at <span class="math inline">\(b=1.86\)</span>.</li>
+<li>What is the value of <span class="math inline">\(S(1.865)\)</span>?</li>
+<li>Use a similar approach to determine the minimum of the revised cost function <span class="math inline">\(\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + (b-1.3)^2\)</span>. Call this value <span class="math inline">\(\tilde{b}\)</span>.</li>
+<li>How do the values of <span class="math inline">\(S(1.865)\)</span> and <span class="math inline">\(\tilde{S}(\tilde{b})\)</span> compare?</li>
+<li>Make a plot of the cost functions <span class="math inline">\(S(b)\)</span> and <span class="math inline">\(\tilde{S}(b)\)</span> to verify the optimum values.</li>
+<li>Make a scatter plot with the data and the function <span class="math inline">\(y=bx\)</span> and <span class="math inline">\(y=\tilde{b}x\)</span>. How do the two estimates compare with the data?</li>
+</ol>
+</div>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-136" class="exercise"><strong>Exercise 10.2  </strong></span>Use calculus to determine the optimum value of <span class="math inline">\(b\)</span> for Equation <a href="cost-fns-10.html#eq:loglikely-10">(10.4)</a>. Do you obtain the same value of <span class="math inline">\(b\)</span> for Equation <a href="cost-fns-10.html#eq:sb-10">(10.2)</a>?
+</div>
+<!-- From van den Berg, pg 59, exercise 3.13 -->
+
+<div class="exercise">
+<p><span id="exr:phos-09" class="exercise"><strong>Exercise 10.3  </strong></span>(Inspired from <span class="citation"><a href="#ref-berg_mathematical_2011" role="doc-biblioref">Hugo van den Berg</a> (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) Consider the nutrient equation <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span> using the dataset <code>phosphorous</code>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Write down a formula for the objective function <span class="math inline">\(S(c,\theta)\)</span> that characterizes this equation (that includes the dataset <code>phosphorous</code>).</li>
+<li>Fix <span class="math inline">\(c=1.737\)</span>. Make a <code>ggplot</code> of <span class="math inline">\(S(1.737,\theta)\)</span> for <span class="math inline">\(1 \leq \theta \leq 10\)</span>.</li>
+<li>How many critical points does this function have over this interval? Which value of <span class="math inline">\(\theta\)</span> is the global minimum?</li>
+</ol>
+</div>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-137" class="exercise"><strong>Exercise 10.4  </strong></span>Use the cost function <span class="math inline">\(S(1.737,\theta)\)</span> from Exercise <a href="cost-fns-10.html#exr:phos-09">10.3</a> to answer the following questions:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Researchers believe that <span class="math inline">\(\theta \approx 7\)</span>. Re-write <span class="math inline">\(S(1.737,\theta)\)</span> to account for this additional (prior) information.</li>
+<li>How does the inclusion of this additional information change the shape of the cost function and the location of the global minimum?</li>
+<li>Finally, reconsider the fact that <span class="math inline">\(\theta \approx 7 \pm .5\)</span> (as prior information). How does that modify <span class="math inline">\(S(1.737,\theta)\)</span> further and the location of the global minimum?</li>
+</ol>
+</div>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-138" class="exercise"><strong>Exercise 10.5  </strong></span>One way to generalize the notion of prior information using cost functions is to include a term that represents the degree of uncertainty in the prior information, such as <span class="math inline">\(\sigma\)</span>. For the problem <span class="math inline">\(y=bx\)</span> this leads to the following cost function: <span class="math inline">\(\displaystyle \tilde{S}_{revised}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}\)</span>.</p>
+Use calculus to determine the optimum value for <span class="math inline">\(\tilde{S}_{revised}(b)\)</span>, expressed in terms of <span class="math inline">\(\tilde{b}_{revised} = f(\sigma)\)</span> (your optimum value will be a function of <span class="math inline">\(\sigma\)</span>). What happens to <span class="math inline">\(\tilde{b}_{revised}\)</span> as <span class="math inline">\(\sigma \rightarrow \infty\)</span>?
+</div>
+
+<div class="exercise">
+<p><span id="exr:log-cost-verify" class="exercise"><strong>Exercise 10.6  </strong></span>For this problem you will minimize some generic functions.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Using calculus, verify that the optimum value of <span class="math inline">\(y=ax^{2}+bx+c\)</span> occurs at <span class="math inline">\(\displaystyle x=-\frac{b}{2a}\)</span>. (You can assume <span class="math inline">\(a&gt;0\)</span>.)</li>
+<li>Using calculus, verify that a critical point of <span class="math inline">\(z=e^{-(ax^{2}+bx+c)^{2}}\)</span> also occurs at <span class="math inline">\(\displaystyle x=-\frac{b}{2a}\)</span>. <em>Note: this is a good exercise to practice your differentiation skills!</em></li>
+<li>Algebraically show that <span class="math inline">\(\ln(z) = -y\)</span>.</li>
+<li>Explain why <span class="math inline">\(y\)</span> is similar to a cost function <span class="math inline">\(S(b)\)</span> and <span class="math inline">\(z\)</span> is similar to a likelihood function.</li>
+</ol>
+</div>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-139" class="exercise"><strong>Exercise 10.7  </strong></span>This problem continues the re-election of the incumbent President and viewpoint on the economy in Example <a href="cost-fns-10.html#exm:president-pop">10.1</a>. Determine the following conditional probabilities:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Determine the probability that you <strong>voted for the incumbent President</strong> given that you have a <strong>pessimistic view on the economy</strong>.</li>
+<li>Determine the probability that you <strong>did not vote for the incumbent President</strong> given that you have an <strong>pessimistic view on the economy</strong>.</li>
+<li>Determine the probability that you <strong>did not vote for the incumbent President</strong> given that you have an <strong>optimistic view on the economy</strong>.</li>
+<li>Determine the probability that you have an <strong>pessimistic view on the economy</strong> given that you <strong>voted for the incumbent President</strong>.</li>
+<li>Determine the probability that you have an <strong>optimistic view on the economy</strong> given that you <strong>did not vote for the incumbent President</strong>.
+</div></li>
+</ol>
+
+<div class="exercise">
+<p><span id="exr:unnamed-chunk-140" class="exercise"><strong>Exercise 10.8  </strong></span>Incumbents have an advantage in re-election due to wider name recognition, which may boost their re-election chances, as shown in the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Probability</th>
+<th align="center">Being elected</th>
+<th align="left">Not being elected</th>
+<th align="left">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Having name recognition</td>
+<td align="center">0.55</td>
+<td align="left">0.25</td>
+<td align="left">0.80</td>
+</tr>
+<tr class="even">
+<td align="center">Not having name recognition</td>
+<td align="center">0.05</td>
+<td align="left">0.15</td>
+<td align="left">0.20</td>
+</tr>
+<tr class="odd">
+<td align="center">Total</td>
+<td align="center">0.60</td>
+<td align="left">0.40</td>
+<td align="left">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>Use Bayes’ Rule to determine the probability of being elected, given that you have name recognition.</p>
+</div>
+
+<div class="exercise">
+<span id="exr:unnamed-chunk-141" class="exercise"><strong>Exercise 10.9  </strong></span>Demonstrate how Bayes’ Rule differs from the law of conditional probability.
+</div>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-berg_mathematical_2011" class="csl-entry">
+Berg, Hugo van den. 2011. <em>Mathematical <span>Models</span> of <span>Biological Systems</span></em>. <span>Oxford, New York</span>: <span>Oxford University Press</span>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="30">
+<li id="fn30"><p>To be fair, that means the data would be perfectly on a line; not too interesting of a problem, right?<a href="cost-fns-10.html#fnref30" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="exercises-8.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="cost-functions-likelihood-functions-in-disguise.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="likelihood-09.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bootstrap-11.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
