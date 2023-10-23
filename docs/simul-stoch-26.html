@@ -5,20 +5,19 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 26 Statistics of a Stochastic Differential Equation | Exploring Modeling with Data and Differential Equations Using R</title>
-  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="description" content="A textbook used for combining differential equation models with data using R." />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 26 Statistics of a Stochastic Differential Equation | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
-  
-  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta property="og:description" content="A textbook used for combining differential equation models with data using R." />
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 26 Statistics of a Stochastic Differential Equation | Exploring Modeling with Data and Differential Equations Using R" />
   
-  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="twitter:description" content="A textbook used for combining differential equation models with data using R." />
   
 
 <meta name="author" content="John M. Zobitz" />
@@ -32,8 +31,8 @@
   
 <link rel="prev" href="sdes-25.html"/>
 <link rel="next" href="solvingSDEs-27.html"/>
-<script src="libs/header-attrs-2.14/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,12 +48,13 @@
 
 
 
-
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -95,7 +95,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -108,7 +108,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -122,6 +122,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 <style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
@@ -163,234 +167,234 @@ div.csl-indent {
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#welcome">Welcome<span></span></a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li><a href="index.html#computational-code">Computational code<span></span></a></li>
-<li><a href="index.html#questions-comments-issues">Questions? Comments? Issues?<span></span></a></li>
-<li><a href="index.html#about-the-cover">About the cover<span></span></a></li>
-<li><a href="index.html#acknowledgments">Acknowledgments<span></span></a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#computational-code"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#questions-comments-issues"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-the-cover"><i class="fa fa-check"></i>About the cover</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgments"><i class="fa fa-check"></i>Acknowledgments</a></li>
 </ul></li>
-<li class="part"><span><b>I Models with Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data<span></span></a>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born<span></span></a></li>
-<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease<span></span></a></li>
-<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions<span></span></a></li>
-<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?<span></span></a></li>
-<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here<span></span></a></li>
-<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R<span></span></a>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio<span></span></a></li>
-<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages<span></span></a></li>
-<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets<span></span></a></li>
-<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions<span></span></a></li>
-<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code></a></li>
+<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code></a></li>
+<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change<span></span></a>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action<span></span></a></li>
-<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares<span></span></a></li>
-<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses<span></span></a></li>
-<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions</a></li>
+<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares</a></li>
+<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method<span></span></a>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation<span></span></a></li>
-<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation<span></span></a></li>
-<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method<span></span></a></li>
-<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond<span></span></a></li>
-<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation</a></li>
+<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation</a></li>
+<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond</a></li>
+<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions<span></span></a>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations<span></span></a></li>
-<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations</a></li>
+<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations<span></span></a>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines<span></span></a></li>
-<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes<span></span></a></li>
-<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code><span></span></a></li>
-<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields<span></span></a></li>
-<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines</a></li>
+<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes</a></li>
+<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields</a></li>
+<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations<span></span></a>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution<span></span></a></li>
-<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations<span></span></a></li>
-<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors<span></span></a></li>
-<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations<span></span></a></li>
-<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution</a></li>
+<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations</a></li>
+<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations</a></li>
+<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>II Parameterizing Models with Data<span></span></b></span></li>
-<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting<span></span></a>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?<span></span></a></li>
-<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data<span></span></a></li>
-<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models<span></span></a></li>
-<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion<span></span></a></li>
-<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation</a></li>
+<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models</a></li>
+<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion</a></li>
+<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions<span></span></a>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset<span></span></a></li>
-<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions<span></span></a></li>
-<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression<span></span></a></li>
-<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces<span></span></a></li>
-<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward<span></span></a></li>
-<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset</a></li>
+<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions</a></li>
+<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward</a></li>
+<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions qnd Bayes’ Rule<span></span></a>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions and Bayes’ Rule</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals<span></span></a></li>
-<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function<span></span></a></li>
-<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule<span></span></a></li>
-<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action<span></span></a></li>
-<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps<span></span></a></li>
-<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals</a></li>
+<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function</a></li>
+<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule</a></li>
+<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action</a></li>
+<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps</a></li>
+<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method<span></span></a>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization<span></span></a></li>
-<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions<span></span></a></li>
-<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps<span></span></a></li>
-<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization</a></li>
+<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm<span></span></a>
+<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog<span></span></a></li>
-<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation</a></li>
+<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation</a></li>
+<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation<span></span></a>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC<span></span></a></li>
-<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model<span></span></a></li>
-<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model<span></span></a></li>
-<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code<span></span></a></li>
-<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC<span></span></a></li>
-<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC</a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model</a></li>
+<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model</a></li>
+<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code</a></li>
+<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC</a></li>
+<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria<span></span></a>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines<span></span></a></li>
-<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models<span></span></a></li>
-<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes<span></span></a></li>
-<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines</a></li>
+<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models</a></li>
+<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
+<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>III Stability Analysis for Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations<span></span></a>
+<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation<span></span></a></li>
-<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane<span></span></a></li>
-<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability<span></span></a></li>
-<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation</a></li>
+<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane</a></li>
+<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability</a></li>
+<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations<span></span></a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations<span></span></a></li>
-<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane<span></span></a></li>
-<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines<span></span></a></li>
-<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution<span></span></a></li>
-<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane<span></span></a></li>
-<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations</a></li>
+<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane</a></li>
+<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines</a></li>
+<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution</a></li>
+<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane</a></li>
+<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian<span></span></a>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations<span></span></a></li>
-<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations<span></span></a></li>
-<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix<span></span></a></li>
-<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations</a></li>
+<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations</a></li>
+<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix</a></li>
+<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?<span></span></a>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction<span></span></a></li>
-<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions<span></span></a></li>
-<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors<span></span></a></li>
-<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?<span></span></a></li>
-<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions</a></li>
+<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis<span></span></a>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)<span></span></a></li>
-<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant<span></span></a></li>
-<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis<span></span></a></li>
-<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.<span></span></a></li>
-<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)</a></li>
+<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant</a></li>
+<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis</a></li>
+<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.</a></li>
+<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation<span></span></a>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
 <ul>
-<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations<span></span></a></li>
-<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations<span></span></a></li>
-<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles<span></span></a></li>
-<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools<span></span></a></li>
-<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles</a></li>
+<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools</a></li>
+<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>IV Stochastic Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems<span></span></a>
+<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects<span></span></a></li>
-<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system<span></span></a></li>
-<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity<span></span></a></li>
-<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations<span></span></a></li>
-<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects</a></li>
+<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system</a></li>
+<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity</a></li>
+<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations</a></li>
+<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness<span></span></a>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages<span></span></a></li>
-<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration<span></span></a></li>
-<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages</a></li>
+<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration</a></li>
+<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks<span></span></a>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
 <ul>
-<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line<span></span></a></li>
-<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages<span></span></a></li>
-<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics<span></span></a></li>
-<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion<span></span></a></li>
-<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages</a></li>
+<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion</a></li>
+<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion<span></span></a>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion</a>
 <ul>
-<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux<span></span></a></li>
-<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion<span></span></a></li>
-<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
+<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion</a></li>
+<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model<span></span></a></li>
-<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method<span></span></a></li>
-<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters<span></span></a></li>
-<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations<span></span></a></li>
-<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method</a></li>
+<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations</a></li>
+<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation<span></span></a>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation</a>
 <ul>
-<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process<span></span></a></li>
-<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes<span></span></a></li>
-<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up<span></span></a></li>
-<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process</a></li>
+<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes</a></li>
+<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up</a></li>
+<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation<span></span></a></li>
-<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end<span></span></a></li>
-<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation</a></li>
+<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end</a></li>
+<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises</a></li>
 </ul></li>
-<li><a href="references.html#references">References<span></span></a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
@@ -426,28 +430,28 @@ dX = a(X,t) \; dt + b(X,t) \, dW(t) \tag{26.1}
 <div id="a-purely-stochastic-process" class="section level3 hasAnchor" number="26.1.1">
 <h3><span class="header-section-number">26.1.1</span> A purely stochastic process<a href="simul-stoch-26.html#a-purely-stochastic-process" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The first example is when <span class="math inline">\(a(X,t)=0\)</span> and <span class="math inline">\(b(X,t)=1\)</span> (a constant) in Equation <a href="simul-stoch-26.html#eq:general-sde-26">(26.1)</a>, so <span class="math inline">\(\displaystyle dX = dW(t)\)</span>. We call this example a purely stochastic process. Let’s code this up using the function <code>sde</code> to examine one realization (Figure <a href="simul-stoch-26.html#fig:b-once">26.1</a>) with <span class="math inline">\(\Delta t =0.2\)</span> and <span class="math inline">\(X(0)=0\)</span>.</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="simul-stoch-26.html#cb110-1" aria-hidden="true" tabindex="-1"></a>sde <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
-<span id="cb110-2"><a href="simul-stoch-26.html#cb110-2" aria-hidden="true" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
-<span id="cb110-3"><a href="simul-stoch-26.html#cb110-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-4"><a href="simul-stoch-26.html#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set up vector of results</span></span>
-<span id="cb110-5"><a href="simul-stoch-26.html#cb110-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
-<span id="cb110-6"><a href="simul-stoch-26.html#cb110-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-7"><a href="simul-stoch-26.html#cb110-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Iterate through this random process.</span></span>
-<span id="cb110-8"><a href="simul-stoch-26.html#cb110-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
-<span id="cb110-9"><a href="simul-stoch-26.html#cb110-9" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
-<span id="cb110-10"><a href="simul-stoch-26.html#cb110-10" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb110-11"><a href="simul-stoch-26.html#cb110-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-12"><a href="simul-stoch-26.html#cb110-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the time vector</span></span>
-<span id="cb110-13"><a href="simul-stoch-26.html#cb110-13" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
-<span id="cb110-14"><a href="simul-stoch-26.html#cb110-14" aria-hidden="true" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
-<span id="cb110-15"><a href="simul-stoch-26.html#cb110-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
-<span id="cb110-16"><a href="simul-stoch-26.html#cb110-16" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb110-17"><a href="simul-stoch-26.html#cb110-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-18"><a href="simul-stoch-26.html#cb110-18" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)</span>
-<span id="cb110-19"><a href="simul-stoch-26.html#cb110-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb110-20"><a href="simul-stoch-26.html#cb110-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out) <span class="sc">+</span></span>
-<span id="cb110-21"><a href="simul-stoch-26.html#cb110-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code></pre></div>
-<div class="figure"><span id="fig:b-once"></span>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="simul-stoch-26.html#cb113-1" tabindex="-1"></a>sde <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
+<span id="cb113-2"><a href="simul-stoch-26.html#cb113-2" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
+<span id="cb113-3"><a href="simul-stoch-26.html#cb113-3" tabindex="-1"></a></span>
+<span id="cb113-4"><a href="simul-stoch-26.html#cb113-4" tabindex="-1"></a>  <span class="co"># Set up vector of results</span></span>
+<span id="cb113-5"><a href="simul-stoch-26.html#cb113-5" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
+<span id="cb113-6"><a href="simul-stoch-26.html#cb113-6" tabindex="-1"></a></span>
+<span id="cb113-7"><a href="simul-stoch-26.html#cb113-7" tabindex="-1"></a>  <span class="co"># Iterate through this random process.</span></span>
+<span id="cb113-8"><a href="simul-stoch-26.html#cb113-8" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
+<span id="cb113-9"><a href="simul-stoch-26.html#cb113-9" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb113-10"><a href="simul-stoch-26.html#cb113-10" tabindex="-1"></a>  }</span>
+<span id="cb113-11"><a href="simul-stoch-26.html#cb113-11" tabindex="-1"></a></span>
+<span id="cb113-12"><a href="simul-stoch-26.html#cb113-12" tabindex="-1"></a>  <span class="co"># Create the time vector</span></span>
+<span id="cb113-13"><a href="simul-stoch-26.html#cb113-13" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
+<span id="cb113-14"><a href="simul-stoch-26.html#cb113-14" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
+<span id="cb113-15"><a href="simul-stoch-26.html#cb113-15" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
+<span id="cb113-16"><a href="simul-stoch-26.html#cb113-16" tabindex="-1"></a>}</span>
+<span id="cb113-17"><a href="simul-stoch-26.html#cb113-17" tabindex="-1"></a></span>
+<span id="cb113-18"><a href="simul-stoch-26.html#cb113-18" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)</span>
+<span id="cb113-19"><a href="simul-stoch-26.html#cb113-19" tabindex="-1"></a></span>
+<span id="cb113-20"><a href="simul-stoch-26.html#cb113-20" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out) <span class="sc">+</span></span>
+<span id="cb113-21"><a href="simul-stoch-26.html#cb113-21" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:b-once"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/b-once-1.png" alt="One realization of the stochastic differential equation $dX = 2 \; dW(t)$." width="672" />
 <p class="caption">
 FIGURE 26.1: One realization of the stochastic differential equation <span class="math inline">\(dX = 2 \; dW(t)\)</span>.
@@ -460,40 +464,40 @@ FIGURE 26.1: One realization of the stochastic differential equation <span class
 <code>t &lt;- seq(0,length.out=number_steps,by=dt)</code>.</li>
 </ol>
 <p>When we repeat this process several times and plot of the results, we have the following ensemble average in Figure <a href="simul-stoch-26.html#fig:b-many">26.2</a>:</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="simul-stoch-26.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb111-2"><a href="simul-stoch-26.html#cb111-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
-<span id="cb111-3"><a href="simul-stoch-26.html#cb111-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-4"><a href="simul-stoch-26.html#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb111-5"><a href="simul-stoch-26.html#cb111-5" aria-hidden="true" tabindex="-1"></a>sde_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb111-6"><a href="simul-stoch-26.html#cb111-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb111-7"><a href="simul-stoch-26.html#cb111-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb111-8"><a href="simul-stoch-26.html#cb111-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb111-9"><a href="simul-stoch-26.html#cb111-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-10"><a href="simul-stoch-26.html#cb111-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-11"><a href="simul-stoch-26.html#cb111-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
-<span id="cb111-12"><a href="simul-stoch-26.html#cb111-12" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb111-13"><a href="simul-stoch-26.html#cb111-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-14"><a href="simul-stoch-26.html#cb111-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-15"><a href="simul-stoch-26.html#cb111-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
-<span id="cb111-16"><a href="simul-stoch-26.html#cb111-16" aria-hidden="true" tabindex="-1"></a>summarized_sde <span class="ot">&lt;-</span> sde_run <span class="sc">%&gt;%</span></span>
-<span id="cb111-17"><a href="simul-stoch-26.html#cb111-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
-<span id="cb111-18"><a href="simul-stoch-26.html#cb111-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb111-19"><a href="simul-stoch-26.html#cb111-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
-<span id="cb111-20"><a href="simul-stoch-26.html#cb111-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
-<span id="cb111-21"><a href="simul-stoch-26.html#cb111-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># remove NA values</span></span>
-<span id="cb111-22"><a href="simul-stoch-26.html#cb111-22" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb111-23"><a href="simul-stoch-26.html#cb111-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
-<span id="cb111-24"><a href="simul-stoch-26.html#cb111-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb111-25"><a href="simul-stoch-26.html#cb111-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb111-26"><a href="simul-stoch-26.html#cb111-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
-<span id="cb111-27"><a href="simul-stoch-26.html#cb111-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
-<span id="cb111-28"><a href="simul-stoch-26.html#cb111-28" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb111-29"><a href="simul-stoch-26.html#cb111-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-30"><a href="simul-stoch-26.html#cb111-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the plot</span></span>
-<span id="cb111-31"><a href="simul-stoch-26.html#cb111-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde) <span class="sc">+</span></span>
-<span id="cb111-32"><a href="simul-stoch-26.html#cb111-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb111-33"><a href="simul-stoch-26.html#cb111-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:b-many"></span>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="simul-stoch-26.html#cb114-1" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb114-2"><a href="simul-stoch-26.html#cb114-2" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
+<span id="cb114-3"><a href="simul-stoch-26.html#cb114-3" tabindex="-1"></a></span>
+<span id="cb114-4"><a href="simul-stoch-26.html#cb114-4" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb114-5"><a href="simul-stoch-26.html#cb114-5" tabindex="-1"></a>sde_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb114-6"><a href="simul-stoch-26.html#cb114-6" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb114-7"><a href="simul-stoch-26.html#cb114-7" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb114-8"><a href="simul-stoch-26.html#cb114-8" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb114-9"><a href="simul-stoch-26.html#cb114-9" tabindex="-1"></a></span>
+<span id="cb114-10"><a href="simul-stoch-26.html#cb114-10" tabindex="-1"></a></span>
+<span id="cb114-11"><a href="simul-stoch-26.html#cb114-11" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb114-12"><a href="simul-stoch-26.html#cb114-12" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb114-13"><a href="simul-stoch-26.html#cb114-13" tabindex="-1"></a></span>
+<span id="cb114-14"><a href="simul-stoch-26.html#cb114-14" tabindex="-1"></a></span>
+<span id="cb114-15"><a href="simul-stoch-26.html#cb114-15" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
+<span id="cb114-16"><a href="simul-stoch-26.html#cb114-16" tabindex="-1"></a>summarized_sde <span class="ot">&lt;-</span> sde_run <span class="sc">%&gt;%</span></span>
+<span id="cb114-17"><a href="simul-stoch-26.html#cb114-17" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
+<span id="cb114-18"><a href="simul-stoch-26.html#cb114-18" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb114-19"><a href="simul-stoch-26.html#cb114-19" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb114-20"><a href="simul-stoch-26.html#cb114-20" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb114-21"><a href="simul-stoch-26.html#cb114-21" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># remove NA values</span></span>
+<span id="cb114-22"><a href="simul-stoch-26.html#cb114-22" tabindex="-1"></a>    ),</span>
+<span id="cb114-23"><a href="simul-stoch-26.html#cb114-23" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb114-24"><a href="simul-stoch-26.html#cb114-24" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb114-25"><a href="simul-stoch-26.html#cb114-25" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb114-26"><a href="simul-stoch-26.html#cb114-26" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
+<span id="cb114-27"><a href="simul-stoch-26.html#cb114-27" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
+<span id="cb114-28"><a href="simul-stoch-26.html#cb114-28" tabindex="-1"></a>  )</span>
+<span id="cb114-29"><a href="simul-stoch-26.html#cb114-29" tabindex="-1"></a></span>
+<span id="cb114-30"><a href="simul-stoch-26.html#cb114-30" tabindex="-1"></a><span class="co"># Make the plot</span></span>
+<span id="cb114-31"><a href="simul-stoch-26.html#cb114-31" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde) <span class="sc">+</span></span>
+<span id="cb114-32"><a href="simul-stoch-26.html#cb114-32" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb114-33"><a href="simul-stoch-26.html#cb114-33" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:b-many"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/b-many-1.png" alt="Ensemble average of 1000 realizations of the stochastic differential equation $dX = dW(t)$." width="672" />
 <p class="caption">
 FIGURE 26.2: Ensemble average of 1000 realizations of the stochastic differential equation <span class="math inline">\(dX = dW(t)\)</span>.
@@ -504,59 +508,59 @@ FIGURE 26.2: Ensemble average of 1000 realizations of the stochastic differentia
 <div id="stochastics-with-drift" class="section level3 hasAnchor" number="26.1.2">
 <h3><span class="header-section-number">26.1.2</span> Stochastics with drift<a href="simul-stoch-26.html#stochastics-with-drift" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The second example is a modification where <span class="math inline">\(a(X,t)=2\)</span> and <span class="math inline">\(b(X,t)=1\)</span> in Equation <a href="simul-stoch-26.html#eq:general-sde-26">(26.1)</a>, yielding <span class="math inline">\(\displaystyle dX = 0.2 \; dt + dW(t)\)</span>. To simulate this stochastic process you can easily modify this approach by modifying the function <code>sde</code>, which I will call <code>sde_v2</code>. The code to simulate the stochastic process and visualize the ensemble average (Figure <a href="simul-stoch-26.html#fig:a-ensemble">26.3</a>) is shown below:</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="simul-stoch-26.html#cb112-1" aria-hidden="true" tabindex="-1"></a>sde_v2 <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
-<span id="cb112-2"><a href="simul-stoch-26.html#cb112-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb112-3"><a href="simul-stoch-26.html#cb112-3" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># The value of b</span></span>
-<span id="cb112-4"><a href="simul-stoch-26.html#cb112-4" aria-hidden="true" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
-<span id="cb112-5"><a href="simul-stoch-26.html#cb112-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-6"><a href="simul-stoch-26.html#cb112-6" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Set up vector of results</span></span>
-<span id="cb112-7"><a href="simul-stoch-26.html#cb112-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
-<span id="cb112-8"><a href="simul-stoch-26.html#cb112-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-9"><a href="simul-stoch-26.html#cb112-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
-<span id="cb112-10"><a href="simul-stoch-26.html#cb112-10" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> a <span class="sc">*</span> dt <span class="sc">+</span> b <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
-<span id="cb112-11"><a href="simul-stoch-26.html#cb112-11" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb112-12"><a href="simul-stoch-26.html#cb112-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-13"><a href="simul-stoch-26.html#cb112-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the time vectror</span></span>
-<span id="cb112-14"><a href="simul-stoch-26.html#cb112-14" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
-<span id="cb112-15"><a href="simul-stoch-26.html#cb112-15" aria-hidden="true" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
-<span id="cb112-16"><a href="simul-stoch-26.html#cb112-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
-<span id="cb112-17"><a href="simul-stoch-26.html#cb112-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb112-18"><a href="simul-stoch-26.html#cb112-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-19"><a href="simul-stoch-26.html#cb112-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-20"><a href="simul-stoch-26.html#cb112-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb112-21"><a href="simul-stoch-26.html#cb112-21" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
-<span id="cb112-22"><a href="simul-stoch-26.html#cb112-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-23"><a href="simul-stoch-26.html#cb112-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb112-24"><a href="simul-stoch-26.html#cb112-24" aria-hidden="true" tabindex="-1"></a>sde_v2_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb112-25"><a href="simul-stoch-26.html#cb112-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb112-26"><a href="simul-stoch-26.html#cb112-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde_v2</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb112-27"><a href="simul-stoch-26.html#cb112-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb112-28"><a href="simul-stoch-26.html#cb112-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-29"><a href="simul-stoch-26.html#cb112-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-30"><a href="simul-stoch-26.html#cb112-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
-<span id="cb112-31"><a href="simul-stoch-26.html#cb112-31" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb112-32"><a href="simul-stoch-26.html#cb112-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-33"><a href="simul-stoch-26.html#cb112-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-34"><a href="simul-stoch-26.html#cb112-34" aria-hidden="true" tabindex="-1"></a><span class="do">### Summarize the variables</span></span>
-<span id="cb112-35"><a href="simul-stoch-26.html#cb112-35" aria-hidden="true" tabindex="-1"></a>summarized_sde_v2 <span class="ot">&lt;-</span> sde_v2_run <span class="sc">%&gt;%</span></span>
-<span id="cb112-36"><a href="simul-stoch-26.html#cb112-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
-<span id="cb112-37"><a href="simul-stoch-26.html#cb112-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb112-38"><a href="simul-stoch-26.html#cb112-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
-<span id="cb112-39"><a href="simul-stoch-26.html#cb112-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
-<span id="cb112-40"><a href="simul-stoch-26.html#cb112-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># Remove NA values</span></span>
-<span id="cb112-41"><a href="simul-stoch-26.html#cb112-41" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb112-42"><a href="simul-stoch-26.html#cb112-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
-<span id="cb112-43"><a href="simul-stoch-26.html#cb112-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb112-44"><a href="simul-stoch-26.html#cb112-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb112-45"><a href="simul-stoch-26.html#cb112-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
-<span id="cb112-46"><a href="simul-stoch-26.html#cb112-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
-<span id="cb112-47"><a href="simul-stoch-26.html#cb112-47" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb112-48"><a href="simul-stoch-26.html#cb112-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb112-49"><a href="simul-stoch-26.html#cb112-49" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
-<span id="cb112-50"><a href="simul-stoch-26.html#cb112-50" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde_v2) <span class="sc">+</span></span>
-<span id="cb112-51"><a href="simul-stoch-26.html#cb112-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
-<span id="cb112-52"><a href="simul-stoch-26.html#cb112-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:a-ensemble"></span>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="simul-stoch-26.html#cb115-1" tabindex="-1"></a>sde_v2 <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
+<span id="cb115-2"><a href="simul-stoch-26.html#cb115-2" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb115-3"><a href="simul-stoch-26.html#cb115-3" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># The value of b</span></span>
+<span id="cb115-4"><a href="simul-stoch-26.html#cb115-4" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
+<span id="cb115-5"><a href="simul-stoch-26.html#cb115-5" tabindex="-1"></a></span>
+<span id="cb115-6"><a href="simul-stoch-26.html#cb115-6" tabindex="-1"></a>  <span class="do">### Set up vector of results</span></span>
+<span id="cb115-7"><a href="simul-stoch-26.html#cb115-7" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
+<span id="cb115-8"><a href="simul-stoch-26.html#cb115-8" tabindex="-1"></a></span>
+<span id="cb115-9"><a href="simul-stoch-26.html#cb115-9" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
+<span id="cb115-10"><a href="simul-stoch-26.html#cb115-10" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> a <span class="sc">*</span> dt <span class="sc">+</span> b <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb115-11"><a href="simul-stoch-26.html#cb115-11" tabindex="-1"></a>  }</span>
+<span id="cb115-12"><a href="simul-stoch-26.html#cb115-12" tabindex="-1"></a></span>
+<span id="cb115-13"><a href="simul-stoch-26.html#cb115-13" tabindex="-1"></a>  <span class="co"># Create the time vectror</span></span>
+<span id="cb115-14"><a href="simul-stoch-26.html#cb115-14" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
+<span id="cb115-15"><a href="simul-stoch-26.html#cb115-15" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
+<span id="cb115-16"><a href="simul-stoch-26.html#cb115-16" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
+<span id="cb115-17"><a href="simul-stoch-26.html#cb115-17" tabindex="-1"></a>}</span>
+<span id="cb115-18"><a href="simul-stoch-26.html#cb115-18" tabindex="-1"></a></span>
+<span id="cb115-19"><a href="simul-stoch-26.html#cb115-19" tabindex="-1"></a></span>
+<span id="cb115-20"><a href="simul-stoch-26.html#cb115-20" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb115-21"><a href="simul-stoch-26.html#cb115-21" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
+<span id="cb115-22"><a href="simul-stoch-26.html#cb115-22" tabindex="-1"></a></span>
+<span id="cb115-23"><a href="simul-stoch-26.html#cb115-23" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb115-24"><a href="simul-stoch-26.html#cb115-24" tabindex="-1"></a>sde_v2_run <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb115-25"><a href="simul-stoch-26.html#cb115-25" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb115-26"><a href="simul-stoch-26.html#cb115-26" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde_v2</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb115-27"><a href="simul-stoch-26.html#cb115-27" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb115-28"><a href="simul-stoch-26.html#cb115-28" tabindex="-1"></a></span>
+<span id="cb115-29"><a href="simul-stoch-26.html#cb115-29" tabindex="-1"></a></span>
+<span id="cb115-30"><a href="simul-stoch-26.html#cb115-30" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb115-31"><a href="simul-stoch-26.html#cb115-31" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb115-32"><a href="simul-stoch-26.html#cb115-32" tabindex="-1"></a></span>
+<span id="cb115-33"><a href="simul-stoch-26.html#cb115-33" tabindex="-1"></a></span>
+<span id="cb115-34"><a href="simul-stoch-26.html#cb115-34" tabindex="-1"></a><span class="do">### Summarize the variables</span></span>
+<span id="cb115-35"><a href="simul-stoch-26.html#cb115-35" tabindex="-1"></a>summarized_sde_v2 <span class="ot">&lt;-</span> sde_v2_run <span class="sc">%&gt;%</span></span>
+<span id="cb115-36"><a href="simul-stoch-26.html#cb115-36" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
+<span id="cb115-37"><a href="simul-stoch-26.html#cb115-37" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb115-38"><a href="simul-stoch-26.html#cb115-38" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb115-39"><a href="simul-stoch-26.html#cb115-39" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb115-40"><a href="simul-stoch-26.html#cb115-40" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># Remove NA values</span></span>
+<span id="cb115-41"><a href="simul-stoch-26.html#cb115-41" tabindex="-1"></a>    ),</span>
+<span id="cb115-42"><a href="simul-stoch-26.html#cb115-42" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb115-43"><a href="simul-stoch-26.html#cb115-43" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb115-44"><a href="simul-stoch-26.html#cb115-44" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb115-45"><a href="simul-stoch-26.html#cb115-45" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
+<span id="cb115-46"><a href="simul-stoch-26.html#cb115-46" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
+<span id="cb115-47"><a href="simul-stoch-26.html#cb115-47" tabindex="-1"></a>  )</span>
+<span id="cb115-48"><a href="simul-stoch-26.html#cb115-48" tabindex="-1"></a></span>
+<span id="cb115-49"><a href="simul-stoch-26.html#cb115-49" tabindex="-1"></a><span class="do">### Make the plot</span></span>
+<span id="cb115-50"><a href="simul-stoch-26.html#cb115-50" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde_v2) <span class="sc">+</span></span>
+<span id="cb115-51"><a href="simul-stoch-26.html#cb115-51" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb115-52"><a href="simul-stoch-26.html#cb115-52" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:a-ensemble"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/a-ensemble-1.png" alt="Ensemble average of 1000 realizations of the stochastic process $dX = 2 \; dt + dW(t)$." width="672" />
 <p class="caption">
 FIGURE 26.3: Ensemble average of 1000 realizations of the stochastic process <span class="math inline">\(dX = 2 \; dt + dW(t)\)</span>.
@@ -607,7 +611,7 @@ FIGURE 26.3: Ensemble average of 1000 realizations of the stochastic process <sp
 </tbody>
 </table>
 <p>It also may be helpful to think of these changes on the following number line (Figure <a href="simul-stoch-26.html#fig:random-walk-stoch-26">26.4</a>), similar to how we examined the random walk number line (or Markov process) from Chapter <a href="random-walks-23.html#random-walks-23">23</a>.</p>
-<div class="figure"><span id="fig:random-walk-stoch-26"></span>
+<div class="figure"><span style="display:block;" id="fig:random-walk-stoch-26"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/random-walk-stoch-26-1.png" alt="A random walk for Equation \@ref(eq:log-sde-diff-26)." width="672" />
 <p class="caption">
 FIGURE 26.4: A random walk for Equation <a href="simul-stoch-26.html#eq:log-sde-diff-26">(26.3)</a>.
@@ -635,103 +639,103 @@ FIGURE 26.4: A random walk for Equation <a href="simul-stoch-26.html#eq:log-sde-
 <p><span class="math display" id="eq:log-markov-26">\[\begin{equation}
 \begin{split}
 dX &amp;= \mu + \sigma \; dW(t) \\
- &amp;= \left( r X - \frac{rX^{2}}{K} \right) \; dt + \sqrt{\left(  r X  +  \frac{rX^{2}}{K}  \right)} \; dW(t)
+&amp;= \left( r X - \frac{rX^{2}}{K} \right) \; dt + \sqrt{\left(  r X  +  \frac{rX^{2}}{K}  \right)} \; dW(t)
 \end{split} \tag{26.6}
 \end{equation}\]</span></p>
 <p>To simulate this stochastic process we will modify <code>euler_stochastic</code> from Chapter <a href="sdes-25.html#sdes-25">25</a>, appending <code>_log</code> to denote “logistic” for each of the parts and applying the workflow (Do once <span class="math inline">\(\rightarrow\)</span> Do several times <span class="math inline">\(\rightarrow\)</span> Summarize <span class="math inline">\(\rightarrow\)</span> Visualize). One realization of this stochastic process is shown in Figure <a href="simul-stoch-26.html#fig:log-sde-26">26.5</a>.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="simul-stoch-26.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
-<span id="cb113-2"><a href="simul-stoch-26.html#cb113-2" aria-hidden="true" tabindex="-1"></a>deterministic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r <span class="sc">*</span> x <span class="sc">-</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K)</span>
-<span id="cb113-3"><a href="simul-stoch-26.html#cb113-3" aria-hidden="true" tabindex="-1"></a>stochastic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> <span class="fu">sqrt</span>(r <span class="sc">*</span> x <span class="sc">+</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K))</span>
-<span id="cb113-4"><a href="simul-stoch-26.html#cb113-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb113-5"><a href="simul-stoch-26.html#cb113-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
-<span id="cb113-6"><a href="simul-stoch-26.html#cb113-6" aria-hidden="true" tabindex="-1"></a>init_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x =</span> <span class="dv">3</span>)</span>
-<span id="cb113-7"><a href="simul-stoch-26.html#cb113-7" aria-hidden="true" tabindex="-1"></a>parameters_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="fl">0.8</span>, <span class="at">K =</span> <span class="dv">100</span>)</span>
-<span id="cb113-8"><a href="simul-stoch-26.html#cb113-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb113-9"><a href="simul-stoch-26.html#cb113-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
-<span id="cb113-10"><a href="simul-stoch-26.html#cb113-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span> <span class="co"># timestep length</span></span>
-<span id="cb113-11"><a href="simul-stoch-26.html#cb113-11" aria-hidden="true" tabindex="-1"></a>time_steps_log <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="co"># must be a number greater than 1</span></span>
-<span id="cb113-12"><a href="simul-stoch-26.html#cb113-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb113-13"><a href="simul-stoch-26.html#cb113-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the diffusion coefficient</span></span>
-<span id="cb113-14"><a href="simul-stoch-26.html#cb113-14" aria-hidden="true" tabindex="-1"></a>D_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb113-15"><a href="simul-stoch-26.html#cb113-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb113-16"><a href="simul-stoch-26.html#cb113-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
-<span id="cb113-17"><a href="simul-stoch-26.html#cb113-17" aria-hidden="true" tabindex="-1"></a>out_log <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(</span>
-<span id="cb113-18"><a href="simul-stoch-26.html#cb113-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
-<span id="cb113-19"><a href="simul-stoch-26.html#cb113-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
-<span id="cb113-20"><a href="simul-stoch-26.html#cb113-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_condition =</span> init_log,</span>
-<span id="cb113-21"><a href="simul-stoch-26.html#cb113-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> parameters_log,</span>
-<span id="cb113-22"><a href="simul-stoch-26.html#cb113-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb113-23"><a href="simul-stoch-26.html#cb113-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_steps =</span> time_steps_log,</span>
-<span id="cb113-24"><a href="simul-stoch-26.html#cb113-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> D_log</span>
-<span id="cb113-25"><a href="simul-stoch-26.html#cb113-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb113-26"><a href="simul-stoch-26.html#cb113-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb113-27"><a href="simul-stoch-26.html#cb113-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
-<span id="cb113-28"><a href="simul-stoch-26.html#cb113-28" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_log) <span class="sc">+</span></span>
-<span id="cb113-29"><a href="simul-stoch-26.html#cb113-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code></pre></div>
-<div class="figure"><span id="fig:log-sde-26"></span>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="simul-stoch-26.html#cb116-1" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
+<span id="cb116-2"><a href="simul-stoch-26.html#cb116-2" tabindex="-1"></a>deterministic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r <span class="sc">*</span> x <span class="sc">-</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K)</span>
+<span id="cb116-3"><a href="simul-stoch-26.html#cb116-3" tabindex="-1"></a>stochastic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> <span class="fu">sqrt</span>(r <span class="sc">*</span> x <span class="sc">+</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K))</span>
+<span id="cb116-4"><a href="simul-stoch-26.html#cb116-4" tabindex="-1"></a></span>
+<span id="cb116-5"><a href="simul-stoch-26.html#cb116-5" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb116-6"><a href="simul-stoch-26.html#cb116-6" tabindex="-1"></a>init_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x =</span> <span class="dv">3</span>)</span>
+<span id="cb116-7"><a href="simul-stoch-26.html#cb116-7" tabindex="-1"></a>parameters_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="fl">0.8</span>, <span class="at">K =</span> <span class="dv">100</span>)</span>
+<span id="cb116-8"><a href="simul-stoch-26.html#cb116-8" tabindex="-1"></a></span>
+<span id="cb116-9"><a href="simul-stoch-26.html#cb116-9" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb116-10"><a href="simul-stoch-26.html#cb116-10" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span> <span class="co"># timestep length</span></span>
+<span id="cb116-11"><a href="simul-stoch-26.html#cb116-11" tabindex="-1"></a>time_steps_log <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="co"># must be a number greater than 1</span></span>
+<span id="cb116-12"><a href="simul-stoch-26.html#cb116-12" tabindex="-1"></a></span>
+<span id="cb116-13"><a href="simul-stoch-26.html#cb116-13" tabindex="-1"></a><span class="co"># Identify the diffusion coefficient</span></span>
+<span id="cb116-14"><a href="simul-stoch-26.html#cb116-14" tabindex="-1"></a>D_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb116-15"><a href="simul-stoch-26.html#cb116-15" tabindex="-1"></a></span>
+<span id="cb116-16"><a href="simul-stoch-26.html#cb116-16" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb116-17"><a href="simul-stoch-26.html#cb116-17" tabindex="-1"></a>out_log <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(</span>
+<span id="cb116-18"><a href="simul-stoch-26.html#cb116-18" tabindex="-1"></a>  <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
+<span id="cb116-19"><a href="simul-stoch-26.html#cb116-19" tabindex="-1"></a>  <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
+<span id="cb116-20"><a href="simul-stoch-26.html#cb116-20" tabindex="-1"></a>  <span class="at">initial_condition =</span> init_log,</span>
+<span id="cb116-21"><a href="simul-stoch-26.html#cb116-21" tabindex="-1"></a>  <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb116-22"><a href="simul-stoch-26.html#cb116-22" tabindex="-1"></a>  <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb116-23"><a href="simul-stoch-26.html#cb116-23" tabindex="-1"></a>  <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb116-24"><a href="simul-stoch-26.html#cb116-24" tabindex="-1"></a>  <span class="at">D =</span> D_log</span>
+<span id="cb116-25"><a href="simul-stoch-26.html#cb116-25" tabindex="-1"></a>)</span>
+<span id="cb116-26"><a href="simul-stoch-26.html#cb116-26" tabindex="-1"></a></span>
+<span id="cb116-27"><a href="simul-stoch-26.html#cb116-27" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
+<span id="cb116-28"><a href="simul-stoch-26.html#cb116-28" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_log) <span class="sc">+</span></span>
+<span id="cb116-29"><a href="simul-stoch-26.html#cb116-29" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:log-sde-26"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/log-sde-26-1.png" alt="One realization of Equation \@ref(eq:log-markov-26)." width="672" />
 <p class="caption">
 FIGURE 26.5: One realization of Equation <a href="simul-stoch-26.html#eq:log-markov-26">(26.6)</a>.
 </p>
 </div>
 <p>The following code will produce a spaghetti plot from 100 different simulations. Try this code out on your own.</p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="simul-stoch-26.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
-<span id="cb114-2"><a href="simul-stoch-26.html#cb114-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># The number of simulations</span></span>
-<span id="cb114-3"><a href="simul-stoch-26.html#cb114-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb114-4"><a href="simul-stoch-26.html#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb114-5"><a href="simul-stoch-26.html#cb114-5" aria-hidden="true" tabindex="-1"></a>logistic_sim_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb114-6"><a href="simul-stoch-26.html#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb114-7"><a href="simul-stoch-26.html#cb114-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(</span>
-<span id="cb114-8"><a href="simul-stoch-26.html#cb114-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
-<span id="cb114-9"><a href="simul-stoch-26.html#cb114-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
-<span id="cb114-10"><a href="simul-stoch-26.html#cb114-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">initial_condition =</span> init_log,</span>
-<span id="cb114-11"><a href="simul-stoch-26.html#cb114-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameters =</span> parameters_log,</span>
-<span id="cb114-12"><a href="simul-stoch-26.html#cb114-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">deltaT =</span> deltaT_log,</span>
-<span id="cb114-13"><a href="simul-stoch-26.html#cb114-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_steps =</span> time_steps_log,</span>
-<span id="cb114-14"><a href="simul-stoch-26.html#cb114-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">D =</span> D_log</span>
-<span id="cb114-15"><a href="simul-stoch-26.html#cb114-15" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb114-16"><a href="simul-stoch-26.html#cb114-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb114-17"><a href="simul-stoch-26.html#cb114-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb114-18"><a href="simul-stoch-26.html#cb114-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb114-19"><a href="simul-stoch-26.html#cb114-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all together</span></span>
-<span id="cb114-20"><a href="simul-stoch-26.html#cb114-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_sim_r) <span class="sc">+</span></span>
-<span id="cb114-21"><a href="simul-stoch-26.html#cb114-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb114-22"><a href="simul-stoch-26.html#cb114-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="simul-stoch-26.html#cb117-1" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb117-2"><a href="simul-stoch-26.html#cb117-2" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># The number of simulations</span></span>
+<span id="cb117-3"><a href="simul-stoch-26.html#cb117-3" tabindex="-1"></a></span>
+<span id="cb117-4"><a href="simul-stoch-26.html#cb117-4" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb117-5"><a href="simul-stoch-26.html#cb117-5" tabindex="-1"></a>logistic_sim_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb117-6"><a href="simul-stoch-26.html#cb117-6" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb117-7"><a href="simul-stoch-26.html#cb117-7" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(</span>
+<span id="cb117-8"><a href="simul-stoch-26.html#cb117-8" tabindex="-1"></a>    <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
+<span id="cb117-9"><a href="simul-stoch-26.html#cb117-9" tabindex="-1"></a>    <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
+<span id="cb117-10"><a href="simul-stoch-26.html#cb117-10" tabindex="-1"></a>    <span class="at">initial_condition =</span> init_log,</span>
+<span id="cb117-11"><a href="simul-stoch-26.html#cb117-11" tabindex="-1"></a>    <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb117-12"><a href="simul-stoch-26.html#cb117-12" tabindex="-1"></a>    <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb117-13"><a href="simul-stoch-26.html#cb117-13" tabindex="-1"></a>    <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb117-14"><a href="simul-stoch-26.html#cb117-14" tabindex="-1"></a>    <span class="at">D =</span> D_log</span>
+<span id="cb117-15"><a href="simul-stoch-26.html#cb117-15" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb117-16"><a href="simul-stoch-26.html#cb117-16" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb117-17"><a href="simul-stoch-26.html#cb117-17" tabindex="-1"></a></span>
+<span id="cb117-18"><a href="simul-stoch-26.html#cb117-18" tabindex="-1"></a></span>
+<span id="cb117-19"><a href="simul-stoch-26.html#cb117-19" tabindex="-1"></a><span class="co"># Plot these all together</span></span>
+<span id="cb117-20"><a href="simul-stoch-26.html#cb117-20" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_sim_r) <span class="sc">+</span></span>
+<span id="cb117-21"><a href="simul-stoch-26.html#cb117-21" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb117-22"><a href="simul-stoch-26.html#cb117-22" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <p>Finally, Figure <a href="simul-stoch-26.html#fig:ensemble-r-26">26.6</a> displays the ensemble average plot from all the simulations. Figure <a href="simul-stoch-26.html#fig:ensemble-r-26">26.6</a> also includes the solution to the the logistic differential equation for comparison.</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="simul-stoch-26.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
-<span id="cb115-2"><a href="simul-stoch-26.html#cb115-2" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
-<span id="cb115-3"><a href="simul-stoch-26.html#cb115-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-4"><a href="simul-stoch-26.html#cb115-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-5"><a href="simul-stoch-26.html#cb115-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
-<span id="cb115-6"><a href="simul-stoch-26.html#cb115-6" aria-hidden="true" tabindex="-1"></a>summarized_logistic <span class="ot">&lt;-</span> logistic_sim_r <span class="sc">%&gt;%</span></span>
-<span id="cb115-7"><a href="simul-stoch-26.html#cb115-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
-<span id="cb115-8"><a href="simul-stoch-26.html#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb115-9"><a href="simul-stoch-26.html#cb115-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
-<span id="cb115-10"><a href="simul-stoch-26.html#cb115-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
-<span id="cb115-11"><a href="simul-stoch-26.html#cb115-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb115-12"><a href="simul-stoch-26.html#cb115-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb115-13"><a href="simul-stoch-26.html#cb115-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
-<span id="cb115-14"><a href="simul-stoch-26.html#cb115-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb115-15"><a href="simul-stoch-26.html#cb115-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb115-16"><a href="simul-stoch-26.html#cb115-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
-<span id="cb115-17"><a href="simul-stoch-26.html#cb115-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
-<span id="cb115-18"><a href="simul-stoch-26.html#cb115-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb115-19"><a href="simul-stoch-26.html#cb115-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-20"><a href="simul-stoch-26.html#cb115-20" aria-hidden="true" tabindex="-1"></a>logistic_solution <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb115-21"><a href="simul-stoch-26.html#cb115-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">100</span>),</span>
-<span id="cb115-22"><a href="simul-stoch-26.html#cb115-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">97</span> <span class="sc">/</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.8</span> <span class="sc">*</span> t))</span>
-<span id="cb115-23"><a href="simul-stoch-26.html#cb115-23" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb115-24"><a href="simul-stoch-26.html#cb115-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-25"><a href="simul-stoch-26.html#cb115-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb115-26"><a href="simul-stoch-26.html#cb115-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the plot</span></span>
-<span id="cb115-27"><a href="simul-stoch-26.html#cb115-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic) <span class="sc">+</span></span>
-<span id="cb115-28"><a href="simul-stoch-26.html#cb115-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>), </span>
-<span id="cb115-29"><a href="simul-stoch-26.html#cb115-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb115-30"><a href="simul-stoch-26.html#cb115-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), </span>
-<span id="cb115-31"><a href="simul-stoch-26.html#cb115-31" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
-<span id="cb115-32"><a href="simul-stoch-26.html#cb115-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> logistic_solution, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x), </span>
-<span id="cb115-33"><a href="simul-stoch-26.html#cb115-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)</span></code></pre></div>
-<div class="figure"><span id="fig:ensemble-r-26"></span>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="simul-stoch-26.html#cb118-1" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb118-2"><a href="simul-stoch-26.html#cb118-2" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb118-3"><a href="simul-stoch-26.html#cb118-3" tabindex="-1"></a></span>
+<span id="cb118-4"><a href="simul-stoch-26.html#cb118-4" tabindex="-1"></a></span>
+<span id="cb118-5"><a href="simul-stoch-26.html#cb118-5" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
+<span id="cb118-6"><a href="simul-stoch-26.html#cb118-6" tabindex="-1"></a>summarized_logistic <span class="ot">&lt;-</span> logistic_sim_r <span class="sc">%&gt;%</span></span>
+<span id="cb118-7"><a href="simul-stoch-26.html#cb118-7" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">%&gt;%</span></span>
+<span id="cb118-8"><a href="simul-stoch-26.html#cb118-8" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb118-9"><a href="simul-stoch-26.html#cb118-9" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb118-10"><a href="simul-stoch-26.html#cb118-10" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb118-11"><a href="simul-stoch-26.html#cb118-11" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb118-12"><a href="simul-stoch-26.html#cb118-12" tabindex="-1"></a>    ),</span>
+<span id="cb118-13"><a href="simul-stoch-26.html#cb118-13" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb118-14"><a href="simul-stoch-26.html#cb118-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb118-15"><a href="simul-stoch-26.html#cb118-15" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb118-16"><a href="simul-stoch-26.html#cb118-16" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;q_name&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;q_val&quot;</span>,</span>
+<span id="cb118-17"><a href="simul-stoch-26.html#cb118-17" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;q{q_name}&quot;</span></span>
+<span id="cb118-18"><a href="simul-stoch-26.html#cb118-18" tabindex="-1"></a>  )</span>
+<span id="cb118-19"><a href="simul-stoch-26.html#cb118-19" tabindex="-1"></a></span>
+<span id="cb118-20"><a href="simul-stoch-26.html#cb118-20" tabindex="-1"></a>logistic_solution <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb118-21"><a href="simul-stoch-26.html#cb118-21" tabindex="-1"></a>  <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb118-22"><a href="simul-stoch-26.html#cb118-22" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">97</span> <span class="sc">/</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.8</span> <span class="sc">*</span> t))</span>
+<span id="cb118-23"><a href="simul-stoch-26.html#cb118-23" tabindex="-1"></a>)</span>
+<span id="cb118-24"><a href="simul-stoch-26.html#cb118-24" tabindex="-1"></a></span>
+<span id="cb118-25"><a href="simul-stoch-26.html#cb118-25" tabindex="-1"></a></span>
+<span id="cb118-26"><a href="simul-stoch-26.html#cb118-26" tabindex="-1"></a><span class="co"># Make the plot</span></span>
+<span id="cb118-27"><a href="simul-stoch-26.html#cb118-27" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic) <span class="sc">+</span></span>
+<span id="cb118-28"><a href="simul-stoch-26.html#cb118-28" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>), </span>
+<span id="cb118-29"><a href="simul-stoch-26.html#cb118-29" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb118-30"><a href="simul-stoch-26.html#cb118-30" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), </span>
+<span id="cb118-31"><a href="simul-stoch-26.html#cb118-31" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb118-32"><a href="simul-stoch-26.html#cb118-32" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> logistic_solution, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x), </span>
+<span id="cb118-33"><a href="simul-stoch-26.html#cb118-33" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:ensemble-r-26"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/ensemble-r-26-1.png" alt="Ensemble average of 100 simulations of Equation \@ref(eq:log-markov-26) (in red). The red line represents the median with the shading the 95% confidence interval. For comparison, the deterministic solution to the logistic differential equation is the dashed black curve." width="672" />
 <p class="caption">
 FIGURE 26.6: Ensemble average of 100 simulations of Equation <a href="simul-stoch-26.html#eq:log-markov-26">(26.6)</a> (in red). The red line represents the median with the shading the 95% confidence interval. For comparison, the deterministic solution to the logistic differential equation is the dashed black curve.
@@ -745,8 +749,8 @@ r x \; \Delta t   &amp;= \alpha(x) \\
 \frac{rx^{2}}{K} \; \Delta t &amp;= \delta(x)
 \end{split} \tag{26.7}
 \end{equation}\]</span></p>
-<p>In this way, we think of <span class="math inline">\(\alpha(x)\)</span> in Equation <a href="simul-stoch-26.html#eq:birth-death-log-26">(26.7)</a> as a “birth process” and <span class="math inline">\(\delta(x)\)</span> as a “death process.” When we computed the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> for Equation <a href="simul-stoch-26.html#eq:log-sde-diff-26">(26.3)</a> we had the mean <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and variance <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span>. (You should double check to make sure this is the case!). Here is an interesting fact: <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span> hold up for <em>any</em> differential equation where we have identified a birth (<span class="math inline">\(\alpha(x)\)</span>) or death (<span class="math inline">\(\delta(x)\)</span>) process.</p>
-<p>Generalizing birth-death processes for a system of differential equations is a little more involved as there are more possibilities involved when computing <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. We don’t tackle this complexity here, but some considerations are thinking through <em>all</em> possible combinations of increase or decrease in the variables. For example, one variable could increase where the other decreases, both could increase, or one variable decreases and the other remains the same. In addition, the standard deviation is computed by the square root of the variance, and for a linear system of equations the matrix square root involves matrix decompositions. If you are curious to know more, see <span class="citation"><a href="#ref-logan_mathematical_2009" role="doc-biblioref">Logan and Wolesensky</a> (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span> for more information on implementing birth-death processes for a system of differential equations.</p>
+<p>In this way, we think of <span class="math inline">\(\alpha(x)\)</span> in Equation <a href="simul-stoch-26.html#eq:birth-death-log-26">(26.7)</a> as a “birth process” and <span class="math inline">\(\delta(x)\)</span> as a “death process”. When we computed the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> for Equation <a href="simul-stoch-26.html#eq:log-sde-diff-26">(26.3)</a> we had the mean <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and variance <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span>. (You should double check to make sure this is the case!). Here is an interesting fact: <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span> hold up for <em>any</em> differential equation where we have identified a birth (<span class="math inline">\(\alpha(x)\)</span>) or death (<span class="math inline">\(\delta(x)\)</span>) process.</p>
+<p>Generalizing birth-death processes for a system of differential equations is a little more involved as there are more possibilities involved when computing <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. We don’t tackle this complexity here, but some considerations are thinking through <em>all</em> possible combinations of increase or decrease in the variables. For example, one variable could increase where the other decreases, both could increase, or one variable decreases and the other remains the same. In addition, the standard deviation is computed by the square root of the variance, and for a linear system of equations the matrix square root involves matrix decompositions. If you are curious to know more, see <span class="citation">Logan and Wolesensky (<a href="#ref-logan_mathematical_2009">2009</a>)</span> for more information on implementing birth-death processes for a system of differential equations.</p>
 </div>
 <div id="wrapping-up" class="section level2 hasAnchor" number="26.3">
 <h2><span class="header-section-number">26.3</span> Wrapping up<a href="simul-stoch-26.html#wrapping-up" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -761,7 +765,6 @@ r x \; \Delta t   &amp;= \alpha(x) \\
 </div>
 <div id="exercises-25" class="section level2 hasAnchor" number="26.4">
 <h2><span class="header-section-number">26.4</span> Exercises<a href="simul-stoch-26.html#exercises-25" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-320" class="exercise"><strong>Exercise 26.1  </strong></span>Simulate the stochastic process <span class="math inline">\(dX = 2 \; dW(t)\)</span> with the following values:</p>
 <ul>
@@ -771,9 +774,8 @@ r x \; \Delta t   &amp;= \alpha(x) \\
 <li>Initial condition: <span class="math inline">\(X(0)=1\)</span>.</li>
 <li>Set the number of simulations to be 100.</li>
 </ul>
-Generate a spaghetti plot and ensemble average of your simluation results.
+<p>Generate a spaghetti plot and ensemble average of your simluation results.</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-321" class="exercise"><strong>Exercise 26.2  </strong></span>Return to the simulation of the logistic differential equation in this chapter. To generate Figure <a href="simul-stoch-26.html#fig:ensemble-r-26">26.6</a> we set <span class="math inline">\(D = 1\)</span>. What happens to the resulting ensemble average plots when <span class="math inline">\(D =0, \; 0.01, \; 0.1, \; 1, \; 10\)</span>? You may use the following values:</p>
 <ul>
@@ -783,7 +785,6 @@ Generate a spaghetti plot and ensemble average of your simluation results.
 <li><span class="math inline">\(\Delta t = 0.05\)</span> for 200 time steps.</li>
 </ul>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-322" class="exercise"><strong>Exercise 26.3  </strong></span>For the logistic differential equation consider the following splitting of <span class="math inline">\(\alpha(x)\)</span> and <span class="math inline">\(\delta(x)\)</span> as a birth-death process:</p>
 <p><span class="math display">\[\begin{equation}
@@ -799,10 +800,9 @@ Generate a spaghetti plot and ensemble average of your simluation results.
 <li><span class="math inline">\(\Delta t = 0.05\)</span> for 200 time steps.</li>
 <li><span class="math inline">\(D=1\)</span>.</li>
 </ul>
-Generate an ensemble average plot. How does this SDE compare to Figure <a href="simul-stoch-26.html#fig:ensemble-r-26">26.6</a>?
+<p>Generate an ensemble average plot. How does this SDE compare to Figure <a href="simul-stoch-26.html#fig:ensemble-r-26">26.6</a>?</p>
 </div>
 <!-- Based off LW pg 346 #3 -->
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-323" class="exercise"><strong>Exercise 26.4  </strong></span>Let <span class="math inline">\(S(t)\)</span> denote the cumulative snowfall at a location at time <span class="math inline">\(t\)</span>, which we will assume to be a random process. Assume that probability of the change in the cumulative amount of snow from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
 <table>
@@ -830,17 +830,15 @@ Generate an ensemble average plot. How does this SDE compare to Figure <a href="
 </ol>
 </div>
 <!-- Ornstein uhlenbeck process -->
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-324" class="exercise"><strong>Exercise 26.5  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) \; dt + \sigma \; dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise. For this stochastic differential equation what is <span class="math inline">\(E[S]\)</span> and Var<span class="math inline">\((S)\)</span>?
+<p><span id="exr:unnamed-chunk-324" class="exercise"><strong>Exercise 26.5  </strong></span>Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) \; dt + \sigma \; dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise. For this stochastic differential equation what is <span class="math inline">\(E[S]\)</span> and Var<span class="math inline">\((S)\)</span>?</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-325" class="exercise"><strong>Exercise 26.6  </strong></span>Consider the equation</p>
 <p><span class="math display">\[\begin{equation*}
 \Delta x = \alpha(x) \; \Delta t - \delta(x) \; \Delta t
 \end{equation*}\]</span></p>
-If we consider <span class="math inline">\(\Delta x\)</span> to be a random variable, show that the expected value <span class="math inline">\(\mu\)</span> equals <span class="math inline">\(\alpha(x) \; \Delta t - \delta(x) \; \Delta t\)</span> and the variance <span class="math inline">\(\sigma^{2}\)</span>, to first order, equals <span class="math inline">\(\alpha(x) \; \Delta t + \delta(x) \; \Delta t\)</span>.
+<p>If we consider <span class="math inline">\(\Delta x\)</span> to be a random variable, show that the expected value <span class="math inline">\(\mu\)</span> equals <span class="math inline">\(\alpha(x) \; \Delta t - \delta(x) \; \Delta t\)</span> and the variance <span class="math inline">\(\sigma^{2}\)</span>, to first order, equals <span class="math inline">\(\alpha(x) \; \Delta t + \delta(x) \; \Delta t\)</span>.</p>
 </div>
 
 </div>
@@ -861,7 +859,6 @@ Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</s
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -901,11 +898,14 @@ gitbook.start({
 "text": null
 },
 "download": {},
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
-},
-"search": true
+}
 });
 });
 </script>
@@ -916,7 +916,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

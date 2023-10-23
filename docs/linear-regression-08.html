@@ -5,20 +5,19 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 8 Linear Regression and Curve Fitting | Exploring Modeling with Data and Differential Equations Using R</title>
-  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="description" content="A textbook used for combining differential equation models with data using R." />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 8 Linear Regression and Curve Fitting | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
-  
-  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta property="og:description" content="A textbook used for combining differential equation models with data using R." />
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 8 Linear Regression and Curve Fitting | Exploring Modeling with Data and Differential Equations Using R" />
   
-  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="twitter:description" content="A textbook used for combining differential equation models with data using R." />
   
 
 <meta name="author" content="John M. Zobitz" />
@@ -32,8 +31,8 @@
   
 <link rel="prev" href="exact-solns-07.html"/>
 <link rel="next" href="likelihood-09.html"/>
-<script src="libs/header-attrs-2.14/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,12 +48,13 @@
 
 
 
-
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -95,7 +95,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -108,7 +108,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -122,6 +122,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 <style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
@@ -163,234 +167,234 @@ div.csl-indent {
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#welcome">Welcome<span></span></a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li><a href="index.html#computational-code">Computational code<span></span></a></li>
-<li><a href="index.html#questions-comments-issues">Questions? Comments? Issues?<span></span></a></li>
-<li><a href="index.html#about-the-cover">About the cover<span></span></a></li>
-<li><a href="index.html#acknowledgments">Acknowledgments<span></span></a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#computational-code"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#questions-comments-issues"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-the-cover"><i class="fa fa-check"></i>About the cover</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgments"><i class="fa fa-check"></i>Acknowledgments</a></li>
 </ul></li>
-<li class="part"><span><b>I Models with Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data<span></span></a>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born<span></span></a></li>
-<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease<span></span></a></li>
-<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions<span></span></a></li>
-<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?<span></span></a></li>
-<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here<span></span></a></li>
-<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R<span></span></a>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio<span></span></a></li>
-<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages<span></span></a></li>
-<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets<span></span></a></li>
-<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions<span></span></a></li>
-<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code></a></li>
+<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code></a></li>
+<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change<span></span></a>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action<span></span></a></li>
-<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares<span></span></a></li>
-<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses<span></span></a></li>
-<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions</a></li>
+<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares</a></li>
+<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method<span></span></a>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation<span></span></a></li>
-<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation<span></span></a></li>
-<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method<span></span></a></li>
-<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond<span></span></a></li>
-<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation</a></li>
+<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation</a></li>
+<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond</a></li>
+<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions<span></span></a>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations<span></span></a></li>
-<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations</a></li>
+<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations<span></span></a>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines<span></span></a></li>
-<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes<span></span></a></li>
-<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code><span></span></a></li>
-<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields<span></span></a></li>
-<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines</a></li>
+<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes</a></li>
+<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields</a></li>
+<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations<span></span></a>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution<span></span></a></li>
-<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations<span></span></a></li>
-<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors<span></span></a></li>
-<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations<span></span></a></li>
-<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution</a></li>
+<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations</a></li>
+<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations</a></li>
+<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>II Parameterizing Models with Data<span></span></b></span></li>
-<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting<span></span></a>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?<span></span></a></li>
-<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data<span></span></a></li>
-<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models<span></span></a></li>
-<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion<span></span></a></li>
-<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation</a></li>
+<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models</a></li>
+<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion</a></li>
+<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions<span></span></a>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset<span></span></a></li>
-<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions<span></span></a></li>
-<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression<span></span></a></li>
-<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces<span></span></a></li>
-<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward<span></span></a></li>
-<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset</a></li>
+<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions</a></li>
+<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward</a></li>
+<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions qnd Bayes’ Rule<span></span></a>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions and Bayes’ Rule</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals<span></span></a></li>
-<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function<span></span></a></li>
-<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule<span></span></a></li>
-<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action<span></span></a></li>
-<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps<span></span></a></li>
-<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals</a></li>
+<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function</a></li>
+<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule</a></li>
+<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action</a></li>
+<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps</a></li>
+<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method<span></span></a>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization<span></span></a></li>
-<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions<span></span></a></li>
-<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps<span></span></a></li>
-<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization</a></li>
+<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm<span></span></a>
+<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog<span></span></a></li>
-<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation</a></li>
+<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation</a></li>
+<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation<span></span></a>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC<span></span></a></li>
-<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model<span></span></a></li>
-<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model<span></span></a></li>
-<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code<span></span></a></li>
-<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC<span></span></a></li>
-<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC</a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model</a></li>
+<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model</a></li>
+<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code</a></li>
+<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC</a></li>
+<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria<span></span></a>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines<span></span></a></li>
-<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models<span></span></a></li>
-<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes<span></span></a></li>
-<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines</a></li>
+<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models</a></li>
+<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
+<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>III Stability Analysis for Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations<span></span></a>
+<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation<span></span></a></li>
-<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane<span></span></a></li>
-<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability<span></span></a></li>
-<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation</a></li>
+<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane</a></li>
+<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability</a></li>
+<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations<span></span></a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations<span></span></a></li>
-<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane<span></span></a></li>
-<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines<span></span></a></li>
-<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution<span></span></a></li>
-<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane<span></span></a></li>
-<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations</a></li>
+<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane</a></li>
+<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines</a></li>
+<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution</a></li>
+<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane</a></li>
+<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian<span></span></a>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations<span></span></a></li>
-<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations<span></span></a></li>
-<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix<span></span></a></li>
-<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations</a></li>
+<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations</a></li>
+<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix</a></li>
+<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?<span></span></a>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction<span></span></a></li>
-<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions<span></span></a></li>
-<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors<span></span></a></li>
-<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?<span></span></a></li>
-<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions</a></li>
+<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis<span></span></a>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)<span></span></a></li>
-<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant<span></span></a></li>
-<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis<span></span></a></li>
-<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.<span></span></a></li>
-<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)</a></li>
+<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant</a></li>
+<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis</a></li>
+<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.</a></li>
+<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation<span></span></a>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
 <ul>
-<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations<span></span></a></li>
-<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations<span></span></a></li>
-<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles<span></span></a></li>
-<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools<span></span></a></li>
-<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles</a></li>
+<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools</a></li>
+<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>IV Stochastic Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems<span></span></a>
+<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects<span></span></a></li>
-<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system<span></span></a></li>
-<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity<span></span></a></li>
-<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations<span></span></a></li>
-<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects</a></li>
+<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system</a></li>
+<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity</a></li>
+<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations</a></li>
+<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness<span></span></a>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages<span></span></a></li>
-<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration<span></span></a></li>
-<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages</a></li>
+<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration</a></li>
+<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks<span></span></a>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
 <ul>
-<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line<span></span></a></li>
-<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages<span></span></a></li>
-<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics<span></span></a></li>
-<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion<span></span></a></li>
-<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages</a></li>
+<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion</a></li>
+<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion<span></span></a>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion</a>
 <ul>
-<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux<span></span></a></li>
-<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion<span></span></a></li>
-<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
+<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion</a></li>
+<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model<span></span></a></li>
-<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method<span></span></a></li>
-<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters<span></span></a></li>
-<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations<span></span></a></li>
-<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method</a></li>
+<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations</a></li>
+<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation<span></span></a>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation</a>
 <ul>
-<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process<span></span></a></li>
-<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes<span></span></a></li>
-<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up<span></span></a></li>
-<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process</a></li>
+<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes</a></li>
+<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up</a></li>
+<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation<span></span></a></li>
-<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end<span></span></a></li>
-<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation</a></li>
+<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end</a></li>
+<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises</a></li>
 </ul></li>
-<li><a href="references.html#references">References<span></span></a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
@@ -492,11 +496,11 @@ temperature_anomaly
 <li><strong>Compute</strong> the regression with the <strong>command</strong> <code>lm</code> (which stands for <em>l</em>inear <em>m</em>odel).</li>
 </ul>
 <p>That’s it! So if we need to do a linear regression of global temperature against year since 1880, it can be done with the following code:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="linear-regression-08.html#cb27-1" aria-hidden="true" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> temperature_anomaly <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> year_since_1880</span>
-<span id="cb27-2"><a href="linear-regression-08.html#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="linear-regression-08.html#cb27-3" aria-hidden="true" tabindex="-1"></a>linear_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(regression_formula, <span class="at">data =</span> global_temperature)</span>
-<span id="cb27-4"><a href="linear-regression-08.html#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="linear-regression-08.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_fit)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="linear-regression-08.html#cb28-1" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> temperature_anomaly <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> year_since_1880</span>
+<span id="cb28-2"><a href="linear-regression-08.html#cb28-2" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="linear-regression-08.html#cb28-3" tabindex="-1"></a>linear_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(regression_formula, <span class="at">data =</span> global_temperature)</span>
+<span id="cb28-4"><a href="linear-regression-08.html#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="linear-regression-08.html#cb28-5" tabindex="-1"></a><span class="fu">summary</span>(linear_fit)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = regression_formula, data = global_temperature)
@@ -523,26 +527,26 @@ temperature_anomaly
 <p>The summary of the statistical fit is a verbose readout, which may prohibit quickly identifying the regression coefficients or plotting the fitted results. Thankfully the <code>R</code> package called <code>broom</code> can help us! The <code>broom</code> package produces model output in what is called “tidy” data format. You can read more about <code>broom</code> from its <a href="https://broom.tidymodels.org/index.html">documentation.</a></p>
 <p>Since we are only going to use one or two functions from this package, I am going to refer to the functions I need with the syntax <code>PACKAGE_NAME::FUNCTION</code>.</p>
 <p>First we will make a data frame with the predicted coefficients from our linear model, as shown with the following code that you can run on your own:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="linear-regression-08.html#cb29-1" aria-hidden="true" tabindex="-1"></a>global_temperature_model <span class="ot">&lt;-</span> </span>
-<span id="cb29-2"><a href="linear-regression-08.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">augment</span>(linear_fit, <span class="at">data =</span> global_temperature)</span>
-<span id="cb29-3"><a href="linear-regression-08.html#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="linear-regression-08.html#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(global_temperature_model)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="linear-regression-08.html#cb30-1" tabindex="-1"></a>global_temperature_model <span class="ot">&lt;-</span> </span>
+<span id="cb30-2"><a href="linear-regression-08.html#cb30-2" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">augment</span>(linear_fit, <span class="at">data =</span> global_temperature)</span>
+<span id="cb30-3"><a href="linear-regression-08.html#cb30-3" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="linear-regression-08.html#cb30-4" tabindex="-1"></a><span class="fu">glimpse</span>(global_temperature_model)</span></code></pre></div>
 <p>Notice how the <code>augment</code> command takes the results from <code>linear_fit</code> with the data <code>global_temperature</code> to produce model estimated results (under the variable named <code>.fitted</code>.<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> There is a lot to unpack with this new data frame, but the important ones are the columns <code>year_since_1880</code> (the independent variable) and <code>.fitted</code>, which represents the fitted coefficients.</p>
 <p>Finally, Figure <a href="linear-regression-08.html#fig:fitted-global-temp-08">8.1</a> compares the data to the fitted regression line (also known as the “best fit line”).</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="linear-regression-08.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> global_temperature) <span class="sc">+</span></span>
-<span id="cb30-2"><a href="linear-regression-08.html#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> year_since_1880, <span class="at">y =</span> temperature_anomaly),</span>
-<span id="cb30-3"><a href="linear-regression-08.html#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb30-4"><a href="linear-regression-08.html#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb30-5"><a href="linear-regression-08.html#cb30-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb30-6"><a href="linear-regression-08.html#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb30-7"><a href="linear-regression-08.html#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> global_temperature_model,</span>
-<span id="cb30-8"><a href="linear-regression-08.html#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> year_since_1880, <span class="at">y =</span> .fitted)</span>
-<span id="cb30-9"><a href="linear-regression-08.html#cb30-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb30-10"><a href="linear-regression-08.html#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb30-11"><a href="linear-regression-08.html#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Year Since 1880&quot;</span>,</span>
-<span id="cb30-12"><a href="linear-regression-08.html#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span>  <span class="st">&quot;Temperature anomaly&quot;</span></span>
-<span id="cb30-13"><a href="linear-regression-08.html#cb30-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="figure"><span id="fig:fitted-global-temp-08"></span>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="linear-regression-08.html#cb31-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> global_temperature) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="linear-regression-08.html#cb31-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> year_since_1880, <span class="at">y =</span> temperature_anomaly),</span>
+<span id="cb31-3"><a href="linear-regression-08.html#cb31-3" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb31-4"><a href="linear-regression-08.html#cb31-4" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb31-5"><a href="linear-regression-08.html#cb31-5" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="linear-regression-08.html#cb31-6" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb31-7"><a href="linear-regression-08.html#cb31-7" tabindex="-1"></a>    <span class="at">data =</span> global_temperature_model,</span>
+<span id="cb31-8"><a href="linear-regression-08.html#cb31-8" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> year_since_1880, <span class="at">y =</span> .fitted)</span>
+<span id="cb31-9"><a href="linear-regression-08.html#cb31-9" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-10"><a href="linear-regression-08.html#cb31-10" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb31-11"><a href="linear-regression-08.html#cb31-11" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Year Since 1880&quot;</span>,</span>
+<span id="cb31-12"><a href="linear-regression-08.html#cb31-12" tabindex="-1"></a>    <span class="at">y =</span>  <span class="st">&quot;Temperature anomaly&quot;</span></span>
+<span id="cb31-13"><a href="linear-regression-08.html#cb31-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:fitted-global-temp-08"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/fitted-global-temp-08-1.png" alt="Global temperature anomaly data along with the fitted linear regression line." width="672" />
 <p class="caption">
 FIGURE 8.1: Global temperature anomaly data along with the fitted linear regression line.
@@ -592,15 +596,24 @@ FIGURE 8.1: Global temperature anomaly data along with the fitted linear regress
 \ln(y) = \ln(ae^{bx}) = \ln(a) + \ln (e^{bx}) = \ln(a) + bx
 \end{equation}\]</span></p>
 <p>The advantage to this approach is that the growth rate parameter <span class="math inline">\(b\)</span> is easily identifiable from the data, and the value of <span class="math inline">\(a\)</span> is found by exponentiation of the fitted intercept value. The disadvantage is that you need to do a log transform of the <span class="math inline">\(y\)</span> variable first before doing any fits.</p>
-
 <div class="example">
 <p><span id="exm:enzyme-08" class="example"><strong>Example 8.1  </strong></span>A common nonlinear equation in enzyme kinetics is the <em>Michaelis-Menten</em> law, which states that the rate of the uptake of a substrate <span class="math inline">\(V\)</span> is given by the equation:</p>
 <p><span class="math display">\[\begin{equation}
 V = \frac{V_{max} s}{s+K_{m}},
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(s\)</span> is the amount of substrate, <span class="math inline">\(K_{m}\)</span> is half-saturation constant, and <span class="math inline">\(V_{max}\)</span> the maximum reaction rate. (Typically <span class="math inline">\(V\)</span> is used to signify the “velocity” of the reaction.)</p>
-<p>Consider you have the following data (from <span class="citation"><a href="#ref-keener_mathematical_2009" role="doc-biblioref">J. Keener and Sneyd</a> (<a href="#ref-keener_mathematical_2009" role="doc-biblioref">2009</a>)</span>):</p>
+<p>Consider you have the following data (from <span class="citation">J. Keener and Sneyd (<a href="#ref-keener_mathematical_2009">2009</a>)</span>):</p>
 <table>
+<colgroup>
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th><em>s</em> (mM)</th>
@@ -626,89 +639,88 @@ V = \frac{V_{max} s}{s+K_{m}},
 </tr>
 </tbody>
 </table>
-Apply parameter estimation techniques to estimate <span class="math inline">\(K_{m}\)</span> and <span class="math inline">\(V_{max}\)</span> and plot the resulting fitting curve with the data.
+<p>Apply parameter estimation techniques to estimate <span class="math inline">\(K_{m}\)</span> and <span class="math inline">\(V_{max}\)</span> and plot the resulting fitting curve with the data.</p>
 </div>
-
 <div class="solution">
- <span class="solution"><em>Solution. </em></span> The first thing that we will need to do is to define a data frame (<code>tibble</code>) for these data:
+<p><span id="unlabeled-div-6" class="solution"><em>Solution</em>. </span>The first thing that we will need to do is to define a data frame (<code>tibble</code>) for these data:</p>
 </div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="linear-regression-08.html#cb31-1" aria-hidden="true" tabindex="-1"></a>enzyme_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb31-2"><a href="linear-regression-08.html#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">s =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.5</span>, <span class="fl">5.0</span>),</span>
-<span id="cb31-3"><a href="linear-regression-08.html#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">V =</span> <span class="fu">c</span>(<span class="fl">0.04</span>, <span class="fl">0.08</span>, <span class="fl">0.17</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.39</span>, <span class="fl">0.42</span>)</span>
-<span id="cb31-4"><a href="linear-regression-08.html#cb31-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="linear-regression-08.html#cb32-1" tabindex="-1"></a>enzyme_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb32-2"><a href="linear-regression-08.html#cb32-2" tabindex="-1"></a>  <span class="at">s =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.5</span>, <span class="fl">5.0</span>),</span>
+<span id="cb32-3"><a href="linear-regression-08.html#cb32-3" tabindex="-1"></a>  <span class="at">V =</span> <span class="fu">c</span>(<span class="fl">0.04</span>, <span class="fl">0.08</span>, <span class="fl">0.17</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.39</span>, <span class="fl">0.42</span>)</span>
+<span id="cb32-4"><a href="linear-regression-08.html#cb32-4" tabindex="-1"></a>)</span></code></pre></div>
 <p>Figure <a href="linear-regression-08.html#fig:enzyme-data-08">8.2</a> shows a plot of <span class="math inline">\(s\)</span> and <span class="math inline">\(V\)</span>:</p>
-<div class="figure"><span id="fig:enzyme-data-08"></span>
+<div class="figure"><span style="display:block;" id="fig:enzyme-data-08"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/enzyme-data-08-1.png" alt="Scatterplot of enzyme substrate data from Example \@ref(exm:enzyme-08)." width="672" />
 <p class="caption">
 FIGURE 8.2: Scatterplot of enzyme substrate data from Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a>.
 </p>
 </div>
 <p>Figure <a href="linear-regression-08.html#fig:enzyme-data-08">8.2</a> definitely suggests a nonlinear relationship between <span class="math inline">\(s\)</span> and <span class="math inline">\(V\)</span>. To dig a little deeper, try running the following code that plots the reciprocal of <span class="math inline">\(s\)</span> and the reciprocal of <span class="math inline">\(V\)</span> (do this on your own):</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="linear-regression-08.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
-<span id="cb32-2"><a href="linear-regression-08.html#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> V),</span>
-<span id="cb32-3"><a href="linear-regression-08.html#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb32-4"><a href="linear-regression-08.html#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb32-5"><a href="linear-regression-08.html#cb32-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb32-6"><a href="linear-regression-08.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb32-7"><a href="linear-regression-08.html#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;1/s (1/mM)&quot;</span>,</span>
-<span id="cb32-8"><a href="linear-regression-08.html#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;1/V (s / mM)&quot;</span></span>
-<span id="cb32-9"><a href="linear-regression-08.html#cb32-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="linear-regression-08.html#cb33-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
+<span id="cb33-2"><a href="linear-regression-08.html#cb33-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> V),</span>
+<span id="cb33-3"><a href="linear-regression-08.html#cb33-3" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb33-4"><a href="linear-regression-08.html#cb33-4" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb33-5"><a href="linear-regression-08.html#cb33-5" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="linear-regression-08.html#cb33-6" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb33-7"><a href="linear-regression-08.html#cb33-7" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;1/s (1/mM)&quot;</span>,</span>
+<span id="cb33-8"><a href="linear-regression-08.html#cb33-8" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;1/V (s / mM)&quot;</span></span>
+<span id="cb33-9"><a href="linear-regression-08.html#cb33-9" tabindex="-1"></a>  )</span></code></pre></div>
 <p>Notice how easy it was to plot the reciprocals of <span class="math inline">\(s\)</span> and <span class="math inline">\(V\)</span> inside the <code>ggplot</code> command. Here’s how to see this with the provided equation (and a little bit of algebra):</p>
 <p><span class="math display">\[\begin{equation}
 V = \frac{V_{max} s}{s+K_{m}} \rightarrow \frac{1}{V} = \frac{s+K_{m}}{V_{max} s} = \frac{1}{V_{max}} + \frac{1}{s} \frac{K_{m}}{V_{max}}
 \end{equation}\]</span></p>
 <p>In order to do a linear fit to the transformed data we will use the regression formulas defined above and the handy structure <code>I(VARIABLE)</code> and plot the transformed data with the fitted equation (do this on your own as well):<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a></p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="linear-regression-08.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
-<span id="cb33-2"><a href="linear-regression-08.html#cb33-2" aria-hidden="true" tabindex="-1"></a>enzyme_formula <span class="ot">&lt;-</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> V) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> s)</span>
-<span id="cb33-3"><a href="linear-regression-08.html#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="linear-regression-08.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the linear fit</span></span>
-<span id="cb33-5"><a href="linear-regression-08.html#cb33-5" aria-hidden="true" tabindex="-1"></a>enzyme_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(enzyme_formula,<span class="at">data =</span> enzyme_data)</span>
-<span id="cb33-6"><a href="linear-regression-08.html#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-7"><a href="linear-regression-08.html#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Show best fit parameters</span></span>
-<span id="cb33-8"><a href="linear-regression-08.html#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enzyme_fit)</span>
-<span id="cb33-9"><a href="linear-regression-08.html#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-10"><a href="linear-regression-08.html#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Added fitted data to the model</span></span>
-<span id="cb33-11"><a href="linear-regression-08.html#cb33-11" aria-hidden="true" tabindex="-1"></a>enzyme_data_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(enzyme_fit, <span class="at">data =</span> enzyme_data)</span>
-<span id="cb33-12"><a href="linear-regression-08.html#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-13"><a href="linear-regression-08.html#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare fitted model to the data</span></span>
-<span id="cb33-14"><a href="linear-regression-08.html#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
-<span id="cb33-15"><a href="linear-regression-08.html#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> V),</span>
-<span id="cb33-16"><a href="linear-regression-08.html#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb33-17"><a href="linear-regression-08.html#cb33-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb33-18"><a href="linear-regression-08.html#cb33-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb33-19"><a href="linear-regression-08.html#cb33-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb33-20"><a href="linear-regression-08.html#cb33-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> enzyme_data_model,</span>
-<span id="cb33-21"><a href="linear-regression-08.html#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> .fitted)</span>
-<span id="cb33-22"><a href="linear-regression-08.html#cb33-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb33-23"><a href="linear-regression-08.html#cb33-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb33-24"><a href="linear-regression-08.html#cb33-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;1/s (1/mM)&quot;</span>,</span>
-<span id="cb33-25"><a href="linear-regression-08.html#cb33-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;1/V (s / mM)&quot;</span></span>
-<span id="cb33-26"><a href="linear-regression-08.html#cb33-26" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p>In Exercise <a href="linear-regression-08.html#exr:enzyme-fit-08">8.6</a> you will use the coefficients from your linear fit to determine <span class="math inline">\(V_{max}\)</span> and <span class="math inline">\(K_{m}\)</span>. When plotting the fitted model values with the original data (Figure <a href="linear-regression-08.html#fig:enzyme-fitted-normal-08">8.3</a>), we need to take the reciprocal of the column <code>.fitted</code> when we apply <code>augment</code> because the response variable in the linear model is <span class="math inline">\(1 / V\)</span> (confusing, I know!). For convenience, the code that does the all the fitting is shown below:<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="linear-regression-08.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
-<span id="cb34-2"><a href="linear-regression-08.html#cb34-2" aria-hidden="true" tabindex="-1"></a>enzyme_formula <span class="ot">&lt;-</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> V) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> s)</span>
-<span id="cb34-3"><a href="linear-regression-08.html#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="linear-regression-08.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the linear fit</span></span>
-<span id="cb34-5"><a href="linear-regression-08.html#cb34-5" aria-hidden="true" tabindex="-1"></a>enzyme_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(enzyme_formula,<span class="at">data =</span> enzyme_data)</span>
-<span id="cb34-6"><a href="linear-regression-08.html#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="linear-regression-08.html#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Added fitted data to the model</span></span>
-<span id="cb34-8"><a href="linear-regression-08.html#cb34-8" aria-hidden="true" tabindex="-1"></a>enzyme_data_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(enzyme_fit, <span class="at">data =</span> enzyme_data)</span>
-<span id="cb34-9"><a href="linear-regression-08.html#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-10"><a href="linear-regression-08.html#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-11"><a href="linear-regression-08.html#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
-<span id="cb34-12"><a href="linear-regression-08.html#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> s, <span class="at">y =</span> V),</span>
-<span id="cb34-13"><a href="linear-regression-08.html#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb34-14"><a href="linear-regression-08.html#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb34-15"><a href="linear-regression-08.html#cb34-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb34-16"><a href="linear-regression-08.html#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb34-17"><a href="linear-regression-08.html#cb34-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> enzyme_data_model,</span>
-<span id="cb34-18"><a href="linear-regression-08.html#cb34-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> .fitted)</span>
-<span id="cb34-19"><a href="linear-regression-08.html#cb34-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb34-20"><a href="linear-regression-08.html#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb34-21"><a href="linear-regression-08.html#cb34-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;s (mM)&quot;</span>,</span>
-<span id="cb34-22"><a href="linear-regression-08.html#cb34-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;V (mM / s)&quot;</span></span>
-<span id="cb34-23"><a href="linear-regression-08.html#cb34-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="figure"><span id="fig:enzyme-fitted-normal-08"></span>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="linear-regression-08.html#cb34-1" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
+<span id="cb34-2"><a href="linear-regression-08.html#cb34-2" tabindex="-1"></a>enzyme_formula <span class="ot">&lt;-</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> V) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> s)</span>
+<span id="cb34-3"><a href="linear-regression-08.html#cb34-3" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="linear-regression-08.html#cb34-4" tabindex="-1"></a><span class="co"># Apply the linear fit</span></span>
+<span id="cb34-5"><a href="linear-regression-08.html#cb34-5" tabindex="-1"></a>enzyme_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(enzyme_formula,<span class="at">data =</span> enzyme_data)</span>
+<span id="cb34-6"><a href="linear-regression-08.html#cb34-6" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="linear-regression-08.html#cb34-7" tabindex="-1"></a><span class="co"># Show best fit parameters</span></span>
+<span id="cb34-8"><a href="linear-regression-08.html#cb34-8" tabindex="-1"></a><span class="fu">summary</span>(enzyme_fit)</span>
+<span id="cb34-9"><a href="linear-regression-08.html#cb34-9" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="linear-regression-08.html#cb34-10" tabindex="-1"></a><span class="co"># Added fitted data to the model</span></span>
+<span id="cb34-11"><a href="linear-regression-08.html#cb34-11" tabindex="-1"></a>enzyme_data_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(enzyme_fit, <span class="at">data =</span> enzyme_data)</span>
+<span id="cb34-12"><a href="linear-regression-08.html#cb34-12" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="linear-regression-08.html#cb34-13" tabindex="-1"></a><span class="co"># Compare fitted model to the data</span></span>
+<span id="cb34-14"><a href="linear-regression-08.html#cb34-14" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
+<span id="cb34-15"><a href="linear-regression-08.html#cb34-15" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> V),</span>
+<span id="cb34-16"><a href="linear-regression-08.html#cb34-16" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb34-17"><a href="linear-regression-08.html#cb34-17" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb34-18"><a href="linear-regression-08.html#cb34-18" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-19"><a href="linear-regression-08.html#cb34-19" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb34-20"><a href="linear-regression-08.html#cb34-20" tabindex="-1"></a>    <span class="at">data =</span> enzyme_data_model,</span>
+<span id="cb34-21"><a href="linear-regression-08.html#cb34-21" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">/</span> s, <span class="at">y =</span> .fitted)</span>
+<span id="cb34-22"><a href="linear-regression-08.html#cb34-22" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-23"><a href="linear-regression-08.html#cb34-23" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb34-24"><a href="linear-regression-08.html#cb34-24" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;1/s (1/mM)&quot;</span>,</span>
+<span id="cb34-25"><a href="linear-regression-08.html#cb34-25" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;1/V (s / mM)&quot;</span></span>
+<span id="cb34-26"><a href="linear-regression-08.html#cb34-26" tabindex="-1"></a>  )</span></code></pre></div>
+<p>In Exercise <a href="#exr:enzyme-fit-08"><strong>??</strong></a> you will use the coefficients from your linear fit to determine <span class="math inline">\(V_{max}\)</span> and <span class="math inline">\(K_{m}\)</span>. When plotting the fitted model values with the original data (Figure <a href="linear-regression-08.html#fig:enzyme-fitted-normal-08">8.3</a>), we need to take the reciprocal of the column <code>.fitted</code> when we apply <code>augment</code> because the response variable in the linear model is <span class="math inline">\(1 / V\)</span> (confusing, I know!). For convenience, the code that does the all the fitting is shown below:<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="linear-regression-08.html#cb35-1" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
+<span id="cb35-2"><a href="linear-regression-08.html#cb35-2" tabindex="-1"></a>enzyme_formula <span class="ot">&lt;-</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> V) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">I</span>(<span class="dv">1</span> <span class="sc">/</span> s)</span>
+<span id="cb35-3"><a href="linear-regression-08.html#cb35-3" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="linear-regression-08.html#cb35-4" tabindex="-1"></a><span class="co"># Apply the linear fit</span></span>
+<span id="cb35-5"><a href="linear-regression-08.html#cb35-5" tabindex="-1"></a>enzyme_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(enzyme_formula,<span class="at">data =</span> enzyme_data)</span>
+<span id="cb35-6"><a href="linear-regression-08.html#cb35-6" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="linear-regression-08.html#cb35-7" tabindex="-1"></a><span class="co"># Added fitted data to the model</span></span>
+<span id="cb35-8"><a href="linear-regression-08.html#cb35-8" tabindex="-1"></a>enzyme_data_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(enzyme_fit, <span class="at">data =</span> enzyme_data)</span>
+<span id="cb35-9"><a href="linear-regression-08.html#cb35-9" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="linear-regression-08.html#cb35-10" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="linear-regression-08.html#cb35-11" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> enzyme_data) <span class="sc">+</span></span>
+<span id="cb35-12"><a href="linear-regression-08.html#cb35-12" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> s, <span class="at">y =</span> V),</span>
+<span id="cb35-13"><a href="linear-regression-08.html#cb35-13" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb35-14"><a href="linear-regression-08.html#cb35-14" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb35-15"><a href="linear-regression-08.html#cb35-15" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb35-16"><a href="linear-regression-08.html#cb35-16" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb35-17"><a href="linear-regression-08.html#cb35-17" tabindex="-1"></a>    <span class="at">data =</span> enzyme_data_model,</span>
+<span id="cb35-18"><a href="linear-regression-08.html#cb35-18" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> s, <span class="at">y =</span> <span class="dv">1</span> <span class="sc">/</span> .fitted)</span>
+<span id="cb35-19"><a href="linear-regression-08.html#cb35-19" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb35-20"><a href="linear-regression-08.html#cb35-20" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb35-21"><a href="linear-regression-08.html#cb35-21" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;s (mM)&quot;</span>,</span>
+<span id="cb35-22"><a href="linear-regression-08.html#cb35-22" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;V (mM / s)&quot;</span></span>
+<span id="cb35-23"><a href="linear-regression-08.html#cb35-23" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:enzyme-fitted-normal-08"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/enzyme-fitted-normal-08-1.png" alt="Scatterplot of enzyme substrate data from Example \@ref(exm:enzyme-08) along with the fitted curve." width="672" />
 <p class="caption">
 FIGURE 8.3: Scatterplot of enzyme substrate data from Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a> along with the fitted curve.
@@ -723,17 +735,17 @@ FIGURE 8.3: Scatterplot of enzyme substrate data from Example <a href="linear-re
 W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 \end{equation}\]</span></p>
 <p>where we have the parameters <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span>. We can apply the command <code>nls</code> (nonlinear least squares) to estimate these parameters. Because <code>nls</code> is an iterative numerical method it needs a starting value for these parameters (here we set <span class="math inline">\(a = 75\)</span>, <span class="math inline">\(b=30\)</span>, and <span class="math inline">\(c=0.01\)</span>). Determining a starting point can be tricky - it does take some trial and error.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="linear-regression-08.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
-<span id="cb35-2"><a href="linear-regression-08.html#cb35-2" aria-hidden="true" tabindex="-1"></a>wilson_formula <span class="ot">&lt;-</span> weight <span class="sc">~</span> a <span class="sc">-</span> b <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>c <span class="sc">*</span> days)</span>
-<span id="cb35-3"><a href="linear-regression-08.html#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="linear-regression-08.html#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the nonlinear fit</span></span>
-<span id="cb35-5"><a href="linear-regression-08.html#cb35-5" aria-hidden="true" tabindex="-1"></a>nonlinear_fit <span class="ot">&lt;-</span> <span class="fu">nls</span>(<span class="at">formula =</span> wilson_formula,</span>
-<span id="cb35-6"><a href="linear-regression-08.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> wilson,</span>
-<span id="cb35-7"><a href="linear-regression-08.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">75</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="fl">0.01</span>)</span>
-<span id="cb35-8"><a href="linear-regression-08.html#cb35-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb35-9"><a href="linear-regression-08.html#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-10"><a href="linear-regression-08.html#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the fit parameters</span></span>
-<span id="cb35-11"><a href="linear-regression-08.html#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nonlinear_fit)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="linear-regression-08.html#cb36-1" tabindex="-1"></a><span class="co"># Define the regression formula</span></span>
+<span id="cb36-2"><a href="linear-regression-08.html#cb36-2" tabindex="-1"></a>wilson_formula <span class="ot">&lt;-</span> weight <span class="sc">~</span> a <span class="sc">-</span> b <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>c <span class="sc">*</span> days)</span>
+<span id="cb36-3"><a href="linear-regression-08.html#cb36-3" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="linear-regression-08.html#cb36-4" tabindex="-1"></a><span class="co"># Apply the nonlinear fit</span></span>
+<span id="cb36-5"><a href="linear-regression-08.html#cb36-5" tabindex="-1"></a>nonlinear_fit <span class="ot">&lt;-</span> <span class="fu">nls</span>(<span class="at">formula =</span> wilson_formula,</span>
+<span id="cb36-6"><a href="linear-regression-08.html#cb36-6" tabindex="-1"></a>  <span class="at">data =</span> wilson,</span>
+<span id="cb36-7"><a href="linear-regression-08.html#cb36-7" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">75</span>, <span class="at">b =</span> <span class="dv">30</span>, <span class="at">c =</span> <span class="fl">0.01</span>)</span>
+<span id="cb36-8"><a href="linear-regression-08.html#cb36-8" tabindex="-1"></a>)</span>
+<span id="cb36-9"><a href="linear-regression-08.html#cb36-9" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="linear-regression-08.html#cb36-10" tabindex="-1"></a><span class="co"># Summarize the fit parameters</span></span>
+<span id="cb36-11"><a href="linear-regression-08.html#cb36-11" tabindex="-1"></a><span class="fu">summary</span>(nonlinear_fit)</span></code></pre></div>
 <pre><code>## 
 ## Formula: weight ~ a - b * exp(-c * days)
 ## 
@@ -748,26 +760,26 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 ## Residual standard error: 2.961 on 16 degrees of freedom
 ## 
 ## Number of iterations to convergence: 11 
-## Achieved convergence tolerance: 6.899e-06</code></pre>
+## Achieved convergence tolerance: 6.889e-06</code></pre>
 <p>Similar as before, we can <code>augment</code> the data to display the fitted curve.</p>
 <p>However once you have your fitted model, you can still plot the fitted values with the coefficients (try this out on your own).</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="linear-regression-08.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Augment the model</span></span>
-<span id="cb37-2"><a href="linear-regression-08.html#cb37-2" aria-hidden="true" tabindex="-1"></a>wilson_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(nonlinear_fit, <span class="at">data =</span> wilson)</span>
-<span id="cb37-3"><a href="linear-regression-08.html#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-4"><a href="linear-regression-08.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data with the model</span></span>
-<span id="cb37-5"><a href="linear-regression-08.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson) <span class="sc">+</span></span>
-<span id="cb37-6"><a href="linear-regression-08.html#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight),</span>
-<span id="cb37-7"><a href="linear-regression-08.html#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb37-8"><a href="linear-regression-08.html#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb37-9"><a href="linear-regression-08.html#cb37-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-10"><a href="linear-regression-08.html#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb37-11"><a href="linear-regression-08.html#cb37-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> wilson_model,</span>
-<span id="cb37-12"><a href="linear-regression-08.html#cb37-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> .fitted)</span>
-<span id="cb37-13"><a href="linear-regression-08.html#cb37-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-14"><a href="linear-regression-08.html#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb37-15"><a href="linear-regression-08.html#cb37-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Days since birth&quot;</span>,</span>
-<span id="cb37-16"><a href="linear-regression-08.html#cb37-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Weight (pounds)&quot;</span></span>
-<span id="cb37-17"><a href="linear-regression-08.html#cb37-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="linear-regression-08.html#cb38-1" tabindex="-1"></a><span class="co"># Augment the model</span></span>
+<span id="cb38-2"><a href="linear-regression-08.html#cb38-2" tabindex="-1"></a>wilson_model <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(nonlinear_fit, <span class="at">data =</span> wilson)</span>
+<span id="cb38-3"><a href="linear-regression-08.html#cb38-3" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="linear-regression-08.html#cb38-4" tabindex="-1"></a><span class="co"># Plot the data with the model</span></span>
+<span id="cb38-5"><a href="linear-regression-08.html#cb38-5" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="linear-regression-08.html#cb38-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight),</span>
+<span id="cb38-7"><a href="linear-regression-08.html#cb38-7" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb38-8"><a href="linear-regression-08.html#cb38-8" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb38-9"><a href="linear-regression-08.html#cb38-9" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-10"><a href="linear-regression-08.html#cb38-10" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb38-11"><a href="linear-regression-08.html#cb38-11" tabindex="-1"></a>    <span class="at">data =</span> wilson_model,</span>
+<span id="cb38-12"><a href="linear-regression-08.html#cb38-12" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> .fitted)</span>
+<span id="cb38-13"><a href="linear-regression-08.html#cb38-13" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-14"><a href="linear-regression-08.html#cb38-14" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb38-15"><a href="linear-regression-08.html#cb38-15" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Days since birth&quot;</span>,</span>
+<span id="cb38-16"><a href="linear-regression-08.html#cb38-16" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Weight (pounds)&quot;</span></span>
+<span id="cb38-17"><a href="linear-regression-08.html#cb38-17" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 <div id="towards-model-data-fusion" class="section level2 hasAnchor" number="8.5">
 <h2><span class="header-section-number">8.5</span> Towards model-data fusion<a href="linear-regression-08.html#towards-model-data-fusion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -777,7 +789,6 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 </div>
 <div id="exercises-7" class="section level2 hasAnchor" number="8.6">
 <h2><span class="header-section-number">8.6</span> Exercises<a href="linear-regression-08.html#exercises-7" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-120" class="exercise"><strong>Exercise 8.1  </strong></span>Determine if the following equations are linear with respect to the parameters. Assume that <span class="math inline">\(y\)</span> is the response variable and <span class="math inline">\(x\)</span> the predictor variable.</p>
 <ol style="list-style-type: lower-alpha">
@@ -790,7 +801,6 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 </ol>
 </div>
 <!-- Idea taken from https://stattrek.com/regression/linear-transformation.aspx -->
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-121" class="exercise"><strong>Exercise 8.2  </strong></span>Each of the following equations can be written as linear with respect to the parameters, through applying some elementary transformations to the data. Write each equation as a linear function with respect to the parameters. Assume that <span class="math inline">\(y\)</span> is the response variable and <span class="math inline">\(x\)</span> the predictor variable.</p>
 <ol style="list-style-type: lower-alpha">
@@ -800,7 +810,6 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 <li><span class="math inline">\(y = c x^{n}\)</span></li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-122" class="exercise"><strong>Exercise 8.3  </strong></span>Use the dataset <code>global_temperature</code> and the function <code>lm</code> to answer the following questions:</p>
 <ol style="list-style-type: lower-alpha">
@@ -859,7 +868,6 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 <li>Finally show the plot of your selected polynomial with the data.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:log-linear-08" class="exercise"><strong>Exercise 8.4  </strong></span>An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta},\)</span> where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c&gt;0\)</span> are both constants.</p>
 <ol style="list-style-type: lower-alpha">
@@ -869,32 +877,27 @@ W =f(D,a,b,c)= a - be^{-ct}, \tag{8.1}
 <li>Determine the value of <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span> in the original equation with the parameters from the linear fit.</li>
 </ol>
 </div>
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-123" class="exercise"><strong>Exercise 8.5  </strong></span>Similar to Exercise <a href="linear-regression-08.html#exr:log-linear-08">8.4</a>, do a non-linear least squares fit for the dataset <code>phosphorous</code> to the equation <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>. For a starting point, you may use the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span> from Exercise <a href="linear-regression-08.html#exr:log-linear-08">8.4</a>. Then make a plot of the original <code>phosphorous</code> data with the fitted model results.
+<p><span id="exr:unnamed-chunk-123" class="exercise"><strong>Exercise 8.5  </strong></span>Similar to Exercise <a href="linear-regression-08.html#exr:log-linear-08">8.4</a>, do a non-linear least squares fit for the dataset <code>phosphorous</code> to the equation <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>. For a starting point, you may use the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span> from Exercise <a href="linear-regression-08.html#exr:log-linear-08">8.4</a>. Then make a plot of the original <code>phosphorous</code> data with the fitted model results.</p>
 </div>
-<!-- Keener vol1 pg 44 and pg 11 -->
-
-<div class="exercise">
-<p><span id="exr:enzyme-fit-08" class="exercise"><strong>Exercise 8.6  </strong></span>Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a> guided you through the process to linearize the following equation:</p>
+<p><!-- Keener vol1 pg 44 and pg 11 -->
+::: {.exercise #enzyme-fit-08}
+Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a> guided you through the process to linearize the following equation:</p>
 <p><span class="math display">\[\begin{equation}
 V = \frac{V_{max} s}{s+K_{m}},
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(s\)</span> is the amount of substrate, <span class="math inline">\(K_{m}\)</span> is half-saturation constant, and <span class="math inline">\(V_{max}\)</span> the maximum reaction rate. (Typically <span class="math inline">\(V\)</span> is used to signify the “velocity” of the reaction.) When doing a fit of the reciprocal of <span class="math inline">\(s\)</span> with the reciprocal of <span class="math inline">\(V\)</span>, what are the resulting values of <span class="math inline">\(V_{max}\)</span> and <span class="math inline">\(K_{m}\)</span>?</p>
-</div>
-
+<p>:::</p>
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-124" class="exercise"><strong>Exercise 8.7  </strong></span>Following from Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a> and Exercise <a href="linear-regression-08.html#exr:enzyme-fit-08">8.6</a>, apply the command <code>nls</code> to conduct a nonlinear least squares fit of the enzyme data to the equation:</p>
+<p><span id="exr:unnamed-chunk-124" class="exercise"><strong>Exercise 8.6  </strong></span>Following from Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a> and Exercise <a href="#exr:enzyme-fit-08"><strong>??</strong></a>, apply the command <code>nls</code> to conduct a nonlinear least squares fit of the enzyme data to the equation:</p>
 <p><span class="math display">\[\begin{equation}
 V = \frac{V_{max} s}{s+K_{m}},
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(s\)</span> is the amount of substrate, <span class="math inline">\(K_{m}\)</span> is the half-saturation constant, and <span class="math inline">\(V_{max}\)</span> the maximum reaction rate. As starting points for the nonlinear least squares fit, you may use the values of <span class="math inline">\(K_{m}\)</span> and <span class="math inline">\(V_{max}\)</span> that were determined from Example <a href="linear-regression-08.html#exm:enzyme-08">8.1</a>. Then make a plot of the actual data with the fitted model curve.</p>
 </div>
-<!-- See rScripts file for code -->
-
-<div class="exercise">
-<p><span id="exr:temperature-08" class="exercise"><strong>Exercise 8.8  </strong></span>
-Consider the following data which represent the temperature over the course of a day:</p>
+<p><!-- See rScripts file for code -->
+::: {.exercise #temperature-08}</p>
+<p>Consider the following data which represent the temperature over the course of a day:</p>
 <table>
 <thead>
 <tr class="header">
@@ -1006,17 +1009,16 @@ Consider the following data which represent the temperature over the course of a
 </tbody>
 </table>
 <ol style="list-style-type: lower-alpha">
-<li>Make a scatterplot of these data, with the variable  on the horizontal axis.</li>
+<li>Make a scatterplot of these data, with the variable on the horizontal axis.</li>
 <li>A function that describes these data is <span class="math inline">\(\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)\)</span>, where <span class="math inline">\(H\)</span> is the hour and <span class="math inline">\(T\)</span> is the temperature. Explain why this equation is linear for the parameters <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span>.</li>
 <li>Define a <code>tibble</code> that includes the variables <span class="math inline">\(T\)</span>, <span class="math inline">\(\displaystyle \sin \left( \frac{\pi}{12} \cdot H \right)\)</span>, <span class="math inline">\(\displaystyle \cos \left( \frac{\pi}{12} \cdot H \right)\)</span>.</li>
 <li>Do a linear fit on your new data frame to report the values of <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span>.</li>
 <li>Define a new <code>tibble</code> that has a sequence in <span class="math inline">\(H\)</span> starting at 0 from 24 with at least 100 data points, and a value of <span class="math inline">\(T\)</span> (<code>T_fitted</code>) using your coefficients of <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span>.</li>
 <li>Add your fitted curve to the scatterplot. How do your fitted values compare to the data?</li>
 </ol>
-</div>
-
+<p>:::</p>
 <div class="exercise">
-<span id="exr:unnamed-chunk-125" class="exercise"><strong>Exercise 8.9  </strong></span>Use the data from Exercise <a href="linear-regression-08.html#exr:temperature-08">8.8</a> to conduct a nonlinear fit (use the function <code>nls</code>) to the equation <span class="math inline">\(\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)\)</span>. Good starting points are <span class="math inline">\(A=50\)</span>, <span class="math inline">\(B=1\)</span>, and <span class="math inline">\(C=-10\)</span>.
+<p><span id="exr:unnamed-chunk-125" class="exercise"><strong>Exercise 8.7  </strong></span>Use the data from Exercise <a href="#exr:temperature-08"><strong>??</strong></a> to conduct a nonlinear fit (use the function <code>nls</code>) to the equation <span class="math inline">\(\displaystyle T = A + B \sin \left( \frac{\pi}{12} \cdot H \right) + C \cos \left( \frac{\pi}{12} \cdot H \right)\)</span>. Good starting points are <span class="math inline">\(A=50\)</span>, <span class="math inline">\(B=1\)</span>, and <span class="math inline">\(C=-10\)</span>.</p>
 </div>
 
 </div>
@@ -1047,7 +1049,6 @@ Keener, James, and James Sneyd, eds. 2009. <em>Mathematical <span>Physiology</sp
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -1087,11 +1088,14 @@ gitbook.start({
 "text": null
 },
 "download": {},
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
-},
-"search": true
+}
 });
 });
 </script>
@@ -1102,7 +1106,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

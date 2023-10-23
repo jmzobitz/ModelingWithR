@@ -5,20 +5,19 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 14 Information Criteria | Exploring Modeling with Data and Differential Equations Using R</title>
-  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="description" content="A textbook used for combining differential equation models with data using R." />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 14 Information Criteria | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
-  
-  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta property="og:description" content="A textbook used for combining differential equation models with data using R." />
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 14 Information Criteria | Exploring Modeling with Data and Differential Equations Using R" />
   
-  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="twitter:description" content="A textbook used for combining differential equation models with data using R." />
   
 
 <meta name="author" content="John M. Zobitz" />
@@ -32,8 +31,8 @@
   
 <link rel="prev" href="mcmc-13.html"/>
 <link rel="next" href="linearsystems-15.html"/>
-<script src="libs/header-attrs-2.14/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,12 +48,13 @@
 
 
 
-
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -95,7 +95,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -108,7 +108,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -122,6 +122,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 <style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
@@ -163,234 +167,234 @@ div.csl-indent {
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#welcome">Welcome<span></span></a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li><a href="index.html#computational-code">Computational code<span></span></a></li>
-<li><a href="index.html#questions-comments-issues">Questions? Comments? Issues?<span></span></a></li>
-<li><a href="index.html#about-the-cover">About the cover<span></span></a></li>
-<li><a href="index.html#acknowledgments">Acknowledgments<span></span></a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#computational-code"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#questions-comments-issues"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-the-cover"><i class="fa fa-check"></i>About the cover</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgments"><i class="fa fa-check"></i>Acknowledgments</a></li>
 </ul></li>
-<li class="part"><span><b>I Models with Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data<span></span></a>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born<span></span></a></li>
-<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease<span></span></a></li>
-<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions<span></span></a></li>
-<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?<span></span></a></li>
-<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here<span></span></a></li>
-<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R<span></span></a>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio<span></span></a></li>
-<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages<span></span></a></li>
-<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets<span></span></a></li>
-<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions<span></span></a></li>
-<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code></a></li>
+<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code></a></li>
+<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change<span></span></a>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action<span></span></a></li>
-<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares<span></span></a></li>
-<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses<span></span></a></li>
-<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions</a></li>
+<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares</a></li>
+<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method<span></span></a>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation<span></span></a></li>
-<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation<span></span></a></li>
-<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method<span></span></a></li>
-<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond<span></span></a></li>
-<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation</a></li>
+<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation</a></li>
+<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond</a></li>
+<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions<span></span></a>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations<span></span></a></li>
-<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations</a></li>
+<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations<span></span></a>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines<span></span></a></li>
-<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes<span></span></a></li>
-<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code><span></span></a></li>
-<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields<span></span></a></li>
-<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines</a></li>
+<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes</a></li>
+<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields</a></li>
+<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations<span></span></a>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution<span></span></a></li>
-<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations<span></span></a></li>
-<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors<span></span></a></li>
-<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations<span></span></a></li>
-<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution</a></li>
+<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations</a></li>
+<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations</a></li>
+<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>II Parameterizing Models with Data<span></span></b></span></li>
-<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting<span></span></a>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?<span></span></a></li>
-<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data<span></span></a></li>
-<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models<span></span></a></li>
-<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion<span></span></a></li>
-<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation</a></li>
+<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models</a></li>
+<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion</a></li>
+<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions<span></span></a>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset<span></span></a></li>
-<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions<span></span></a></li>
-<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression<span></span></a></li>
-<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces<span></span></a></li>
-<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward<span></span></a></li>
-<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset</a></li>
+<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions</a></li>
+<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward</a></li>
+<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions qnd Bayes’ Rule<span></span></a>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions and Bayes’ Rule</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals<span></span></a></li>
-<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function<span></span></a></li>
-<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule<span></span></a></li>
-<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action<span></span></a></li>
-<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps<span></span></a></li>
-<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals</a></li>
+<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function</a></li>
+<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule</a></li>
+<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action</a></li>
+<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps</a></li>
+<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method<span></span></a>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization<span></span></a></li>
-<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions<span></span></a></li>
-<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps<span></span></a></li>
-<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization</a></li>
+<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm<span></span></a>
+<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog<span></span></a></li>
-<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation</a></li>
+<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation</a></li>
+<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation<span></span></a>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC<span></span></a></li>
-<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model<span></span></a></li>
-<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model<span></span></a></li>
-<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code<span></span></a></li>
-<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC<span></span></a></li>
-<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC</a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model</a></li>
+<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model</a></li>
+<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code</a></li>
+<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC</a></li>
+<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria<span></span></a>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines<span></span></a></li>
-<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models<span></span></a></li>
-<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes<span></span></a></li>
-<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines</a></li>
+<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models</a></li>
+<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
+<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>III Stability Analysis for Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations<span></span></a>
+<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation<span></span></a></li>
-<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane<span></span></a></li>
-<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability<span></span></a></li>
-<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation</a></li>
+<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane</a></li>
+<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability</a></li>
+<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations<span></span></a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations<span></span></a></li>
-<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane<span></span></a></li>
-<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines<span></span></a></li>
-<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution<span></span></a></li>
-<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane<span></span></a></li>
-<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations</a></li>
+<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane</a></li>
+<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines</a></li>
+<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution</a></li>
+<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane</a></li>
+<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian<span></span></a>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations<span></span></a></li>
-<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations<span></span></a></li>
-<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix<span></span></a></li>
-<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations</a></li>
+<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations</a></li>
+<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix</a></li>
+<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?<span></span></a>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction<span></span></a></li>
-<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions<span></span></a></li>
-<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors<span></span></a></li>
-<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?<span></span></a></li>
-<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions</a></li>
+<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis<span></span></a>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)<span></span></a></li>
-<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant<span></span></a></li>
-<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis<span></span></a></li>
-<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.<span></span></a></li>
-<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)</a></li>
+<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant</a></li>
+<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis</a></li>
+<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.</a></li>
+<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation<span></span></a>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
 <ul>
-<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations<span></span></a></li>
-<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations<span></span></a></li>
-<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles<span></span></a></li>
-<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools<span></span></a></li>
-<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles</a></li>
+<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools</a></li>
+<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>IV Stochastic Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems<span></span></a>
+<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects<span></span></a></li>
-<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system<span></span></a></li>
-<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity<span></span></a></li>
-<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations<span></span></a></li>
-<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects</a></li>
+<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system</a></li>
+<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity</a></li>
+<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations</a></li>
+<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness<span></span></a>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages<span></span></a></li>
-<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration<span></span></a></li>
-<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages</a></li>
+<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration</a></li>
+<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks<span></span></a>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
 <ul>
-<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line<span></span></a></li>
-<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages<span></span></a></li>
-<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics<span></span></a></li>
-<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion<span></span></a></li>
-<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages</a></li>
+<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion</a></li>
+<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion<span></span></a>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion</a>
 <ul>
-<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux<span></span></a></li>
-<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion<span></span></a></li>
-<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
+<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion</a></li>
+<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model<span></span></a></li>
-<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method<span></span></a></li>
-<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters<span></span></a></li>
-<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations<span></span></a></li>
-<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method</a></li>
+<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations</a></li>
+<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation<span></span></a>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation</a>
 <ul>
-<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process<span></span></a></li>
-<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes<span></span></a></li>
-<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up<span></span></a></li>
-<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process</a></li>
+<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes</a></li>
+<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up</a></li>
+<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation<span></span></a></li>
-<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end<span></span></a></li>
-<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation</a></li>
+<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end</a></li>
+<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises</a></li>
 </ul></li>
-<li><a href="references.html#references">References<span></span></a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
@@ -415,14 +419,14 @@ div.csl-indent {
 <div id="information-criteria-14" class="section level1 hasAnchor" number="14">
 <h1><span class="header-section-number">Chapter 14</span> Information Criteria<a href="information-criteria-14.html#information-criteria-14" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>In Exercises <a href="mcmc-13.html#exr:yeast-v1-13">13.5</a> and <a href="mcmc-13.html#exr:yeast-v2-13">13.6</a> of Chapter <a href="mcmc-13.html#mcmc-13">13</a> we introduced two different empirical models for fitting the growth of <code>yeast</code> <span class="math inline">\(V\)</span> over time <span class="math inline">\(t\)</span>. One model is a logistic model (<span class="math inline">\(\displaystyle V = \frac{K}{1+e^{a-bt}}\)</span>), whereas the second model is a saturating function (<span class="math inline">\(\displaystyle V= K + Ae^{-bt}\)</span>). A plot comparing MCMC parameter estimates for the two models is shown in Figure <a href="information-criteria-14.html#fig:yeast-compare-14">14.1</a>.</p>
-<div class="figure"><span id="fig:yeast-compare-14"></span>
+<div class="figure"><span style="display:block;" id="fig:yeast-compare-14"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/yeast-compare-14-1.png" alt="Comparison of models for the growth of yeast in culture. Dots represent measured values from @gause_experimental_1932." width="672" />
 <p class="caption">
-FIGURE 14.1: Comparison of models for the growth of yeast in culture. Dots represent measured values from <span class="citation"><a href="#ref-gause_experimental_1932" role="doc-biblioref">Gause</a> (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>.
+FIGURE 14.1: Comparison of models for the growth of yeast in culture. Dots represent measured values from <span class="citation">Gause (<a href="#ref-gause_experimental_1932">1932</a>)</span>.
 </p>
 </div>
 <p>Figure <a href="information-criteria-14.html#fig:yeast-compare-14">14.1</a> raises an interesting question. Sometimes we have multiple, convergent models to describe a context or situation. While having these different options is good, we also like to know which is the <em>best</em> model. How would you decide that?</p>
-<p>This chapter focuses on objective criteria to assess what is called the <em>best approximating model</em> <span class="citation">(<a href="#ref-burnham_model_2002" role="doc-biblioref">Burnham and Anderson 2002</a>)</span>. We will explore what are called <em>information criteria</em>, which is developed from statistical theory. Let’s get started!</p>
+<p>This chapter focuses on objective criteria to assess what is called the <em>best approximating model</em> <span class="citation">(<a href="#ref-burnham_model_2002">Burnham and Anderson 2002</a>)</span>. We will explore what are called <em>information criteria</em>, which is developed from statistical theory. Let’s get started!</p>
 <div id="model-assessment-guidelines" class="section level2 hasAnchor" number="14.1">
 <h2><span class="header-section-number">14.1</span> Model assessment guidelines<a href="information-criteria-14.html#model-assessment-guidelines" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The first step is to develop some guidelines and metrics for model evaluation. Here would be the start of a list of things to consider, represented as questions:</p>
@@ -436,7 +440,7 @@ FIGURE 14.1: Comparison of models for the growth of yeast in culture. Dots repre
 </ul>
 <p>I may have hinted at some of these guidelines in earlier chapters. These questions are related to one another - and answering these questions (or ranking criteria for them) is at the heart of the topic of <em>model selection</em>.</p>
 <p>Perhaps you may be asking, why bother? Aren’t more models better? Let’s talk about a specific example, for which we return to the dataset <code>global_temperature</code> in the <code>demodelr</code> library. Recall this dataset represents the average global temperature anomaly relative to 1951-1980. When we did linear regression with this dataset in Chapter <a href="linear-regression-08.html#linear-regression-08">8</a> the quadratic and cubic models were approximately the same (Figure <a href="information-criteria-14.html#fig:global-temp-14">14.2</a>):</p>
-<div class="figure"><span id="fig:global-temp-14"></span>
+<div class="figure"><span style="display:block;" id="fig:global-temp-14"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/global-temp-14-1.png" alt="Comparison of global temperature anomaly dataset with various polynomial fitted models." width="672" />
 <p class="caption">
 FIGURE 14.2: Comparison of global temperature anomaly dataset with various polynomial fitted models.
@@ -445,6 +449,11 @@ FIGURE 14.2: Comparison of global temperature anomaly dataset with various polyn
 <p>The variation in the different model fits for Figure <a href="information-criteria-14.html#fig:global-temp-14">14.2</a> shows how different, but similar, the model results can be depending on the choice of regression function. Table <a href="information-criteria-14.html#tab:gt-ll-14">14.1</a> displays summary results for the log-likelihood and the root mean square error (RMSE).<a href="#fn35" class="footnote-ref" id="fnref35"><sup>35</sup></a> In some cases, the log-likelihood decreases (indicating a more likely model), supported by the decrease in the RMSE indicating the fitted model more closely matches the observations. However the decrease in the log-likelihood and the RMSE is changing less as the complexity of the model (i.e. a higher degree polynomial) increases.</p>
 <table>
 <caption><span id="tab:gt-ll-14">TABLE 14.1: </span> Comparison of model fits for global temperature anomaly dataset shown in Figure <a href="information-criteria-14.html#fig:global-temp-14">14.2</a>.</caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="center">Model</th>
@@ -490,14 +499,14 @@ FIGURE 14.2: Comparison of global temperature anomaly dataset with various polyn
 <h2><span class="header-section-number">14.2</span> Information criteria for assessing competing models<a href="information-criteria-14.html#information-criteria-for-assessing-competing-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><em>Information criteria</em> evaluate the tradeoff between model complexity (i.e. the number of parameters used) and with the log-likelihood (a measure of how well the model fits the data). There are several types of information criteria, but we are going to focus on two:</p>
 <ul>
-<li>The <strong>Akaike Information Criterion</strong> (<span class="math inline">\(AIC\)</span>, <span class="citation"><a href="#ref-akaike_new_1974" role="doc-biblioref">Akaike</a> (<a href="#ref-akaike_new_1974" role="doc-biblioref">1974</a>)</span>) is the most commonly used information criteria:</li>
+<li>The <strong>Akaike Information Criterion</strong> (<span class="math inline">\(AIC\)</span>, <span class="citation">Akaike (<a href="#ref-akaike_new_1974">1974</a>)</span>) is the most commonly used information criteria:</li>
 </ul>
-<p><span class="math display" id="eq:aic">\[\begin{equation} 
+<p><span class="math display" id="eq:aic">\[\begin{equation}
 AIC = -2 LL_{max} + 2 P
 \tag{14.1}
 \end{equation}\]</span></p>
 <ul>
-<li>An alternative to the <span class="math inline">\(AIC\)</span> is the <strong>Bayesian Information Criterion</strong> (<span class="math inline">\(BIC\)</span>, <span class="citation"><a href="#ref-schwartz_estimating_1978" role="doc-biblioref">Schwartz</a> (<a href="#ref-schwartz_estimating_1978" role="doc-biblioref">1978</a>)</span>)</li>
+<li>An alternative to the <span class="math inline">\(AIC\)</span> is the <strong>Bayesian Information Criterion</strong> (<span class="math inline">\(BIC\)</span>, <span class="citation">Schwartz (<a href="#ref-schwartz_estimating_1978">1978</a>)</span>)</li>
 </ul>
 <p><span class="math display" id="eq:bic">\[\begin{equation}
 BIC = -2 LL_{max} + P \ln (N)
@@ -505,14 +514,19 @@ BIC = -2 LL_{max} + P \ln (N)
 \end{equation}\]</span></p>
 <p>In Equations <a href="information-criteria-14.html#eq:aic">(14.1)</a> and <a href="information-criteria-14.html#eq:bic">(14.2)</a>, <span class="math inline">\(N\)</span> is the number of data points, <span class="math inline">\(P\)</span> is the number of estimated parameters, and <span class="math inline">\(LL_{max}\)</span> is the log-likelihood for the parameter set that maximized the likelihood function. Equations <a href="information-criteria-14.html#eq:aic">(14.1)</a> and <a href="information-criteria-14.html#eq:bic">(14.2)</a> show the dependence on the log-likelihood function and the number of parameters. For both the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> a lower value of the information criteria indicates greater support for the model from the data.</p>
 <p>Notice how easy the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> are to compute in Equations <a href="information-criteria-14.html#eq:aic">(14.1)</a> and <a href="information-criteria-14.html#eq:bic">(14.2)</a> (assuming you have the information at hand). When an empirical model fit is computed (i.e. using the command <code>lm</code>), <code>R</code> computes these easily with the functions <code>AIC</code> or <code>BIC</code>. To apply them you need to first do the model fit (with the function <code>lm</code>. Try this out by running the following code on your own:<a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a>:</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="information-criteria-14.html#cb71-1" aria-hidden="true" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> temperature_anomaly <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> year_since_1880</span>
-<span id="cb71-2"><a href="information-criteria-14.html#cb71-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(regression_formula, <span class="at">data =</span> global_temperature)</span>
-<span id="cb71-3"><a href="information-criteria-14.html#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span>
-<span id="cb71-4"><a href="information-criteria-14.html#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="information-criteria-14.html#cb72-1" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> temperature_anomaly <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> year_since_1880</span>
+<span id="cb72-2"><a href="information-criteria-14.html#cb72-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(regression_formula, <span class="at">data =</span> global_temperature)</span>
+<span id="cb72-3"><a href="information-criteria-14.html#cb72-3" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span>
+<span id="cb72-4"><a href="information-criteria-14.html#cb72-4" tabindex="-1"></a><span class="fu">BIC</span>(fit)</span></code></pre></div>
 <p>Table <a href="information-criteria-14.html#tab:gt-ic-14">14.2</a> compares <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> for the models fitted using the global temperature anomaly dataset:</p>
 <!-- Table: (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly data shown in Figure \@ref(fig:global-temp-14). -->
 <table>
 <caption><span id="tab:gt-ic-14">TABLE 14.2: </span> Comparison of the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> for global temperature anomaly dataset shown in Figure <a href="information-criteria-14.html#fig:global-temp-14">14.2</a>.</caption>
+<colgroup>
+<col width="14%" />
+<col width="42%" />
+<col width="42%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="center">Model</th>
@@ -548,7 +562,7 @@ BIC = -2 LL_{max} + P \ln (N)
 <div id="a-few-cautionary-notes" class="section level2 hasAnchor" number="14.3">
 <h2><span class="header-section-number">14.3</span> A few cautionary notes<a href="information-criteria-14.html#a-few-cautionary-notes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
-<li>Information criteria are relative measures. In a study it may be more helpful to report the change in the information criteria, or even a ratio (see <span class="citation"><a href="#ref-burnham_model_2002" role="doc-biblioref">Burnham and Anderson</a> (<a href="#ref-burnham_model_2002" role="doc-biblioref">2002</a>)</span> for a detailed analysis).</li>
+<li>Information criteria are relative measures. In a study it may be more helpful to report the change in the information criteria, or even a ratio (see <span class="citation">Burnham and Anderson (<a href="#ref-burnham_model_2002">2002</a>)</span> for a detailed analysis).</li>
 <li>Information criteria are not cross-comparable across studies. If you are pulling in a model from another study, it is helpful to re-calculate the information criteria.</li>
 <li>An advantage to the <span class="math inline">\(BIC\)</span> is that it measures tradeoffs between favoring a model that has the fewer number of data needed to estimate parameters. Other information criteria examine the distribution of the likelihood function and parameters.</li>
 </ul>
@@ -556,7 +570,6 @@ BIC = -2 LL_{max} + P \ln (N)
 </div>
 <div id="exercises-13" class="section level2 hasAnchor" number="14.4">
 <h2><span class="header-section-number">14.4</span> Exercises<a href="information-criteria-14.html#exercises-13" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-178" class="exercise"><strong>Exercise 14.1  </strong></span>You are investigating different models for the growth of a yeast species in a population where <span class="math inline">\(V\)</span> is the rate of reaction and <span class="math inline">\(s\)</span> is the added substrate:</p>
 <p><span class="math display">\[\begin{equation*}
@@ -566,9 +579,8 @@ BIC = -2 LL_{max} + P \ln (N)
 \mbox{Model 3: } &amp; V= K + Ae^{-bs}
 \end{split}
 \end{equation*}\]</span></p>
-With a dataset of 7 observations you found that the log-likelihood for Model 1 is <code>26.426</code>, for Model 2 the log-likelihood is is <code>15.587</code>, and for Model 3 the the log-likelihood is <code>21.537</code>. Apply the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> to evaluate which model is the best approximating model. Be sure to identify the number of estimated parameters for each model.
+<p>With a dataset of 7 observations you found that the log-likelihood for Model 1 is <code>26.426</code>, for Model 2 the log-likelihood is is <code>15.587</code>, and for Model 3 the the log-likelihood is <code>21.537</code>. Apply the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> to evaluate which model is the best approximating model. Be sure to identify the number of estimated parameters for each model.</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-179" class="exercise"><strong>Exercise 14.2  </strong></span>An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>, where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c\)</span> are parameters. We can apply linear regression to the dataset <span class="math inline">\((x, \; \ln(y) )\)</span>, so the intercept of the linear regression equals <span class="math inline">\(\ln(c)\)</span> and the slope equals <span class="math inline">\(1 / \theta\)</span>.</p>
 <ol style="list-style-type: lower-alpha">
@@ -580,11 +592,20 @@ With a dataset of 7 observations you found that the log-likelihood for Model 1 i
 </ol>
 </div>
 <!-- From Burnham and Anderson pg 135 of pdf -->
-
 <div class="exercise">
-<p><span id="exr:unnamed-chunk-180" class="exercise"><strong>Exercise 14.3  </strong></span>(Inspired by <span class="citation"><a href="#ref-burnham_model_2002" role="doc-biblioref">Burnham and Anderson</a> (<a href="#ref-burnham_model_2002" role="doc-biblioref">2002</a>)</span>) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in Figure <a href="modeling-rates-03.html#fig:pesticide-ch3">3.7</a>, where <span class="math inline">\(F\)</span> represents the amount of pesticide in the fish, <span class="math inline">\(W\)</span> the amount of pesticide in the water, and <span class="math inline">\(S\)</span> the amount of pesticide in the soil. The prime (e.g. <span class="math inline">\(F&#39;\)</span>, <span class="math inline">\(W&#39;\)</span>, and <span class="math inline">\(S&#39;\)</span>) represent other bound forms of the respective state. In all seven different models can be derived.</p>
+<p><span id="exr:unnamed-chunk-180" class="exercise"><strong>Exercise 14.3  </strong></span>(Inspired by <span class="citation">Burnham and Anderson (<a href="#ref-burnham_model_2002">2002</a>)</span>) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in Figure <a href="modeling-rates-03.html#fig:pesticide-ch3">3.7</a>, where <span class="math inline">\(F\)</span> represents the amount of pesticide in the fish, <span class="math inline">\(W\)</span> the amount of pesticide in the water, and <span class="math inline">\(S\)</span> the amount of pesticide in the soil. The prime (e.g. <span class="math inline">\(F&#39;\)</span>, <span class="math inline">\(W&#39;\)</span>, and <span class="math inline">\(S&#39;\)</span>) represent other bound forms of the respective state. In all seven different models can be derived.</p>
 <p>These models were applied to a dataset with 36 measurements of the water, fish, and plants. The table for the log-likelihood for each model is shown below:</p>
 <table>
+<colgroup>
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="center">Model</th>
@@ -615,9 +636,8 @@ With a dataset of 7 observations you found that the log-likelihood for Model 1 i
 <li>Apply the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> to the data in the above table to determine which is the best approximating model.</li>
 </ol>
 </div>
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-181" class="exercise"><strong>Exercise 14.4  </strong></span>Use the information shown in Table <a href="information-criteria-14.html#tab:gt-ll-14">14.1</a> to compute (by hand) the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> for each of the models for the <code>global_temperature</code> dataset (there are 142 observations). Do your results conform to what is presented in Table <a href="information-criteria-14.html#tab:gt-ic-14">14.2</a>? How far off are your results? What would be a plausible explanation for the difference?
+<p><span id="exr:unnamed-chunk-181" class="exercise"><strong>Exercise 14.4  </strong></span>Use the information shown in Table <a href="information-criteria-14.html#tab:gt-ll-14">14.1</a> to compute (by hand) the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> for each of the models for the <code>global_temperature</code> dataset (there are 142 observations). Do your results conform to what is presented in Table <a href="information-criteria-14.html#tab:gt-ic-14">14.2</a>? How far off are your results? What would be a plausible explanation for the difference?</p>
 </div>
 
 </div>
@@ -658,7 +678,6 @@ Schwartz, G. 1978. <span>“Estimating the Dimensions of a Model.”</span> <em>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -698,11 +717,14 @@ gitbook.start({
 "text": null
 },
 "download": {},
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
-},
-"search": true
+}
 });
 });
 </script>
@@ -713,7 +735,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

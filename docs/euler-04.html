@@ -5,20 +5,19 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Euler’s Method | Exploring Modeling with Data and Differential Equations Using R</title>
-  <meta name="description" content="A textbook used for MAT 369 at Augsburg University." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="description" content="A textbook used for combining differential equation models with data using R." />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Euler’s Method | Exploring Modeling with Data and Differential Equations Using R" />
   <meta property="og:type" content="book" />
   
-  
-  <meta property="og:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta property="og:description" content="A textbook used for combining differential equation models with data using R." />
   <meta name="github-repo" content="openscapes/series" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 4 Euler’s Method | Exploring Modeling with Data and Differential Equations Using R" />
   
-  <meta name="twitter:description" content="A textbook used for MAT 369 at Augsburg University." />
+  <meta name="twitter:description" content="A textbook used for combining differential equation models with data using R." />
   
 
 <meta name="author" content="John M. Zobitz" />
@@ -32,8 +31,8 @@
   
 <link rel="prev" href="modeling-rates-03.html"/>
 <link rel="next" href="phase-05.html"/>
-<script src="libs/header-attrs-2.14/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,12 +48,13 @@
 
 
 
-
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -95,7 +95,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -108,7 +108,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -122,6 +122,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 <style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
@@ -163,234 +167,234 @@ div.csl-indent {
 <li><a href="./"><strong>Modeling with Data and Differential Equations in R</strong><br>by John Zobitz</a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#welcome">Welcome<span></span></a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
 <ul>
-<li><a href="index.html#computational-code">Computational code<span></span></a></li>
-<li><a href="index.html#questions-comments-issues">Questions? Comments? Issues?<span></span></a></li>
-<li><a href="index.html#about-the-cover">About the cover<span></span></a></li>
-<li><a href="index.html#acknowledgments">Acknowledgments<span></span></a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#computational-code"><i class="fa fa-check"></i>Computational code</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#questions-comments-issues"><i class="fa fa-check"></i>Questions? Comments? Issues?</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-the-cover"><i class="fa fa-check"></i>About the cover</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgments"><i class="fa fa-check"></i>Acknowledgments</a></li>
 </ul></li>
-<li class="part"><span><b>I Models with Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data<span></span></a>
+<li class="part"><span><b>I Models with Differential Equations</b></span></li>
+<li class="chapter" data-level="1" data-path="intro-01.html"><a href="intro-01.html"><i class="fa fa-check"></i><b>1</b> Models of Rates with Data</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born<span></span></a></li>
-<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease<span></span></a></li>
-<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions<span></span></a></li>
-<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?<span></span></a></li>
-<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here<span></span></a></li>
-<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="1.1" data-path="intro-01.html"><a href="intro-01.html#rates-of-change-in-the-world-a-model-is-born"><i class="fa fa-check"></i><b>1.1</b> Rates of change in the world: a model is born</a></li>
+<li class="chapter" data-level="1.2" data-path="intro-01.html"><a href="intro-01.html#modeling-in-context-the-spread-of-a-disease"><i class="fa fa-check"></i><b>1.2</b> Modeling in context: the spread of a disease</a></li>
+<li class="chapter" data-level="1.3" data-path="intro-01.html"><a href="intro-01.html#model-solutions"><i class="fa fa-check"></i><b>1.3</b> Model solutions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro-01.html"><a href="intro-01.html#which-model-is-best"><i class="fa fa-check"></i><b>1.4</b> Which model is best?</a></li>
+<li class="chapter" data-level="1.5" data-path="intro-01.html"><a href="intro-01.html#start-here"><i class="fa fa-check"></i><b>1.5</b> Start here</a></li>
+<li class="chapter" data-level="1.6" data-path="intro-01.html"><a href="intro-01.html#exercises"><i class="fa fa-check"></i><b>1.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R<span></span></a>
+<li class="chapter" data-level="2" data-path="r-intro-02.html"><a href="r-intro-02.html"><i class="fa fa-check"></i><b>2</b> Introduction to R</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio<span></span></a></li>
-<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages<span></span></a></li>
-<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets<span></span></a></li>
-<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code><span></span></a></li>
-<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions<span></span></a></li>
-<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="2.1" data-path="r-intro-02.html"><a href="r-intro-02.html#r-and-rstudio"><i class="fa fa-check"></i><b>2.1</b> <code>R</code> and RStudio</a></li>
+<li class="chapter" data-level="2.2" data-path="r-intro-02.html"><a href="r-intro-02.html#first-steps-getting-acquainted-with-r"><i class="fa fa-check"></i><b>2.2</b> First steps: getting acquainted with <code>R</code></a></li>
+<li class="chapter" data-level="2.3" data-path="r-intro-02.html"><a href="r-intro-02.html#increasing-functionality-with-packages"><i class="fa fa-check"></i><b>2.3</b> Increasing functionality with packages</a></li>
+<li class="chapter" data-level="2.4" data-path="r-intro-02.html"><a href="r-intro-02.html#working-with-r-variables-data-frames-and-datasets"><i class="fa fa-check"></i><b>2.4</b> Working with <code>R</code>: variables, data frames, and datasets</a></li>
+<li class="chapter" data-level="2.5" data-path="r-intro-02.html"><a href="r-intro-02.html#visualization-with-r"><i class="fa fa-check"></i><b>2.5</b> Visualization with <code>R</code></a></li>
+<li class="chapter" data-level="2.6" data-path="r-intro-02.html"><a href="r-intro-02.html#defining-functions"><i class="fa fa-check"></i><b>2.6</b> Defining functions</a></li>
+<li class="chapter" data-level="2.7" data-path="r-intro-02.html"><a href="r-intro-02.html#concluding-thoughts"><i class="fa fa-check"></i><b>2.7</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="2.8" data-path="r-intro-02.html"><a href="r-intro-02.html#exercises-1"><i class="fa fa-check"></i><b>2.8</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change<span></span></a>
+<li class="chapter" data-level="3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html"><i class="fa fa-check"></i><b>3</b> Modeling with Rates of Change</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action<span></span></a></li>
-<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares<span></span></a></li>
-<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses<span></span></a></li>
-<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="3.1" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#competing-plant-species-and-equilibrium-solutions"><i class="fa fa-check"></i><b>3.1</b> Competing plant species and equilibrium solutions</a></li>
+<li class="chapter" data-level="3.2" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#the-law-of-mass-action"><i class="fa fa-check"></i><b>3.2</b> The Law of Mass Action</a></li>
+<li class="chapter" data-level="3.3" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#coupled-differential-equations-lynx-and-hares"><i class="fa fa-check"></i><b>3.3</b> Coupled differential equations: lynx and hares</a></li>
+<li class="chapter" data-level="3.4" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#functional-responses"><i class="fa fa-check"></i><b>3.4</b> Functional responses</a></li>
+<li class="chapter" data-level="3.5" data-path="modeling-rates-03.html"><a href="modeling-rates-03.html#exercises-2"><i class="fa fa-check"></i><b>3.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method<span></span></a>
+<li class="chapter" data-level="4" data-path="euler-04.html"><a href="euler-04.html"><i class="fa fa-check"></i><b>4</b> Euler’s Method</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation<span></span></a></li>
-<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation<span></span></a></li>
-<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method<span></span></a></li>
-<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond<span></span></a></li>
-<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="4.1" data-path="euler-04.html"><a href="euler-04.html#the-flu-and-locally-linear-approximation"><i class="fa fa-check"></i><b>4.1</b> The flu and locally linear approximation</a></li>
+<li class="chapter" data-level="4.2" data-path="euler-04.html"><a href="euler-04.html#a-workflow-for-approximation"><i class="fa fa-check"></i><b>4.2</b> A workflow for approximation</a></li>
+<li class="chapter" data-level="4.3" data-path="euler-04.html"><a href="euler-04.html#building-an-iterative-method"><i class="fa fa-check"></i><b>4.3</b> Building an iterative method</a></li>
+<li class="chapter" data-level="4.4" data-path="euler-04.html"><a href="euler-04.html#eulers-method-and-beyond"><i class="fa fa-check"></i><b>4.4</b> Euler’s method and beyond</a></li>
+<li class="chapter" data-level="4.5" data-path="euler-04.html"><a href="euler-04.html#exercises-3"><i class="fa fa-check"></i><b>4.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions<span></span></a>
+<li class="chapter" data-level="5" data-path="phase-05.html"><a href="phase-05.html"><i class="fa fa-check"></i><b>5</b> Phase Lines and Equilibrium Solutions</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations<span></span></a></li>
-<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="5.1" data-path="phase-05.html"><a href="phase-05.html#equilibrium-solutions"><i class="fa fa-check"></i><b>5.1</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="5.2" data-path="phase-05.html"><a href="phase-05.html#phase-lines-for-differential-equations"><i class="fa fa-check"></i><b>5.2</b> Phase lines for differential equations</a></li>
+<li class="chapter" data-level="5.3" data-path="phase-05.html"><a href="phase-05.html#a-stability-test-for-equilibrium-solutions"><i class="fa fa-check"></i><b>5.3</b> A stability test for equilibrium solutions</a></li>
+<li class="chapter" data-level="5.4" data-path="phase-05.html"><a href="phase-05.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations<span></span></a>
+<li class="chapter" data-level="6" data-path="coupled-06.html"><a href="coupled-06.html"><i class="fa fa-check"></i><b>6</b> Coupled Systems of Equations</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines<span></span></a></li>
-<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes<span></span></a></li>
-<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code><span></span></a></li>
-<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields<span></span></a></li>
-<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="6.1" data-path="coupled-06.html"><a href="coupled-06.html#flu-with-quarantine-and-equilibrium-solutions"><i class="fa fa-check"></i><b>6.1</b> Flu with quarantine and equilibrium solutions</a></li>
+<li class="chapter" data-level="6.2" data-path="coupled-06.html"><a href="coupled-06.html#nullclines"><i class="fa fa-check"></i><b>6.2</b> Nullclines</a></li>
+<li class="chapter" data-level="6.3" data-path="coupled-06.html"><a href="coupled-06.html#phase-planes"><i class="fa fa-check"></i><b>6.3</b> Phase planes</a></li>
+<li class="chapter" data-level="6.4" data-path="coupled-06.html"><a href="coupled-06.html#generating-a-phase-plane-in-r"><i class="fa fa-check"></i><b>6.4</b> Generating a phase plane in <code>R</code></a></li>
+<li class="chapter" data-level="6.5" data-path="coupled-06.html"><a href="coupled-06.html#slope-fields"><i class="fa fa-check"></i><b>6.5</b> Slope fields</a></li>
+<li class="chapter" data-level="6.6" data-path="coupled-06.html"><a href="coupled-06.html#exercises-5"><i class="fa fa-check"></i><b>6.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations<span></span></a>
+<li class="chapter" data-level="7" data-path="exact-solns-07.html"><a href="exact-solns-07.html"><i class="fa fa-check"></i><b>7</b> Exact Solutions to Differential Equations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution<span></span></a></li>
-<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations<span></span></a></li>
-<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors<span></span></a></li>
-<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations<span></span></a></li>
-<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="7.1" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-a-solution"><i class="fa fa-check"></i><b>7.1</b> Verify a solution</a></li>
+<li class="chapter" data-level="7.2" data-path="exact-solns-07.html"><a href="exact-solns-07.html#separable-differential-equations"><i class="fa fa-check"></i><b>7.2</b> Separable differential equations</a></li>
+<li class="chapter" data-level="7.3" data-path="exact-solns-07.html"><a href="exact-solns-07.html#integrating-factors"><i class="fa fa-check"></i><b>7.3</b> Integrating factors</a></li>
+<li class="chapter" data-level="7.4" data-path="exact-solns-07.html"><a href="exact-solns-07.html#verify-broad-07"><i class="fa fa-check"></i><b>7.4</b> Applying the verification method to coupled equations</a></li>
+<li class="chapter" data-level="7.5" data-path="exact-solns-07.html"><a href="exact-solns-07.html#exercises-6"><i class="fa fa-check"></i><b>7.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>II Parameterizing Models with Data<span></span></b></span></li>
-<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting<span></span></a>
+<li class="part"><span><b>II Parameterizing Models with Data</b></span></li>
+<li class="chapter" data-level="8" data-path="linear-regression-08.html"><a href="linear-regression-08.html"><i class="fa fa-check"></i><b>8</b> Linear Regression and Curve Fitting</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?<span></span></a></li>
-<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data<span></span></a></li>
-<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models<span></span></a></li>
-<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion<span></span></a></li>
-<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="8.1" data-path="linear-regression-08.html"><a href="linear-regression-08.html#what-is-parameter-estimation"><i class="fa fa-check"></i><b>8.1</b> What is parameter estimation?</a></li>
+<li class="chapter" data-level="8.2" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-for-global-temperature-data"><i class="fa fa-check"></i><b>8.2</b> Parameter estimation for global temperature data</a></li>
+<li class="chapter" data-level="8.3" data-path="linear-regression-08.html"><a href="linear-regression-08.html#beyond-linear-08"><i class="fa fa-check"></i><b>8.3</b> Moving beyond linear models for parameter estimation</a></li>
+<li class="chapter" data-level="8.4" data-path="linear-regression-08.html"><a href="linear-regression-08.html#parameter-estimation-with-nonlinear-models"><i class="fa fa-check"></i><b>8.4</b> Parameter estimation with nonlinear models</a></li>
+<li class="chapter" data-level="8.5" data-path="linear-regression-08.html"><a href="linear-regression-08.html#towards-model-data-fusion"><i class="fa fa-check"></i><b>8.5</b> Towards model-data fusion</a></li>
+<li class="chapter" data-level="8.6" data-path="linear-regression-08.html"><a href="linear-regression-08.html#exercises-7"><i class="fa fa-check"></i><b>8.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions<span></span></a>
+<li class="chapter" data-level="9" data-path="likelihood-09.html"><a href="likelihood-09.html"><i class="fa fa-check"></i><b>9</b> Probability and Likelihood Functions</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset<span></span></a></li>
-<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions<span></span></a></li>
-<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression<span></span></a></li>
-<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces<span></span></a></li>
-<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward<span></span></a></li>
-<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="9.1" data-path="likelihood-09.html"><a href="likelihood-09.html#linear-regression-on-a-small-dataset"><i class="fa fa-check"></i><b>9.1</b> Linear regression on a small dataset</a></li>
+<li class="chapter" data-level="9.2" data-path="likelihood-09.html"><a href="likelihood-09.html#continuous-probability-density-functions"><i class="fa fa-check"></i><b>9.2</b> Continuous probability density functions</a></li>
+<li class="chapter" data-level="9.3" data-path="likelihood-09.html"><a href="likelihood-09.html#connecting-probabilities-to-linear-regression"><i class="fa fa-check"></i><b>9.3</b> Connecting probabilities to linear regression</a></li>
+<li class="chapter" data-level="9.4" data-path="likelihood-09.html"><a href="likelihood-09.html#visualizing-likelihood-surfaces"><i class="fa fa-check"></i><b>9.4</b> Visualizing likelihood surfaces</a></li>
+<li class="chapter" data-level="9.5" data-path="likelihood-09.html"><a href="likelihood-09.html#looking-back-and-forward"><i class="fa fa-check"></i><b>9.5</b> Looking back and forward</a></li>
+<li class="chapter" data-level="9.6" data-path="likelihood-09.html"><a href="likelihood-09.html#exercises-8"><i class="fa fa-check"></i><b>9.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions qnd Bayes’ Rule<span></span></a>
+<li class="chapter" data-level="10" data-path="cost-fns-10.html"><a href="cost-fns-10.html"><i class="fa fa-check"></i><b>10</b> Cost Functions and Bayes’ Rule</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals<span></span></a></li>
-<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function<span></span></a></li>
-<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule<span></span></a></li>
-<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action<span></span></a></li>
-<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps<span></span></a></li>
-<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="10.1" data-path="cost-fns-10.html"><a href="cost-fns-10.html#cost-functions-and-model-data-residuals"><i class="fa fa-check"></i><b>10.1</b> Cost functions and model-data residuals</a></li>
+<li class="chapter" data-level="10.2" data-path="cost-fns-10.html"><a href="cost-fns-10.html#further-extensions-to-the-cost-function"><i class="fa fa-check"></i><b>10.2</b> Further extensions to the cost function</a></li>
+<li class="chapter" data-level="10.3" data-path="cost-fns-10.html"><a href="cost-fns-10.html#conditional-probabilities-and-bayes-rule"><i class="fa fa-check"></i><b>10.3</b> Conditional probabilities and Bayes’ rule</a></li>
+<li class="chapter" data-level="10.4" data-path="cost-fns-10.html"><a href="cost-fns-10.html#bayes-rule-in-action"><i class="fa fa-check"></i><b>10.4</b> Bayes’ rule in action</a></li>
+<li class="chapter" data-level="10.5" data-path="cost-fns-10.html"><a href="cost-fns-10.html#next-steps"><i class="fa fa-check"></i><b>10.5</b> Next steps</a></li>
+<li class="chapter" data-level="10.6" data-path="cost-fns-10.html"><a href="cost-fns-10.html#exercises-9"><i class="fa fa-check"></i><b>10.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method<span></span></a>
+<li class="chapter" data-level="11" data-path="bootstrap-11.html"><a href="bootstrap-11.html"><i class="fa fa-check"></i><b>11</b> Sampling Distributions and the Bootstrap Method</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization<span></span></a></li>
-<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions<span></span></a></li>
-<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps<span></span></a></li>
-<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="11.1" data-path="bootstrap-11.html"><a href="bootstrap-11.html#histograms-and-their-visualization"><i class="fa fa-check"></i><b>11.1</b> Histograms and their visualization</a></li>
+<li class="chapter" data-level="11.2" data-path="bootstrap-11.html"><a href="bootstrap-11.html#statistical-theory-sampling-distributions"><i class="fa fa-check"></i><b>11.2</b> Statistical theory: sampling distributions</a></li>
+<li class="chapter" data-level="11.3" data-path="bootstrap-11.html"><a href="bootstrap-11.html#summary-and-next-steps"><i class="fa fa-check"></i><b>11.3</b> Summary and next steps</a></li>
+<li class="chapter" data-level="11.4" data-path="bootstrap-11.html"><a href="bootstrap-11.html#exercises-10"><i class="fa fa-check"></i><b>11.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm<span></span></a>
+<li class="chapter" data-level="12" data-path="metropolis-12.html"><a href="metropolis-12.html"><i class="fa fa-check"></i><b>12</b> The Metropolis-Hastings Algorithm</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog<span></span></a></li>
-<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation<span></span></a></li>
-<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="12.1" data-path="metropolis-12.html"><a href="metropolis-12.html#estimating-the-growth-of-a-dog"><i class="fa fa-check"></i><b>12.1</b> Estimating the growth of a dog</a></li>
+<li class="chapter" data-level="12.2" data-path="metropolis-12.html"><a href="metropolis-12.html#lr-12"><i class="fa fa-check"></i><b>12.2</b> Likelihood ratios for parameter estimation</a></li>
+<li class="chapter" data-level="12.3" data-path="metropolis-12.html"><a href="metropolis-12.html#the-metropolis-hastings-algorithm-for-parameter-estimation"><i class="fa fa-check"></i><b>12.3</b> The Metropolis-Hastings algorithm for parameter estimation</a></li>
+<li class="chapter" data-level="12.4" data-path="metropolis-12.html"><a href="metropolis-12.html#exercises-11"><i class="fa fa-check"></i><b>12.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation<span></span></a>
+<li class="chapter" data-level="13" data-path="mcmc-13.html"><a href="mcmc-13.html"><i class="fa fa-check"></i><b>13</b> Markov Chain Monte Carlo Parameter Estimation</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC<span></span></a></li>
-<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model<span></span></a></li>
-<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model<span></span></a></li>
-<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code<span></span></a></li>
-<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC<span></span></a></li>
-<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="13.1" data-path="mcmc-13.html"><a href="mcmc-13.html#the-recipe-for-mcmc"><i class="fa fa-check"></i><b>13.1</b> The recipe for MCMC</a></li>
+<li class="chapter" data-level="13.2" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-an-empirical-model"><i class="fa fa-check"></i><b>13.2</b> MCMC parameter estimation with an empirical model</a></li>
+<li class="chapter" data-level="13.3" data-path="mcmc-13.html"><a href="mcmc-13.html#mcmc-parameter-estimation-with-a-differential-equation-model"><i class="fa fa-check"></i><b>13.3</b> MCMC parameter estimation with a differential equation model</a></li>
+<li class="chapter" data-level="13.4" data-path="mcmc-13.html"><a href="mcmc-13.html#timing-your-code"><i class="fa fa-check"></i><b>13.4</b> Timing your code</a></li>
+<li class="chapter" data-level="13.5" data-path="mcmc-13.html"><a href="mcmc-13.html#further-extensions-to-mcmc"><i class="fa fa-check"></i><b>13.5</b> Further extensions to MCMC</a></li>
+<li class="chapter" data-level="13.6" data-path="mcmc-13.html"><a href="mcmc-13.html#exercises-12"><i class="fa fa-check"></i><b>13.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria<span></span></a>
+<li class="chapter" data-level="14" data-path="information-criteria-14.html"><a href="information-criteria-14.html"><i class="fa fa-check"></i><b>14</b> Information Criteria</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines<span></span></a></li>
-<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models<span></span></a></li>
-<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes<span></span></a></li>
-<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="14.1" data-path="information-criteria-14.html"><a href="information-criteria-14.html#model-assessment-guidelines"><i class="fa fa-check"></i><b>14.1</b> Model assessment guidelines</a></li>
+<li class="chapter" data-level="14.2" data-path="information-criteria-14.html"><a href="information-criteria-14.html#information-criteria-for-assessing-competing-models"><i class="fa fa-check"></i><b>14.2</b> Information criteria for assessing competing models</a></li>
+<li class="chapter" data-level="14.3" data-path="information-criteria-14.html"><a href="information-criteria-14.html#a-few-cautionary-notes"><i class="fa fa-check"></i><b>14.3</b> A few cautionary notes</a></li>
+<li class="chapter" data-level="14.4" data-path="information-criteria-14.html"><a href="information-criteria-14.html#exercises-13"><i class="fa fa-check"></i><b>14.4</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>III Stability Analysis for Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations<span></span></a>
+<li class="part"><span><b>III Stability Analysis for Differential Equations</b></span></li>
+<li class="chapter" data-level="15" data-path="linearsystems-15.html"><a href="linearsystems-15.html"><i class="fa fa-check"></i><b>15</b> Systems of Linear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation<span></span></a></li>
-<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions<span></span></a></li>
-<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane<span></span></a></li>
-<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability<span></span></a></li>
-<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="15.1" data-path="linearsystems-15.html"><a href="linearsystems-15.html#linear-systems-of-differential-equations-and-matrix-notation"><i class="fa fa-check"></i><b>15.1</b> Linear systems of differential equations and matrix notation</a></li>
+<li class="chapter" data-level="15.2" data-path="linearsystems-15.html"><a href="linearsystems-15.html#equilibrium-solutions-1"><i class="fa fa-check"></i><b>15.2</b> Equilibrium solutions</a></li>
+<li class="chapter" data-level="15.3" data-path="linearsystems-15.html"><a href="linearsystems-15.html#the-phase-plane"><i class="fa fa-check"></i><b>15.3</b> The phase plane</a></li>
+<li class="chapter" data-level="15.4" data-path="linearsystems-15.html"><a href="linearsystems-15.html#non-equilibrium-solutions-and-their-stability"><i class="fa fa-check"></i><b>15.4</b> Non-equilibrium solutions and their stability</a></li>
+<li class="chapter" data-level="15.5" data-path="linearsystems-15.html"><a href="linearsystems-15.html#exercises-14"><i class="fa fa-check"></i><b>15.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations<span></span></a>
+<li class="chapter" data-level="16" data-path="nonlinear-16.html"><a href="nonlinear-16.html"><i class="fa fa-check"></i><b>16</b> Systems of Nonlinear Differential Equations</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations<span></span></a></li>
-<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane<span></span></a></li>
-<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines<span></span></a></li>
-<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution<span></span></a></li>
-<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane<span></span></a></li>
-<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="16.1" data-path="nonlinear-16.html"><a href="nonlinear-16.html#introducing-nonlinear-systems-of-differential-equations"><i class="fa fa-check"></i><b>16.1</b> Introducing nonlinear systems of differential equations</a></li>
+<li class="chapter" data-level="16.2" data-path="nonlinear-16.html"><a href="nonlinear-16.html#zooming-in-on-the-phase-plane"><i class="fa fa-check"></i><b>16.2</b> Zooming in on the phase plane</a></li>
+<li class="chapter" data-level="16.3" data-path="nonlinear-16.html"><a href="nonlinear-16.html#determining-equilibrium-solutions-with-nullclines"><i class="fa fa-check"></i><b>16.3</b> Determining equilibrium solutions with nullclines</a></li>
+<li class="chapter" data-level="16.4" data-path="nonlinear-16.html"><a href="nonlinear-16.html#stability-of-an-equilibrium-solution"><i class="fa fa-check"></i><b>16.4</b> Stability of an equilibrium solution</a></li>
+<li class="chapter" data-level="16.5" data-path="nonlinear-16.html"><a href="nonlinear-16.html#graphing-nullclines-in-a-phase-plane"><i class="fa fa-check"></i><b>16.5</b> Graphing nullclines in a phase plane</a></li>
+<li class="chapter" data-level="16.6" data-path="nonlinear-16.html"><a href="nonlinear-16.html#exercises-15"><i class="fa fa-check"></i><b>16.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian<span></span></a>
+<li class="chapter" data-level="17" data-path="jacobian-17.html"><a href="jacobian-17.html"><i class="fa fa-check"></i><b>17</b> Local Linearization and the Jacobian</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations<span></span></a></li>
-<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations<span></span></a></li>
-<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix<span></span></a></li>
-<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="17.1" data-path="jacobian-17.html"><a href="jacobian-17.html#competing-populations"><i class="fa fa-check"></i><b>17.1</b> Competing populations</a></li>
+<li class="chapter" data-level="17.2" data-path="jacobian-17.html"><a href="jacobian-17.html#tangent-plane-approximations"><i class="fa fa-check"></i><b>17.2</b> Tangent plane approximations</a></li>
+<li class="chapter" data-level="17.3" data-path="jacobian-17.html"><a href="jacobian-17.html#the-jacobian-matrix"><i class="fa fa-check"></i><b>17.3</b> The Jacobian matrix</a></li>
+<li class="chapter" data-level="17.4" data-path="jacobian-17.html"><a href="jacobian-17.html#exercises-16"><i class="fa fa-check"></i><b>17.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?<span></span></a>
+<li class="chapter" data-level="18" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html"><i class="fa fa-check"></i><b>18</b> What are Eigenvalues?</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction<span></span></a></li>
-<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions<span></span></a></li>
-<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors<span></span></a></li>
-<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?<span></span></a></li>
-<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="18.1" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#introduction"><i class="fa fa-check"></i><b>18.1</b> Introduction</a></li>
+<li class="chapter" data-level="18.2" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#straight-line-solutions"><i class="fa fa-check"></i><b>18.2</b> Straight line solutions</a></li>
+<li class="chapter" data-level="18.3" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#computing-eigenvalues-and-eigenvectors"><i class="fa fa-check"></i><b>18.3</b> Computing eigenvalues and eigenvectors</a></li>
+<li class="chapter" data-level="18.4" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#what-do-eigenvalues-tell-us"><i class="fa fa-check"></i><b>18.4</b> What do eigenvalues tell us?</a></li>
+<li class="chapter" data-level="18.5" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#concluding-thoughts-1"><i class="fa fa-check"></i><b>18.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="18.6" data-path="eigenvalues-18.html"><a href="eigenvalues-18.html#exercises-17"><i class="fa fa-check"></i><b>18.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis<span></span></a>
+<li class="chapter" data-level="19" data-path="stability-19.html"><a href="stability-19.html"><i class="fa fa-check"></i><b>19</b> Qualitative Stability Analysis</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)<span></span></a></li>
-<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant<span></span></a></li>
-<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis<span></span></a></li>
-<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.<span></span></a></li>
-<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="19.1" data-path="stability-19.html"><a href="stability-19.html#the-characteristic-polynomial-again"><i class="fa fa-check"></i><b>19.1</b> The characteristic polynomial (again)</a></li>
+<li class="chapter" data-level="19.2" data-path="stability-19.html"><a href="stability-19.html#stability-with-the-trace-and-determinant"><i class="fa fa-check"></i><b>19.2</b> Stability with the trace and determinant</a></li>
+<li class="chapter" data-level="19.3" data-path="stability-19.html"><a href="stability-19.html#a-workflow-for-stability-analysis"><i class="fa fa-check"></i><b>19.3</b> A workflow for stability analysis</a></li>
+<li class="chapter" data-level="19.4" data-path="stability-19.html"><a href="stability-19.html#stability-for-higher-order-systems-of-differential-equations."><i class="fa fa-check"></i><b>19.4</b> Stability for higher-order systems of differential equations.</a></li>
+<li class="chapter" data-level="19.5" data-path="stability-19.html"><a href="stability-19.html#exercises-18"><i class="fa fa-check"></i><b>19.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation<span></span></a>
+<li class="chapter" data-level="20" data-path="bifurcation-20.html"><a href="bifurcation-20.html"><i class="fa fa-check"></i><b>20</b> Bifurcation</a>
 <ul>
-<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations<span></span></a></li>
-<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations<span></span></a></li>
-<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles<span></span></a></li>
-<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools<span></span></a></li>
-<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="20.1" data-path="bifurcation-20.html"><a href="bifurcation-20.html#a-series-of-equations"><i class="fa fa-check"></i><b>20.1</b> A series of equations</a></li>
+<li class="chapter" data-level="20.2" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-with-systems-of-equations"><i class="fa fa-check"></i><b>20.2</b> Bifurcations with systems of equations</a></li>
+<li class="chapter" data-level="20.3" data-path="bifurcation-20.html"><a href="bifurcation-20.html#functions-as-equilibrium-solutions-limit-cycles"><i class="fa fa-check"></i><b>20.3</b> Functions as equilibrium solutions: limit cycles</a></li>
+<li class="chapter" data-level="20.4" data-path="bifurcation-20.html"><a href="bifurcation-20.html#bifurcations-as-analysis-tools"><i class="fa fa-check"></i><b>20.4</b> Bifurcations as analysis tools</a></li>
+<li class="chapter" data-level="20.5" data-path="bifurcation-20.html"><a href="bifurcation-20.html#exercises-19"><i class="fa fa-check"></i><b>20.5</b> Exercises</a></li>
 </ul></li>
-<li class="part"><span><b>IV Stochastic Differential Equations<span></span></b></span></li>
-<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems<span></span></a>
+<li class="part"><span><b>IV Stochastic Differential Equations</b></span></li>
+<li class="chapter" data-level="21" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html"><i class="fa fa-check"></i><b>21</b> Stochastic Biological Systems</a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects<span></span></a></li>
-<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system<span></span></a></li>
-<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity<span></span></a></li>
-<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations<span></span></a></li>
-<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="21.1" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#introducing-stochastic-effects"><i class="fa fa-check"></i><b>21.1</b> Introducing stochastic effects</a></li>
+<li class="chapter" data-level="21.2" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#a-discrete-dynamical-system"><i class="fa fa-check"></i><b>21.2</b> A discrete dynamical system</a></li>
+<li class="chapter" data-level="21.3" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#environmental-stochasticity"><i class="fa fa-check"></i><b>21.3</b> Environmental stochasticity</a></li>
+<li class="chapter" data-level="21.4" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#discrete-systems-of-equations"><i class="fa fa-check"></i><b>21.4</b> Discrete systems of equations</a></li>
+<li class="chapter" data-level="21.5" data-path="stoch-sys-21.html"><a href="stoch-sys-21.html#exercises-20"><i class="fa fa-check"></i><b>21.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness<span></span></a>
+<li class="chapter" data-level="22" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html"><i class="fa fa-check"></i><b>22</b> Simulating and Visualizing Randomness</a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages<span></span></a></li>
-<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration<span></span></a></li>
-<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="22.1" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#ensemble-averages"><i class="fa fa-check"></i><b>22.1</b> Ensemble averages</a></li>
+<li class="chapter" data-level="22.2" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#repeated-iteration"><i class="fa fa-check"></i><b>22.2</b> Repeated iteration</a></li>
+<li class="chapter" data-level="22.3" data-path="stoch-sim-22.html"><a href="stoch-sim-22.html#exercises-21"><i class="fa fa-check"></i><b>22.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks<span></span></a>
+<li class="chapter" data-level="23" data-path="random-walks-23.html"><a href="random-walks-23.html"><i class="fa fa-check"></i><b>23</b> Random Walks</a>
 <ul>
-<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line<span></span></a></li>
-<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages<span></span></a></li>
-<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics<span></span></a></li>
-<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion<span></span></a></li>
-<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="23.1" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-on-a-number-line"><i class="fa fa-check"></i><b>23.1</b> Random walk on a number line</a></li>
+<li class="chapter" data-level="23.2" data-path="random-walks-23.html"><a href="random-walks-23.html#iteration-and-ensemble-averages"><i class="fa fa-check"></i><b>23.2</b> Iteration and ensemble averages</a></li>
+<li class="chapter" data-level="23.3" data-path="random-walks-23.html"><a href="random-walks-23.html#random-walk-mathematics"><i class="fa fa-check"></i><b>23.3</b> Random walk mathematics</a></li>
+<li class="chapter" data-level="23.4" data-path="random-walks-23.html"><a href="random-walks-23.html#continuous-random-walks-and-diffusion"><i class="fa fa-check"></i><b>23.4</b> Continuous random walks and diffusion</a></li>
+<li class="chapter" data-level="23.5" data-path="random-walks-23.html"><a href="random-walks-23.html#exercises-22"><i class="fa fa-check"></i><b>23.5</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion<span></span></a>
+<li class="chapter" data-level="24" data-path="diffusion-24.html"><a href="diffusion-24.html"><i class="fa fa-check"></i><b>24</b> Diffusion and Brownian Motion</a>
 <ul>
-<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux<span></span></a></li>
-<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion<span></span></a></li>
-<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="24.1" data-path="diffusion-24.html"><a href="diffusion-24.html#random-walk-redux"><i class="fa fa-check"></i><b>24.1</b> Random walk redux</a></li>
+<li class="chapter" data-level="24.2" data-path="diffusion-24.html"><a href="diffusion-24.html#simulating-brownian-motion"><i class="fa fa-check"></i><b>24.2</b> Simulating Brownian motion</a></li>
+<li class="chapter" data-level="24.3" data-path="diffusion-24.html"><a href="diffusion-24.html#exercises-23"><i class="fa fa-check"></i><b>24.3</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="25" data-path="sdes-25.html"><a href="sdes-25.html"><i class="fa fa-check"></i><b>25</b> Simulating Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model<span></span></a></li>
-<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method<span></span></a></li>
-<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters<span></span></a></li>
-<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations<span></span></a></li>
-<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts<span></span></a></li>
-<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="25.1" data-path="sdes-25.html"><a href="sdes-25.html#the-stochastic-logistic-model"><i class="fa fa-check"></i><b>25.1</b> The stochastic logistic model</a></li>
+<li class="chapter" data-level="25.2" data-path="sdes-25.html"><a href="sdes-25.html#the-euler-maruyama-method"><i class="fa fa-check"></i><b>25.2</b> The Euler-Maruyama method</a></li>
+<li class="chapter" data-level="25.3" data-path="sdes-25.html"><a href="sdes-25.html#adding-stochasticity-to-parameters"><i class="fa fa-check"></i><b>25.3</b> Adding stochasticity to parameters</a></li>
+<li class="chapter" data-level="25.4" data-path="sdes-25.html"><a href="sdes-25.html#systems-of-stochastic-differential-equations"><i class="fa fa-check"></i><b>25.4</b> Systems of stochastic differential equations</a></li>
+<li class="chapter" data-level="25.5" data-path="sdes-25.html"><a href="sdes-25.html#concluding-thoughts-2"><i class="fa fa-check"></i><b>25.5</b> Concluding thoughts</a></li>
+<li class="chapter" data-level="25.6" data-path="sdes-25.html"><a href="sdes-25.html#exercises-24"><i class="fa fa-check"></i><b>25.6</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation<span></span></a>
+<li class="chapter" data-level="26" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html"><i class="fa fa-check"></i><b>26</b> Statistics of a Stochastic Differential Equation</a>
 <ul>
-<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process<span></span></a></li>
-<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes<span></span></a></li>
-<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up<span></span></a></li>
-<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="26.1" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#expected-value-of-a-stochastic-process"><i class="fa fa-check"></i><b>26.1</b> Expected value of a stochastic process</a></li>
+<li class="chapter" data-level="26.2" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#birth-death-processes"><i class="fa fa-check"></i><b>26.2</b> Birth-death processes</a></li>
+<li class="chapter" data-level="26.3" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#wrapping-up"><i class="fa fa-check"></i><b>26.3</b> Wrapping up</a></li>
+<li class="chapter" data-level="26.4" data-path="simul-stoch-26.html"><a href="simul-stoch-26.html#exercises-25"><i class="fa fa-check"></i><b>26.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations<span></span></a>
+<li class="chapter" data-level="27" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html"><i class="fa fa-check"></i><b>27</b> Solutions to Stochastic Differential Equations</a>
 <ul>
-<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation<span></span></a></li>
-<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end<span></span></a></li>
-<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises<span></span></a></li>
+<li class="chapter" data-level="27.1" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#meet-the-fokker-planck-equation"><i class="fa fa-check"></i><b>27.1</b> Meet the Fokker-Planck equation</a></li>
+<li class="chapter" data-level="27.2" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#deterministically-the-end"><i class="fa fa-check"></i><b>27.2</b> Deterministically the end</a></li>
+<li class="chapter" data-level="27.3" data-path="solvingSDEs-27.html"><a href="solvingSDEs-27.html#exercises-26"><i class="fa fa-check"></i><b>27.3</b> Exercises</a></li>
 </ul></li>
-<li><a href="references.html#references">References<span></span></a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></li>
 <li><a href="https://bookdown.org" target="_blank">Built with Bookdown + RStudio</a></li>
@@ -415,7 +419,7 @@ div.csl-indent {
 <div id="euler-04" class="section level1 hasAnchor" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Euler’s Method<a href="euler-04.html#euler-04" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Chapter <a href="modeling-rates-03.html#modeling-rates-03">3</a> examined modeling with rates of change. Once a differential equation model is defined one possible next step is to determine the solution to the differential equation. While in some cases an exact solution can be found (Chapter <a href="exact-solns-07.html#exact-solns-07">7</a>), in many instances we will rely on numerical methods.</p>
-<p>The focus of this chapter is on <em>approximation</em> of solutions to a differential equation via a numerical method. Typically a first numerical method you might learn is <em>Euler’s method</em>, popularized in the movie <a href="https://www.youtube.com/watch?v=v-pbGAts_Fg">Hidden Figures.</a>  This chapter will develop Euler’s method from tangent line equations or locally linear approximations from calculus. Let’s get started!</p>
+<p>The focus of this chapter is on <em>approximation</em> of solutions to a differential equation via a numerical method. Typically a first numerical method you might learn is <em>Euler’s method</em>, popularized in the movie <a href="https://www.youtube.com/watch?v=v-pbGAts_Fg">Hidden Figures.</a> This chapter will develop Euler’s method from tangent line equations or locally linear approximations from calculus. Let’s get started!</p>
 <div id="the-flu-and-locally-linear-approximation" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> The flu and locally linear approximation<a href="euler-04.html#the-flu-and-locally-linear-approximation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Consider Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a>, which is one way to model the rate of change of the flu through a population:</p>
@@ -456,7 +460,7 @@ I(t) = 130-120e^{-.025t} \tag{4.3}
 </table>
 <p>Table <a href="euler-04.html#tab:compare-04">4.1</a> shows that <span class="math inline">\(L(1)\)</span> is an <em>overestimate</em> compared to <span class="math inline">\(I(1)\)</span>. Let’s expand Equation <a href="euler-04.html#eq:flu-linear-04">(4.2)</a> even more by constructing <em>another</em> linear approximation using the differential equation. We will denote this linear approximation as <span class="math inline">\(L_{1}(t)\)</span> to distinguish it from <span class="math inline">\(L(t)\)</span> from Equation <a href="euler-04.html#eq:flu-linear-04">(4.2)</a>. First we evaluate Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a>, which yields <span class="math inline">\(I&#39;(1)=2.92\)</span>. The formula for the linear approximation at <span class="math inline">\(t=1\)</span> is <span class="math inline">\(L_{1}(t) = I(1) + I&#39;(1) \cdot (t-1)\)</span>. Here we will use <span class="math inline">\(I(1) = 13\)</span>, recognizing that this value is a pretty close estimate for the number infected (<span class="math inline">\(I\)</span>) at <span class="math inline">\(t=1\)</span>. This assumption yields <span class="math inline">\(L_{1}(t) = 13 +2.92(t-1)\)</span>.</p>
 <p>We can continue to build out the solution in a similar manner to develop a locally linear approximation at <span class="math inline">\(t=2\)</span>, shown graphically in Figure <a href="euler-04.html#fig:eulers-ver1">4.1</a>. The approximation and the exact solution in Figure <a href="euler-04.html#fig:eulers-ver1">4.1</a> appear very close to each other, suggesting that approximation using local linearization could work for other types of differential equations.</p>
-<div class="figure"><span id="fig:eulers-ver1"></span>
+<div class="figure"><span style="display:block;" id="fig:eulers-ver1"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/eulers-ver1-1.png" alt="Approximation of a solution to Equation \@ref(eq:flu-model-02) using local linearity." width="672" />
 <p class="caption">
 FIGURE 4.1: Approximation of a solution to Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a> using local linearity.
@@ -499,6 +503,12 @@ FIGURE 4.1: Approximation of a solution to Equation <a href="euler-04.html#eq:fl
 <p>Table <a href="euler-04.html#tab:compare-later-04">4.2</a> suggests that the accuracy of our solution decreases as time increases. A potential fix would be to approximate the solution not at every day, but every half day. The length of time that we forecast out our solution is called the step size, denoted as <span class="math inline">\(\Delta t\)</span>. While approximating our solution every half day (<span class="math inline">\(\Delta t = 0.5\)</span>) would require more computation (or more iterations) of the locally linear approximation, perhaps a smaller <span class="math inline">\(\Delta t\)</span> would lead to more accurate solutions. Let’s start out smaller with the first few timesteps (Table <a href="euler-04.html#tab:calculate-forecast-04">4.3</a>):</p>
 <table>
 <caption><span id="tab:calculate-forecast-04">TABLE 4.3: </span> Calculation of the solution <span class="math inline">\(I(t)\)</span> for Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a> using the linear approximations at each timestep with <span class="math inline">\(\Delta t = 0.5\)</span>.</caption>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th><span class="math inline">\(t\)</span></th>
@@ -542,7 +552,7 @@ FIGURE 4.1: Approximation of a solution to Equation <a href="euler-04.html#eq:fl
 </table>
 <p>Notice how Table <a href="euler-04.html#tab:calculate-forecast-04">4.3</a> organizes a way to compute the solution <span class="math inline">\(I\)</span> with linear approximations. Each row is a “step” of the method, computing the solution based on our step size <span class="math inline">\(\Delta t\)</span>. The third column computes the value of the derivative for a particular time (Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a>), and then the fourth column represents the forecasted change in the solution by the next timestep.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
 <p>This idea of <em>approximate, forecast, repeat</em> is at the heart of many <a href="https://en.wikipedia.org/wiki/Numerical_methods_for_ordinary_differential_equations">numerical methods</a> that approximate solutions to differential equations. The particular method that we have developed here is called <em>Euler’s method</em>. We display the results from additional steps in Figure <a href="euler-04.html#fig:eulers-ver2">4.2</a>. Based on the trend of the solution in Figure <a href="euler-04.html#fig:eulers-ver2">4.2</a>, it appears that the number of infections might start to level off at <span class="math inline">\(I=130\)</span>, which is the steady state value in Equation <a href="euler-04.html#eq:flu-exact-04">(4.3)</a> when evaluating <span class="math inline">\(\displaystyle \lim_{t \rightarrow \infty} I(t)\)</span>.</p>
-<div class="figure"><span id="fig:eulers-ver2"></span>
+<div class="figure"><span style="display:block;" id="fig:eulers-ver2"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/eulers-ver2-1.png" alt="Longer-term approximation of a solution to Equation \@ref(eq:flu-model-02). Notice how the solution seems to level off to a steady state at $I=130$ (dashed line)." width="672" />
 <p class="caption">
 FIGURE 4.2: Longer-term approximation of a solution to Equation <a href="euler-04.html#eq:flu-model-02">(4.1)</a>. Notice how the solution seems to level off to a steady state at <span class="math inline">\(I=130\)</span> (dashed line).
@@ -570,40 +580,40 @@ FIGURE 4.2: Longer-term approximation of a solution to Equation <a href="euler-0
 \frac{p(t+\Delta t) - p(t)}{\Delta t}  &amp;= 0.023 p \cdot (1-p) \\
 p(t+\Delta t) - p(t)  &amp;= 0.023 p \cdot (1-p)  \cdot \Delta t \\
 p(t+\Delta t) &amp;= p(t) + 0.023 p \cdot (1-p)  \cdot \Delta t
-\end{split} 
+\end{split}
 \end{equation}\]</span></p>
 <p>The last expression (<span class="math inline">\(p(t+\Delta t) = p(t) + 0.023 p \cdot (1-p) \cdot \Delta t\)</span>) defines an iterative system, easily computed with a spreadsheet program, or with a <code>for</code> loop in <code>R</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="euler-04.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define your timestep and time vector</span></span>
-<span id="cb20-2"><a href="euler-04.html#cb20-2" aria-hidden="true" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb20-3"><a href="euler-04.html#cb20-3" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">600</span>, <span class="at">by =</span> deltaT)</span>
-<span id="cb20-4"><a href="euler-04.html#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="euler-04.html#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the number of steps we take. This is equal to 10 / dt (why?)</span></span>
-<span id="cb20-6"><a href="euler-04.html#cb20-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">length</span>(t)</span>
-<span id="cb20-7"><a href="euler-04.html#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="euler-04.html#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Define current solution state:</span></span>
-<span id="cb20-9"><a href="euler-04.html#cb20-9" aria-hidden="true" tabindex="-1"></a>p_approx <span class="ot">&lt;-</span> <span class="dv">250</span><span class="sc">/</span><span class="dv">13600</span></span>
-<span id="cb20-10"><a href="euler-04.html#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="euler-04.html#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a vector for your solution:the derivative equation</span></span>
-<span id="cb20-12"><a href="euler-04.html#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>N) { <span class="co"># We start this at 2 because the first value is 10</span></span>
-<span id="cb20-13"><a href="euler-04.html#cb20-13" aria-hidden="true" tabindex="-1"></a>  dpdt <span class="ot">&lt;-</span> .<span class="dv">023</span> <span class="sc">*</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb20-14"><a href="euler-04.html#cb20-14" aria-hidden="true" tabindex="-1"></a>  p_approx[i] <span class="ot">&lt;-</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> dpdt <span class="sc">*</span> deltaT</span>
-<span id="cb20-15"><a href="euler-04.html#cb20-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb20-16"><a href="euler-04.html#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="euler-04.html#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-18"><a href="euler-04.html#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Define your data for the solution into a tibble:</span></span>
-<span id="cb20-19"><a href="euler-04.html#cb20-19" aria-hidden="true" tabindex="-1"></a>solution_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb20-20"><a href="euler-04.html#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">time =</span> t,</span>
-<span id="cb20-21"><a href="euler-04.html#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop_infected =</span> p_approx</span>
-<span id="cb20-22"><a href="euler-04.html#cb20-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-23"><a href="euler-04.html#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-24"><a href="euler-04.html#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
-<span id="cb20-25"><a href="euler-04.html#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> solution_data) <span class="sc">+</span></span>
-<span id="cb20-26"><a href="euler-04.html#cb20-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prop_infected)) <span class="sc">+</span></span>
-<span id="cb20-27"><a href="euler-04.html#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(</span>
-<span id="cb20-28"><a href="euler-04.html#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">&quot;Time (days)&quot;</span>,</span>
-<span id="cb20-29"><a href="euler-04.html#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">&quot;Proportion infected&quot;</span></span>
-<span id="cb20-30"><a href="euler-04.html#cb20-30" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="figure"><span id="fig:my-iterative-method"></span>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="euler-04.html#cb21-1" tabindex="-1"></a><span class="co"># Define your timestep and time vector</span></span>
+<span id="cb21-2"><a href="euler-04.html#cb21-2" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-3"><a href="euler-04.html#cb21-3" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">600</span>, <span class="at">by =</span> deltaT)</span>
+<span id="cb21-4"><a href="euler-04.html#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="euler-04.html#cb21-5" tabindex="-1"></a><span class="co"># Define the number of steps we take. This is equal to 10 / dt (why?)</span></span>
+<span id="cb21-6"><a href="euler-04.html#cb21-6" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">length</span>(t)</span>
+<span id="cb21-7"><a href="euler-04.html#cb21-7" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="euler-04.html#cb21-8" tabindex="-1"></a><span class="co"># Define current solution state:</span></span>
+<span id="cb21-9"><a href="euler-04.html#cb21-9" tabindex="-1"></a>p_approx <span class="ot">&lt;-</span> <span class="dv">250</span><span class="sc">/</span><span class="dv">13600</span></span>
+<span id="cb21-10"><a href="euler-04.html#cb21-10" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="euler-04.html#cb21-11" tabindex="-1"></a><span class="co"># Define a vector for your solution:the derivative equation</span></span>
+<span id="cb21-12"><a href="euler-04.html#cb21-12" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>N) { <span class="co"># We start this at 2 because the first value is 10</span></span>
+<span id="cb21-13"><a href="euler-04.html#cb21-13" tabindex="-1"></a>  dpdt <span class="ot">&lt;-</span> .<span class="dv">023</span> <span class="sc">*</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb21-14"><a href="euler-04.html#cb21-14" tabindex="-1"></a>  p_approx[i] <span class="ot">&lt;-</span> p_approx[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> dpdt <span class="sc">*</span> deltaT</span>
+<span id="cb21-15"><a href="euler-04.html#cb21-15" tabindex="-1"></a>}</span>
+<span id="cb21-16"><a href="euler-04.html#cb21-16" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="euler-04.html#cb21-17" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="euler-04.html#cb21-18" tabindex="-1"></a><span class="co"># Define your data for the solution into a tibble:</span></span>
+<span id="cb21-19"><a href="euler-04.html#cb21-19" tabindex="-1"></a>solution_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb21-20"><a href="euler-04.html#cb21-20" tabindex="-1"></a>  <span class="at">time =</span> t,</span>
+<span id="cb21-21"><a href="euler-04.html#cb21-21" tabindex="-1"></a>  <span class="at">prop_infected =</span> p_approx</span>
+<span id="cb21-22"><a href="euler-04.html#cb21-22" tabindex="-1"></a>)</span>
+<span id="cb21-23"><a href="euler-04.html#cb21-23" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="euler-04.html#cb21-24" tabindex="-1"></a><span class="co"># Plot your solution:</span></span>
+<span id="cb21-25"><a href="euler-04.html#cb21-25" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> solution_data) <span class="sc">+</span></span>
+<span id="cb21-26"><a href="euler-04.html#cb21-26" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prop_infected)) <span class="sc">+</span></span>
+<span id="cb21-27"><a href="euler-04.html#cb21-27" tabindex="-1"></a><span class="fu">labs</span>(</span>
+<span id="cb21-28"><a href="euler-04.html#cb21-28" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">&quot;Time (days)&quot;</span>,</span>
+<span id="cb21-29"><a href="euler-04.html#cb21-29" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">&quot;Proportion infected&quot;</span></span>
+<span id="cb21-30"><a href="euler-04.html#cb21-30" tabindex="-1"></a>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:my-iterative-method"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/my-iterative-method-1.png" alt="Results from applying an iterative method to solve Equation \@ref(eq:flu-de-04)." width="672" />
 <p class="caption">
 FIGURE 4.3: Results from applying an iterative method to solve Equation <a href="euler-04.html#eq:flu-de-04">(4.5)</a>.
@@ -620,22 +630,22 @@ FIGURE 4.3: Results from applying an iterative method to solve Equation <a href=
 <div id="eulers-method-in-demodelr" class="section level3 hasAnchor" number="4.3.1">
 <h3><span class="header-section-number">4.3.1</span> Euler’s method in demodelr<a href="euler-04.html#eulers-method-in-demodelr" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To generate Figure <a href="euler-04.html#fig:my-iterative-method">4.3</a> we created the solution directly in <code>R</code> - but you don’t want to copy and paste the code. The <code>demodeler</code> package has a function called <code>euler</code> that does the same process to generate the output solution:<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> Try running the following code and plotting your solution:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="euler-04.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
-<span id="cb21-2"><a href="euler-04.html#cb21-2" aria-hidden="true" tabindex="-1"></a>infection_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dpdt <span class="sc">~</span> .<span class="dv">023</span> <span class="sc">*</span> p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
-<span id="cb21-3"><a href="euler-04.html#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="euler-04.html#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
-<span id="cb21-5"><a href="euler-04.html#cb21-5" aria-hidden="true" tabindex="-1"></a>prop_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">p =</span> <span class="dv">250</span><span class="sc">/</span><span class="dv">13600</span>)</span>
-<span id="cb21-6"><a href="euler-04.html#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="euler-04.html#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define deltaT and the time steps:</span></span>
-<span id="cb21-8"><a href="euler-04.html#cb21-8" aria-hidden="true" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb21-9"><a href="euler-04.html#cb21-9" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">600</span></span>
-<span id="cb21-10"><a href="euler-04.html#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="euler-04.html#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the solution via Euler&#39;s method:</span></span>
-<span id="cb21-12"><a href="euler-04.html#cb21-12" aria-hidden="true" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">euler</span>(<span class="at">system_eq =</span> infection_eq,</span>
-<span id="cb21-13"><a href="euler-04.html#cb21-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">initial_condition =</span> prop_init,</span>
-<span id="cb21-14"><a href="euler-04.html#cb21-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT, </span>
-<span id="cb21-15"><a href="euler-04.html#cb21-15" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
-<span id="cb21-16"><a href="euler-04.html#cb21-16" aria-hidden="true" tabindex="-1"></a>                      )</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="euler-04.html#cb22-1" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
+<span id="cb22-2"><a href="euler-04.html#cb22-2" tabindex="-1"></a>infection_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(dpdt <span class="sc">~</span> .<span class="dv">023</span> <span class="sc">*</span> p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb22-3"><a href="euler-04.html#cb22-3" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="euler-04.html#cb22-4" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
+<span id="cb22-5"><a href="euler-04.html#cb22-5" tabindex="-1"></a>prop_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">p =</span> <span class="dv">250</span><span class="sc">/</span><span class="dv">13600</span>)</span>
+<span id="cb22-6"><a href="euler-04.html#cb22-6" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="euler-04.html#cb22-7" tabindex="-1"></a><span class="co"># Define deltaT and the time steps:</span></span>
+<span id="cb22-8"><a href="euler-04.html#cb22-8" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb22-9"><a href="euler-04.html#cb22-9" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">600</span></span>
+<span id="cb22-10"><a href="euler-04.html#cb22-10" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="euler-04.html#cb22-11" tabindex="-1"></a><span class="co"># Compute the solution via Euler&#39;s method:</span></span>
+<span id="cb22-12"><a href="euler-04.html#cb22-12" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">euler</span>(<span class="at">system_eq =</span> infection_eq,</span>
+<span id="cb22-13"><a href="euler-04.html#cb22-13" tabindex="-1"></a>                      <span class="at">initial_condition =</span> prop_init,</span>
+<span id="cb22-14"><a href="euler-04.html#cb22-14" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT, </span>
+<span id="cb22-15"><a href="euler-04.html#cb22-15" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
+<span id="cb22-16"><a href="euler-04.html#cb22-16" tabindex="-1"></a>                      )</span></code></pre></div>
 <p>Once the vector <code>out_solution</code> is created, it has variables <code>t</code> and <code>p</code>, which can then be plotted with a <code>ggplot</code> statement. Let’s talk through the steps of this code as well:</p>
 <ul>
 <li>The line <code>infection_eq &lt;- c(dpdt ~ .023 * p * (13600-i))</code> represents the differential equation, written in formula notation. So <span class="math inline">\(\displaystyle \frac{dp}{dt} \rightarrow\)</span> <code>dpdt</code> and <span class="math inline">\(f(p) \rightarrow\)</span> <code>.023 * p * (1-p))</code>, with the variable <code>p</code>.</li>
@@ -648,49 +658,49 @@ FIGURE 4.3: Results from applying an iterative method to solve Equation <a href=
 <h3><span class="header-section-number">4.3.2</span> Euler’s method applied to systems<a href="euler-04.html#eulers-method-applied-to-systems" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now that we have some experience with Euler’s method, let’s see how we can apply the function <code>euler</code> to a system of differential equations. Here is a sample code that shows the dynamics for the lynx-hare equations, as studied in Chapter <a href="modeling-rates-03.html#modeling-rates-03">3</a>:</p>
 <p><span class="math display" id="eq:lynx-hare-04">\[\begin{equation}
-\begin{split} 
+\begin{split}
 \frac{dH}{dt} &amp;= r H - bHL \\  
 \frac{dL}{dt} &amp;= e  b  H L - dL
 \end{split} \tag{4.7}
 \end{equation}\]</span></p>
 <p>The variables <span class="math inline">\(H\)</span> and <span class="math inline">\(L\)</span> are already in thousands of animals, so we don’t need to rescale anything like we did with Equation <a href="euler-04.html#eq:flu-de-04">(4.5)</a>. We are going to use Euler’s method to solve this differential equation, using the code below:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="euler-04.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
-<span id="cb22-2"><a href="euler-04.html#cb22-2" aria-hidden="true" tabindex="-1"></a>lynx_hare_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb22-3"><a href="euler-04.html#cb22-3" aria-hidden="true" tabindex="-1"></a>  dHdt <span class="sc">~</span> r <span class="sc">*</span> H <span class="sc">-</span> b <span class="sc">*</span> H <span class="sc">*</span> L,</span>
-<span id="cb22-4"><a href="euler-04.html#cb22-4" aria-hidden="true" tabindex="-1"></a>  dLdt <span class="sc">~</span> e <span class="sc">*</span> b <span class="sc">*</span> H <span class="sc">*</span> L <span class="sc">-</span> d <span class="sc">*</span> L</span>
-<span id="cb22-5"><a href="euler-04.html#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-6"><a href="euler-04.html#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="euler-04.html#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the parameters (as a named vector):</span></span>
-<span id="cb22-8"><a href="euler-04.html#cb22-8" aria-hidden="true" tabindex="-1"></a>lynx_hare_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="fl">0.5</span>, <span class="at">e =</span> <span class="fl">0.1</span>, <span class="at">d =</span> <span class="dv">1</span>)</span>
-<span id="cb22-9"><a href="euler-04.html#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-10"><a href="euler-04.html#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
-<span id="cb22-11"><a href="euler-04.html#cb22-11" aria-hidden="true" tabindex="-1"></a>lynx_hare_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">H =</span> <span class="dv">1</span>, <span class="at">L =</span> <span class="dv">3</span>)</span>
-<span id="cb22-12"><a href="euler-04.html#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="euler-04.html#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Define deltaT and the number of time steps:</span></span>
-<span id="cb22-14"><a href="euler-04.html#cb22-14" aria-hidden="true" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb22-15"><a href="euler-04.html#cb22-15" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb22-16"><a href="euler-04.html#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="euler-04.html#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the solution via Euler&#39;s method:</span></span>
-<span id="cb22-18"><a href="euler-04.html#cb22-18" aria-hidden="true" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">euler</span>(<span class="at">system_eq =</span> lynx_hare_eq,</span>
-<span id="cb22-19"><a href="euler-04.html#cb22-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">parameters =</span> lynx_hare_params,</span>
-<span id="cb22-20"><a href="euler-04.html#cb22-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">initial_condition =</span> lynx_hare_init,</span>
-<span id="cb22-21"><a href="euler-04.html#cb22-21" aria-hidden="true" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT,</span>
-<span id="cb22-22"><a href="euler-04.html#cb22-22" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
-<span id="cb22-23"><a href="euler-04.html#cb22-23" aria-hidden="true" tabindex="-1"></a>                      )</span>
-<span id="cb22-24"><a href="euler-04.html#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-25"><a href="euler-04.html#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a plot of the solution,</span></span>
-<span id="cb22-26"><a href="euler-04.html#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co"># using different colors for lynx or hares:</span></span>
-<span id="cb22-27"><a href="euler-04.html#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_solution) <span class="sc">+</span></span>
-<span id="cb22-28"><a href="euler-04.html#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> H), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
-<span id="cb22-29"><a href="euler-04.html#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> L), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>,<span class="at">linetype=</span><span class="st">&#39;dashed&#39;</span>) <span class="sc">+</span></span>
-<span id="cb22-30"><a href="euler-04.html#cb22-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-31"><a href="euler-04.html#cb22-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
-<span id="cb22-32"><a href="euler-04.html#cb22-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Lynx (red) or Hares (blue/dashed)&quot;</span></span>
-<span id="cb22-33"><a href="euler-04.html#cb22-33" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-52"></span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="euler-04.html#cb23-1" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
+<span id="cb23-2"><a href="euler-04.html#cb23-2" tabindex="-1"></a>lynx_hare_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb23-3"><a href="euler-04.html#cb23-3" tabindex="-1"></a>  dHdt <span class="sc">~</span> r <span class="sc">*</span> H <span class="sc">-</span> b <span class="sc">*</span> H <span class="sc">*</span> L,</span>
+<span id="cb23-4"><a href="euler-04.html#cb23-4" tabindex="-1"></a>  dLdt <span class="sc">~</span> e <span class="sc">*</span> b <span class="sc">*</span> H <span class="sc">*</span> L <span class="sc">-</span> d <span class="sc">*</span> L</span>
+<span id="cb23-5"><a href="euler-04.html#cb23-5" tabindex="-1"></a>)</span>
+<span id="cb23-6"><a href="euler-04.html#cb23-6" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="euler-04.html#cb23-7" tabindex="-1"></a><span class="co"># Define the parameters (as a named vector):</span></span>
+<span id="cb23-8"><a href="euler-04.html#cb23-8" tabindex="-1"></a>lynx_hare_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="fl">0.5</span>, <span class="at">e =</span> <span class="fl">0.1</span>, <span class="at">d =</span> <span class="dv">1</span>)</span>
+<span id="cb23-9"><a href="euler-04.html#cb23-9" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="euler-04.html#cb23-10" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
+<span id="cb23-11"><a href="euler-04.html#cb23-11" tabindex="-1"></a>lynx_hare_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">H =</span> <span class="dv">1</span>, <span class="at">L =</span> <span class="dv">3</span>)</span>
+<span id="cb23-12"><a href="euler-04.html#cb23-12" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="euler-04.html#cb23-13" tabindex="-1"></a><span class="co"># Define deltaT and the number of time steps:</span></span>
+<span id="cb23-14"><a href="euler-04.html#cb23-14" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb23-15"><a href="euler-04.html#cb23-15" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb23-16"><a href="euler-04.html#cb23-16" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="euler-04.html#cb23-17" tabindex="-1"></a><span class="co"># Compute the solution via Euler&#39;s method:</span></span>
+<span id="cb23-18"><a href="euler-04.html#cb23-18" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">euler</span>(<span class="at">system_eq =</span> lynx_hare_eq,</span>
+<span id="cb23-19"><a href="euler-04.html#cb23-19" tabindex="-1"></a>                      <span class="at">parameters =</span> lynx_hare_params,</span>
+<span id="cb23-20"><a href="euler-04.html#cb23-20" tabindex="-1"></a>                      <span class="at">initial_condition =</span> lynx_hare_init,</span>
+<span id="cb23-21"><a href="euler-04.html#cb23-21" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT,</span>
+<span id="cb23-22"><a href="euler-04.html#cb23-22" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
+<span id="cb23-23"><a href="euler-04.html#cb23-23" tabindex="-1"></a>                      )</span>
+<span id="cb23-24"><a href="euler-04.html#cb23-24" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="euler-04.html#cb23-25" tabindex="-1"></a><span class="co"># Make a plot of the solution,</span></span>
+<span id="cb23-26"><a href="euler-04.html#cb23-26" tabindex="-1"></a><span class="co"># using different colors for lynx or hares:</span></span>
+<span id="cb23-27"><a href="euler-04.html#cb23-27" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_solution) <span class="sc">+</span></span>
+<span id="cb23-28"><a href="euler-04.html#cb23-28" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> H), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-29"><a href="euler-04.html#cb23-29" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> L), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>,<span class="at">linetype=</span><span class="st">&#39;dashed&#39;</span>) <span class="sc">+</span></span>
+<span id="cb23-30"><a href="euler-04.html#cb23-30" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-31"><a href="euler-04.html#cb23-31" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
+<span id="cb23-32"><a href="euler-04.html#cb23-32" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Lynx (red) or Hares (blue/dashed)&quot;</span></span>
+<span id="cb23-33"><a href="euler-04.html#cb23-33" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-52"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/unnamed-chunk-52-1.png" alt="Euler's method solution for Lynx-Hare system (Equation \ref{eq:lynx-hare-04})." width="672" />
 <p class="caption">
-FIGURE 4.4: Euler’s method solution for Lynx-Hare system (Equation ).
+FIGURE 4.4: Euler’s method solution for Lynx-Hare system (Equation <span class="math inline">\(\ref{eq:lynx-hare-04}\)</span>).
 </p>
 </div>
 <p>This example is structured similarly when we used Euler’s method to solve a single variable differential equation, with some key changes (that are easy to adapt):</p>
@@ -704,7 +714,7 @@ FIGURE 4.4: Euler’s method solution for Lynx-Hare system (Equation ).
 </div>
 <div id="eulers-method-and-beyond" class="section level2 hasAnchor" number="4.4">
 <h2><span class="header-section-number">4.4</span> Euler’s method and beyond<a href="euler-04.html#eulers-method-and-beyond" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Sometimes when working with Euler’s method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see Exercise <a href="intro-01.html#exr:flu-quarantine-01">1.10</a> in Chapter <a href="intro-01.html#intro-01">1</a>):</p>
+<p>Sometimes when working with Euler’s method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see Exercise <a href="intro-01.html#exr:flu-quarantine-01">1.9</a> in Chapter <a href="intro-01.html#intro-01">1</a>):</p>
 <p><span class="math display" id="eq:flu-quarantine-04">\[\begin{equation}
 \begin{split}
 \frac{dS}{dt} &amp;= -kSI \\
@@ -712,7 +722,7 @@ FIGURE 4.4: Euler’s method solution for Lynx-Hare system (Equation ).
 \end{split} \tag{4.8}
 \end{equation}\]</span></p>
 <p>In Equation <a href="euler-04.html#eq:flu-quarantine-04">(4.8)</a>, susceptibles become sick by encountering an infected person, but infected people are removed from the population at a rate <span class="math inline">\(\beta\)</span>. The model in Figure <a href="euler-04.html#fig:euler-flu-bad-04">4.5</a> illustrates the results when this model is implemented using <code>euler</code>:</p>
-<div class="figure"><span id="fig:euler-flu-bad-04"></span>
+<div class="figure"><span style="display:block;" id="fig:euler-flu-bad-04"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/euler-flu-bad-04-1.png" alt="Surprising results when using Euler's method to solve Equation \@ref(eq:flu-quarantine-04). Notice how some values for $I$ are negative." width="672" />
 <p class="caption">
 FIGURE 4.5: Surprising results when using Euler’s method to solve Equation <a href="euler-04.html#eq:flu-quarantine-04">(4.8)</a>. Notice how some values for <span class="math inline">\(I\)</span> are negative.
@@ -721,43 +731,43 @@ FIGURE 4.5: Surprising results when using Euler’s method to solve Equation <a 
 <p>You may notice in Figure <a href="euler-04.html#fig:euler-flu-bad-04">4.5</a> the solution for <span class="math inline">\(S\)</span> falls below <span class="math inline">\(S=0\)</span> around <span class="math inline">\(t=0.75\)</span>.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> Negative values for <span class="math inline">\(S\)</span> are concerning because we know there can’t be negative people!</p>
 <p>At a given timestep, Euler’s method constructs a locally linear approximation and forecasts the solution forward to the next timestep. Using Figure <a href="euler-04.html#fig:euler-flu-bad-04">4.5</a>, at <span class="math inline">\(t=0.75\)</span> the value for <span class="math inline">\(S \approx 1\)</span> and the value for <span class="math inline">\(I \approx 280\)</span>. If we let <span class="math inline">\(k=0.05\)</span> and <span class="math inline">\(\beta=0.2\)</span>, this means that <span class="math inline">\(\displaystyle \frac{dS}{dt}=-14\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}=-42\)</span>. At this point, the values of <span class="math inline">\(S\)</span> and <span class="math inline">\(I\)</span> are both decreasing. In turn, the forecast value for <span class="math inline">\(S\)</span> at <span class="math inline">\(t=0.75\)</span> is <span class="math inline">\(S = 1 -14\cdot 0.1 = -0.4\)</span>. Mathematically, Euler’s method is working correctly, but we know realistically that neither <span class="math inline">\(S\)</span> nor <span class="math inline">\(I\)</span> can be negative.</p>
 <p>While Euler’s method is useful, it does quite poorly in cases where the solution is changing rapidly, such as described above. A way to circumvent this is to adjust the value of <span class="math inline">\(\Delta t\)</span> to be smaller, which comes at the expense of more computational time. A second way is to use a <em>higher order solver</em> than <code>euler</code>, and one such method is called the <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta method</a>. (You study these methods when you take a course in numerical analysis. How we implement the Runge-Kutta method is to replace the command <code>euler</code> with <code>rk4</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="euler-04.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
-<span id="cb23-2"><a href="euler-04.html#cb23-2" aria-hidden="true" tabindex="-1"></a>quarantine_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb23-3"><a href="euler-04.html#cb23-3" aria-hidden="true" tabindex="-1"></a>  dSdt <span class="sc">~</span> <span class="sc">-</span>k <span class="sc">*</span> S <span class="sc">*</span> I,</span>
-<span id="cb23-4"><a href="euler-04.html#cb23-4" aria-hidden="true" tabindex="-1"></a>  dIdt <span class="sc">~</span> k <span class="sc">*</span> S <span class="sc">*</span> I <span class="sc">-</span> beta <span class="sc">*</span> I</span>
-<span id="cb23-5"><a href="euler-04.html#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-6"><a href="euler-04.html#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="euler-04.html#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the parameters (as a named vector):</span></span>
-<span id="cb23-8"><a href="euler-04.html#cb23-8" aria-hidden="true" tabindex="-1"></a>quarantine_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k =</span> .<span class="dv">05</span>, <span class="at">beta =</span> .<span class="dv">2</span>)</span>
-<span id="cb23-9"><a href="euler-04.html#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="euler-04.html#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
-<span id="cb23-11"><a href="euler-04.html#cb23-11" aria-hidden="true" tabindex="-1"></a>quarantine_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">S =</span> <span class="dv">300</span>, <span class="at">I =</span> <span class="dv">1</span>)</span>
-<span id="cb23-12"><a href="euler-04.html#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-13"><a href="euler-04.html#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Define deltaT and the number of time steps:</span></span>
-<span id="cb23-14"><a href="euler-04.html#cb23-14" aria-hidden="true" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> .<span class="dv">1</span> <span class="co"># timestep length</span></span>
-<span id="cb23-15"><a href="euler-04.html#cb23-15" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># must be a number greater than 1</span></span>
-<span id="cb23-16"><a href="euler-04.html#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-17"><a href="euler-04.html#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the solution via Runge-Kutta method:</span></span>
-<span id="cb23-18"><a href="euler-04.html#cb23-18" aria-hidden="true" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">rk4</span>(<span class="at">system_eq =</span> quarantine_eq,</span>
-<span id="cb23-19"><a href="euler-04.html#cb23-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">parameters =</span> quarantine_parameters,</span>
-<span id="cb23-20"><a href="euler-04.html#cb23-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">initial_condition =</span> quarantine_init,</span>
-<span id="cb23-21"><a href="euler-04.html#cb23-21" aria-hidden="true" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT,</span>
-<span id="cb23-22"><a href="euler-04.html#cb23-22" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
-<span id="cb23-23"><a href="euler-04.html#cb23-23" aria-hidden="true" tabindex="-1"></a>                      )</span>
-<span id="cb23-24"><a href="euler-04.html#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-25"><a href="euler-04.html#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a plot of the solution:</span></span>
-<span id="cb23-26"><a href="euler-04.html#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_solution) <span class="sc">+</span></span>
-<span id="cb23-27"><a href="euler-04.html#cb23-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> S), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
-<span id="cb23-28"><a href="euler-04.html#cb23-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> I), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>,<span class="at">linetype=</span><span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
-<span id="cb23-29"><a href="euler-04.html#cb23-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>,<span class="at">size=</span><span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb23-30"><a href="euler-04.html#cb23-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-31"><a href="euler-04.html#cb23-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
-<span id="cb23-32"><a href="euler-04.html#cb23-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Susceptible (red) or Infected (blue/dashed)&quot;</span></span>
-<span id="cb23-33"><a href="euler-04.html#cb23-33" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="figure"><span id="fig:rk4-flu-good-04"></span>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="euler-04.html#cb24-1" tabindex="-1"></a><span class="co"># Define the rate equation:</span></span>
+<span id="cb24-2"><a href="euler-04.html#cb24-2" tabindex="-1"></a>quarantine_eq <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb24-3"><a href="euler-04.html#cb24-3" tabindex="-1"></a>  dSdt <span class="sc">~</span> <span class="sc">-</span>k <span class="sc">*</span> S <span class="sc">*</span> I,</span>
+<span id="cb24-4"><a href="euler-04.html#cb24-4" tabindex="-1"></a>  dIdt <span class="sc">~</span> k <span class="sc">*</span> S <span class="sc">*</span> I <span class="sc">-</span> beta <span class="sc">*</span> I</span>
+<span id="cb24-5"><a href="euler-04.html#cb24-5" tabindex="-1"></a>)</span>
+<span id="cb24-6"><a href="euler-04.html#cb24-6" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="euler-04.html#cb24-7" tabindex="-1"></a><span class="co"># Define the parameters (as a named vector):</span></span>
+<span id="cb24-8"><a href="euler-04.html#cb24-8" tabindex="-1"></a>quarantine_parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k =</span> .<span class="dv">05</span>, <span class="at">beta =</span> .<span class="dv">2</span>)</span>
+<span id="cb24-9"><a href="euler-04.html#cb24-9" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="euler-04.html#cb24-10" tabindex="-1"></a><span class="co"># Define the initial condition (as a named vector):</span></span>
+<span id="cb24-11"><a href="euler-04.html#cb24-11" tabindex="-1"></a>quarantine_init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">S =</span> <span class="dv">300</span>, <span class="at">I =</span> <span class="dv">1</span>)</span>
+<span id="cb24-12"><a href="euler-04.html#cb24-12" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="euler-04.html#cb24-13" tabindex="-1"></a><span class="co"># Define deltaT and the number of time steps:</span></span>
+<span id="cb24-14"><a href="euler-04.html#cb24-14" tabindex="-1"></a>deltaT <span class="ot">&lt;-</span> .<span class="dv">1</span> <span class="co"># timestep length</span></span>
+<span id="cb24-15"><a href="euler-04.html#cb24-15" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># must be a number greater than 1</span></span>
+<span id="cb24-16"><a href="euler-04.html#cb24-16" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="euler-04.html#cb24-17" tabindex="-1"></a><span class="co"># Compute the solution via Runge-Kutta method:</span></span>
+<span id="cb24-18"><a href="euler-04.html#cb24-18" tabindex="-1"></a>out_solution <span class="ot">&lt;-</span> <span class="fu">rk4</span>(<span class="at">system_eq =</span> quarantine_eq,</span>
+<span id="cb24-19"><a href="euler-04.html#cb24-19" tabindex="-1"></a>                      <span class="at">parameters =</span> quarantine_parameters,</span>
+<span id="cb24-20"><a href="euler-04.html#cb24-20" tabindex="-1"></a>                      <span class="at">initial_condition =</span> quarantine_init,</span>
+<span id="cb24-21"><a href="euler-04.html#cb24-21" tabindex="-1"></a>                      <span class="at">deltaT =</span> deltaT,</span>
+<span id="cb24-22"><a href="euler-04.html#cb24-22" tabindex="-1"></a>                      <span class="at">n_steps =</span> n_steps</span>
+<span id="cb24-23"><a href="euler-04.html#cb24-23" tabindex="-1"></a>                      )</span>
+<span id="cb24-24"><a href="euler-04.html#cb24-24" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="euler-04.html#cb24-25" tabindex="-1"></a><span class="co"># Make a plot of the solution:</span></span>
+<span id="cb24-26"><a href="euler-04.html#cb24-26" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_solution) <span class="sc">+</span></span>
+<span id="cb24-27"><a href="euler-04.html#cb24-27" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> S), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-28"><a href="euler-04.html#cb24-28" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> I), <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>,<span class="at">linetype=</span><span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-29"><a href="euler-04.html#cb24-29" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>,<span class="at">size=</span><span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb24-30"><a href="euler-04.html#cb24-30" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb24-31"><a href="euler-04.html#cb24-31" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
+<span id="cb24-32"><a href="euler-04.html#cb24-32" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Susceptible (red) or Infected (blue/dashed)&quot;</span></span>
+<span id="cb24-33"><a href="euler-04.html#cb24-33" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:rk4-flu-good-04"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/rk4-flu-good-04-1.png" alt="Runge-Kutta solution for Equation \ref{eq:flu-quarantine-04}. Notice how the solution curve for the variable $S$ does not fall below zero as it does in Figure \@ref(fig:euler-flu-bad-04)." width="672" />
 <p class="caption">
-FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve for the variable <span class="math inline">\(S\)</span> does not fall below zero as it does in Figure <a href="euler-04.html#fig:euler-flu-bad-04">4.5</a>.
+FIGURE 4.6: Runge-Kutta solution for Equation <span class="math inline">\(\ref{eq:flu-quarantine-04}\)</span>. Notice how the solution curve for the variable <span class="math inline">\(S\)</span> does not fall below zero as it does in Figure <a href="euler-04.html#fig:euler-flu-bad-04">4.5</a>.
 </p>
 </div>
 <p>Another benefit to the <code>rk4</code> method is the numerical error when computing the solution. The numerical error is quantified as the difference between the actual solution and the numerical solution. Euler’s method has an error on the order of the stepsize <span class="math inline">\(\Delta t\)</span>, whereas the Runge-Kutta method has an error of <span class="math inline">\((\Delta t)^4\)</span>. For this example, <span class="math inline">\(\Delta t = 0.1\)</span>, whereas for the Runge-Kutta method the numerical error is on the order of 0.0001 (<span class="math inline">\((\Delta t)^{4} =.0001\)</span>) - noticeably different! We can improve Euler’s method by taking a smaller timestep - BUT that means we need a larger number of steps <span class="math inline">\(N\)</span> - which may take more computational time (see Exercise <a href="euler-04.html#exr:rk4-euler">4.15</a>). Does this discussion of numerical error sounds familiar? In calculus you may have examined the numerical error when using Riemann sums (left, right, trapezoid, midpoint sums) to approximate the area underneath a curve. While the context is different, Riemann sums and numerical differential equation solvers are closely related.</p>
@@ -773,33 +783,27 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 </div>
 <div id="exercises-3" class="section level2 hasAnchor" number="4.5">
 <h2><span class="header-section-number">4.5</span> Exercises<a href="euler-04.html#exercises-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-54" class="exercise"><strong>Exercise 4.1  </strong></span>Verify that <span class="math inline">\(I(t) = 130-120e^{-0.025t}\)</span> is a solution to the differential equation <span class="math display">\[\displaystyle \frac{dI}{dt} = 130-0.025I \]</span> with <span class="math inline">\(I(0)=10\)</span>.
+<p><span id="exr:unnamed-chunk-54" class="exercise"><strong>Exercise 4.1  </strong></span>Verify that <span class="math inline">\(I(t) = 130-120e^{-0.025t}\)</span> is a solution to the differential equation <span class="math display">\[\displaystyle \frac{dI}{dt} = 130-0.025I \]</span> with <span class="math inline">\(I(0)=10\)</span>.</p>
 </div>
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-55" class="exercise"><strong>Exercise 4.2  </strong></span>Apply the <code>rk4</code> solver with <span class="math inline">\(\Delta t = 1\)</span> with <span class="math inline">\(N=600\)</span> to the initial value problem <span class="math inline">\(\displaystyle \frac{dp}{dt} = 0.023 p \cdot (13600-p)\)</span>, <span class="math inline">\(p(0)=250/13600\)</span>. Compare your solution to Figure <a href="euler-04.html#fig:my-iterative-method">4.3</a>. What differences do you observe? Which solution method (<code>euler</code> or <code>rk4</code>) is better (and why)?
+<p><span id="exr:unnamed-chunk-55" class="exercise"><strong>Exercise 4.2  </strong></span>Apply the <code>rk4</code> solver with <span class="math inline">\(\Delta t = 1\)</span> with <span class="math inline">\(N=600\)</span> to the initial value problem <span class="math inline">\(\displaystyle \frac{dp}{dt} = 0.023 p \cdot (1-p)\)</span>, <span class="math inline">\(p(0)=250/13600\)</span>. Compare your solution to Figure <a href="euler-04.html#fig:my-iterative-method">4.3</a>. What differences do you observe? Which solution method (<code>euler</code> or <code>rk4</code>) is better (and why)?</p>
 </div>
-
 <div class="exercise">
-<span id="exr:unnamed-chunk-56" class="exercise"><strong>Exercise 4.3  </strong></span>In the model presented by Equation <a href="euler-04.html#eq:flu-quarantine-04">(4.8)</a>, is <span class="math inline">\(S+I\)</span> constant? <em>Hint: add <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span>.</em>
+<p><span id="exr:unnamed-chunk-56" class="exercise"><strong>Exercise 4.3  </strong></span>In the model presented by Equation <a href="euler-04.html#eq:flu-quarantine-04">(4.8)</a>, is <span class="math inline">\(S+I\)</span> constant? <em>Hint: add <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span>.</em></p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-57" class="exercise"><strong>Exercise 4.4  </strong></span>The following exercise will help you explore the relationships between stepsize, ending points, and number of steps needed. You may assume that we will start at <span class="math inline">\(t=0\)</span> in all parts.</p>
 <ol style="list-style-type: lower-alpha">
 <li>If we wish to do a Euler’s method solution with step size 1 second and ending at <span class="math inline">\(T=5\)</span> seconds, how many steps will we take?</li>
 <li>If we wish to do a Euler’s method solution with step size 0.5 seconds and ending at <span class="math inline">\(T=5\)</span> seconds, how many steps will we take?</li>
 <li>If we wish to do a Euler’s method solution with step size 0.1 seconds and ending at <span class="math inline">\(T=5\)</span> seconds, how many steps will we take?</li>
-<li>If we wish to do a Euler’s method solution with step size <span class="math inline">\(\Delta t\)</span> and go to ending value of <span class="math inline">\(T\)</span>, what is an expression that relates the number steps <span class="math inline">\(N\)</span> as a function of <span class="math inline">\(\Delta t\)</span> and <span class="math inline">\(T\)</span>?
-</div></li>
+<li>If we wish to do a Euler’s method solution with step size <span class="math inline">\(\Delta t\)</span> and go to ending value of <span class="math inline">\(T\)</span>, what is an expression that relates the number steps <span class="math inline">\(N\)</span> as a function of <span class="math inline">\(\Delta t\)</span> and <span class="math inline">\(T\)</span>?</li>
 </ol>
-
+</div>
 <div class="exercise">
 <p><span id="exr:euler-rk4" class="exercise"><strong>Exercise 4.5  </strong></span>To get a rough approximation between error and step size, let’s say for a particular differential equation that we are starting at <span class="math inline">\(t=0\)</span> and going to <span class="math inline">\(t=2\)</span>, with <span class="math inline">\(\Delta t = 0.2\)</span> with 10 steps. We know that the Runge-Kutta error will be on the order of <span class="math inline">\((\Delta t)^{4} =0.0016\)</span>. If we want to use Euler’s method with the same order of error, we could say <span class="math inline">\(\Delta t = .0016\)</span>. For that case, how many steps will we need to take?</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:euler-solve" class="exercise"><strong>Exercise 4.6  </strong></span>For each of the following differential equations, apply Euler’s method to generate a numerical solution to the differential equation and plot your solution. The stepsize (<span class="math inline">\(\Delta t\)</span>) and number of iterations (<span class="math inline">\(N\)</span>) are listed.</p>
 <ol style="list-style-type: lower-alpha">
@@ -808,7 +812,6 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 <li>Differential equation: <span class="math inline">\(\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)\)</span>. Set <span class="math inline">\(\Delta t = 0.1\)</span>, <span class="math inline">\(N = 50\)</span>. Initial conditions: <span class="math inline">\(S(0) = 3\)</span>, <span class="math inline">\(S(0) = 10\)</span>.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-58" class="exercise"><strong>Exercise 4.7  </strong></span>For each of the following differential equations, apply the Runge-Kutta method to generate a numerical solution to the differential equation and plot your solution. The stepsize (<span class="math inline">\(\Delta t\)</span>) and number of iterations (<span class="math inline">\(N\)</span>) are listed. Contrast your answers with Exercise <a href="euler-04.html#exr:euler-solve">4.6</a>.</p>
 <ol style="list-style-type: lower-alpha">
@@ -817,7 +820,6 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 <li>Differential equation: <span class="math inline">\(\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S)\)</span>. Set <span class="math inline">\(\Delta t = 0.1\)</span>, <span class="math inline">\(N = 50\)</span>. Initial conditions: <span class="math inline">\(S(0) = 3\)</span>, <span class="math inline">\(S(0) = 10\)</span>.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-59" class="exercise"><strong>Exercise 4.8  </strong></span>Complete the following steps:</p>
 <ol style="list-style-type: lower-alpha">
@@ -834,7 +836,6 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 <li>Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-60" class="exercise"><strong>Exercise 4.9  </strong></span>Complete the following steps:</p>
 <ol style="list-style-type: lower-alpha">
@@ -851,7 +852,6 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 <li>Make a hypothesis regarding the long term behavior of this system. Then plot a few more solution curves to verify your guess.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-61" class="exercise"><strong>Exercise 4.10  </strong></span>This exercise uses the following differential equation:</p>
 <p><span class="math display">\[\begin{equation}
@@ -863,16 +863,14 @@ FIGURE 4.6: Runge-Kutta solution for Equation . Notice how the solution curve fo
 <li>Now calculate Euler’s method for the same differential equation for the following conditions: <span class="math inline">\(S(0)=15\)</span>, <span class="math inline">\(\Delta t = 0.01\)</span>, <span class="math inline">\(N = 100\)</span>. What has changed in your solution?</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:euler-ftbu" class="exercise"><strong>Exercise 4.11  </strong></span>Apply Euler’s method to the differential equation <span class="math inline">\(\displaystyle \frac{dS}{dt} =\frac{1}{1-S}\)</span> with the following conditions:</p>
 <ul>
 <li><span class="math inline">\(S(0)=1.5\)</span>, <span class="math inline">\(\Delta t = 0.1\)</span>, <span class="math inline">\(N = 10\)</span></li>
 <li><span class="math inline">\(S(0)=1.5\)</span>, <span class="math inline">\(\Delta t = 0.01\)</span>, <span class="math inline">\(N = 100\)</span>.</li>
 </ul>
-Between these two solutions, what has changed? Do you think it is numerically possible to calculate a reasonable solution for Euler’s method near <span class="math inline">\(S=1\)</span>? (<em>note: this differential equation is an example of finite time blow up</em>)
+<p>Between these two solutions, what has changed? Do you think it is numerically possible to calculate a reasonable solution for Euler’s method near <span class="math inline">\(S=1\)</span>? (<em>note: this differential equation is an example of finite time blow up</em>)</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-62" class="exercise"><strong>Exercise 4.12  </strong></span>One way to model the growth rate of hares is with <span class="math inline">\(\displaystyle f(H) = \frac{r H}{1+kH}\)</span>, where <span class="math inline">\(r\)</span> and <span class="math inline">\(k\)</span> are parameters. This is in constrast to exponential growth, which assumes <span class="math inline">\(f(H) = rH\)</span>.</p>
 <ol style="list-style-type: lower-alpha">
@@ -881,18 +879,16 @@ Between these two solutions, what has changed? Do you think it is numerically po
 <li>Compare your two answers. Discuss how the growth rate <span class="math inline">\(\displaystyle f(H) = \frac{r H}{1+kH}\)</span> seems to be a more realistic model.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-63" class="exercise"><strong>Exercise 4.13  </strong></span>In the lynx-hare example we can also consider an alternative system where the growth of the hare is not exponential:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
-\frac{dH}{dt} &amp;= \frac{2 H}{1+kH} - 0.5HL \\ 
+\frac{dH}{dt} &amp;= \frac{2 H}{1+kH} - 0.5HL \\
 \frac{dL}{dt} &amp;= 0.05  H L - L
 \end{split}
 \end{equation}\]</span></p>
-Set the number of timesteps to be 2000, <span class="math inline">\(\delta t = 0.1\)</span>, with initial condition <span class="math inline">\(H=1\)</span> and <span class="math inline">\(L=3\)</span>. Apply Euler’s method to numerically solve this system of equations when <span class="math inline">\(k=0.1\)</span> and <span class="math inline">\(k=1\)</span> and plot your simulation results.
+<p>Set the number of timesteps to be 2000, <span class="math inline">\(\delta t = 0.1\)</span>, with initial condition <span class="math inline">\(H=1\)</span> and <span class="math inline">\(L=3\)</span>. Apply Euler’s method to numerically solve this system of equations when <span class="math inline">\(k=0.1\)</span> and <span class="math inline">\(k=1\)</span> and plot your simulation results.</p>
 </div>
-
 <div class="exercise">
 <p><span id="exr:unnamed-chunk-64" class="exercise"><strong>Exercise 4.14  </strong></span>Consider the differential equation <span class="math inline">\(\displaystyle \frac{dS}{dt} = \frac{1}{1-S}\)</span>. Notice that at <span class="math inline">\(S=1\)</span> the rate <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> is not defined.</p>
 <ol style="list-style-type: lower-alpha">
@@ -901,7 +897,6 @@ Set the number of timesteps to be 2000, <span class="math inline">\(\delta t = 0
 <li>Explain how you could come to the same conclusion as the previous two problems if you graphed <span class="math inline">\(\displaystyle f(S) = \frac{1}{1-S}\)</span>.</li>
 </ol>
 </div>
-
 <div class="exercise">
 <p><span id="exr:rk4-euler" class="exercise"><strong>Exercise 4.15  </strong></span>Building on Exercise <a href="euler-04.html#exr:euler-rk4">4.5</a>, let’s say for a particular differential equation we have <span class="math inline">\(N\)</span> steps from <span class="math inline">\(0 \leq t \leq b\)</span>. An error of <span class="math inline">\(\epsilon\)</span> is desired.</p>
 <ol style="list-style-type: lower-alpha">
@@ -932,7 +927,6 @@ Set the number of timesteps to be 2000, <span class="math inline">\(\delta t = 0
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -972,11 +966,14 @@ gitbook.start({
 "text": null
 },
 "download": {},
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true
-},
-"search": true
+}
 });
 });
 </script>
@@ -987,7 +984,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
