@@ -541,8 +541,8 @@ FIGURE 25.1: One realization of Equation <a href="sdes-25.html#eq:logistic-sde-2
 ##   # Now
 ##   map(1:100, ~ list())
 ## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this
-## warning was generated.</code></pre>
+## Call `lifecycle::last_lifecycle_warnings()` to see where
+## this warning was generated.</code></pre>
 <div class="figure"><span style="display:block;" id="fig:spaghetti"></span>
 <img src="explore-model-zobitz-220419_files/figure-html/spaghetti-1.png" alt="Several different realizations of Equation \@ref(eq:logistic-sde-25)." width="672" />
 <p class="caption">
@@ -633,25 +633,28 @@ dx = r  x \left(1 - \frac{x}{K} \right) \; dt + x \left(1 - \frac{x}{K} \right) 
 <div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="sdes-25.html#cb107-1" tabindex="-1"></a><span class="co"># Many solutions</span></span>
 <span id="cb107-2"><a href="sdes-25.html#cb107-2" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># The number of simulations</span></span>
 <span id="cb107-3"><a href="sdes-25.html#cb107-3" tabindex="-1"></a></span>
-<span id="cb107-4"><a href="sdes-25.html#cb107-4" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
-<span id="cb107-5"><a href="sdes-25.html#cb107-5" tabindex="-1"></a>logistic_run_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
-<span id="cb107-6"><a href="sdes-25.html#cb107-6" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
-<span id="cb107-7"><a href="sdes-25.html#cb107-7" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
-<span id="cb107-8"><a href="sdes-25.html#cb107-8" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
-<span id="cb107-9"><a href="sdes-25.html#cb107-9" tabindex="-1"></a>                             <span class="at">initial_condition =</span> init_logistic,</span>
-<span id="cb107-10"><a href="sdes-25.html#cb107-10" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
-<span id="cb107-11"><a href="sdes-25.html#cb107-11" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_logistic,</span>
-<span id="cb107-12"><a href="sdes-25.html#cb107-12" tabindex="-1"></a>                             <span class="at">n_steps =</span> timesteps_logistic,</span>
-<span id="cb107-13"><a href="sdes-25.html#cb107-13" tabindex="-1"></a>                             <span class="at">D =</span> D_logistic)</span>
-<span id="cb107-14"><a href="sdes-25.html#cb107-14" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb107-15"><a href="sdes-25.html#cb107-15" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
-<span id="cb107-16"><a href="sdes-25.html#cb107-16" tabindex="-1"></a></span>
-<span id="cb107-17"><a href="sdes-25.html#cb107-17" tabindex="-1"></a></span>
-<span id="cb107-18"><a href="sdes-25.html#cb107-18" tabindex="-1"></a><span class="co"># Plot these all together</span></span>
-<span id="cb107-19"><a href="sdes-25.html#cb107-19" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run_r) <span class="sc">+</span></span>
-<span id="cb107-20"><a href="sdes-25.html#cb107-20" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
-<span id="cb107-21"><a href="sdes-25.html#cb107-21" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
-<span id="cb107-22"><a href="sdes-25.html#cb107-22" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<span id="cb107-4"><a href="sdes-25.html#cb107-4" tabindex="-1"></a><span class="co"># Identify the standard deviation of the stochastic noise</span></span>
+<span id="cb107-5"><a href="sdes-25.html#cb107-5" tabindex="-1"></a>D_logistic <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb107-6"><a href="sdes-25.html#cb107-6" tabindex="-1"></a></span>
+<span id="cb107-7"><a href="sdes-25.html#cb107-7" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb107-8"><a href="sdes-25.html#cb107-8" tabindex="-1"></a>logistic_run_r <span class="ot">&lt;-</span> <span class="fu">rerun</span>(n_sims) <span class="sc">%&gt;%</span></span>
+<span id="cb107-9"><a href="sdes-25.html#cb107-9" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">&quot;sim&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">%&gt;%</span></span>
+<span id="cb107-10"><a href="sdes-25.html#cb107-10" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(<span class="at">deterministic_rate =</span> deterministic_logistic_r,</span>
+<span id="cb107-11"><a href="sdes-25.html#cb107-11" tabindex="-1"></a>                             <span class="at">stochastic_rate =</span> stochastic_logistic_r,</span>
+<span id="cb107-12"><a href="sdes-25.html#cb107-12" tabindex="-1"></a>                             <span class="at">initial_condition =</span> init_logistic,</span>
+<span id="cb107-13"><a href="sdes-25.html#cb107-13" tabindex="-1"></a>                             <span class="at">parameters =</span> logistic_parameters,</span>
+<span id="cb107-14"><a href="sdes-25.html#cb107-14" tabindex="-1"></a>                             <span class="at">deltaT =</span> deltaT_logistic,</span>
+<span id="cb107-15"><a href="sdes-25.html#cb107-15" tabindex="-1"></a>                             <span class="at">n_steps =</span> timesteps_logistic,</span>
+<span id="cb107-16"><a href="sdes-25.html#cb107-16" tabindex="-1"></a>                             <span class="at">D =</span> D_logistic)</span>
+<span id="cb107-17"><a href="sdes-25.html#cb107-17" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb107-18"><a href="sdes-25.html#cb107-18" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> .x, <span class="at">.id =</span> <span class="st">&quot;simulation&quot;</span>)</span>
+<span id="cb107-19"><a href="sdes-25.html#cb107-19" tabindex="-1"></a></span>
+<span id="cb107-20"><a href="sdes-25.html#cb107-20" tabindex="-1"></a></span>
+<span id="cb107-21"><a href="sdes-25.html#cb107-21" tabindex="-1"></a><span class="co"># Plot these all together</span></span>
+<span id="cb107-22"><a href="sdes-25.html#cb107-22" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> logistic_run_r) <span class="sc">+</span></span>
+<span id="cb107-23"><a href="sdes-25.html#cb107-23" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>t, <span class="at">y=</span>x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb107-24"><a href="sdes-25.html#cb107-24" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Spaghetti plot for the logistic SDE&quot;</span>) <span class="sc">+</span></span>
+<span id="cb107-25"><a href="sdes-25.html#cb107-25" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 </div>
 <div id="summarize-and-visualize-2" class="section level3 hasAnchor" number="25.3.3">
 <h3><span class="header-section-number">25.3.3</span> Summarize and Visualize<a href="sdes-25.html#summarize-and-visualize-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
