@@ -33,9 +33,9 @@ knitr::kable(my_table, caption = "Simulations of a variable at different times."
 
 ```{r simul-graph-prev,fig.cap="Spaghetti plot of the three simulations from Table \\@ref(tab:simul-table).",echo=FALSE}
 
-my_table %>%
+my_table |>
   pivot_longer(cols = c("sim1":"sim3"), 
-               names_to = "name", values_to = "value") %>%
+               names_to = "name", values_to = "value") |>
   ggplot(aes(x = t, y = value, group = name)) +
   geom_point() +
   geom_line() +
@@ -57,10 +57,10 @@ my_table %>%
 While making the spaghetti plot isn't bad when you have three simulations, with (a lot) more simulations this would be a pain! An ensemble average computes *across* the rows in Table \@ref(tab:simul-table) (could be an average or a quantile) to generate a new column in the data. Building an ensemble average is a step by step process that involves a series of processes that transform a dataset where you will need to first pivot the dataset and then group and summarize.
 
 ### Pivot
-When you have multiple columns of a plot that you want to show together (such as a spaghetti plot) we can use a command called `pivot_longer` that gathers different columns together (also shown in Table \@ref(tab:simul-table-long)).
+When you have multiple columns of a plot that you want to show together (such as a spaghetti plot) we can use a command from the `tidyr` package called [`pivot_longer`](https://tidyr.tidyverse.org/articles/pivot.html) that gathers different columns together (also shown in Table \@ref(tab:simul-table-long)).
 
 ```{r}
-my_table_long <- my_table %>%
+my_table_long <- my_table |>
   pivot_longer(cols = c("sim1":"sim3"), 
                names_to = "name", values_to = "value")
 ```
@@ -73,7 +73,7 @@ Notice how the command `pivot_longer` takes the different simulations (`sim1`, `
 
 
 ```{r eval=FALSE}
-my_table_long %>%
+my_table_long |>
   ggplot(aes(x = t, y = value, group = name)) +
   geom_point() +
   geom_line() +
@@ -84,8 +84,8 @@ my_table_long %>%
 The next step after pivoting is to collect the time points at $t=1$ together, $t=2$ together, and so on. In each of these groups we then compute the mean (average). This process is called *grouping* and then applying a *summarizing* function to all the members in a particular group (which in this case is the `mean`). The code to do this summarizing is shown below, with the results in Table \@ref(tab:table-summary):
 
 ```{r}
-summarized_table <- my_table_long %>%
-  group_by(t) %>%
+summarized_table <- my_table_long |>
+  group_by(t) |>
   summarize(mean_val = mean(value))
 ```
 
@@ -93,7 +93,7 @@ summarized_table <- my_table_long %>%
 knitr::kable(t(round(summarized_table,2)), caption = "Ensemble averages for the three simulations at each of the times $t$.")
 ```
 
-Notice how we are using the pipe `%>%` command to help organize the actions that we are doing. Think of the pipe as part of a multistep process - similar to function composition. Here is how you can read the previous code:
+Notice how we are using the pipe `|>` command to help organize the actions that we are doing. Think of the pipe as part of a multistep process - similar to function composition. Here is how you can read the previous code:
 
 To compute the variable `summarized_table` we will:
 
@@ -110,7 +110,7 @@ To explain this code a little more:
 We can add this mean value to our data (Figure \@ref(fig:simul-graph-prev)), represented with a thick red line. Try the following code out on your own:
 
 ```{r eval = FALSE}
-my_table_long %>%
+my_table_long |>
   ggplot(aes(x = t, y = value, group = name)) +
   geom_point() +
   geom_line() +
@@ -126,7 +126,7 @@ my_table_long %>%
 
 Notice two things:
 
-- We can use the pipe (`%>%`) to the workflow before plotting with `ggplot`. This signals that `my_table_long` is the input data into `ggplot`.
+- We can use the pipe (`|>`) to the workflow before plotting with `ggplot`. This signals that `my_table_long` is the input data into `ggplot`.
 - We included the option `inherit.aes = FALSE` (`inherit.aes` stands for "inherit aesthetics" ) when we plotted `summarized_table` with `geom_point` and `geom_line`. When you add a new data frame to a plot, the initial aesthetics (such as the `color` or the `group`) are passed on to subsequent commands. Setting `inherit.aes = FALSE` allows you to work with a clean slate.
 
 
@@ -197,7 +197,7 @@ soln_rand <- euler(
   parameters = params,
   deltaT = .05,
   n_steps = 200
-) %>% mutate(run = 1)
+) |> mutate(run = 1)
 
 # Random initial condition
 init_cond_rand_two <- c(x = runif(1, min = 0, max = 20)) 
@@ -208,12 +208,12 @@ soln_rand_two <- euler(
   parameters = params,
   deltaT = .05,
   n_steps = 200
-) %>% mutate(run = 2)
+) |> mutate(run = 2)
 
 # Plot your solution:
 solutions <- rbind(soln_rand,soln_rand_two)
 
-solutions %>%
+solutions |>
 ggplot() +
   geom_line(aes(x = t, y = x,color=as.factor(run))) +
   labs(
@@ -241,19 +241,19 @@ Running several hundred iterations of this model could quickly grow time consumi
 n_sims <- 500 # The number of simulations
 
 # Compute solutions
-logistic_sim <- rerun(n_sims, c(x = runif(1, min = 0, max = 20))) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_sim <- map(1:n_sims, ~ c(x = runif(1, min = 0, max = 20))) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler(
     system_eq = logistic_eq,
     initial_condition = .x,
     parameters = params,
     deltaT = .05,
     n_steps = 200
-  )) %>%
+  )) |>
   map_dfr(~.x, .id = "simulation")
 
 # Plot these all together
-logistic_sim %>%
+logistic_sim |>
   ggplot(aes(x = t, y = x)) +
   geom_line(aes(color = simulation)) +
   ggtitle("Random initial conditions") +
@@ -266,19 +266,19 @@ logistic_sim %>%
 n_sims <- 500 # The number of simulations
 
 # Compute solutions
-logistic_sim <- rerun(n_sims, c(x = runif(1, min = 0, max = 20))) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_sim <- map(1:n_sims, ~c(x = runif(1, min = 0, max = 20))) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler(
     system_eq = logistic_eq,
     initial_condition = .x,
     parameters = params,
     deltaT = .05,
     n_steps = 200
-  )) %>%
+  )) |>
   map_dfr(~.x, .id = "simulation")
 
 # Plot these all together
-logistic_sim %>%
+logistic_sim |>
   ggplot(aes(x = t, y = x)) +
   geom_line(aes(color = simulation)) +
   ggtitle("Random initial conditions") +
@@ -300,7 +300,7 @@ Wow!  This spaghetti plot is really interesting - it should show how even though
 
 Ok, let's deconstruct this code line by line:
 
--   `rerun(n_sims, c(x=runif(1,min=0,max=20)))` This line does two things: `x=runif(1,min=0,max=20)` makes a random initial condition, and the command `rerun` runs this again for `n_sims` times.
+-   `map(1:n_sims, ~ c(x = runif(1, min = 0, max = 20)))` This line does two things: `x=runif(1,min=0,max=20)` makes a random initial condition, and the command `map` runs this again for `n_sims` times.
 -   `set_names(paste0("sim", 1:n_sims))` This line distinguishes between all the different simulations.
 -   `map(~ euler( ... )` You should be familiar with `euler`, but notice the pronoun `.x` that substitutes all the different initial conditions into Euler's method. The `map` function iterates over each of the simulations.
 -   `map_dfr(~ .x, .id = "simulation")` This line binds everything up together.
@@ -312,6 +312,19 @@ The resulting data frame should have three columns:
 
 This code applies a new concept called *functional programming*. This is a powerful tool that allows you to perform the process of iteration (do the same thing repeatedly) with uncluttered code. We won't delve more into this here, but I encourage you to read about more functional programming concepts in @wickham_r_2017.
 
+Generating spaghetti plots in `ggplot` may take a lot of computer time to produce.  Here is code that can generate the same plot using base `R` syntax using the command `matplot`. Before plotting, we first need to `pivot_wider` so that the first column of the data table contains the time `t`, with each subsequent column a simulation output.
+
+```{r,eval=FALSE}
+# Pivot the simulation wider
+logistic_sim_wide <- logistic_sim |>
+  pivot_wider(names_from="simulation",values_from="x")
+
+# Create the plot
+matplot(logistic_sim_wide[,1], logistic_sim_wide[, -1], 
+        type = "l", lwd = 2, lty = 1,
+        xlab = "t", ylab = "x",main="Random initial conditions")
+```
+
 ### Summarize
 Computing the ensemble average requires knowledge of how to use `R` to compute percentiles from a distribution of values. For our purposes here we will use the 95% confidence interval, so that means the 2.5 and 97.5 percentile (in which only 5% of the values will be outside of the specified interval), along with the median value (50th percentile). Let's take a look at the code for how to do that:
 
@@ -319,14 +332,14 @@ Computing the ensemble average requires knowledge of how to use `R` to compute p
 
 quantile_vals <- c(0.025, 0.5, 0.975)
 
-logistic_quantile <- logistic_sim %>%
-  group_by(t) %>%
-  summarize(
+logistic_quantile <- logistic_sim |>
+  group_by(t) |>
+  reframe(
     q_val = quantile(x,   # x is the column to compute the quantiles
       probs = quantile_vals
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
@@ -336,19 +349,34 @@ logistic_quantile <- logistic_sim %>%
 While this code is a little more involved, let's break it down piece by piece:
 
 - To make things easier the variable `quantile_vals` computes the different quantiles, expressed between 0 to 1 - so 2.5% is 0.025, 50% is 0.5, and 97.5% is .975.
+- We use [`reframe`](https://dplyr.tidyverse.org/reference/reframe.html) instead of `summarize` because we used the `quantile` function that produces several outputs (instead of a single value).
 - As above, we are still grouping by the variable `t` and summarizing our data frame.
 - However rather than applying the mean, we are using the command `quantile`, whose value is computed with the new column `q_val`. Like the mean, we define to which columns we apply the quantile function in the column `value`. We use `probs = quantile_vals` to specify the quantiles that we wish to compute.
 - We also create a new column called `q_name` the contains the names of the quantile probabilities.
-- The command `pivot_wider` takes the values in `q_val` with the associated names in `q_name` and creates new columns associated with each quantile. This process of making a data frame wider is the opposite of making a skinny and tall data frame with `pivot_longer`. A key convention with column names is not to start them with a number, so we *glue* a `q` onto the names of the column using the option `names_glue = "q{q_name}"`.
+- The command `pivot_wider` from `tidyr` takes the values in `q_val` with the associated names in `q_name` and creates new columns associated with each quantile. This process of making a data frame wider is the opposite of making a skinny and tall data frame with `pivot_longer`. A key convention with column names is not to start them with a number, so we *glue* a `q` onto the names of the column using the option `names_glue = "q{q_name}"`.
 
 Wow. This is getting involved. One thing to keep in mind is that the the code as written should be easily adaptable if you need to compute an ensemble average. If you take an introductory data science or data visualization course I bet you will learn more about the role of pivoting data - but for now you can just adapt the above code to your needs
 
+As an alternative to the above code, base `R` syntax has the `apply` family of functions, which we use the variant `tapply`.  To produce column names prefixed by `q` we add it on at the end:
+
+```{r,eval=FALSE}
+
+# Compute the quantile values
+log_quantile_apply <- tapply(logistic_sim$x, logistic_sim$t, quantile, probs = quantile_vals)
+
+# Transform into a data frame
+log_quantile_apply <- as.data.frame(do.call(rbind, log_quantile_apply))
+
+# Update column names
+colnames(log_quantile_apply) <- paste0("q", colnames(log_quantile_apply))
+
+```
 
 ### Visualize
 To plot the 95% confidence interval we introduce the plot geom called `geom_ribbon`. Applying `geom_ribbon` requires a few more aesthetics (`ymin` and `ymax`, or the minimum and maximum $y$ values to be plotted). The option `alpha = 0.2` refers to the transparency of the plot. The `fill` aesthetic just provides the shading (in other words the fill) between `ymin` and `ymax`.
 
 ```{r eval=FALSE}
-logistic_quantile %>%
+logistic_quantile |>
   ggplot() +
   geom_line(aes(x = t, y = q0.5), 
             color = "red", size = 2, inherit.aes = FALSE
@@ -361,7 +389,7 @@ logistic_quantile %>%
 ```
 
 ```{r logistic-conf,fig.cap="Ensemble average plot for the logistic differential equation with 500 random initial conditions.",echo=FALSE}
-logistic_quantile %>%
+logistic_quantile |>
   ggplot() +
   geom_line(aes(x = t, y = q0.5), 
             color = "red", size = 1, inherit.aes = FALSE
@@ -442,18 +470,18 @@ Using the data frame `my_table`, compare the following code below. The data fram
 
 ```{r code-chunk-compare,eval=FALSE}
 # First code chunk
-table1 <- my_table %>%
-  rowwise(t) %>%
+table1 <- my_table |>
+  rowwise(t) |>
   summarise(q_val = quantile(c_across(starts_with("sim")),
                                 probs = quantile_vals),
             q_name = quantile_vals)
 
 # Second code chunk
-table2 <- my_table %>%
-  rowwise(t) %>%
+table2 <- my_table |>
+  rowwise(t) |>
   summarise(q_val = quantile(c_across(starts_with("sim")),
                                 probs = quantile_vals),
-            q_name = quantile_vals) %>%
+            q_name = quantile_vals) |>
   pivot_wider(names_from = "q_name",values_from="q_val",
               names_glue = "q{q_name}")
 ```
