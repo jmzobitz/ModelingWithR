@@ -151,22 +151,22 @@ Let's break the code down to generate Figure \@ref(fig:log-sde) step by step:
 
 
 ### Do several times
-Figure \@ref(fig:log-sde) shows one sample trajectory of our solution, but there is benefit to running several simulations and then plotting out all the solution trajectories together. The code presented below accomplishes that task and makes a plot of all the solution trajectories (Figure \@ref(fig:spaghetti)). This code is similar to code presented in Chapter \@ref(stoch-sim-22). As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.
+Figure \@ref(fig:log-sde) shows one sample trajectory of our solution, but there is benefit to running several simulations and then plotting out all the solution trajectories together. The code presented below accomplishes that task and makes a plot of all the solution trajectories (Figure \@ref(fig:spaghetti)). This code is similar to code presented in Chapter \@ref(stoch-sim-22). As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.  Notice the use of `labs(caption = "D = 1")` to add a small caption in the lower right hand corner of the plot to indicate the value of the diffusion coefficient used for the simulations.
 
 ```{r eval = FALSE}
 # Many solutions
 n_sims <- 100  # The number of simulations
 
 # Compute solutions
-logistic_run <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_run <- map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic,
                              stochastic_rate = stochastic_logistic,
                              initial_condition = init_logistic,
                              parameters = logistic_parameters,
                              deltaT = deltaT_logistic,
                              n_steps = timesteps_logistic,
-                             D = D_log)) %>%
+                             D = D_logistic)) |>
   map_dfr(~ .x, .id = "simulation")
 
 
@@ -174,7 +174,8 @@ logistic_run <- rerun(n_sims) %>%
 ggplot(data = logistic_run) +
   geom_line(aes(x=t, y=x, color = simulation)) +
   ggtitle("Spaghetti plot for the logistic SDE") +
-  guides(color="none")
+  guides(color="none")  +
+  labs(caption = "D = 1")
 
 
 ```
@@ -184,15 +185,15 @@ ggplot(data = logistic_run) +
 n_sims <- 100  # The number of simulations
 
 # Compute solutions
-logistic_run <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_run <-  map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic,
                              stochastic_rate = stochastic_logistic,
                              initial_condition = init_logistic,
                              parameters = logistic_parameters,
                              deltaT = deltaT_logistic,
                              n_steps = timesteps_logistic,
-                             D = D_logistic)) %>%
+                             D = D_logistic)) |>
   map_dfr(~ .x, .id = "simulation")
 
 
@@ -209,7 +210,8 @@ ggplot(data = logistic_run) +
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
-  )
+  )  +
+  labs(caption = "D = 1")
 
 
 ```
@@ -226,14 +228,14 @@ quantile_vals <- c(0.025, 0.5, 0.975)
 
 
 ### Summarize the variables
-summarized_logistic <- logistic_run %>%
-  group_by(t) %>%
-  summarize(
+summarized_logistic <- logistic_run |>
+  group_by(t) |>
+  reframe(
     q_val = quantile(x,   # x is the column to compute the quantiles
                      probs = quantile_vals
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
@@ -241,7 +243,8 @@ summarized_logistic <- logistic_run %>%
 ggplot(data = summarized_logistic) +
   geom_line(aes(x = t, y = q0.5)) +
   geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
-  ggtitle("Ensemble average plot for the logistic SDE")
+  ggtitle("Ensemble average plot for the logistic SDE") +
+  labs(caption = "D = 1")
 
 ```
 
@@ -292,7 +295,7 @@ deltaT_logistic <- .05    # timestep length
 timesteps_logistic <- 200   # must be a number greater than 1
 
 # Identify the standard deviation of the stochastic noise
-D_logistic <- .1
+D_logistic <- 0.1
 
 # Do one simulation of this differential equation
 logistic_out_r <- euler_stochastic(
@@ -320,11 +323,11 @@ As we did before, we can run multiple iterations of Equation \@ref(eq:logistic-d
 n_sims <- 100  # The number of simulations
 
 # Identify the standard deviation of the stochastic noise
-D_logistic <- 1
+D_logistic <- 0.1
 
 # Compute solutions
-logistic_run_r <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_run_r <- map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic_r,
                              stochastic_rate = stochastic_logistic_r,
                              initial_condition = init_logistic,
@@ -332,7 +335,7 @@ logistic_run_r <- rerun(n_sims) %>%
                              deltaT = deltaT_logistic,
                              n_steps = timesteps_logistic,
                              D = D_logistic)
-) %>%
+) |>
   map_dfr(~ .x, .id = "simulation")
 
 
@@ -340,7 +343,8 @@ logistic_run_r <- rerun(n_sims) %>%
   ggplot(data = logistic_run_r) +
   geom_line(aes(x=t, y=x, color = simulation)) +
   ggtitle("Spaghetti plot for the logistic SDE") +
-  guides(color="none")
+  guides(color="none")  +
+  labs(caption = "D = 0.1")
   
 ```
 
@@ -354,14 +358,14 @@ Now after running several different simulations we can plot the ensemble average
 quantile_vals <- c(0.025, 0.5, 0.975)
 
 # Summarize the variables
-summarized_logistic <- logistic_run %>%
-  group_by(t) %>%
-  summarize(
+summarized_logistic <- logistic_run |>
+  group_by(t) |>
+  reframe(
     q_val = quantile(x,   # x is the column to compute the quantiles
                      probs = quantile_vals
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
@@ -369,7 +373,8 @@ summarized_logistic <- logistic_run %>%
 ggplot(data = summarized_logistic) +
   geom_line(aes(x = t, y = q0.5)) +
   geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
-  ggtitle("Ensemble average plot for the logistic SDE")
+  ggtitle("Ensemble average plot for the logistic SDE") +
+  labs(caption = "D = 0.1")
 ```
 
 ```{r ensemble-r,fig.cap="Ensemble average plot for Equation \\@ref(eq:logistic-de-25-r).",warning=FALSE,echo=FALSE,message=FALSE}
@@ -392,8 +397,8 @@ D_logistic <- .1
 n_sims <- 100  # The number of simulations
 
 # Compute solutions
-logistic_run_r <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+logistic_run_r <- map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(deterministic_rate = deterministic_logistic_r,
                              stochastic_rate = stochastic_logistic_r,
                              initial_condition = init_logistic,
@@ -401,7 +406,7 @@ logistic_run_r <- rerun(n_sims) %>%
                              deltaT = deltaT_logistic,
                              n_steps = timesteps_logistic,
                              D = D_logistic)
-) %>%
+) |>
   map_dfr(~ .x, .id = "simulation")
 
 
@@ -411,14 +416,14 @@ quantile_vals <- c(0.025, 0.5, 0.975)
 
 
 ### Summarize the variables
-summarized_logistic <- logistic_run_r %>%
-  group_by(t) %>%
-  summarize(
+summarized_logistic <- logistic_run_r |>
+  group_by(t) |>
+  reframe(
     q_val = quantile(x,   # x is the column to compute the quantiles
                      probs = quantile_vals
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
@@ -438,7 +443,8 @@ ggplot(data = summarized_logistic) +
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
-  ) + ylab("x")
+  ) + ylab("x")  +
+  labs(caption = "D = 0.1")
   
 
 ```
@@ -464,14 +470,14 @@ Notice in Figure \@ref(fig:poor-sde) how the variable $x$ has values that are ne
 
 ```{r eval=FALSE}
 # Summarize the variables
-summarized_logistic <- logistic_run %>%
-  group_by(t) %>%
-  summarize(
+summarized_logistic <- logistic_run |>
+  group_by(t) |>
+  reframe(
     q_val = quantile(x,   # x is the column to compute the quantiles
                      probs = quantile_vals
     na.rm = TRUE),  # Note the include of na.rm = TRUE
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 ```
@@ -530,7 +536,7 @@ tourism_out <- euler_stochastic(
   )
 
 # We will pivot the data to ease in plotting:
-tourism_revised <- tourism_out %>%
+tourism_revised <- tourism_out |>
   pivot_longer(cols=c("R","V"))
 
 # Plot out the solution
@@ -552,8 +558,8 @@ The "Do several times" step follows a similar process as previous examples. The 
 n_sims <- 100  # The number of simulations
 
 # Compute solutions
-tourism_run <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+tourism_run <- map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(
     deterministic_rate = deterministic_tourism,
     stochastic_rate = stochastic_tourism,
@@ -562,11 +568,11 @@ tourism_run <- rerun(n_sims) %>%
     deltaT = deltaT_tourism,
     n_steps = timeSteps_tourism,
     D = D_tourism)
-    ) %>%
+    ) |>
   map_dfr(~ .x, .id = "simulation")
 
 # We will pivot the data to ease in plotting and computing:
-tourism_run_revised <- tourism_run %>%
+tourism_run_revised <- tourism_run |>
   pivot_longer(cols=c("R","V"))
 
 # Plot these all together
@@ -598,8 +604,8 @@ D_tourism <- .05
 n_sims <- 100  # The number of simulations
 
 # Compute solutions
-tourism_run <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
+tourism_run <- map(1:n_sims, ~ list()) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map(~ euler_stochastic(
     deterministic_rate = deterministic_tourism,
     stochastic_rate = stochastic_tourism,
@@ -608,11 +614,11 @@ tourism_run <- rerun(n_sims) %>%
     deltaT = deltaT_tourism,
     n_steps = timeSteps_tourism,
     D = D_tourism)
-    ) %>%
+    ) |>
   map_dfr(~ .x, .id = "simulation")
 
 # We will pivot the data to ease in plotting and computing:
-tourism_run_revised <- tourism_run %>%
+tourism_run_revised <- tourism_run |>
   pivot_longer(cols=c("R","V"))
 
 # Plot these all together
@@ -647,15 +653,15 @@ The code to generate this ensemble average plot is shown below. Try this code ou
 quantile_vals <- c(0.025, 0.5, 0.975)
 
 # Summarize the variables
-summarized_tourism <- tourism_run_revised %>%
-  group_by(t,name) %>%  # We also include grouping by each variable.
-  summarize(
+summarized_tourism <- tourism_run_revised |>
+  group_by(t,name) |>  # We also include grouping by each variable.
+  reframe(
     q_val = quantile(value, # the column to compute quantiles
                      probs = quantile_vals,
                      na.rm = TRUE  # Remove NA vlaues
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
