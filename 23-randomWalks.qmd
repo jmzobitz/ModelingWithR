@@ -2,6 +2,11 @@
 
 Chapters \@ref(stoch-sys-21) and \@ref(stoch-sim-22) introduced the concept of stochastic dynamical systems and ways to compute ensemble averages. In this chapter we will begin to develop some tools to understand stochastic differential equations by studying the concept of _random walks_.\index{random walk} While exploring random walks may seem like a diversion from understanding stochastic differential equations, there are deep connections between the two topics. We will do some interesting computational exercises that may lead to some non-intuitive results. Curious? Let's get started!
 
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, `dplyr`, `purrr`, `tibble` (all part of the `tidyverse`) and `demodelr`.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
+
+
 ## Random walk on a number line
 The conceptual idea of a random walk begins on a number line. Let's begin at the origin (so at $t=0$ then $x=0$). Based on this number line we can only move to the left or the right, with equal probability. At a given time we decide to move in a direction based on a random number $r$ drawn between 0 and 1 (in `R` we do this with the command `runif(1)`). Figure \@ref(fig:random-walk) conceptually illustrates this random walk
 
@@ -27,36 +32,141 @@ For each iteration of this process we will draw a random number using `runif(1)`
 number_steps <- 100
 
 # Set up vector of results
-x <- array(0, dim = number_steps)
+position <- array(0, dim = number_steps)
 
 for (i in 2:number_steps) {
   if (runif(1) < 0.5) {
-    x[i] <- x[i - 1] - 1
+    position[i] <- position[i - 1] - 1
   } # Move right
   else {
-    x[i] <- x[i - 1] + 1
+    position[i] <- position[i - 1] + 1
   } # Move left
 }
 
 # Let's take a peek at our result:
 
-plot(x, type = "l")
+plot(position, type = "l")
 
-print(mean(x)) # Average position over the time interval
-print(sd(x)) # Standard deviation over the time interval
+print(mean(position)) # Average position over the time interval
+print(sd(position)) # Standard deviation over the time interval
 ```
 
 
 Let's remind ourselves what this code does:
 
 - `number_steps <- 100`: The number of times we draw a random number, referred to *steps*.
-- `x <- array(0,dim=number_steps)`: We are going to pre-allocate a vector (`array`) of our results. Values in this array are all set at 0 for convenience.
-- The for loop starts at the second step and then either adds or subtracts one from the prevoius position `x[i-1]` and updates the result to `x[i]`.
-- `plot(x,type='l')` makes a simple line plot of the results.
+- `position <- array(0,dim=number_steps)`: We are going to pre-allocate a vector (`array`) of our results, called `position`. (We call this `position` instead of `x` to avoid confusion when plotting results.) Values in this array are all set at 0 for convenience.
+- The for loop starts at the second step and then either adds or subtracts one from the prevoius position `position[i-1]` and updates the result to `position[i]`.
+- `plot(position,type='l')` makes a simple line plot of the results.
 
-Now that you have run this code, try running it again. Do you get the same result?  I hope you didn't - because this process is random!  It is interesting to run it several times because there can be a wide variance in our results - for some realizations of the sample path, we end up being strictly positive, other times we go negative, and other times we just hover around the middle line ($x=0$) in the plot.
+Now that you have run this code, try running it again. Do you get the same result?  I hope you didn't - because this process is random!  It is interesting to run it several times because there can be a wide variance in our results - for some realizations of the sample path, we end up being strictly positive, other times we go negative, and other times we just hover around the middle line ($\texttt{position}=0$) in the plot.
 
-## Iteration and ensemble averages
+### Alternative approach with R functions {#random-sample-subsec}
+In defining our random walk we used a `for` loop. We can also use some of the built-in functions for `R` to write this more succinctly:
+
+```{r,eval=FALSE}
+# Number of steps our random walk takes
+number_steps <- 100
+
+jump_size <- c(-1, 1)
+jump_prob <- c(0.5, 0.5)
+
+# Generate all the step changes (1 or -1)
+steps <- sample(jump_size, number_steps, prob = jump_prob, replace = TRUE)
+
+# include the starting 0
+steps <- c(0, steps)
+
+# Determine the position after all the different steps
+position <- cumsum(steps)
+
+# Let's take a peek at our result:
+
+plot(position, type = "l")
+
+print(mean(position)) # Average position over the time interval
+print(sd(position)) # Standard deviation over the time interval
+```
+
+The function `sample` randomly chooses from the vector `jump_size` for the number of steps (`number_steps`) times with probability 0.5 for both, encoded as `jump_prob`. The option `replace=TRUE` means sampling with replacement - if this is not set, we would only be able to run this twice because there are two options to sample from (-1 or 1). The last function `cumsum` computes a cumulative sum of values from a vector, which we can eventually use to plot the random walk as it progresses. Exercise \@ref(exr:cumsum-test) will have you explore the differences between `cumsum` and `sum`.
+
+While `for` loops are instructive, using the `sample` function might be preferred as the `sample` function is better optimized to run quickly.
+
+### Random walks in two dimensions
+Now that we have developed code for a random walk on a number line, we can extend the idea to a random walk on a plane.  In this case we are assuming that it is possible to jump the the left/right and up/down with equal probability.  Some sample code follows:
+
+```{r,eval=FALSE}
+# Number of steps our random walk takes
+number_steps <- 100
+
+jump_size <- c(-1, 1)
+jump_prob <- c(0.5, 0.5)
+
+# Generate all the step changes (1 or -1)
+steps_x <- sample(jump_size, number_steps, prob = jump_prob, replace = TRUE)
+steps_y <- sample(jump_size, number_steps, prob = jump_prob, replace = TRUE)
+
+# include the starting 0
+steps_x <- c(0, steps_x)
+steps_y <- c(0, steps_y)
+
+# Determine the position after all the different steps
+position_x <- cumsum(steps_x)
+position_y <- cumsum(steps_y)
+
+random_walk_2d <- tibble(t = 0:number_steps,position_x,position_y)
+
+# Plot these all together
+ggplot(data = random_walk_2d , aes(x = position_x, y = position_y,order=t,color=t)) +
+  geom_path() +
+  geom_point() +
+  ggtitle("2D Random Walk") +
+    labs(x="x",y="y")
+```
+
+```{rw2d-23,fig.cap="Simulation of 100 steps of a two dimensional random walk.",echo=FALSE,message=FALSE,warning=FALSE}
+# Number of steps our random walk takes
+number_steps <- 100
+
+jump_size <- c(-1, 1)
+jump_prob <- c(0.5, 0.5)
+
+# Generate all the step changes (1 or -1)
+steps_x <- sample(jump_size, number_steps, prob = jump_prob, replace = TRUE)
+steps_y <- sample(jump_size, number_steps, prob = jump_prob, replace = TRUE)
+
+# include the starting 0
+steps_x <- c(0, steps_x)
+steps_y <- c(0, steps_y)
+
+# Determine the position after all the different steps
+position_x <- cumsum(steps_x)
+position_y <- cumsum(steps_y)
+
+random_walk_2d <- tibble(t = 0:number_steps,position_x,position_y)
+
+# Plot these all together
+ggplot(data = random_walk_2d , aes(x = position_x, y = position_y,order=t,color=t)) +
+  geom_path() +
+  geom_point() +
+  ggtitle("2D Random Walk") +
+    labs(x="x",y="y") +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 14)
+  ) +
+  scale_x_continuous(breaks = scales::breaks_pretty(n = 15)) +  # Adjust number of breaks
+  scale_y_continuous(breaks = scales::breaks_pretty(n = 15) )
+```
+
+Figure \@ref(fig:rw2d-23) shows how the position evolves over time (using the color gradient).
+
+## Iteration and ensemble averages {#iteration-sample-subsec}
 We can apply the workflow (Do once $\rightarrow$ Do several times $\rightarrow$ Summarize $\rightarrow$ Visualize) from Chapter \@ref(stoch-sim-22) on this random walk process to investigate what happens when we run additional simulations and compute the ensemble average. Let's apply this workflow:
 
 
@@ -70,15 +180,15 @@ random_walk <- function(number_steps) {
 
   for (i in 2:number_steps) {
     if (runif(1) < 0.5) {
-      x[i] <- x[i - 1] - 1
+      position[i] <- position[i - 1] - 1
     } # Move right
     else {
-      x[i] <- x[i - 1] + 1
+      position[i] <- position[i - 1] + 1
     } # Move left
   }
 
-  out_x <- tibble(t = 0:(number_steps - 1), x)
-  return(out_x)
+  out_position <- tibble(t = 0:(number_steps - 1), position)
+  return(out_position)
 }
 ```
 
@@ -88,18 +198,22 @@ Next to "Do several times" we will run this random walk function for 100 steps a
 number_steps <- 100 # Then number of steps in random walk
 n_sims <- 500 # The number of simulations
 
+
+map(1:n_sims, ~ random_walk(number_steps)) |>
+
 # Compute solutions
-random_walk_sim <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
-  map(~ random_walk(number_steps)) %>%
+random_walk_sim <- map(
+  1:n_sims,
+  ~ random_walk(number_steps)
+  ) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map_dfr(~.x, .id = "simulation")
 
 # Plot these all together
-ggplot(data = random_walk_sim, aes(x = t, y = x)) +
+ggplot(data = random_walk_sim, aes(x = t, y = position)) +
   geom_line(aes(color = simulation)) +
   ggtitle("Random Walk") +
-  guides(color = "none") +
-  labs(x="Steps")
+  guides(color = "none")
 ```
 
 ```{r spaghetti-rw-23,fig.cap="Spaghetti plot of 500 simulations for the random walk.",echo=FALSE,message=FALSE,warning=FALSE}
@@ -107,13 +221,15 @@ number_steps <- 100 # Then number of steps in random walk
 n_sims <- 500 # The number of simulations
 
 # Compute solutions
-random_walk_sim <- rerun(n_sims) %>%
-  set_names(paste0("sim", 1:n_sims)) %>%
-  map(~ random_walk(number_steps)) %>%
+random_walk_sim <- map(
+  1:n_sims,
+  ~ random_walk(number_steps)
+  ) |>
+  set_names(paste0("sim", 1:n_sims)) |>
   map_dfr(~.x, .id = "simulation")
 
 # Plot these all together
-ggplot(data = random_walk_sim, aes(x = t, y = x)) +
+ggplot(data = random_walk_sim, aes(x = t, y = position)) +
   geom_line(aes(color = simulation)) +
   ggtitle("Random Walk") +
   guides(color = "none") +
@@ -135,14 +251,14 @@ For the "Summarize" and "Visualize" steps we will compute the 95% confidence int
 # Compute Quantiles
 quantile_vals <- c(0.025, 0.5, 0.975)
 
-random_walk_quantile <- random_walk_sim %>%
-  group_by(t) %>%
+random_walk_quantile <- random_walk_sim |>
+  group_by(t) |>
   summarize(
-    q_val = quantile(x, # x is the column to compute the quantiles
+    q_val = quantile(position, # position is the column to compute the quantiles
       probs = quantile_vals
     ),
     q_name = quantile_vals
-  ) %>%
+  ) |>
   pivot_wider(
     names_from = "q_name", values_from = "q_val",
     names_glue = "q{q_name}"
@@ -158,7 +274,7 @@ ggplot(data = random_walk_quantile) +
     alpha = 0.2, fill = "red", inherit.aes = FALSE
   ) +
   guides(color = "none") +
-  labs(x = "Steps", y = "x") +
+  labs(x = "t", y = "Position") +
   theme_bw() +
   theme(
     legend.position = "bottom",
@@ -173,7 +289,7 @@ ggplot(data = random_walk_quantile) +
 
 
 
-Two interesting things are occurring in Figures \@ref(fig:spaghetti-rw-23) and \@ref(fig:ensemble-ave-23). First, Figure \@ref(fig:ensemble-ave-23) suggests that on *average* you go nowhere (in other words, the average position is $x=0$), but as the number of steps increases, you are very likely to be *somewhere* (in other words, the confidence interval increases as the number of steps increases). Second, the 95% confidence interval appears to be a square root function $y=a\sqrt{t}$. One way that we could confirm this is by running more realizations and investigating the ensemble average (Exercise \@ref(exr:rw-sim)).
+Two interesting things are occurring in Figures \@ref(fig:spaghetti-rw-23) and \@ref(fig:ensemble-ave-23). First, Figure \@ref(fig:ensemble-ave-23) suggests that on *average* you go nowhere (in other words, the average position is $\texttt{position}=0$), but as the number of steps increases, you are very likely to be *somewhere* (in other words, the confidence interval increases as the number of steps increases). Second, the 95% confidence interval appears to be a square root function $y=a\sqrt{t}$. One way that we could confirm this is by running more realizations and investigating the ensemble average (Exercise \@ref(exr:rw-sim)).
 
 
 ## Random walk mathematics
@@ -268,6 +384,17 @@ The quantity $\displaystyle D = \frac{( \Delta x)^{2}}{2 \Delta t}$ is known as 
 To connect this back to our discussion of stochastic differential equations, understanding random walks helps us to understand how demographic and environmental stochasticity may affect a differential equation. An excellent, highly readable book on random walks in biology is @berg_random_1993. Since there is a randomness to solution trajectories, we will repeatedly use ensemble averages (developed in Chapter \@ref(stoch-sim-22)) to understand the expected behaviors of a stochastic differential equation. The next chapters will apply the workflows studied here to investigate the connections between random walks and stochastic differential equations.
 
 ## Exercises
+```{exercise}
+Rerun the code from @random-sample-subsec that implements the random walk that uses the function `sample` with the option `replace = FALSE`. You should receive an error. Explain the error in your own words.
+```
+
+```{exercise}
+Rewrite the function `random_walk` defined in @iteration-sample-subsec using the `sample` function defined in @random-sample-subsec.  You may have to adjust the vector `t` when defining the output tibble.
+```
+
+```{exercise cumsum-test}
+Consider the vector `test_vec <- c(1,2,-2,6,-3,5)`. Explain the differences between `sum(test_vec)` and `cumsum(test_vec)`.  
+```
 
 ```{exercise}
 When doing the random walk mathematics, we made the claim that $\displaystyle x^{n} = \sum_{s=1}^n \Delta x \, r_{s}$, where $r_{s}$ takes on the value of $-1$ or $1$. Set $\Delta x = 1$ and do a random walk for 5 steps, keeping track whether the value of $r$ is $-1$ or $1$ at each step. Does the final position equal the sum of all the values of $-1$ or $1$?
