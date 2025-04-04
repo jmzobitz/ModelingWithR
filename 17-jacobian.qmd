@@ -8,11 +8,11 @@ Let's take a look at a familiar example from Chapter \@ref(likelihood-09), speci
 \begin{equation}
 \begin{split}
 \frac{dY}{dt} &= .2 Y \left( \frac{13-Y-2N}{13} \right)  \\  
-\frac{dN}{dt} &= .06 N \left( \frac{6-N-0.4Y}{6} \right)  \\ 
+\frac{dN}{dt} &= .06 N \left( \frac{6-N-.4Y}{6} \right)  \\ 
 \end{split} (\#eq:yeast-comp-17)
 \end{equation}
 
-While Equation \@ref(eq:yeast-comp-17) is a tricky model to consider, the terms $2N$ and $0.4Y$ represent the effect that $Y$ and $N$ have on each other since they are competing for the same resource. If these terms weren't present, both $Y$ and $N$ would follow a logistic growth (verify this on your own).
+While Equation \@ref(eq:yeast-comp-17) is a tricky model to consider, the terms $2N$ and $.4Y$ represent the effect that $Y$ and $N$ have on each other since they are competing for the same resource. If these terms weren't present, both $Y$ and $N$ would follow a logistic growth (verify this on your own).
 
 Equation \@ref(eq:yeast-comp-17) has 4 equilibrium solutions: $(Y,N)=(0,0)$, $(Y,N)=(13,0)$, $(Y,N)=(0,6)$, and $(Y,N)=(5,4)$ (Exercise \@ref(exr:yeast-ss-17)). Figure \@ref(fig:yeast-orig-17) shows the phase plane for this system along with the equilibrium solutions.^[I encourage you to use the `phaseplane` command to re-create Figure \@ref(fig:yeast-orig-17). If you do, be sure to use the options `x_window` and `y_window` to set things correctly.]
 
@@ -23,7 +23,7 @@ N_window <- c(0, 10)
 
 yeast_eq <- c(
   dY ~ .2 * Y * (13 - Y - 2 * N) / 13,
-  dN ~ .06 * N * (6 - N - 0.4 * Y) / 6
+  dN ~ .06 * N * (6 - N - .4 * Y) / 6
 )
 
 # Define the points where the
@@ -66,7 +66,7 @@ N_window <- c(3, 5)
 
 yeast_eq <- c(
   dY ~ .2 * Y * (13 - Y - 2 * N) / 13,
-  dN ~ .06 * N * (6 - N - 0.4 * Y) / 6
+  dN ~ .06 * N * (6 - N - .4 * Y) / 6
 )
 
 # Define the points where the
@@ -113,15 +113,15 @@ L(x,y) = f(a,b) + f_{x}(a,b) \cdot (x-a) + f_{y}(a,b) \cdot (y-b), (\#eq:tangent
 
 where $f_{x}$ is the partial derivative of $f(x,y)$ with respect to $x$ and $f_{y}$ is the partial derivative of $f(x,y)$ with respect to $y$.
 
-We will apply Equation \@ref(eq:tangent-plane-17) to Equation \@ref(eq:yeast-comp-17) at the equilibrium solution at $(Y,N)=(5,4)$. Since we have *two* equations, we need to compute two tangent plane approximations (one for each equation). The right hand sides for Equation \@ref(eq:yeast-comp-17) look complicated, but we can expand them to identify $f(Y,N)=.2Y - .03 Y N - .015 Y^{2}N$ and $g(Y,N)= .06N-.01 N^{2} - .004YN$.
+We will apply Equation \@ref(eq:tangent-plane-17) to Equation \@ref(eq:yeast-comp-17) at the equilibrium solution at $(Y,N)=(5,4)$. Since we have *two* equations, we need to compute two tangent plane approximations (one for each equation). The right hand sides for Equation \@ref(eq:yeast-comp-17) look complicated, but we can expand them to identify $f(Y,N)=.2Y - .01538 Y^{2}  - .03077 YN$ and $g(Y,N)= .06N-.01 N^{2} - .004YN$.
 
 First consider $f(Y,N)$. Let's compute the partial derivatives for $f(Y,N)$ at the equilibrium solution:
 
 
 \begin{equation}
 \begin{split}
-f_{Y} = .2 - .03N - .03YN & \rightarrow f_{Y}(5,4)=-.52 \\
-f_{N} = .03Y - .015Y^{2} & \rightarrow f_{N}(5,4)=-.225
+f_{Y} = .2 - .03076Y - .03077N & \rightarrow f_{Y}(5,4)=-.0769 \\
+f_{N} = - .03077 Y  & \rightarrow f_{N}(5,4)=-.1539
 \end{split}
 \end{equation}
 
@@ -129,7 +129,7 @@ We also know that $f(5,4)=0$. As a result, the tangent plane approximation for $
 
 
 \begin{equation}
-f(Y,N) \approx  -.52 \cdot (Y-5) - .225 \cdot (N-4)  (\#eq:tangent-plane-f-17)
+f(Y,N) \approx  -.0769 \cdot (Y-5) -.1539 \cdot (N-4)  (\#eq:tangent-plane-f-17)
 \end{equation}
 
 
@@ -145,14 +145,14 @@ g_{N} &= .06 -.02N-.004Y  \rightarrow g_{N}(5,4)=-.04
 We also know that $g(5,4)=0$. As a result, the tangent plane approximation for $g(Y,N)$ is given by Equation \@ref(eq:tangent-plane-g-17):
 
 \begin{equation}
-g(H,L) \approx  -.016  \cdot (Y-5) -.04 \cdot (N-4) (\#eq:tangent-plane-g-17)
+g(Y,N) \approx  -.016  \cdot (Y-5) -.04 \cdot (N-4) (\#eq:tangent-plane-g-17)
 \end{equation}
 
 So, at the equilibrium solution $(Y,N)=(5,4)$, Equation \@ref(eq:yeast-comp-17)  behaves like the following system of equations (Equation \@ref(eq:yeast-17-54)):
 
 \begin{equation}
 \begin{split}
-\frac{dY}{dt} &= -.52 \cdot (Y-5) - .225 \cdot (N-4)\\
+\frac{dY}{dt} &= -.0769 \cdot (Y-5) -.1539 \cdot (N-4) \\
 \frac{dN}{dt} &= -.016  \cdot (Y-5) -.04 \cdot (N-4)
 \end{split} (\#eq:yeast-17-54)
 \end{equation}
@@ -164,7 +164,7 @@ Equation \@ref(eq:yeast-17-54) looks like a linear system of equations; however,
 
 \begin{equation}
 \begin{split}
-\frac{dy}{dt} &= -.52 y - .225 n\\
+\frac{dy}{dt} &= -.0769 y -.1539 n \\
 \frac{dn}{dt} &= -.016  y -.04 n
 \end{split} (\#eq:yeast-17-54-shift)
 \end{equation}
@@ -172,10 +172,10 @@ Equation \@ref(eq:yeast-17-54) looks like a linear system of equations; however,
 Then we can write Equation \@ref(eq:yeast-17-54-shift) in matrix form using the tools from Chapter \@ref(linearsystems-15):
 
 \begin{equation}
-\begin{pmatrix} y' \\ n' \end{pmatrix} =\begin{pmatrix} -.52 & -.225 \\ -.016 &  -.04 \end{pmatrix} \begin{pmatrix} y \\ n \end{pmatrix}
+\begin{pmatrix} y' \\ n' \end{pmatrix} =\begin{pmatrix} -.0769 & -.1539 \\ -.016 &  -.04 \end{pmatrix} \begin{pmatrix} y \\ n \end{pmatrix} (\#eq:yeast-17-jacobian-mat)
 \end{equation}
 
-We define the matrix $\displaystyle J= \begin{pmatrix} -.52 & -.225 \\ -.016 &  -.04 \end{pmatrix}$ as the Jacobian matrix.\index{Jacobian}
+We define the matrix $\displaystyle J= \begin{pmatrix} -.0769 & -.1539 \\ -.016 &  -.04 \end{pmatrix}$ as the Jacobian matrix.\index{Jacobian}
 
 More generally, let's say we have the following system of differential equations, with an equilibrium solution at $(x,y)=(a,b)$:
 
@@ -212,12 +212,57 @@ One more additional note: when we visualize the phase plane for a Jacobian matri
 Let's return to Equation \@ref(eq:yeast-comp-17) and investigate the Jacobian at the origin $(Y,N)=(0,0)$. The Jacobian matrix at that solution is the following:
 
 \begin{equation}
-J_{(0,0)} =\begin{pmatrix} .6 & 0 \\0 &  .2 \end{pmatrix} (\#eq:yeast-00-17)
+J_{(0,0)} =\begin{pmatrix} .2 & 0 \\0 &  .06 \end{pmatrix} (\#eq:yeast-00-17)
 \end{equation}
 
-(You should verify this on your own). This Jacobian matrix leads to an uncoupled system of linear equations where $Y' = 0.2Y$ and $N'=0.6N$. In this case, both $Y$ and $N$ are growing exponentially. This type of behavior supports the idea that both $Y$ and $N$ are growing away from the origin, as indicated in Figure \@ref(fig:yeast-orig-17).
+(You should verify this on your own). This Jacobian matrix leads to an uncoupled system of linear equations where $Y' = .2Y$ and $N'=.06N$. In this case, both $Y$ and $N$ are growing exponentially. This type of behavior supports the idea that both $Y$ and $N$ are growing away from the origin, as indicated in Figure \@ref(fig:yeast-orig-17).
 
 The Jacobian matrix helps confirm some of our intuition from examining the phase plane of a system of differential equations. At the heart of the Jacobian matrix is that idea that we can understand the dynamics of a nonlinear system through examining a closely related linear system. Chapter \@ref(eigenvalues-18) will continue to build on this idea, giving you a tool to quantitatively analyze the stability of an equilibrium solution.
+
+## Differentiation in R
+Computing the Jacobian and partial derivatives in this section is mostly done "by hand".  Technology does exist for symbolic differentiation, especially of complex expression.
+
+In `R` the command `D` paired with the function `expression` can compute partial derivatives.  Consider $\displaystyle f(Y,N)=r_{1}Y \cdot \frac{\left(K_{1} - Y - c_{1}N \right)}{K_{1}}$.  We can calculate $\displaystyle \frac{\partial f}{\partial Y}$ with the following code:
+
+```{r,eval=FALSE}
+D(expression(r1 * Y * (K1 - Y - c1*N) / K1), "Y")
+```
+
+The resulting expression can also be evaluated with any numeric values of the parameters or variables.  The process we use is:
+
+1. Create a symbolic expression for the partial derivatives.
+2. Substitute values of any inputs.
+3. If the function is fully specified, then evaluate it numerically.
+
+For example, to evaluate $\displaystyle \frac{\partial f}{\partial Y}$ when $r_{1} = 0.2$, $c_{1}=2$, and $K_{1}=13$, we will have the following:
+
+```{r,eval=FALSE}
+
+# 1: Create a symbolic expression and compute partial derivative with respect to Y:
+fY <- D(expression(r1 * Y * (K1 - Y - c1*N) / K1), "Y")
+
+# 2.1 Define inputs values for parameters and variables:
+inputs <- list(r1 = 0.2, c1 = 2, K1=13, Y=5, N=4)
+
+# 2.2: Substitute parameter values into the expression
+fY_sub <- do.call(substitute, list(fY, inputs))
+
+# 3. Evaluate the result
+eval(fY_sub)
+
+
+```
+
+Notice how the evaluation step defines a list of inputs, and then uses the functions `do.call` and `substitute` to evaluate the expression.  The output `fY_sub` is still an evaluated expression.  Step 3 applies the function `eval` to numerically compute the result.  This last step only works if all parameters and variables are defined.
+
+The downside to symbolic differentiation with `R` is that while sometimes the resulting expression may be correct - it isn't algebraically simplified. Consider for example $\displaystyle f(x,y)=y + \frac{5x^2}{4+x^{2}}$. The value of  $\displaystyle \frac{\partial f}{\partial x}$ is $\displaystyle \frac{40x}{(4+x^{2})^{2}}$ after algebraic simplification with the quotient rule. Exercise \@ref(exr:quotient-17) will have you explore this further.
+
+
+Other programs that can do symbolic manipulation include:
+- [Mathematica](https://www.wolfram.com/mathematica/?source=wa-header), which includes [Wolfram alpha](https://www.wolframalpha.com/)
+- [sageMath](https://www.sagemath.org/)
+- [Maple](https://www.maplesoft.com/products/maple/)
+- [Maxima](https://maxima.sourceforge.io/)
 
 
 
@@ -232,6 +277,32 @@ Using algebra, show that the 4 equilibrium solutions to Equation \@ref(eq:yeast-
 Construct the Jacobian matrices for the equilibrium solutions $(Y,N)=(13,0)$ and $(Y,N)=(0,6)$ to Equation \@ref(eq:yeast-comp-17).
 ```
 
+```{exercise quotient-17}
+Let $\displaystyle f(x,y)=y + \frac{5x^2}{4+x^{2}}$. By hand, verify $\displaystyle \frac{\partial f}{\partial x} = \frac{40x}{(4+x^{2})^{2}}$. Then use `R` to determine $\displaystyle \frac{\partial f}{\partial x}$. Show the algebraic steps to simplify the output from `R` to the simplified form of $\displaystyle \frac{\partial f}{\partial x}$.
+```
+ 
+```{exercise}
+Use symbolic differentiation in `R` to verify that when $g(Y,N)= .06N-.01 N^{2} - .004YN$, then $g_{Y}= -.004N$ and $g_{N}=.06 -.02N-.004Y$
+```
+
+```{exercise}
+Consider the following system of differential equations:
+
+\begin{equation}
+\begin{split}
+\frac{dY}{dt} &= r_{1}Y \cdot \frac{\left(K_{1} - Y - c_{1}N \right)}{K_{1}} \\
+\frac{dN}{dt} &= r_{2}Y \cdot \frac{\left(K_{2} - N - c_{2}Y \right)}{K_{2}}
+\end{split}
+\end{equation}
+
+
+a. Use `R` to evaluate that this system of differential equations has an equilibrium solution at $(Y,N)=(5,4)$ when $r_{1}=.2$, $r_{2}=.06$, $K_{1}=13$, $K_{2}=6$, $c_{1}=2$, and $c_{2}=.4$.
+b. Let $\displaystyle f(Y,N)=r_{1}Y \cdot \frac{\left(K_{1} - Y - c_{1}N \right)}{K_{1}}$. Use symbolic differentiation in `R` to compute $f_{Y}$ and $f_{N}$.
+c. Let $\displaystyle g(Y,N)=r_{2}Y \cdot \frac{\left(K_{2} - N - c_{2}Y \right)}{K_{2}}$. Use symbolic differentiation in `R` to compute $g_{Y}$ and $g_{N}$.
+d. Use `R` to evaluate $f_{Y}$, $f_{N}$, $g_{Y}$, and $g_{N}$ at the equilibrium solution $(Y,N)=(5,4)$.
+e. Using your previous answer, construct the Jacobian matrix at this equilibrium solution. Compare your answer to Equation \@ref(eq:yeast-17-jacobian-mat). What do you notice?
+
+```
  
 ```{exercise}
 By solving directly, show that $(H,L)=(0,0)$ and $(4,3)$ are equilibrium solutions to the following system of equations:
@@ -318,7 +389,9 @@ d. Use the fact that $\displaystyle \frac{dy}{dt} / \frac{dx}{dt} = \frac{dy}{dx
 
 ```
 
-
+```{exercise}
+When f(Y,N)=k_{1}Y \cdot \frac{\left(K - Y - c_{1}N \right)}{K}$, use `R` to compute $\displaystyle \frac{\partial f}{\partial N}$.
+```
 
 ```{exercise}
 The *Van der Pol Equation* is a second-order differential equation used to study radio circuits. In Chapter \@ref(nonlinear-16) you showed that the differential equations $x'' + \mu \cdot (x^{2}-1) x' + x = 0$, where $\mu$ is a parameter can be written as a system of equations:
@@ -373,7 +446,8 @@ c. Based on the phase plane from the Jacobian matrices, evaluate the stability o
 
 
 a. Verify that $\displaystyle N = \frac{L}{\delta}, \; I = 0$ and $\displaystyle N = \frac{kd+\delta}{\mu}, \; I = \frac{L \mu - \delta k d - \delta^{2}}{\mu \delta}$ are equilibrium solutions for this system.
-b. Construct a Jacobian matrix for each of the equilibrium solutions.
+b. Use `R` to compute each entry of the Jacobian matrix.
+c. Construct a Jacobian matrix for each of the equilibrium solutions.
 
 
 ```
@@ -454,6 +528,7 @@ c. Let $\alpha=0.001$ and $\gamma = 0.2$. With the Jacobian matrix, generate the
 
 a. We can reduce this to a system of three equations. First show that $\displaystyle \frac{dp_{i}}{dt} + \frac{dp_{e}}{dt}+ \frac{dc_{i}}{dt} + \frac{dc_{e}}{dt} = 0$. Given that $p_{i}+p_{e}+c_{i}+c_{e}=C_{0}$, where $C_{0}$ is constant, use this equation to eliminate $p_{i}$ and write down a system of three equations.
 b. Determine the equilibrium solutions for this new system of three equations.
+c. Use `R` to compute each entry of the Jacobian matrix.
 c. Construct the Jacobian matrix for each of these equilibrium solutions.
 
 ```
