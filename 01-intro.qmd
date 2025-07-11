@@ -21,17 +21,17 @@ Maybe the context includes observational data and several different (perhaps con
 Consider the data in Figure \@ref(fig:sierra-leone-01), which come from an [Ebola outbreak](https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/index.html) in Sierra Leone in 2014. (Data provided from @matthes_bisc204biomodeling_2021.) The vertical axis in Figure \@ref(fig:sierra-leone-01) represents Ebola *infections* over 2 years from initial monitoring in March 2014.
 
 ```{r sierra-leone-01,fig.cap='Infections from a 2014 Ebola outbreak in Sierra Leone, with the initial monitoring in March 2014.',echo=FALSE,message=FALSE}
-ebola <- read_csv("data/ebola.csv") %>%
-  mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) %>%
-  select(-c(2,4,6)) %>%
-  gather(key=nation, value=cases,
-         1:3) %>%
+ebola <- read_csv("data/ebola.csv") |>
+  mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) |>
+  select(-c(2,4,6)) |>
+  pivot_longer(names_to="nation", values_to="cases",
+         cols=1:3) |>
   mutate(monitor_days = as.numeric(date) - min(as.numeric(date)) + 1)
 
 
 
-ebola %>%
-  filter(nation == "Cases Sierra Leone") %>%
+ebola |>
+  filter(nation == "Cases Sierra Leone") |>
   ggplot() +
   geom_point(aes(x = monitor_days, y = cases), size = 1) +
   theme_bw() +
@@ -164,10 +164,10 @@ x <- seq(0, 15, length.out = 500)
 n <- 10
 k <- 1
 
-data.frame(x, m1 = k*x, m2 = k*(n - x), m3 = k*x * (n - x)) %>%
-  gather(key = model, value = rate, m1, m2, m3) %>%
+data.frame(x, m1 = k*x, m2 = k*(n - x), m3 = k*x * (n - x)) |>
+  pivot_longer(names_to = "model", values_to = "rate", cols=c(m1, m2, m3)) |>
   ggplot(aes(x = x, y = rate, color = model)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   xlab("I") +
   ylab("dI/dt") +
   theme_bw() +
@@ -209,10 +209,10 @@ n <- 13600
 k <- 0.023
 i0 <- 250
 
-data.frame(x, m1 = i0 * exp(k * x), m2 = n - (n - i0) * exp(-k * x), m3 = n * i0 / (i0 + (n - i0) * exp(-k * x))) %>%
-  gather(key = model, value = rate, m1, m2, m3) %>%
+data.frame(x, m1 = i0 * exp(k * x), m2 = n - (n - i0) * exp(-k * x), m3 = n * i0 / (i0 + (n - i0) * exp(-k * x))) |>
+  pivot_longer(cols=c(m1,m2,m3),names_to= "model", values_to = "rate") |>
   ggplot(aes(x = x, y = rate, color = model)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   xlab("t (days)") +
   ylab("Infected people") +
   theme_bw() +
@@ -285,17 +285,17 @@ c. Finally, for both models evaluate $\lim_{t \rightarrow \infty} I(t)$. How do 
 
 
 ```{r, label="liberia-01",fig.cap='Infections from a 2014 Ebola outbreak in Liberia, with the initial monitoring in March 2014.',echo=FALSE,message=FALSE}
-# ebola <- read_csv("data/ebola.csv") %>%
-#   mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) %>%
-#   select(-c(1, 3, 5)) %>%
+# ebola <- read_csv("data/ebola.csv") |>
+#   mutate(date = mdy(`WHO report date`), `WHO report date` = NULL) |>
+#   select(-c(1, 3, 5)) |>
 #   gather(
 #     key = nation, value = deaths,
 #     1:3
-#   ) %>%
+#   ) |>
 #   mutate(monitor_days = as.numeric(date) - min(as.numeric(date)) + 1)
 
-ebola %>%
-  filter(nation == "Cases Liberia") %>%
+ebola |>
+  filter(nation == "Cases Liberia") |>
   ggplot() +
   geom_point(aes(x = monitor_days, y = cases), size = 1) +
   theme_bw() +

@@ -17,10 +17,10 @@ The general solution to the differential equation $\displaystyle \frac{dy}{dt}=-
 
 ```{r, label="exponential", echo=FALSE,fig.cap="Solution curves to $y'=-y$ for different initial conditions (values of $C$)."}
 t <- seq(0, 5, length.out = 50)
-data.frame(time = t, s1 = exp(-t), s2 = 2 * exp(-t), s3 = -1 * exp(-t), s4 = -2 * exp(-t)) %>%
-  gather(key = constant, value = soln, -time) %>%
+data.frame(time = t, s1 = exp(-t), s2 = 2 * exp(-t), s3 = -1 * exp(-t), s4 = -2 * exp(-t)) |>
+  pivot_longer(names_to = constant, values_to = soln, cols=c(-"time")) |>
   ggplot() +
-  geom_line(aes(x = time, y = soln, color = constant), size = 1) +
+  geom_line(aes(x = time, y = soln, color = constant), linewidth = 1) +
   theme_bw() +
   theme(
     legend.position = "right",
@@ -64,10 +64,10 @@ Figure \@ref(fig:logistic-soln) displays several different solution curves for E
 
 ```{r, label="logistic-soln", echo=FALSE,fig.cap="Solution curves for Equation \\@ref(eq:logistic-05) with different initial conditions (values of $C$)."}
 t <- seq(0, 5, length.out = 50)
-data.frame(time = t, s1 = 2 / (2 + (1 - 2) * exp(-t)), s2 = 1.5 / (1.5 + (1 - 1.5) * exp(-t)), s3 = 0.5 / (0.5 + (1 - 0.5) * exp(-t)), s4 = 0.25 / (0.25 + (1 - 0.25) * exp(-t)), s5 = 0.1 / (0.1 + (1 - 0.1) * exp(-t))) %>%
-  gather(key = constant, value = soln, -time) %>%
+data.frame(time = t, s1 = 2 / (2 + (1 - 2) * exp(-t)), s2 = 1.5 / (1.5 + (1 - 1.5) * exp(-t)), s3 = 0.5 / (0.5 + (1 - 0.5) * exp(-t)), s4 = 0.25 / (0.25 + (1 - 0.25) * exp(-t)), s5 = 0.1 / (0.1 + (1 - 0.1) * exp(-t))) |>
+  gather(key = constant, value = soln, -time) |>
   ggplot() +
-  geom_line(aes(x = time, y = soln, color = constant), size = 1) +
+  geom_line(aes(x = time, y = soln, color = constant), linewidth = 1) +
   theme_bw() +
   theme(
     legend.position = "bottom",
@@ -111,7 +111,7 @@ Let's apply this logic to our differential equation $\displaystyle \frac{dy}{dt}
 
 ```{r,label="phaseline1",echo=FALSE,fig.cap="Phase line for the differential equation $y'=-y$."}
 eq_soln <- data.frame(x = c(0), y = c(0), label = "y = 0")
-data.frame(point = c(-5, -2, 3), label = c("y':", "y' > 0", "y' < 0"), tendency = c("y:", "y increasing", "y decreasing")) %>%
+data.frame(point = c(-5, -2, 3), label = c("y':", "y' > 0", "y' < 0"), tendency = c("y:", "y increasing", "y decreasing")) |>
   ggplot() +
   geom_text(aes(point, 0.5, label = label)) +
   geom_text(aes(point, -.5, label = tendency)) +
@@ -142,7 +142,7 @@ Now let's generalize the example $y'=-y$ to classify the stability of the equili
   
 ```{r phaseline2,echo=FALSE, fig.cap="Phase line for the differential equation $y'=ry$, with $r>0$."}
 eq_soln <- data.frame(x = c(0), y = c(0), label = "y = 0")
-data.frame(point = c(-5, -2, 3), label = c("y':", "y' < 0", "y' > 0"), tendency = c("y:", "y decreasing", "y increasing")) %>%
+data.frame(point = c(-5, -2, 3), label = c("y':", "y' < 0", "y' > 0"), tendency = c("y:", "y decreasing", "y increasing")) |>
   ggplot() +
   geom_text(aes(point, 0.5, label = label)) +
   geom_text(aes(point, -.5, label = tendency)) +
@@ -165,10 +165,10 @@ data.frame(point = c(-5, -2, 3), label = c("y':", "y' < 0", "y' > 0"), tendency 
 
 ```{r,label=solncurve-1, echo=FALSE,fig.cap="Solution curves for the differential equation $y'=ry$, with $r>0$ for different initial conditions (values of $C$)."}
 t <- seq(0, 2, length.out = 50)
-data.frame(time = t, s1 = exp(t), s2 = 2 * exp(t), s3 = -1 * exp(t), s4 = -2 * exp(t)) %>%
-  gather(key = constant, value = soln, -time) %>%
+data.frame(time = t, s1 = exp(t), s2 = 2 * exp(t), s3 = -1 * exp(t), s4 = -2 * exp(t)) |>
+  pivot_longer(names_to = "constant", values_to = "soln", cols=c(-"time")) |>
   ggplot() +
-  geom_line(aes(x = time, y = soln, color = constant), size = 1) +
+  geom_line(aes(x = time, y = soln, color = constant), linewidth = 1) +
   labs(x = "t", y = "y") +
   geom_hline(aes(yintercept = 0), linetype = "dashed") +
   theme_bw() +
@@ -204,7 +204,7 @@ Notice how the selected test points in the first column of Table \@ref(tab:logis
   
 ```{r,label="phaseline-N",echo=FALSE,fig.cap="Phase line diagram for Equation \\@ref(eq:logistic-05)."}
 eq_soln <- data.frame(x = c(0, 1), y = c(0, 1), label = c("N = 0", "N = 1"))
-data.frame(point = c(-1.5, -0.5, 0.5, 1.5), label = c("N':", "N' < 0", "N' > 0", "N' < 0"), tendency = c("N:", "N decreasing", "N increasing", "N decreasing")) %>%
+data.frame(point = c(-1.5, -0.5, 0.5, 1.5), label = c("N':", "N' < 0", "N' > 0", "N' < 0"), tendency = c("N:", "N decreasing", "N increasing", "N decreasing")) |>
   ggplot() +
   geom_text(aes(point, 0.5, label = label)) +
   geom_text(aes(point, -.5, label = tendency)) +
