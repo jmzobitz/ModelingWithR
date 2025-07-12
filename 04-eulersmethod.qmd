@@ -45,8 +45,8 @@ tibble(
   t = c(0, 1, 2),
   i_approx = c(10, 13, 15.92),
   i_soln = c(10, 12.96, 15.85)
-) %>%
-  pivot_longer(cols = c("i_approx", "i_soln"), names_to = "solution", values_to = "value") %>%
+) |>
+  pivot_longer(cols = c("i_approx", "i_soln"), names_to = "solution", values_to = "value") |>
   ggplot(aes(x = t, y = value, color = solution, shape = solution)) +
   geom_point(size = 1) +
   geom_line() +
@@ -257,7 +257,7 @@ solution_data <- tibble(
 
 # Plot your solution:
 ggplot(data = solution_data) +
-  geom_line(aes(x = time, y = prop_infected),size=1) +
+  geom_line(aes(x = time, y = prop_infected),linewidth=1) +
 labs(
   x = "Time (days)",
   y = "Proportion infected"
@@ -394,9 +394,9 @@ out_solution <- euler(system_eq = lynx_hare_eq,
   
 # Make a plot of the solution,
 # using different colors for lynx or hares:
-out_solution %>% pivot_longer(cols=c(-"t")) %>%
+out_solution |> pivot_longer(cols=c(-"t")) |>
   ggplot() +
-  geom_line(aes(x = t, y = value,linetype=name,color=name), size=1) +
+  geom_line(aes(x = t, y = value,linetype=name,color=name), linewidth=1) +
   labs(
     x = "Time",
     y = "Population (thousands)"
@@ -429,7 +429,7 @@ Sometimes when working with Euler's method you encounter a differential equation
 \begin{equation}
 \begin{split}
 \frac{dS}{dt} &= -kSI \\
-\frac{dI}{dt} &= -kSI  - \beta I
+\frac{dI}{dt} &= kSI  - \beta I
 \end{split} (\#eq:flu-quarantine-04)
 \end{equation}
 
@@ -461,11 +461,11 @@ out_solution <- euler(system_eq = quarantine_eq,
                       )
 
 # Make a plot of the solution:
-out_solution %>% pivot_longer(cols=c(-"t")) %>%
+out_solution |> pivot_longer(cols=c(-"t")) |>
   mutate(name = fct_relevel(name, 
-            "S", "I")) %>%
+            "S", "I")) |>
   ggplot() +
-  geom_line(aes(x = t, y = value,linetype=name,color=name), size=1) +
+  geom_line(aes(x = t, y = value,linetype=name,color=name), linewidth=1) +
   labs(
     x = "Time",
     y = "People"
@@ -553,11 +553,11 @@ out_solution <- rk4(system_eq = quarantine_eq,
                       )
 
 # Make a plot of the solution:
-out_solution %>% pivot_longer(cols=c(-"t")) %>%
+out_solution |> pivot_longer(cols=c(-"t")) |>
   mutate(name = fct_relevel(name, 
-            "S", "I")) %>%
+            "S", "I")) |>
   ggplot() +
-  geom_line(aes(x = t, y = value,linetype=name,color=name), size=1) +
+  geom_line(aes(x = t, y = value,linetype=name,color=name), linewidth=1) +
   labs(
     x = "Time",
     y = "People"
