@@ -1,8 +1,10 @@
 # Introduction to R {#r-intro-02}
 
-The primary tools we will use to analyze models for this book are `R` [@R-base] and `RStudio` [@rstudio_team_rstudio_2020].[^r-posit] These programs are powerful ones to learn! Admittedly learning a new software may be challenging; however I think it is worth it. With `R` you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models. Let's get started!
+The primary tools we will use to analyze models for this book are `R` [@R-base] and `RStudio` [@rstudio_team_rstudio_2020]. These programs are powerful ones to learn! Admittedly learning a new software may be challenging; however I think it is worth it. With `R` you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models. Let's get started!
 
-[^r-posit]: In July 2022 `RStudio` announced it was changing its name to `posit` (<https://www.rstudio.com/blog/rstudio-is-becoming-posit/>). At this time of this writing `posit` was not available, although I expect its look and feel will be very similar to `RStudio`.
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See Section \@ref(packages-02) on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
 
 ## `R` and RStudio
 
@@ -71,7 +73,7 @@ Sometimes source files contain comments, which are helpful notes to you, or futu
 The neat part about a source file is that it allows you to save the file (Ctrl+S / Cmd+S). The first time you do this you may need to give this a name. The location where this file will be saved is in the same directory as your `.Rproj` project file. Now you have a file that you can come back to! In general I try to use descriptive names of files so I can refer back to them later.
 
 
-## Increasing functionality with packages
+## Increasing functionality with packages {#packages-02}
 
 Packages are one way that `R` gets some awesome versatility.\index{package} Packages are contributed, specialized code produced by users (just like you!), and shared with the world. Packages are similar to apps on your phone, which rather than obtaining them from the app store can be found in two different places:
 
@@ -145,10 +147,10 @@ n <- 13600
 k <- 0.03
 i0 <- 250
 
-model_out <- tibble(time, model_1 = i0 * exp(k * time), model_2 = n - (n - i0) * exp(-k * time), model_3 = n * i0 / (i0 + (n - i0) * exp(-k * time))) %>% round()
+model_out <- tibble(time, model_1 = i0 * exp(k * time), model_2 = n - (n - i0) * exp(-k * time), model_3 = n * i0 / (i0 + (n - i0) * exp(-k * time))) |> round()
 
-model_out[1:5, ] %>%
-  kbl(caption = "Sample model solutions for an exponential, saturating, or logistic differential equation") %>%
+model_out[1:5, ] |>
+  kbl(caption = "Sample model solutions for an exponential, saturating, or logistic differential equation") |>
   kable_paper(full_width = FALSE)
 ```
 

@@ -1,7 +1,7 @@
 # Modeling with Rates of Change {#modeling-rates-03}
 Chapter \@ref(intro-01) provided examples for modeling with rates of change, and Chapter \@ref(r-intro-02) introduced the computational and visualization software `R` and `RStudio`, and how we can translate equations with rates of change to understand phenomena. The focus for this chapter will be on taking a contextual description and starting to develop differential equation models for them.
 
-Oftentimes when we construct differential equations from a contextual description we bring our own understanding and knowledge to this situation. How _you_ may write down the differential equation may be different from someone else - _do not worry!_  This is the fun part of modeling: models can be considered testable hypotheses that can be refined when confronted with data. Let's get started
+Oftentimes when we construct differential equations from a contextual description we bring our own understanding and knowledge to this situation. How _you_ may write down the differential equation may be different from someone else - _do not worry!_  This is the fun part of modeling: models can be considered testable hypotheses that can be refined when confronted with data. Let's get started!
 
 
 ## Competing plant species and equilibrium solutions
@@ -198,10 +198,10 @@ type1 <-  .5*x
 type2 <- 2*x/(1+2*x)
 type3 <- 4*x^2/(1+4*x^2)
 
-my_data <- data.frame(x,type1,type2,type3) %>%
+my_data <- data.frame(x,type1,type2,type3) |>
   gather(key=type,value=value,-x)
 ggplot() +
-  geom_line(data=my_data,aes(x=x,y=value,color=type,linetype=type),size=1.0) +
+  geom_line(data=my_data,aes(x=x,y=value,color=type,linetype=type),linewidth=1.0) +
   theme_bw() +
   theme(
     legend.position = "bottom",
