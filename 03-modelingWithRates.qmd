@@ -1,5 +1,5 @@
-# Modeling with Rates of Change {#modeling-rates-03}
-Chapter \@ref(intro-01) provided examples for modeling with rates of change, and Chapter \@ref(r-intro-02) introduced the computational and visualization software `R` and `RStudio`, and how we can translate equations with rates of change to understand phenomena. The focus for this chapter will be on taking a contextual description and starting to develop differential equation models for them.
+# Modeling with Rates of Change {#sec-modeling-rates-03}
+@sec-intro-01 provided examples for modeling with rates of change, and @sec-r-intro-02 introduced the computational and visualization software `R` and `RStudio`, and how we can translate equations with rates of change to understand phenomena. The focus for this chapter will be on taking a contextual description and starting to develop differential equation models for them.
 
 Oftentimes when we construct differential equations from a contextual description we bring our own understanding and knowledge to this situation. How _you_ may write down the differential equation may be different from someone else - _do not worry!_  This is the fun part of modeling: models can be considered testable hypotheses that can be refined when confronted with data. Let's get started!
 
@@ -22,26 +22,26 @@ For this problem we will start by naming our variables. Let $N$ represent number
 
 - *"and is a better competitor"* helps to explain why the term is $\displaystyle \alpha \cdot (E-N)$ instead of $\displaystyle \alpha \cdot (N-E)$. We know that the newly established species will start out in much smaller numbers than $N$. But since it is a better competitor, we would expect its rate to increase initially. So $\displaystyle \frac{dN}{dt}$ should be *positive* rather than negative.
 
-Taking all these assumptions together, Equation \@ref(eq:compete-03) shows the differential equation to model this context:
+Taking all these assumptions together, @eq-compete-03 shows the differential equation to model this context:
 
-\begin{equation}
-\frac{dN}{dt} = \alpha \cdot (E-N) (\#eq:compete-03)
-\end{equation}
+$$
+\frac{dN}{dt} = \alpha \cdot (E-N)
+$$ {#eq-compete-03}
 
-You may recognize that Equation \@ref(eq:compete-03) is similar to Equation \@ref(eq:single-02) in Chapter \@ref(intro-01) for the spread of Ebola. It is not surprising to have similar differential equations appear in different contexts. We will see throughout this book that it is more advantageous to learn techniques to analyze models qualitatively rather than memorize several different types of models and not see the connections between them.
+You may recognize that @eq-compete-03 is similar to @eq-single-02 in @sec-intro-01 for the spread of Ebola. It is not surprising to have similar differential equations appear in different contexts. We will see throughout this book that it is more advantageous to learn techniques to analyze models qualitatively rather than memorize several different types of models and not see the connections between them.
 
-An interesting solution to a differential equation is the _steady state_ or _equilibrium solution_.\index{steady state}\index{equilibrium solution}  Equilibrium solutions occur where the rates of change are zero. For Equation \@ref(eq:compete-03), this means that we are solving $\displaystyle \frac{dN}{dt} = \alpha \cdot (E-N)  = 0$. Granted, the expression $\alpha \cdot (E-N)$ may look like alphabet soup, but it is helpful to remember that $\alpha$ and $E$ are both parameters; the steady state occurs when the expression $E-N$ equals zero, or when $N = E$. We may consider the new species $N$ to be established when it reaches the same population level as $E$. Identifying steady states in a model aids in understanding the behavior of any solutions for a differential equation. Chapters \@ref(phase-05) and \@ref(coupled-06) dig deeper into steady states and their calculation.
+An interesting solution to a differential equation is the _steady state_ or _equilibrium solution_.\index{steady state}\index{#equilibrium solution}  Equilibrium solutions occur where the rates of change are zero. For @eq-compete-03, this means that we are solving $\displaystyle \frac{dN}{dt} = \alpha \cdot (E-N)  = 0$. Granted, the expression $\alpha \cdot (E-N)$ may look like alphabet soup, but it is helpful to remember that $\alpha$ and $E$ are both parameters; the steady state occurs when the expression $E-N$ equals zero, or when $N = E$. We may consider the new species $N$ to be established when it reaches the same population level as $E$. Identifying steady states in a model aids in understanding the behavior of any solutions for a differential equation. [Chapters @sec-phase-05 and @sec-coupled-06] dig deeper into steady states and their calculation.
 
 ## The Law of Mass Action
-Our next example focuses on how to generate a model that borrows concepts from modeling chemical reactions. For example let's say you have a substrate *A* that reacts with enzyme *B* to form a product *S*. One common way to represent this process is with a reaction equation (Equation \@ref(eq:reaction-03)):\index{reaction equation}
+Our next example focuses on how to generate a model that borrows concepts from modeling chemical reactions. For example let's say you have a substrate *A* that reacts with enzyme *B* to form a product *S*. One common way to represent this process is with a reaction equation (@eq-reaction-03):\index{reaction equation}
 
-\begin{equation}
-A+B \rightarrow S  (\#eq:reaction-03)
-\end{equation}
+$$
+A+B \rightarrow S
+$$ {#eq-reaction-03}
 
-Figure \@ref(fig:mass-action) is a schematic diagram of Equation \@ref(eq:reaction-03):
+@fig-mass-action is a schematic diagram of @eq-reaction-03:
 
-```{tikz, mass-action,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram of a substrate-enzyme reaction."}
+```{tikz, label=fig-mass-action,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram of a substrate-enzyme reaction."}
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
 \begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
@@ -54,17 +54,17 @@ Figure \@ref(fig:mass-action) is a schematic diagram of Equation \@ref(eq:reacti
 
 ```
 
-One key quantity is the rate of formation for the product $P$, which we express by Equation \@ref(eq:mass-action):
+One key quantity is the rate of formation for the product $P$, which we express by @eq-mass-action:
 
-\begin{equation}
-\frac{dP}{dt}= kAB, (\#eq:mass-action)
-\end{equation}
+$$
+\frac{dP}{dt}= kAB,
+$$ {#eq-mass-action}
 
-where $k$ is the proportionality constant or the rate constant associated with the reaction. Notice how we express the interaction between $A$ and $B$ as a product - if either the substrate $A$ or enzyme $B$ is not present (i.e. $A$ or $B$ equals zero), then product $P$ is not formed. Equation \@ref(eq:mass-action) is an example of the law of mass action.\index{mass action}
+where $k$ is the proportionality constant or the rate constant associated with the reaction. Notice how we express the interaction between $A$ and $B$ as a product - if either the substrate $A$ or enzyme $B$ is not present (i.e. $A$ or $B$ equals zero), then product $P$ is not formed. @eq-mass-action is an example of the law of mass action.\index{mass action}
 
-Modeling interactions (whether between susceptible and infected individuals, enzymes and substrates, or predators and prey) with the law of mass action is always a good first assumption to understand the system, which can be subsequently refined. For example, if we consider that the substrate might decay, we can revise Figure \@ref(fig:mass-action) to Figure \@ref(fig:mass-action-revised):
+Modeling interactions (whether between susceptible and infected individuals, enzymes and substrates, or predators and prey) with the law of mass action is always a good first assumption to understand the system, which can be subsequently refined. For example, if we consider that the substrate might decay, we can revise @fig-mass-action to @fig-mass-action-revised:
 
-```{tikz, mass-action-revised,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Revised schematic diagram of substrate-enzyme reaction with decay of the product $P$."}
+```{tikz, label=fig-mass-action-revised,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Revised schematic diagram of substrate-enzyme reaction with decay of the product $P$."}
 
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -79,11 +79,11 @@ Modeling interactions (whether between susceptible and infected individuals, enz
 
 ```
 
-In this instance the rate of change of $P$ would then include a term $dP$ (Equation \@ref(eq:mass-action-decay):
+In this instance the rate of change of $P$ would then include a term $dP$ (@eq-mass-action-decay):
 
-\begin{equation}
-\frac{dP}{dt}= kAB - dP (\#eq:mass-action-decay)
-\end{equation}
+$$
+\frac{dP}{dt}= kAB - dP
+$$ {#eq-mass-action-decay}
 
 
 
@@ -94,9 +94,9 @@ In this instance the rate of change of $P$ would then include a term $dP$ (Equat
 <!-- https://jmahaffy.sdsu.edu/courses/f09/math636/lectures/lotka/qualde2.html -->
 
 ## Coupled differential equations: lynx and hares
-Another example is a *system of differential equations*.\index{differential equation!system of equations}  The context is between the snowshoe hare and the Canadian lynx, shown in Figure \@ref(fig:lynx-hare). Figure \@ref(fig:lynx-hare-time) also displays a timeseries of the two populations overlaid. Notice how in Figure \@ref(fig:lynx-hare-time) both populations show regular periodic fluctuations. One plausible reason is that the lynx prey on the snowshoe hares, which causes the population to initially decline. Once the snowshoe hare population declines, then there is less food for the lynx to survive, so their population declines. The decline in the lynx population causes the hare population to increase, and the cycle repeats.^[There is a lot more nuance for reasons behind periodic fluctuations in these two populations, which includes more complicated food web interactions and climate variation. @maclulich_fluctuations_1937, @stenseth_population_1997, and @king_geometry_2001 are good places to dig into the complexity of this fascinating biological system. &nbsp; Image sources for Figure \@ref(fig:lynx-hare): @usa_canada_2012 and @preserve_snowshoe_2011. Image source for Figure \@ref(fig:lynx-hare-time): @openstax_notitle_2016]
+Another example is a *system of differential equations*.\index{differential equation!system of equations}  The context is between the snowshoe hare and the Canadian lynx, shown in @fig-lynx-hare. @fig-lynx-hare-time also displays a timeseries of the two populations overlaid. Notice how in @fig-lynx-hare-time both populations show regular periodic fluctuations. One plausible reason is that the lynx prey on the snowshoe hares, which causes the population to initially decline. Once the snowshoe hare population declines, then there is less food for the lynx to survive, so their population declines. The decline in the lynx population causes the hare population to increase, and the cycle repeats.^[There is a lot more nuance for reasons behind periodic fluctuations in these two populations, which includes more complicated food web interactions and climate variation. @maclulich_fluctuations_1937, @stenseth_population_1997, and @king_geometry_2001 are good places to dig into the complexity of this fascinating biological system. &nbsp; Image sources for @fig-lynx-hare: @usa_canada_2012 and @preserve_snowshoe_2011. Image source for @fig-lynx-hare-time: @openstax_notitle_2016]
 
-```{r lynx-hare, echo=FALSE, fig.cap = "Examples of lynx and hare - aren't they beautiful?",out.width="70%",fig.align='center'}
+```{r,label=fig-lynx-hare, echo=FALSE, fig.cap = "Examples of lynx and hare - aren't they beautiful?",out.width="70%",fig.align='center'}
 
 knitr::include_graphics("figures/03-systems/lynx-hare.png")
 
@@ -105,7 +105,7 @@ knitr::include_graphics("figures/03-systems/lynx-hare.png")
 
 
 
-```{r,label="lynx-hare-time", echo=FALSE, fig.cap="Timeseries of the combined lynx and hare populations. Notice how the populations are coupled with each other.",out.width="70%",fig.align='center'}
+```{r,label=fig-lynx-hare-time, echo=FALSE, fig.cap="Timeseries of the combined lynx and hare populations. Notice how the populations are coupled with each other.",out.width="70%",fig.align='center'}
 
 #[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Figure_45_06_01.jpg)
 knitr::include_graphics("figures/03-systems/Figure_45_06_01.jpg")
@@ -118,55 +118,54 @@ knitr::include_graphics("figures/03-systems/Figure_45_06_01.jpg")
 In summary it is safe to say that the two populations are *coupled* to one another, yielding a coupled system of equations.\index{differential equation!coupled system}  But in order to understand how they are coupled together, first let's consider the two populations *separately*.
 
 
-To develop the mathematical model we will make some simplifying assumptions. The hares grow much more quickly than then lynx - in fact some hares have been known to reproduce several times a year. A reasonable assumption for large hare populations is that rate of change of the hares is proportional to the hare population. Based on this assumption Equation \@ref(eq:hareOnly) describes the rate of change of the hare population, with $H$ as the population of the hares:
+To develop the mathematical model we will make some simplifying assumptions. The hares grow much more quickly than then lynx - in fact some hares have been known to reproduce several times a year. A reasonable assumption for large hare populations is that rate of change of the hares is proportional to the hare population. Based on this assumption @eq-hareOnly describes the rate of change of the hare population, with $H$ as the population of the hares:
 
-\begin{equation}
-\frac{dH}{dt} = r H (\#eq:hareOnly)
-\end{equation}
+$$
+\frac{dH}{dt} = r H
+$$ {#eq-hareOnly}
 
 Since the growth rate $r$ is positive, so then the rate of change ($H'$) will be positive as well, and $H$ will be increasing. A representative value for $r$ is 0.5 year$^{-1}$ [@mahaffy_lotka-volterra_2010; @brady_circle_2021]. You may be thinking that the units on $r$ seem odd - (year$^{-1}$), but that unit on $r$ makes the term $rH$ dimensionally consistent to be a rate of change.
 
-Let's consider the lynx now. An approach is to assume their population declines exponentially, or changes at the rate proportional to the current population. Let's consider $L$ to be the lynx population, with the following differential equation (Equation \@ref(eq:lynxOnly)):
+Let's consider the lynx now. An approach is to assume their population declines exponentially, or changes at the rate proportional to the current population. Let's consider $L$ to be the lynx population, with the following differential equation (@eq-lynxOnly):
 
-\begin{equation}
-\frac{dL}{dt} = -dL (\#eq:lynxOnly)
-\end{equation}
+$$
+\frac{dL}{dt} = -dL
+$$ {#eq-lynxOnly}
 
-We assume the death rate $d$ in Equation \@ref(eq:lynxOnly) is positive, leading to a negative rate of change for the Lynx population (and a decreasing value for $L$). A typical value of $d$ is 0.9 yr$^{-1}$ [@mahaffy_lotka-volterra_2010; @brady_circle_2021].
+We assume the death rate $d$ in @eq-lynxOnly is positive, leading to a negative rate of change for the Lynx population (and a decreasing value for $L$). A typical value of $d$ is 0.9 yr$^{-1}$ [@mahaffy_lotka-volterra_2010; @brady_circle_2021].
 
 The next part to consider is how the lynx and hare interact. Since the hares are prey for the lynx, when the lynx hunt, the hare population decreases. We can represent the process of hunting with the following adjustment to our hare equation:
 
-\begin{equation}
+$$
 \frac{dH}{dt} = r H - b HL
-\end{equation}
+$$
 
 So the parameter $b$ represents the hunting rate. Notice how we have the term $HL$ for this interaction. This term injects a sense of realism: if the lynx are not present ($L=0$), then the hare population can't decrease due to hunting. We model the *interaction* between the hares and the lynx with multiplication between the $H$ and $L$. A typical value for $b$ is .024 lynx$^{-1}$ year$^{-1}$. It is okay if that unit seems a little odd to you - it should be! As before, if we multiply out the units on $bHL$ we would get units of hares per year.
 
 How does hunting affect the lynx population?  One possibility is that it increases the lynx population:
 
-\begin{equation}
+$$
 \frac{dL}{dt} =bHL -dL
-\end{equation}
+$$
 
 Notice the symmetry between the rate of change for the hares and the lynx equations. In many cases this makes sense - if you subtract a rate from one population, then that rate should be added to the receiving population. You could also argue that there is some efficiency loss in converting the hares to lynx - not all of the hare is converted into lynx biomass. In this situation we sometimes like to adjust the hunting term for the lynx equation with another parameter $e$, representing the efficiency that hares are converted into lynx:
 
-\begin{equation}
+$$
 \frac{dL}{dt} =e \, bHL -dL
-\end{equation}
+$$
 
-(sometimes people just make a new parameter $c=e \, b$, but for now we will just leave it as is and set $e=0.2$). Equation \@ref(eq:lynx-hare-combined) shows the coupled system of differential equations:
+(sometimes people just make a new parameter $c=e \, b$, but for now we will just leave it as is and set $e=0.2$). @eq-lynx-hare-combined shows the coupled system of differential equations:
 
-\begin{equation}
+$$
 \begin{split}
 \frac{dH}{dt} &= r H - b HL \\
 \frac{dL}{dt} &=e\,bHL -dL
 \end{split}
-(\#eq:lynx-hare-combined)
-\end{equation}
+$$ {#eq-lynx-hare-combined}
 
-The schematic diagram representing these interactions is shown in Figure \@ref(fig:lynxhare-schematic):
+The schematic diagram representing these interactions is shown in @fig-lynxhare-schematic:
 
-```{tikz, lynxhare-schematic,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram Lynx-Hare system."}
+```{tikz, label=fig-lynxhare-schematic,warning=FALSE,message=FALSE,echo=FALSE,fig.align="center",fig.cap="Schematic diagram Lynx-Hare system."}
 
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -180,17 +179,16 @@ The schematic diagram representing these interactions is shown in Figure \@ref(f
 \draw [<-] (H.west) --  node[above] {\small{$r$}} +(-1cm,0pt) ;
 
 \end{tikzpicture}
-
-
 ```
 
 
-Equation \@ref(eq:lynx-hare-combined) is a classical model in mathematical biology and differential equations - it is called the *predator-prey* model, also known as the *Lotka-Volterra model* [@lotka_analytical_1920; @lotka_elements_1926; @volterra_fluctuations_1926].\index{model!predator-prey}\index{model!Lotka-Volterra}
+@eq-lynx-hare-combined is a classical model in mathematical biology and differential equations - it is called the *predator-prey* model, also known as the *Lotka-Volterra model* [@lotka_analytical_1920; @lotka_elements_1926; @volterra_fluctuations_1926].\index{model!predator-prey}\index{model!Lotka-Volterra}
 
 ## Functional responses 
-In several examples we have seen a rate of change proportional to the current population, as, for example, the rate of growth of the hare population is $rH$. This is one example of what we would call a [functional response](https://en.wikipedia.org/wiki/Functional_response).\index{functional response}  Another type of functional response assumes that the rate reaches a limiting value proportional to the population size, so $\displaystyle \frac{dH}{dt} = \frac{rH}{1+arH}$. This is an example of a **type II functional response**.\index{functional response!type II} Finally, the type II response has also been generalized (a **type III functional response**) $\displaystyle \frac{dH}{dt} = \frac{rH^{2}}{1+arH^{2}}$.\index{functional response!type III} Figure \@ref(fig:function-response) shows all three functional responses together:
+In several examples we have seen a rate of change proportional to the current population, as, for example, the rate of growth of the hare population is $rH$. This is one example of what we would call a [functional response](https://en.wikipedia.org/wiki/Functional_response).\index{functional response}  Another type of functional response assumes that the rate reaches a limiting value proportional to the population size, so $\displaystyle \frac{dH}{dt} = \frac{rH}{1+arH}$. This is an example of a **type II functional response**.\index{functional response!type II} Finally, the type II response has also been generalized (a **type III functional response**) $\displaystyle \frac{dH}{dt} = \frac{rH^{2}}{1+arH^{2}}$.\index{functional response!type III} @fig-functional-response shows all three functional responses together:
 
-```{r function-response,echo=FALSE,fig.cap="Comparison between examples of Type I - Type III functional responses. For a Type I functional response the rate grows proportional to population size *H*, whereas for Types II and III the rate reaches a saturating value."}
+```{r,echo=FALSE,fig.cap="Comparison between examples of Type I - Type III functional responses. For a Type I functional response the rate grows proportional to population size *H*, whereas for Types II and III the rate reaches a saturating value."}
+#| label: fig-functional-response
 x <- seq(0,2,by=.01)
 
 
@@ -212,7 +210,7 @@ ggplot() +
     axis.title.y = element_text(size = 14)
   ) +
   labs(x='H',y = 'Rate (dH/dt)') +
-  scale_color_colorblind(name="Functional \n Response",
+  ggthemes::scale_color_colorblind(name="Functional \n Response",
                        labels=c("Type I", "Type II","Type III")) +
   scale_linetype_discrete(name="Functional \n Response",
                          labels=c("Type I", "Type II","Type III"))  +
@@ -227,28 +225,29 @@ Notice the limiting behavior in the Type II and Type III functional responses. T
 
 
 ## Exercises
-```{exercise}
+
+::: {#exr-fn-response-03}
 Consider the following types of functional responses:
   
-\begin{equation}
+$$
 \begin{split}
 \mbox{ Type I: } \frac{dP}{dt} &= 0.1 P \\
 \mbox{ Type II: } \frac{dP}{dt} &= \frac{0.1P}{1+.03P} \\
 \mbox{ Type III: } \frac{dP}{dt} &= \frac{0.1P^{2}}{1+.05P^{2}}
 \end{split}
-\end{equation}
+$$
   
 For each of the functional responses evaluate $\displaystyle \lim_{P \rightarrow \infty} \frac{dP}{dt}$. Since these functional responses represent a rate of change of a population, what are some examples (hypothetical or actual) in which each of these responses would be appropriate?
 
-```
+:::
 
 
-```{exercise}
+::: {#exr-growth-03}
 A population grows according to the equation:
   
-\begin{equation}
+$$
 \frac{dP}{dt} = \frac{P}{1+.05P} -.1P = f(P) - g(P)
-\end{equation}
+$$
 
 
 a. On the same axis, plot the equations $f(P)$ and $g(P)$. What are the two positive values of $P$ where $f(P)$ and $g(P)$ intersect?
@@ -257,41 +256,41 @@ b. Next algebraically determine the two steady state values of $P$, that is solv
 
 c. Does your algebraic solution match your graphical solutions?
 
-```
+:::
 
 
-```{exercise}
+::: {#exr-nonlin-grow-03}
 A population grows according to the equation:
 
-\begin{equation}
+$$
 \frac{dP}{dt} = 2P - \frac{4P^{2}}{1+P^{2}} = r(P)-d(P)
-\end{equation}
+$$
 
 a. On the same axis, plot the equations $r(P)$ and $d(P)$. What are the two positive values of $P$ where $r(P)$ and $d(P)$ intersect?
 b. Next algebraically determine the two steady state values of $P$, that is solve $\displaystyle \frac{dP}{dt}=0$ for $P$. (*Hint:* factor a $P$ out of the expression $r(P)-d(P)$.)
 c. Does your algebraic solution match your graphical solutions?
 
-```
+:::
 
 
 
-```{exercise}
+::: {#exr-nonlin-param-grow-03}
 A population grows according to the equation:
   
-\begin{equation}
+$$
 \frac{dP}{dt} = \frac{aP}{1+abP} - dP,
-\end{equation}
+$$
 
 where $a$, $b$, and $d$ are all positive parameters. Determine the two steady state values of $P$, that is solve $\displaystyle \frac{dP}{dt}=0$ for $P$.
-```
+:::
 
 
-```{exercise}
+::: {#exr-chem-react-03}
 A chemical reaction takes two chemicals $X$ and $Y$ to form a substrate $Z$ through the law of mass action. However the substrate can also disassociate. The reaction schematic is the following:
   
-\begin{equation}
+$$
 X + Y \rightleftharpoons Z,
-\end{equation}
+$$
 
 where you may define the proportionality constant $k_+$ as associated with the formation of the substrate $Z$ and $k_-$ the disassociation ($Z$ decays back to $X$ and $Y$).
 
@@ -299,12 +298,12 @@ where you may define the proportionality constant $k_+$ as associated with the f
 
 Write down a differential equation that represents the rate of reaction $\displaystyle \frac{dZ}{dt}$.
 
-```  
+:::
 
 
 
 <!-- Thornley and Johnson. Logan and Wollesensky pg 4 -->
-```{exercise}
+::: {#exr-generic-03}
 (Inspired from @thornley_plant_1990 and @logan_mathematical_2009) For each of the following exercises consider the following contextual situations modeling rates of change. For each problem you will need to:
 
 - Name and describe all variables and parameters;
@@ -319,11 +318,11 @@ d. A cell with radius $r$ assimilates nutrients at a rate proportional to its su
 e. The rate that a cancer cell divides (increases in amount) is proportional to the number of healthy cells in its surrounding environment. You may assume that a healthy cell has mortality $\delta_{H}$ and a cancer cell has mortality $\delta_{C}$. Be sure to write down a system of differential equations for the population of cancer cells $C$ and healthy cells $H$.
 f. The rate that a virus is spread to the population is proportional to the probability that a person is sick (out of $N$ total sick and healthy individuals).
 
-```
+:::
 
 
 
-```{tikz,pesticide-ch3,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Modeled reaction schemes representing the potential effect of a pesticide on water quality."}
+```{tikz,label=fig-pesticide-ch3,engine='tikz',warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Modeled reaction schemes representing the potential effect of a pesticide on water quality."}
 
 
 \tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
@@ -457,7 +456,7 @@ f. The rate that a virus is spread to the population is proportional to the prob
 
 
 <!-- From Burnham and Anderson pg 135 of pdf -->
-```{exercise}
-(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in Figure \@ref(fig:pesticide-ch3), where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$ represent other bound forms of the respective state). In all seven different models can be derived. For each of the model schematics, apply the Law of Mass Action to write down a system of differential equations.
-```
+::: {#exr-burn-and-03}
+(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in @fig-pesticide-ch3, where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$ represent other bound forms of the respective state). In all seven different models can be derived. For each of the model schematics, apply the Law of Mass Action to write down a system of differential equations.
+:::
 

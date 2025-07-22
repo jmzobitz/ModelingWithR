@@ -1,9 +1,9 @@
-# Introduction to R {#r-intro-02}
+# Introduction to R {#sec-r-intro-02}
 
 The primary tools we will use to analyze models for this book are `R` [@R-base] and `RStudio` [@rstudio_team_rstudio_2020]. These programs are powerful ones to learn! Admittedly learning a new software may be challenging; however I think it is worth it. With `R` you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models. Let's get started!
 
 ::: {.callout-note}
-This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See Section \@ref(packages-02) on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
 :::
 
 ## `R` and RStudio
@@ -17,9 +17,9 @@ To get both `R` and `RStudio` requires two separate downloads and files, which c
 
 ### Why do we have two programs?
 
-Think of `R` as your basic program - this is the engine that does the computation. `RStudio` is a program where you can see everything you are working on in one place. Figure \@ref(fig:r-studio-pane) shows an example of a typical `RStudio` workspace:
+Think of `R` as your basic program - this is the engine that does the computation. `RStudio` is a program where you can see everything you are working on in one place. @fig-r-studio-pane shows an example of a typical `RStudio` workspace:
 
-```{r label="r-studio-pane", echo=FALSE,out.width = "85%",fig.align="center",fig.cap="A sample \\texttt{RStudio} workspace from one of my projects."}
+```{r label=fig-r-studio-pane, echo=FALSE,out.width = "85%",fig.align="center",fig.cap="A sample \\texttt{RStudio} workspace from one of my projects."}
 knitr::include_graphics("figures/02-intro/rStudio-pane.png")
 ```
 
@@ -60,7 +60,7 @@ Success! While this workflow is helpful for a single expression, making use of s
 
 [^rintro-1]: **Pro tip:** There are shortcuts to creating a new file: Ctrl+Shift+N (Windows and Linux) or Command+Shift+N (Mac).
 
-Source files allow you to type in `R` code and then evaluate, which is sometimes called "sending a command to the console" - or moving an `R` statement from the source window to the console. Working with a script file allows you to fix any coding errors more quickly and then re-run your code rather than re-type everything. Let's practice this.Type `4+9` in the script file. To evaluate this statement you have several options:
+Source files allow you to type in `R` code and then evaluate, which is sometimes called "sending a command to the console" - or moving an `R` statement from the source window to the console. Working with a script file allows you to fix any coding errors more quickly and then re-run your code rather than re-type everything. Let's practice this. Type `4+9` in the script file. To evaluate this statement you have several options:
 
 1. Copying and pasting the command to the window. Shortcuts are Ctrl+C / Command+C for copying and Ctrl+V / Command+C for Windows / Mac.
 2. Run one line at a time. This means that your cursor is at the line in your source file; then click the "Run" button in the upper right hand side of the source window. Shortcuts are Ctrl+Enter / Command+Enter.
@@ -73,7 +73,7 @@ Sometimes source files contain comments, which are helpful notes to you, or futu
 The neat part about a source file is that it allows you to save the file (Ctrl+S / Cmd+S). The first time you do this you may need to give this a name. The location where this file will be saved is in the same directory as your `.Rproj` project file. Now you have a file that you can come back to! In general I try to use descriptive names of files so I can refer back to them later.
 
 
-## Increasing functionality with packages {#packages-02}
+## Increasing functionality with packages {#sec-packages-02}
 
 Packages are one way that `R` gets some awesome versatility.\index{package} Packages are contributed, specialized code produced by users (just like you!), and shared with the world. Packages are similar to apps on your phone, which rather than obtaining them from the app store can be found in two different places:
 
@@ -139,9 +139,10 @@ Once you get more comfortable with syntax in `R`, you will see that `seq(0,5,0.5
 
 ### Data frames
 
-A key structure in `R` is that of a data frame, which allows different types of data to be collected together.\index{data frame} A data frame is like a spreadsheet where each column is a value and each row a value (much like you would find in a spreadsheet). As an example, a data frame may list values for solutions to a differential equation, like we did with our three infection models in Chapter \@ref(intro-01) (Table \@ref(tab:model-table)).
+A key structure in `R` is that of a data frame, which allows different types of data to be collected together.\index{data frame} A data frame is like a spreadsheet where each column is a value and each row a value (much like you would find in a spreadsheet). As an example, a data frame may list values for solutions to a differential equation, like we did with our three infection models in @sec-intro-01 (@tbl-model-table).
 
-```{r model-table, echo = FALSE, message=FALSE, results='asis'}
+```{r, echo = FALSE, message=FALSE, results='asis'}
+#| label: tbl-model-table
 time <- seq(0, 600, by=1)
 n <- 13600
 k <- 0.03
@@ -191,7 +192,7 @@ ebola <- read_csv("ebola.csv")
 
 Notice the quotes around the FILENAME.[^rintro-4] The command `read_csv` is part of the `tidyverse`, but the function `read.csv` uses base `R`. They operate a little differently, but this book will use the `read_csv` command.
 
-[^rintro-4]: **Pro tips:** It is helpful to make a subfolder of your `R` project called data, where all csv files are stored. Then if you have the data files in the data folder, in RStudio you can type "data" and it may start to autocomplete - this is handy.
+[^rintro-4]: **Pro tip:** It is helpful to make a subfolder of your `R` project called data, where all csv files are stored. Then if you have the data files in the data folder, in RStudio you can type "data" and it may start to autocomplete - this is handy.
 
 ## Visualization with `R`
 
@@ -205,7 +206,7 @@ One dataset we have is the weight of a dog over time, adapted from [this referen
 glimpse(wilson)
 ```
 
-Notice that this data frame has two variables: `days` and `weight`. To make a scatter plot of these data we are going to use the command `ggplot` in Figure \@ref(fig:wilson-weight-02):
+Notice that this data frame has two variables: `days` and `weight`. To make a scatter plot of these data we are going to use the command `ggplot` in @fig-wilson-weight-02:
 
 ```{r eval = FALSE}
 ggplot(data = wilson) +
@@ -216,7 +217,9 @@ ggplot(data = wilson) +
   )
 ```
 
-```{r wilson-weight-02,echo=FALSE,fig.cap="Measured weight of the dog Wilson over time."}
+```{r,echo=FALSE,fig.cap="Measured weight of the dog Wilson over time."}
+#| label: fig-wilson-weight-02
+
 ggplot(data = wilson) +
   geom_point(aes(x = days, y = weight)) +
   labs(
@@ -232,11 +235,11 @@ ggplot(data = wilson) +
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
   ) +
-  scale_color_colorblind()
+  ggthemes::scale_color_colorblind()
 ```
 
 
-Wow! The code to produce Figure \@ref(fig:wilson-weight-02) looks complicated. Let's break this down step by step:
+Wow! The code to produce @fig-wilson-weight-02 looks complicated. Let's break this down step by step:
 
 -   `ggplot(data = wilson) +` sets up the graphics structure and identifies the name of the data frame we are including.
 -   `geom_point(aes(x = days, y = weight))` defines the type of plot we are going to be making.
@@ -248,7 +251,7 @@ I know this seems like a lot of code to make a visualization, but this structure
 
 ### Making a line plot
 
-Using the same `wilson` data, later on we will discover that the function $\displaystyle W =f(D)= \frac{70}{1+e^{2.46-0.017D}}$. represents these data. In order to make a graph of this function we need to first build a data frame (Figure \@ref(fig:wilson-model-02)):
+Using the same `wilson` data, later on we will discover that the function $\displaystyle W =f(D)= \frac{70}{1+e^{2.46-0.017D}}$. represents these data. In order to make a graph of this function we need to first build a data frame (@fig-wilson-model-02):
 
 ```{r eval = FALSE}
 
@@ -269,7 +272,8 @@ ggplot(data = wilson_model) +
   )
 ```
 
-```{r wilson-model-02,fig.cap="Logistic model equation to describe the weight of the dog Wilson over time.",echo=FALSE}
+```{r, fig.cap="Logistic model equation to describe the weight of the dog Wilson over time.",echo=FALSE}
+#| label: fig-wilson-model-02
 
 # Choose spacing that is "smooth enough"
 days <- seq(from = 0, to = 1500, by = 1) 
@@ -295,7 +299,7 @@ ggplot(data = wilson_model) +
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
   ) +
-  scale_color_colorblind()
+  ggthemes::scale_color_colorblind()
 ```
 
 
@@ -323,9 +327,9 @@ Notice how the command `color='red'` was applied *outside* of the aes - which me
 
 ### Combining scatter and line plots.
 
-Combining the data (Figure \@ref(fig:wilson-weight-02)) with the model (Figure \@ref(fig:wilson-model-02)) in the same plot can be done by combining the `geom_point` with the `geom_line`, as shown in the following code (try it out on your own):
+Combining the data (@fig-wilson-weight-02) with the model (@fig-wilson-model-02) in the same plot can be done by combining the `geom_point` with the `geom_line`, as shown in the following code (try it out on your own):
 
-```{r wilson-model-data-02,fig.cap="Comparison of the logistic model equation with the measured weight of the dog Wilson over time.",eval=FALSE}
+```{r,label=fig-wilson-model-data-02,fig.cap="Comparison of the logistic model equation with the measured weight of the dog Wilson over time.",eval=FALSE}
 ggplot(data = wilson) +
   geom_point(aes(x = days, y = weight), color = "red") +
   geom_line(data = wilson_model, aes(x = days, y = weight)) +
@@ -362,7 +366,9 @@ cubic <- function(x) {
 
 So now if we want to evaluate $y(2)=2^{3}$ at the console we type `cubic(2)`. Neat! The following code will make a plot of the function $y=x^{3}$ using `cubic` (try this out on your own):
 
-```{r cubic-one-02, eval=FALSE,fig.cap="Plot of the cubic function $y=x^{3}$."}
+```{r, eval=FALSE,fig.cap="Plot of the cubic function $y=x^{3}$."}
+#| label: fig-cubic-one-02
+
 x <- seq(from = 0, to = 2, by = 0.05)
 y <- cubic(x)
 
@@ -387,7 +393,7 @@ cubic_revised <- function(x, c) {
 }
 ```
 
-To create and plot several examples of the function `cubic` for different values of $c$ is shown in the following code and Figure \@ref(fig:cubic-all-02).
+To create and plot several examples of the function `cubic` for different values of $c$ is shown in the following code and @fig-cubic-all-02.
 
 ```{r eval = FALSE}
 x <- seq(from = 0, to = 2, by = 0.05)
@@ -413,7 +419,9 @@ ggplot(data = my_data_revised) +
 ```
 
 
-```{r cubic-all-02,fig.cap="Plot of several cubic functions $y=x^{3}+c$ when $c=-1,0,1,2$.",echo=FALSE}
+```{r,fig.cap="Plot of several cubic functions $y=x^{3}+c$ when $c=-1,0,1,2$.",echo=FALSE}
+#| label: fig-cubic-all-02
+
 x <- seq(from = 0, to = 2, by = 0.05)
 
 
@@ -443,7 +451,7 @@ ggplot(data = my_data_revised) +
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
   ) +
-  scale_color_colorblind()
+  ggthemes::scale_color_colorblind()
 ```
 
 
@@ -463,49 +471,50 @@ The best piece of advice: DON'T PANIC! Patience and persistence are your friend.
 
 ## Exercises
 
-```{exercise}
+::: {#exr-r-02}
 Create a folder on your computer and a project file where you will store all your `R` work.
-```
+:::
 
-```{exercise}
+::: {#exr-pkg-02}
 Install the packages `devtools`, `tidyverse` to your `R` installation. Once that is done, then install the package `demodelr`.
-```
+:::
 
-```{exercise}
+::: {#exr-vars-02}
 What are the variables listed in the dataset `phosphorous` in the `demodelr` library?  (Hint: try the command `?phosphorous`.)
-```
+:::
 
-```{exercise phos-scatter-02}
+::: {#exr-phos-scatter-02}
 Make a scatterplot (`geom_point()`) of the dataset `phosphorous` in the `demodelr` library. Be sure to label the axes with descriptive titles.
-```
+:::
 
-```{exercise}
-Change Figure \@ref(fig:wilson-model-02) so the line is blue and the size is 4 mm.
-```
+:::{#exr-wils-fig-02}
+Change @fig-wilson-model-02 so the line is blue and the size is 4 mm.
+:::
 
-```{exercise}
-Change the color of the points in Figure \@ref(fig:wilson-weight-02) to either a hexadecimal color or a named color of your choice.
-```
 
-```{exercise}
+
+::: {#exr-wilson-col-02}
+Change the color of the points in @fig-wilson-weight-02 to either a hexadecimal color or a named color of your choice.
+:::
+
+::: {#exr-plot-seq-02}
 For this exercise you will do some plotting:
 
 a. Define a sequence (call this sequence $x$) that ranges between $-12$ to $12$ with spacing of $.05$.
 b. Also define the variable $y$ such that $y=\sin(x)$.
 c. Make a scatter plot to graph $y=\sin(x)$. Set the points to be red.
 d. Make a line plot to graph $y=\sin(x)$. Label the x-axis with your favorite book title. Label the y-axis with your favorite food to eat.
+:::
 
-```
-
-```{exercise nutrient-02}
+::: {#exr-nutrient-02}
 An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c>0$ are both constants. Let's just assume that $c=1$ and the $0 \leq x \leq 1$.
 
 a. Construct a function called `nutrient` that will make a sequence of `y` values for an input `x` and `theta` ($\theta$).
 b. Use your `nutrient` function to create a line plot (`geom_line()`) for five different values of $\theta>1$, appropriately labeling all axes.
 
-```
+:::
 
-```{exercise}
+::: {#exr-daph-02}
 The dataset `phosphorous` in the `demodelr` library contains measurements of the phosphorous content of *Daphnia* and its primary food source algae. 
 
 Researchers believe that *Daphnia* has strict homeostatic regulation of the phosphorous contained in algae, and want to determine the value of $\theta$ in the equation $y= \displaystyle y = c x^{1/\theta}$. They have already determined that the value of $c=1.737$.
@@ -515,23 +524,23 @@ b. Use your function `nutrient` from Exercise \@ref(exr:nutrient-02) to make an 
 c. Use guess and check to refine the value of $\theta$ that seems to work best.
 d. Report your value of $\theta$.
 
-```
+:::
 
-```{exercise}
+::: {#exr-function-02}
 For this exercise you will investigate some built-in functions. Remember you can learn more about a function by typing `?FUNCTION`, where `FUNCTION` is the name.
 
 a. Explain (using your own words) what the function `runif(1,100,1000)` does.
 b. Explain (using your own words) what the function `ceiling()` does, showing an example of its use.
 
-```
+:::
 
-```{exercise}
+::: {#exr-ebola-02}
 The Ebola outbreak in Africa in 2014 severely affected the country of Sierra Leone. A model for the number of Ebola infections $I$ is given by the following equation:
 $$ I(t) = \frac{K \cdot I_{0} }{I_{0} + (K-I_{0})  \exp(-rt)}, $$
 where $K = 13580$, $I_{0}=251$ and $r = 0.0227$. The variable $t$ is in days. Use `geom_line()` to visualize this curve from $0 \leq t \leq 700$.
-```
+:::
 
-```{exercise}
+::: {#exr-piecewise-02}
 Consider the following piecewise function:
 
   \begin{equation}
@@ -545,9 +554,9 @@ x^2 & \text{ for } 0 \leq x < 1,\\
 a. Define a function in `R` that computes $y$ for $0 \leq x \leq 2$.
 b. Use `geom_line()` to generate a graph of $y(x)$ over the interval $0 \leq x \leq 2$.
 
-```
+:::
 
-```{exercise}
+::: {#exr-insect-02}
 An insect's development rate $r$ depends on temperature $T$ (degrees Celsius) according to the following equation:
 
 \begin{equation}
@@ -563,4 +572,4 @@ a. Define a function in `R` that computes $r$ for $0 \leq T \leq 30$.
 b. Use `geom_line()` to generate a graph of $r(T)$ over the interval $0 \leq T \leq 30$.
 
 
-```
+:::

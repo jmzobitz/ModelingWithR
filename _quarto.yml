@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: docs
 
 book:
   title: "Exploring Modeling with Data and Differential Equations Using R"
@@ -8,18 +9,25 @@ book:
   date: "June 3, 2025"
 
   chapters:
-    - 01-intro.qmd
-    - 02-Rintro.qmd
-    - 03-modelingWithRates.qmd
-    - 04-eulersmethod.qmd
-    - 05-phase.qmd
+    - index.qmd
+    - part: p01-models.qmd
+      chapters:
+      - 01-intro.qmd
+      - 02-Rintro.qmd
+      - 03-modelingWithRates.qmd
+      - 04-eulersmethod.qmd
+      - 05-phase.qmd
     - references.qmd
 
-bibliography: references.bib
+bibliography: book.bib
 
 execute:
   freeze: auto
+  echo: true
+  warning: false
+  message: false
 
+  
 format:
   html:
     theme: cosmo
