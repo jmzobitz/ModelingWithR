@@ -1,11 +1,10 @@
-# Cost Functions and Bayes' Rule {#cost-fns-10}
-Chapter \@ref(likelihood-09) introduced likelihood functions as an approach to tackle parameter estimation. However this is not the only approach to understand model-data fusion. This chapter introduces *cost functions*, which estimates parameters from data using a least squares approach.\index{cost function} Want to know a secret? Cost functions are very closely related to log-likelihood functions. This chapter will explore this idea some more, first by exploring model-data residuals, defining a cost function, and then connecting them back to likelihood functions. To complete the circle, this chapter ends by discussing Bayes' Rule, which will further strengthen the connection between cost and likelihood functions. Let's get started!
+# Cost Functions and Bayes' Rule {#sec-cost-fns-10}
+@sec-likelihood-09 introduced likelihood functions as an approach to tackle parameter estimation. However this is not the only approach to understand model-data fusion. This chapter introduces *cost functions*, which estimates parameters from data using a least squares approach.\index{cost function} Want to know a secret? Cost functions are very closely related to log-likelihood functions. This chapter will explore this idea some more, first by exploring model-data residuals, defining a cost function, and then connecting them back to likelihood functions. To complete the circle, this chapter ends by discussing Bayes' Rule, which will further strengthen the connection between cost and likelihood functions. Let's get started!
 
 ## Cost functions and model-data residuals
-Let's revisit the linear regression problem from Chapter \@ref(likelihood-09). Recall Table \@ref(tab:limited-data-09) from Chapter \@ref(likelihood-09). With these data we wanted to fit a function of the form $y=bx$ (forcing the intercept term to be zero). We will extend Table \@ref(tab:limited-data-09) to include the model-data residual computed as $y-bx$ in Table \@ref(tab:md-resid-10):\index{residual!model-data}
+Let's revisit the linear regression problem from @sec-likelihood-09. Recall @tbl-limited-data-09 from @sec-likelihood-09. With these data we wanted to fit a function of the form $y=bx$ (forcing the intercept term to be zero). We will extend @tbl-limited-data-09 to include the model-data residual computed as $y-bx$ in @tbl-md-resid-10:\index{residual!model-data}
 
-
-Table: (\#tab:md-resid-10) A small, limited dataset (Table \@ref(tab:limited-data-09)) with the computed model-data residual with parameter $b$, along with model-data residuals for different values of $b$. 
+::: {#tbl-md-resid-10}
 
 | $x$ | $y$  | $bx$ | $y-bx$ | $b=1$ | $b=3$ | $b=-1$ |
 |:------:|:-----:|:-----|:-----:|:-----:|:-----|:-----|
@@ -14,31 +13,36 @@ Table: (\#tab:md-resid-10) A small, limited dataset (Table \@ref(tab:limited-dat
 | 4 | 4 | $4b$ | $4-4b$ | 0 | -8 | 8  |
 | 4 | 10 | $4b$ | $10-4b$ | 6 | -2 | 14 |
 
-Also included in Table \@ref(tab:md-resid-10) are the model-data residual values for different values of $b$. Notably values of the residuals can be negative and some can be positive - which makes it tricky to assess the "best" value of $b$ from the residuals alone. (If we found a value of $b$ where the residuals were all zero, then we would have the "best" value of $b$!^[To be fair, that means the data would be perfectly on a line; not too interesting of a problem, right?]).
+A small, limited dataset (@tbl-limited-data-09) with the computed model-data residual with parameter $b$, along with model-data residuals for different values of $b$. 
 
-To assess the overall residuals as a function of the value of $b$, we need to take into consideration not just the value of the residual (positive or negative), but rather some way to measure the overall distance of *all* the residuals from a given value of $b$. One way to define that is with a function that squares each residual (so that negative and positive values don't cancel each other) and adds each of those results together. We call this the *sum squared residuals*.\index{residual!sum square} So for example, the sum squared residual when $b=1$ is shown in Equation \@ref(eq:b-1-10):
+:::
 
-\begin{equation}
-\mbox{ Sum square residual: } 2^{2}+3^{2}+0^{2}+6^{2} = 49 (\#eq:b-1-10)
-\end{equation}
+Also included in @tbl-md-resid-10 are the model-data residual values for different values of $b$. Notably values of the residuals can be negative and some can be positive - which makes it tricky to assess the "best" value of $b$ from the residuals alone. (If we found a value of $b$ where the residuals were all zero, then we would have the "best" value of $b$!^[To be fair, that means the data would be perfectly on a line; not too interesting of a problem, right?]).
+
+To assess the overall residuals as a function of the value of $b$, we need to take into consideration not just the value of the residual (positive or negative), but rather some way to measure the overall distance of *all* the residuals from a given value of $b$. One way to define that is with a function that squares each residual (so that negative and positive values don't cancel each other) and adds each of those results together. We call this the *sum squared residuals*.\index{residual!sum square} So for example, the sum squared residual when $b=1$ is shown in @eq-b-1-10:
+
+$$
+\mbox{ Sum square residual: } 2^{2}+3^{2}+0^{2}+6^{2} = 49
+$$  {#eq-b-1-10}
 
 The other square residuals are $68$ when $b=3$ and $325$ when $b=-1$. So of these choices for $b$, the one that minimizes the square residual is $b=1$.
 
-Let's generalize this to determine a function to compute the sum square residual for any value of $b$. This function, denoted as $S(b)$, is called the cost function (Equation \@ref(eq:sb-10)):\index{cost function}
+Let's generalize this to determine a function to compute the sum square residual for any value of $b$. This function, denoted as $S(b)$, is called the cost function (@eq-sb-10):\index{cost function}
 
-\begin{equation}
-S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 (\#eq:sb-10)
-\end{equation}
+$$
+S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2
+$$  {#eq-sb-10}
 
 
-Equation \@ref(eq:sb-10) is a function of one variable ($b$). Figure \@ref(fig:quadsb) shows a graph of $S(b)$. Notice how the plot of $S(b)$ is a nice quadratic function, with a minimum at $b=1.865$. Did you notice that this value for $b$ is the same value for the minimum that we found from  Equation \@ref(eq:small-data-likely) in Chapter \@ref(likelihood-09)?  In Exercise \@ref(exr:cost-min-10) you will use calculus to determine the optimum value of $S(b)$.
+@eq-sb-10 is a function of one variable ($b$). @fig-quadsb shows a graph of $S(b)$. Notice how the plot of $S(b)$ is a nice quadratic function, with a minimum at $b=1.865$. Did you notice that this value for $b$ is the same value for the minimum that we found from  @eq-small-data-likely in @sec-likelihood-09?  In Exercise \@ref(exr:cost-min-10) you will use calculus to determine the optimum value of $S(b)$.
 
-```{r quadsb,echo=FALSE,fig.cap='Plot of Equation \\@ref(eq:sb-10). The vertical line denotes the minimum value at $b=1.865$.'}
+```{r,echo=FALSE,fig.cap='Plot of @eq-sb-10. The vertical line denotes the minimum value at $b=1.865$.'}
+#| label: fig-quadsb
 new_data <- data.frame(x = c(1, 2, 4, 4), y = c(3, 5, 4, 10))
 b <- seq(0, 5, 0.01)
-lb <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2))) %>% as.numeric()
+lb <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2))) |> as.numeric()
 
-data.frame(b, lb) %>%
+data.frame(b, lb) |>
   ggplot(aes(x = b, y = lb)) +
   geom_line() +
   geom_vline(xintercept = b[which.min(lb)], color = "red") +
@@ -63,45 +67,46 @@ data.frame(b, lb) %>%
 
 
 ### Accounting for uncertainty
-The cost function can also incorporate uncertainty in the value of the response variable $y$. We will define this uncertainty as $\sigma$ and have it be the same for each value $y_{i}$. In some cases the uncertainty may vary from measurement to measurement - but the concepts presented here can generalize. To account for this uncertainty we divide each of the square residuals in Equation \@ref(eq:sb-10) by $\sigma^{2}$, as shown in Equation \@ref(eq:sb-general-10) using $\sum$ notation.
+The cost function can also incorporate uncertainty in the value of the response variable $y$. We will define this uncertainty as $\sigma$ and have it be the same for each value $y_{i}$. In some cases the uncertainty may vary from measurement to measurement - but the concepts presented here can generalize. To account for this uncertainty we divide each of the square residuals in @eq-sb-10 by $\sigma^{2}$, as shown in @eq-sb-general-10 using $\sum$ notation.
 
-\begin{equation}
-S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma^{2}} (\#eq:sb-general-10)
-\end{equation}
+$$
+S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma^{2}}
+$$ {#eq-sb-general-10}
 
-As an example, comparing Equation \@ref(eq:sb-10) to Equation \@ref(eq:sb-general-10) we have $N=4$, $f(x_{i},\vec{\alpha} ) =bx$, and $\sigma = 1$.
+As an example, comparing @eq-sb-10 to @eq-sb-general-10 we have $N=4$, $f(x_{i},\vec{\alpha} ) =bx$, and $\sigma = 1$.
 
 ### Comparing cost and log-likelihood functions
-Chapter \@ref(likelihood-09) defined the log-likelihood function (Equation \@ref(eq:loglikely)), which for the small dataset we are studying is represented with Equation \@ref(eq:loglikely-10) where $\sigma = 1$ and $N=4$:
+@sec-likelihood-09 defined the log-likelihood function (@eq-loglikely), which for the small dataset we are studying is represented with @eq-loglikely-10 where $\sigma = 1$ and $N=4$:
 
-\begin{equation}
+$$
 \begin{split}
 \ln(L(b | \vec{x},\vec{y} )) &= -2 \ln(2) - 2 \ln (\pi) - 2 \ln(1) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
 &-\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2} \\
 &= -2 \ln(2) - 2 \ln (\pi) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
 & -\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2}
-\end{split} (\#eq:loglikely-10)
-\end{equation}
+\end{split} 
+$$ {#eq-loglikely-10}
 
-(Note that in Equation \@ref(eq:loglikely-10) the expression $-2 \ln(1)$ is 0.) If we compare Equation \@ref(eq:loglikely-10) with Equation \@ref(eq:sb-10), then we have $\ln(L(b | \vec{x},\vec{y} )) = -2 \ln(2) - 2 \ln (\pi) - \frac{1}{2} \cdot S(b)$. **This is no coincidence**: log-likelihood functions are similar to cost functions!  While Equation \@ref(eq:loglikely-10) contains some extra factors, they only shift vertically or expand the graph of $\ln(L(b | \vec{x},\vec{y} ))$ compared to $S(b)$. This "coincidence" is only true when $\sigma$ is the same for all $y_{i}$. Can you explain why?
+(Note that in @eq-loglikely-10 the expression $-2 \ln(1)$ is 0.) If we compare @eq-loglikely-10 with @eq-sb-10, then we have $\ln(L(b | \vec{x},\vec{y} )) = -2 \ln(2) - 2 \ln (\pi) - \frac{1}{2} \cdot S(b)$. **This is no coincidence**: log-likelihood functions are similar to cost functions!  While @eq-loglikely-10 contains some extra factors, they only shift vertically or expand the graph of $\ln(L(b | \vec{x},\vec{y} ))$ compared to $S(b)$. This "coincidence" is only true when $\sigma$ is the same for all $y_{i}$. Can you explain why?
 
 For both log-likelihood or cost functions the goal is optimization. Vertically shifting or expanding a function does not change the *location* of an optimum value (Why?  Think back to derivatives from Calculus I). In fact, a quadratic cost function yields the same results as the log-likelihood function assuming the residuals are normally distributed.
 
 
 ## Further extensions to the cost function
-The cost function $S(b)$ can be extended additionally to incorporate other types of data. For example, if we knew there was a given range of values that would make sense (say $b$ is near 1.3 with a standard deviation of 0.1), we should be able to incorporate this information into the cost function. We do this by adding an additional term to Equation \@ref(eq:sb-10) ($\tilde{S}(b)$, Equation \@ref(eq:priorcost-10), also is graphed in Figure \@ref(fig:priorcost)).
+The cost function $S(b)$ can be extended additionally to incorporate other types of data. For example, if we knew there was a given range of values that would make sense (say $b$ is near 1.3 with a standard deviation of 0.1), we should be able to incorporate this information into the cost function. We do this by adding an additional term to @eq-sb-10 ($\tilde{S}(b)$, @eq-priorcost-10, also is graphed in @fig-prior-cost).
 
-\begin{equation}
-\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{0.1^2} (\#eq:priorcost-10)
-\end{equation}
+$$
+\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{0.1^2} 
+$$ {#eq-priorcost-10}
 
-```{r priorcost,echo=FALSE, warning=FALSE,fig.cap='Comparing two cost functions $S(b)$ (black) and $\\tilde{S}(b)$ (black dashed line)'}
+```{r,echo=FALSE, warning=FALSE,fig.cap='Comparing two cost functions $S(b)$ (black) and $\\tilde{S}(b)$ (black dashed line)'}
+#| label: fig-prior-cost
 new_data <- data.frame(x = c(1, 2, 4, 4), y = c(3, 5, 4, 10))
 b <- seq(0, 5, 0.01)
-lb <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2) + (.x - 1.3)^2 / 0.1^2)) %>% as.numeric()
-lb_orig <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2))) %>% as.numeric()
+lb <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2) + (.x - 1.3)^2 / 0.1^2)) |> as.numeric()
+lb_orig <- map(.x = b, .f = ~ (sum((new_data$y - .x * new_data$x)^2))) |> as.numeric()
 
-data.frame(b, lb, lb_orig) %>%
+data.frame(b, lb, lb_orig) |>
   ggplot(aes(x = b)) +
   geom_line(aes(y = lb_orig), color = "black") +
   geom_line(aes(y = lb), color = "black", linetype = "dashed") +
@@ -143,7 +148,7 @@ data.frame(b, lb, lb_orig) %>%
 
 ```
 
-Aha!  Figure \@ref(fig:priorcost) shows how the revised cost function $\tilde{S}(b)$ changes the optimum value. Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In Exercise \@ref(exr:cost-min-10) you will verify this new minimum value and compare the results to the fitted value of $b=1.86$.
+Aha!  @fig-prior-cost shows how the revised cost function $\tilde{S}(b)$ changes the optimum value. Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In Exercise \@ref(exr:cost-min-10) you will verify this new minimum value and compare the results to the fitted value of $b=1.86$.
 
 Adding this prior information seems like an effective approach. Many times a study wants to build upon the existing body of literature and to take that into account. This approach of including prior information into the cost function can also be considered a *Bayesian* approach.\index{Bayes!approach}
 
@@ -151,7 +156,7 @@ Adding this prior information seems like an effective approach. Many times a stu
 <!-- Adapted from Silver, *The Signal and the Noise*, 2012. -->
 We first need to understand Bayes' rule and conditional probability, with an example.
 
-```{example president-pop}
+::: {#exm-president-pop}
 The following table shows results from a survey of people's views on the economy (optimistic or pessimistic) and whether or not they voted for the incumbent President in the last election. Percentages are reported as decimals. Probability tables are a clever way to organize this information. 
 
 | Probability | Optimistic | Pessimistic | Total |
@@ -161,9 +166,9 @@ The following table shows results from a survey of people's views on the economy
 | Total | 0.35 | 0.65 | 1.00  |
 
 Compute the probability of having an optimistic view on the economy.
-```
+:::
 
-```{solution}
+::: {sol-president-pop}
 Based on the probability table, we define the following probabilities:
 
 - The probability you voted for the incumbent President *and* have an **optimistic** view on the economy is 0.20
@@ -175,58 +180,58 @@ We calculate the probability of having an **optimistic view on the economy**  by
 
 On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65, or 65%. Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)
 
-```
+:::
 
 ### Conditional probabilities
 Next, let's discuss conditional probabilities. A conditional probability is the probability of an outcome given some previous outcome, or $\mbox{Pr} (A | B)$, where Pr means "probability of an outcome" and $A$ and $B$ are two different outcomes or events. In probability theory you might study the following law of conditional probability:
  
-\begin{equation}
+$$
 \begin{split}
 \mbox{Pr}(A \mbox { and } B) &= \mbox{Pr} (A \mbox{ given } B) \cdot  \mbox{Pr}(B) \\
  &= \mbox{Pr} (A | B) \cdot  \mbox{Pr}(B) \\
   &= \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)
-\end{split} (\#eq:law-cond-prop)
-\end{equation}
+\end{split}
+$$ {#eq-law-cond-prop}
 
 Typically when expressing conditional probabilities we remove "and" and write $P(A \mbox{ and } B)$ as $P(AB)$ and "given" as $P(A \mbox{ given } B)$ as $P(A|B)$.
 
-```{example}
-Continuing with Example \@ref(exm:president-pop), sometimes people believe that your views of the economy [influence whether you are going to vote for the incumbent President in an election.](https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/) Use the information from the table in Example \@ref(exm:president-pop) to compute the probability you voted for the incumbent President *given* you have an optimistic view of the economy.
-```
+::: {#exm-pres-pop-2}
+Continuing with @exm-president-pop, sometimes people believe that your views of the economy [influence whether you are going to vote for the incumbent President in an election.](https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/) Use the information from the table in @exm-president-pop to compute the probability you voted for the incumbent President *given* you have an optimistic view of the economy.
+:::
 
-```{solution pres-pop-con}
-To compute the  probability you voted for the incumbent President *given* you have an optimistic view of the economy is a rearrangement of Equation \@ref(eq:law-cond-prop):
+::: {#sol-pres-pop-con}
+To compute the  probability you voted for the incumbent President *given* you have an optimistic view of the economy is a rearrangement of @eq-law-cond-prop:
 
-\begin{equation}
+$$
 \begin{split}
 \mbox{Pr(Voted for incumbent President | Optimistic View on Economy)} = \\
 \frac{\mbox{Pr(Voted for incumbent President and Optimistic View on Economy)}}{\mbox{Pr(Optimistic View on Economy)}} = \\
 \frac{0.20}{0.35} = 0.57
-\end{split} (\#eq:econ-cond-prop)
-\end{equation}
+\end{split}
+$$ {#eq-econ-cond-prop}
 
-So if you have an optimistic view on the economy, there is a 57% chance you will vote for the incumbent President. Contrast this result to the probability that you voted for the incumbent President (Example \@ref(exm:president-pop)), which is only 40%. Perhaps your view of the economy does indeed influence whether or not you would vote to re-elect the incumbent President.
-```
+So if you have an optimistic view on the economy, there is a 57% chance you will vote for the incumbent President. Contrast this result to the probability that you voted for the incumbent President (@exm-president-pop), which is only 40%. Perhaps your view of the economy does indeed influence whether or not you would vote to re-elect the incumbent President.
+:::
 
 
 ### Bayes' rule
 Using the incumbent President and economy example as a framework, we will introduce [*Bayes' Rule*](https://en.wikipedia.org/wiki/Bayes%27_theorem), which is a re-arrangment of the rule for conditional probability:\index{Bayes!rule}
 
-\begin{equation}
-\mbox{Pr} (A | B) = \frac{ \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)}{\mbox{Pr}(B) } (\#eq:bayes-rule-10)
-\end{equation}
+$$
+\mbox{Pr} (A | B) = \frac{ \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)}{\mbox{Pr}(B) } 
+$$ {#eq-bayes-rule-10}
 
-It turns out Bayes' Rule is a really helpful way to understand how we can systematically incorporate this prior information into the likelihood function (and by association the cost function). For parameter estimation our goal is to estimate parameters, given the data. Another way to state Bayes' Rule in Equation \@ref(eq:bayes-rule-10) is using terms of parameters and data:
+It turns out Bayes' Rule is a really helpful way to understand how we can systematically incorporate this prior information into the likelihood function (and by association the cost function). For parameter estimation our goal is to estimate parameters, given the data. Another way to state Bayes' Rule in @eq-bayes-rule-10 is using terms of parameters and data:
 
 
-\begin{equation}
-\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) = \frac{\mbox{Pr}( \mbox{ data } | \mbox{ parameters }) \cdot \mbox{ Pr}( \mbox{ parameters }) }{\mbox{Pr}(\mbox{ data }) } (\#eq:bayes-rule-data-10)
-\end{equation}
+$$
+\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) = \frac{\mbox{Pr}( \mbox{ data } | \mbox{ parameters }) \cdot \mbox{ Pr}( \mbox{ parameters }) }{\mbox{Pr}(\mbox{ data }) } 
+$$ {#eq-bayes-rule-data-10}
 
-While Equation \@ref(eq:bayes-rule-data-10) seems pretty conceptual, here are some key highlights:
+While @eq-bayes-rule-data-10 seems pretty conceptual, here are some key highlights:
 
-- In practice, the term $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ in Equation \@ref(eq:bayes-rule-data-10) is the likelihood function (Equation \@ref(eq:likelihood-prod-param-09)).
-- The term $\mbox{Pr}( \mbox{ parameters })$ is the probability distribution of the *prior information* on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ (typically normally distributed), prior information has a multiplicative effect on the likelihood function ($\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$). (Or an additive effect on the log-likelihood function.) *This is good news!* When we added that additional term for prior information into $\tilde{S}(b)$ in Equation \@ref(eq:priorcost-10), we accounted for the prior information correctly. In Exercise \@ref(exr:log-cost-verify) you will explore how the log-likelihood is related to the cost function. 
+- In practice, the term $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ in @eq-bayes-rule-data-10 is the likelihood function (@eq-likelihood-prod-param-09).
+- The term $\mbox{Pr}( \mbox{ parameters })$ is the probability distribution of the *prior information* on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ (typically normally distributed), prior information has a multiplicative effect on the likelihood function ($\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$). (Or an additive effect on the log-likelihood function.) *This is good news!* When we added that additional term for prior information into $\tilde{S}(b)$ in @eq-priorcost-10, we accounted for the prior information correctly. In Exercise \@ref(exr:log-cost-verify) you will explore how the log-likelihood is related to the cost function. 
 -  The expression $\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$ is the start of a framework for a probability density function, which should integrate to unity. (You will explore this more if you study probability theory.) This denominator term is called a [normalizing constant](https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem). Since our overall goal is to select parameters that optimize $\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$, the expression in the denominator ($\mbox{Pr}(\mbox{ data })$ ) does not change the *location* of the optimum values. 
 
 
@@ -235,32 +240,33 @@ Wow - we made some significant progress in our conceptual understanding of how t
 
 - **Assumption 1:** The data are independent, identically distributed. We can then write the likelihood function as the following:
 
-\begin{equation}
+$$
 \mbox{Pr}(\vec{y} | b) = \left( \frac{1}{\sqrt{2 \pi} \sigma}\right)^{4} e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}}
-\end{equation}
+$$
 
 - **Assumption 2:** Prior knowledge expects us to say that $b$ is normally distributed with mean 1.3 and standard deviation 0.1. Incorporating this information allows us to write the following:
 
-\begin{equation}
+$$
 \mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi} \cdot 0.1} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
-\end{equation}
+$$
 
 When we combine the two pieces of information, the probability of $b$, given the data $\vec{y}$, is the following:
 
-\begin{equation}
-\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}} (\#eq:likelihood-bayes-10)
-\end{equation}
+$$
+\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+$$  {#eq-likelihood-bayes-10}
 
 
-Notice we are ignoring the terms $\displaystyle \left( \frac{1}{\sqrt{2 \pi} \cdot \sigma }\right)^{4}$ and $\displaystyle \frac{1}{\sqrt{2 \pi} \cdot 0.1}$, because per our discussion above not including them does not change the *location* of the optimum value, only the value of the likelihood function. The plot of $\mbox{Pr}(b | \vec{y})$, assuming $\sigma = 1$ is shown in Figure \@ref(fig:likelihoodbayes):
+Notice we are ignoring the terms $\displaystyle \left( \frac{1}{\sqrt{2 \pi} \cdot \sigma }\right)^{4}$ and $\displaystyle \frac{1}{\sqrt{2 \pi} \cdot 0.1}$, because per our discussion above not including them does not change the *location* of the optimum value, only the value of the likelihood function. The plot of $\mbox{Pr}(b | \vec{y})$, assuming $\sigma = 1$ is shown in @fig-likelihood-bayes:
 
 
-```{r likelihoodbayes,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='Equation \\@ref(eq:likelihood-bayes-10) with optimum value at $b=1.45$ denoted in a blue dashed line. '}
+```{r,warning=FALSE,message=FALSE,echo=FALSE,fig.cap='@eq-likelihood-bayes-10 with optimum value at $b=1.45$ denoted in a blue dashed line. '}
+#| label: fig-likelihood-bayes
 b <- seq(0, 3, 0.01)
 new_data <- data.frame(x = c(1, 2, 4, 4), y = c(3, 5, 4, 10))
-lb <- map(.x = b, .f = ~ exp(-sum((new_data$y - .x * new_data$x)^2) / 2)) %>% as.numeric()
-lb_rev <- map(.x = b, .f = ~ exp(-sum((new_data$y - .x * new_data$x)^2) / 2) * exp(-(.x - 1.3)^2 / (2 * 0.1^2))) %>% as.numeric()
-data.frame(b, lb, lb_rev) %>%
+lb <- map(.x = b, .f = ~ exp(-sum((new_data$y - .x * new_data$x)^2) / 2)) |> as.numeric()
+lb_rev <- map(.x = b, .f = ~ exp(-sum((new_data$y - .x * new_data$x)^2) / 2) * exp(-(.x - 1.3)^2 / (2 * 0.1^2))) |> as.numeric()
+data.frame(b, lb, lb_rev) |>
   ggplot(aes(x = b)) +
   #geom_line(aes(y = lb)) +
   geom_line(aes(y = lb_rev)) +
@@ -280,7 +286,7 @@ data.frame(b, lb, lb_rev) %>%
 
 ```
 
-It looks like the value that optimizes our posterior probability is $b=$ `r b[which.max(lb_rev)]`. This is similar the value of $\tilde{b}$ from Equation \@ref(eq:priorcost-10). Again, *this is no coincidence*. Adding in prior information to the cost function or using Bayes' Rule are equivalent approaches.
+It looks like the value that optimizes our posterior probability is $b=$ `r b[which.max(lb_rev)]`. This is similar the value of $\tilde{b}$ from @eq-priorcost-10. Again, *this is no coincidence*. Adding in prior information to the cost function or using Bayes' Rule are equivalent approaches.
 
 ## Next steps
 Now that we have seen the usefulness of cost functions and Bayes' Rule we can begin to apply this to larger problems involving more equations and data. In order to do that we need to explore some computational methods to scale this problem up - which we will do in subsequent chapters.
@@ -296,8 +302,8 @@ Now that we have seen the usefulness of cost functions and Bayes' Rule we can be
 <!-- Verify that dividing by the data doesn't affect the location of the optimum -->
 <!-- Prove a uniform distribution doesn't affect the function -->
 
-```{exercise cost-min-10}
-The following problem works with Table \@ref(tab:limited-data-09) to determine the value of $b$ with the function $y=bx$ as in this chapter.
+::: {#exr-cost-min-10}
+The following problem works with @tbl-limited-data-09 to determine the value of $b$ with the function $y=bx$ as in this chapter.
 
 
 a. Using calculus, show that the cost function $S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2$ has a minimum value at $b=1.865$.
@@ -307,50 +313,54 @@ d. How do the values of $S(1.865)$ and $\tilde{S}(\tilde{b})$ compare?
 e. Make a plot of the cost functions $S(b)$ and $\tilde{S}(b)$  to verify the optimum values.
 f. Make a scatter plot with the data and the function $y=bx$ and $y=\tilde{b}x$. How do the two estimates compare with the data?
 
-```
+:::
 
 
-```{exercise}
-Use calculus to determine the optimum value of $b$ for Equation \@ref(eq:loglikely-10). Do you obtain the same value of $b$ for Equation \@ref(eq:sb-10)?
-```
+::: {#exr-calc-opt-10}
+Use calculus to determine the optimum value of $b$ for @eq-loglikely-10. Do you obtain the same value of $b$ for @eq-sb-10?
+:::
 
  <!-- From van den Berg, pg 59, exercise 3.13 -->
-```{exercise phos-09}
-(Inspired from @berg_mathematical_2011) Consider the nutrient equation $\displaystyle y = c x^{1/\theta}$ using the dataset `phosphorous`.
+ 
+::: {#exr-phos-09}
+{{< fa burst >}} (Inspired from @berg_mathematical_2011) Consider the nutrient equation $\displaystyle y = c x^{1/\theta}$ using the dataset `phosphorous`.
 
 
 a. Write down a formula for the objective function $S(c,\theta)$ that characterizes this equation (that includes the dataset `phosphorous`).
 b. Fix $c=1.737$. Make a `ggplot` of $S(1.737,\theta)$ for $1 \leq \theta \leq 10$.
 c. How many critical points does this function have over this interval?  Which value of $\theta$ is the global minimum?
 
-```
+:::
 
 
 
-```{exercise}
-Use the cost function $S(1.737,\theta)$ from Exercise \@ref(exr:phos-09) to answer the following questions:
+::: {#exr-phos-10}
+{{< fa burst >}} Use the cost function $S(1.737,\theta)$ from @exr-phos-09 to answer the following questions:
 
-a. Researchers believe that $\theta \approx 7$. Re-write $S(1.737,\theta)$ to account for this additional (prior) information.
-b. How does the inclusion of this additional information change the shape of the cost function and the location of the global minimum?
-c. Finally, reconsider the fact that $\theta \approx 7 \pm .5$ (as prior information). How does that modify $S(1.737,\theta)$ further and the location of the global minimum?
+a. Researchers believe that $\theta \approx 7$. One way to do this is to include an additional term of $(\theta-7)^{2}$ in the cost function. Re-write your formula from [@exr-phos-09]b  $S(1.737,\theta)$ to account for this additional (prior) information.  Call this revised function $S_{b}(1.737,\theta)$
+b. Make a graph of $S_{b}(1.737,\theta)$ and determine where the global optimum value occurs.
+c. How does the inclusion of this additional information change the shape of the cost function and the location of the global minimum, compared to $S(1.737,\theta)$?
+d. Finally, reconsider the fact that $\theta \approx 7 \pm .5$ (as prior information). To account for this in your cost function, the additional term in $S_{b}(1.737,\theta)$ could be modified to $\displaystyle \frac{ (\theta-7)^{2}}{0.5^{2}}$. How does that additional modification change $S_{b}(1.737,\theta)$ further and the location of the global minimum?
+e. Let's say researchers believe $\theta \approx \mu \pm \sigma$. What would be a general expression to include in the original cost function $S(1.737,\theta)$ to account for this information? You final expression will have $\mu$ and $\sigma$ in it.
+f. Use [desmos](https://www.desmos.com/calculator) or other graphic software to investigate what would happen in your general expression as $\mu$ and $\sigma$. First set $\sigma=0.5$ and let $\mu=7$ be a slider. Investigate values of $\mu$ between 3 and 10 and report what happens. Next set $\mu=7$ and let $\sigma = 0.5$ be a slider. Investigate values of $\sigma$ between 0.1 and 1 and report what happens.
 
-```
+:::
 
 
 
 
-```{exercise}
+::: {#exr-uncert-10}
 One way to generalize the notion of prior information using cost functions is to include a term that represents the degree of uncertainty in the prior information, such as $\sigma$. For the problem $y=bx$ this leads to the following cost function: $\displaystyle \tilde{S}_{revised}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}$.
 
 
 Use calculus to determine the optimum value for $\tilde{S}_{revised}(b)$, expressed in terms of $\tilde{b}_{revised} = f(\sigma)$ (your optimum value will be a function of $\sigma$). What happens to $\tilde{b}_{revised}$ as $\sigma \rightarrow \infty$?
-```
+:::
 
 
 
 
 
-```{exercise log-cost-verify}
+::: {#exr-log-cost-verify}
 For this problem you will minimize some generic functions.
 
 
@@ -360,11 +370,11 @@ c. Algebraically show that $\ln(z) = -y$.
 d. Explain why $y$ is similar to a cost function $S(b)$ and $z$ is similar to a likelihood function.
 
 
-```
+:::
 
 
-```{exercise}
-This problem continues the re-election of the incumbent President and viewpoint on the economy in Example \@ref(exm:president-pop). Determine the following conditional probabilities:
+::: {#exr-pres-rev-10}
+This problem continues the re-election of the incumbent President and viewpoint on the economy in @exm-president-pop. Determine the following conditional probabilities:
   
   a. Determine the probability that you **voted for the incumbent President** given that you have a **pessimistic view on the economy**.
   b. Determine the probability that you **did not vote for the incumbent President** given that you have an **pessimistic view on the economy**. 
@@ -372,13 +382,13 @@ This problem continues the re-election of the incumbent President and viewpoint 
   d. Determine the probability that you have an **pessimistic view on the economy** given that you **voted for the incumbent President**.
   e. Determine the probability that you have an **optimistic view on the economy** given that you **did not vote for the incumbent President**.
   
-```
+:::
 
 
 
 
 
-```{exercise}
+::: {#exr-pres-incum-10}
 Incumbents have an advantage in re-election due to wider name recognition, which may boost their re-election chances, as shown in the following table:
 
 
@@ -392,14 +402,14 @@ Incumbents have an advantage in re-election due to wider name recognition, which
 Use Bayes' Rule to determine the probability of being elected, given that you have name recognition. 
 
 
-```
+:::
 
 
 
 
-```{exercise}
+::: {#exr-bayes-diff-10}
 Demonstrate how Bayes' Rule differs from the law of conditional probability.
-```
+:::
 
 
 
