@@ -1,8 +1,10 @@
-# Sampling Distributions and the Bootstrap Method {#bootstrap-11}
+# Sampling Distributions and the Bootstrap Method {#sec-bootstrap-11}
 
-In Chapters and \@ref(likelihood-09) and \@ref(cost-fns-10) we saw how the parameter estimation problem is related to optimizing the likelihood or cost function. In most cases - and especially when the model is linear - optimization is straightforward. However for *nonlinear* models the cost function is trickier. Consider the cost function shown in Figure \@ref(fig:nonlin-cost), which tries to optimize $\theta$ for the nutrient equation $\displaystyle y = 1.737 x^{1/\theta}$ using the dataset `phosphorous`:
+In [@sec-likelihood-09; @sec-cost-fns-10] we saw how the parameter estimation problem is related to optimizing the likelihood or cost function. In most cases - and especially when the model is linear - optimization is straightforward. However for *nonlinear* models the cost function is trickier. Consider the cost function shown in @fig-nonlin-cost, which tries to optimize $\theta$ for the nutrient equation $\displaystyle y = 1.737 x^{1/\theta}$ using the dataset `phosphorous`:
 
-```{r nonlin-cost,fig.cap="Nonlinear cost function plot for `phosphorous` data set with the model $\\displaystyle y = 1.737 x^{1/\\theta}$.",echo=FALSE}
+```{r,fig.cap="Nonlinear cost function plot for `phosphorous` data set with the model $\\displaystyle y = 1.737 x^{1/\\theta}$.",echo=FALSE}
+#| label: fig-nonlin-cost
+
 # Can we do this with compute likelihood?
 my_model <- daphnia ~ 1.737 * algae^(1 / theta)
 
@@ -12,7 +14,7 @@ parameters <- tibble(theta = seq(1, 25, length.out = 200))
 
 out_values <- compute_likelihood(my_model, phosphorous, parameters, logLikely = TRUE)
 
-out_values$likelihood %>%
+out_values$likelihood |>
   ggplot(aes(theta, y = l_hood)) +
   geom_line() +
   labs(x = expression(theta), y = expression(S(theta))) +
@@ -28,19 +30,25 @@ out_values$likelihood %>%
   scale_color_colorblind()
 ```
 
-While Figure \@ref(fig:nonlin-cost) shows a clearly defined minimum around $\theta \approx 6$, the shape of the cost function is not quadratic like Figure \@ref(fig:priorcost) in Chapter \@ref(cost-fns-10). For nonlinear models direct optimization of the cost function using techniques learned in calculus may not be computationally feasible.
+While @fig-nonlin-cost shows a clearly defined minimum around $\theta \approx 6$, the shape of the cost function is not quadratic like @fig-priorcost in @sec-cost-fns-10. For nonlinear models direct optimization of the cost function using techniques learned in calculus may not be computationally feasible.
 
-An alternative approach to optimization relies on the idea of *sampling*, which randomly selects parameter values and then computes the cost function. After a certain amount of time or iterations, all the values of the cost function are compared to each other to determine the optimum value. We will refine the concept of sampling to determine the optimum value in subsequent chapters (Chapters \@ref(metropolis-12) and \@ref(mcmc-13)), but this chapter develops some foundations in sampling - we will study how to plot histograms in `R` and then apply these to the *bootstrap* method, which relies on random sampling.\index{bootstrap} Let's get started!
+An alternative approach to optimization relies on the idea of *sampling*, which randomly selects parameter values and then computes the cost function. After a certain amount of time or iterations, all the values of the cost function are compared to each other to determine the optimum value. We will refine the concept of sampling to determine the optimum value in subsequent chapters [Chapters @sec-metropolis-12 and @sec-mcmc-13], but this chapter develops some foundations in sampling - we will study how to plot histograms in `R` and then apply these to the *bootstrap* method, which relies on random sampling.\index{bootstrap} Let's get started!
+
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, `purrr`, and `dplyr` (all part of the `tidyverse`) and data tables from `demodelr`. See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
+
 
 ## Histograms and their visualization
 
 To introduce the idea of a histogram, consider Table \@ref(tab:snow-table), which is a sample of the dataset `snowfall` in the `demodelr` package. The `snowfall` dataset is measurements of precipitations collected at weather stations in the Twin Cities (Minneapolis, Saint Paul, and surrounding suburbs) from a spring snowstorm. These data come from a cooperative [network of local observers](https://www.cocorahs.org/ViewData/ListDailyPrecipReports.aspx). Yes, it can snow in Minnesota in April. Sigh.
 
-```{r snow-table,echo=FALSE}
+```{r,echo=FALSE}
+#| label: tbl-snow-table
 knitr::kable(snowfall[1:5, ], caption = "Weather station data from a Minnesota snowstorm.")
 ```
 
-The header row in Table \@ref(tab:snow-table) also lists the names of the associated variables in this data frame. We are going to focus on the variable `snowfall`. A histogram is an easy way to view the distribution of measurements, using `geom_histogram` (Figure \@ref(fig:initial-histogram-snow-11)). You may recall that a histogram represents the frequency count of a random variable, typically binned over certain intervals.
+The header row in @tbl-snow-table also lists the names of the associated variables in this data frame. We are going to focus on the variable `snowfall`. A histogram is an easy way to view the distribution of measurements, using `geom_histogram` (@fig-initial-histogram-snow-11). You may recall that a histogram represents the frequency count of a random variable, typically binned over certain intervals.
 
 ```{r eval = FALSE}
 ggplot(data = snowfall) +
@@ -52,7 +60,9 @@ ggplot(data = snowfall) +
 ```
 
 
-```{r initial-histogram-snow-11,echo=FALSE,fig.cap="Initial histogram of snowfall data in Table \\@ref(tab:snow-table).",warning=FALSE,message=FALSE}
+```{r,echo=FALSE,fig.cap="Initial histogram of snowfall data in @tbl-snow-table.",warning=FALSE,message=FALSE}
+#| label: fig-initial-histogram-snow-11
+
 ggplot(data = snowfall) +
   geom_histogram(aes(x = snowfall)) +
   labs(
@@ -73,10 +83,9 @@ ggplot(data = snowfall) +
 
 This code introduces `geom_histogram`. To create the historgram we use the aesthetic (`aes(x = snowfall)`) to display the histogram for the `snowfall` column in the dataset `snowfall`. 
 
-At the `R` console you may have received a warning about such as `` stat_bin()` using `bins = 30`. Pick better value with `binwidth` ``. The function `geom_histogram` doesn't guess a bin width, but one rule of thumb is to select the number of bins to be equal to the square root of the number of observations (16 in this instance). So let's adjust the number of bins to `r round(sqrt(length(demodelr::snowfall$snowfall)),digits=0)` in Figure \@ref(fig:adjusted-histogram-snow-11).
+At the `R` console you may have received a warning about such as `` stat_bin()` using `bins = 30`. Pick better value with `binwidth` ``. The function `geom_histogram` doesn't guess a bin width, but one rule of thumb is to select the number of bins to be equal to the square root of the number of observations (16 in this instance). So let's adjust the number of bins to `r round(sqrt(length(demodelr::snowfall$snowfall)),digits=0)` in @fig-adjusted-histogram-snow-11.
 
 ```{r eval = FALSE}
-
 ggplot() +
   geom_histogram(data = snowfall, aes(x = snowfall), bins = 4) +
   labs(
@@ -87,7 +96,9 @@ ggplot() +
 
 
 
-```{r adjusted-histogram-snow-11,fig.cap="Adjusted histogram of snowfall data in Table \\@ref(tab:snow-table) with the number of bins set to 4.",echo=FALSE}
+```{r,fig.cap="Adjusted histogram of snowfall data in @tbl-snow-table with the number of bins set to 4.",echo=FALSE}
+#| label: fig-adjusted-histogram-snow-11
+
 
 ggplot() +
   geom_histogram(data = snowfall, aes(x = snowfall), bins = 4) +
@@ -105,6 +116,7 @@ ggplot() +
     axis.title.y = element_text(size = 14)
   ) +
   scale_color_colorblind()
+
 ```
 
 
@@ -114,9 +126,9 @@ ggplot() +
 
 ### Sampling the empirical distribution
 
-The histogram of snowfall measurements (Figure \@ref(fig:adjusted-histogram-snow-11)) from the snowfall data (Table \@ref(tab:snow-table)) represents an *empirical probability distribution* of measurements. \index{probability distribution!empirical} While it is great to have all these observations, a key question is: *What is an estimate for the representative amount of snowfall for this storm?* The snowfall measurements illustrate the difference between what statisticians call a *population* (the true distribution of measurements) and a *sample* (what people observe).\index{probability distribution!population}\index{probability distribution!sample distribution} To go a little deeper, let's define a random variable $S$ for this population, which has an (unknown) probability density function associated with it. The measurements shown Table \@ref(tab:snow-table) are *samples* of this distribution. While the average of the precipitation data (`r round(mean(snowfall$snowfall,na.rm=TRUE),digits=2)` inches) might be a defensible value for the average amount of snow that fell, what we don't know is *how well* this empirical mean approximates the expected value of the distribution for $S$.
+The histogram of snowfall measurements (@fig-adjusted-histogram-snow-11) from the snowfall data (@tbl-snow-table) represents an *empirical probability distribution* of measurements. \index{probability distribution!empirical} While it is great to have all these observations, a key question is: *What is an estimate for the representative amount of snowfall for this storm?* The snowfall measurements illustrate the difference between what statisticians call a *population* (the true distribution of measurements) and a *sample* (what people observe).\index{probability distribution!population}\index{probability distribution!sample distribution} To go a little deeper, let's define a random variable $S$ for this population, which has an (unknown) probability density function associated with it. The measurements shown @tbl-snow-table are *samples* of this distribution. While the average of the precipitation data (`r round(mean(snowfall$snowfall,na.rm=TRUE),digits=2)` inches) might be a defensible value for the average amount of snow that fell, what we don't know is *how well* this empirical mean approximates the expected value of the distribution for $S$.
 
-Each of the entries in Table \@ref(tab:snow-table) represents a measurement made by a particular observer. To get the true distribution we would need to add more observers, but that isn't realistic for this case as the snowfall event has already passed - we can't go "back in time".
+Each of the entries in @tbl-snow-table represents a measurement made by a particular observer. To get the true distribution we would need to add more observers, but that isn't realistic for this case as the snowfall event has already passed - we can't go "back in time".
 
 One way is to generate a *bootstrap sample*, which is a sample of the original dataset with replacement. The workflow that we will apply is the following:
 
@@ -137,7 +149,7 @@ Let's break this code down:
 Once we have taken a sample, we can then compute the mean (average) and the standard deviation of the sample:
 
 ```{r}
-slice_sample(snowfall, prop = 1, replace = TRUE) %>%
+slice_sample(snowfall, prop = 1, replace = TRUE) |>
   summarize(
     mean = mean(snowfall, na.rm = TRUE)
   )
@@ -152,7 +164,7 @@ How the above code works is to first do the sampling, and then the summary. The 
 purrr::map_df(
   1:10,
   ~ (
-    slice_sample(snowfall, prop = 1, replace = TRUE) %>%
+    slice_sample(snowfall, prop = 1, replace = TRUE) |>
       summarize(
         mean = mean(snowfall, na.rm = TRUE)
       )
@@ -177,7 +189,7 @@ I can appreciate that this programming might be a little tricky to understand an
 bootstrap_samples <- purrr::map_df(
   1:1000,
   ~ (
-    slice_sample(snowfall, prop = 1, replace = TRUE) %>%
+    slice_sample(snowfall, prop = 1, replace = TRUE) |>
       summarize(
         mean_snow = mean(snowfall, na.rm = TRUE)
       )
@@ -191,12 +203,12 @@ ggplot(bootstrap_samples) +
 ```
 
 
-```{r bootsample,fig.cap="Histogram of 1000 bootstrap samples for the mean of the snowfall dataset.",warning=FALSE,message=FALSE,echo=FALSE}
-
+```{r,fig.cap="Histogram of 1000 bootstrap samples for the mean of the snowfall dataset.",warning=FALSE,message=FALSE,echo=FALSE}
+#| label: fig-bootsample
 bootstrap_samples <- purrr::map_df(
   1:1000,
   ~ (
-    slice_sample(snowfall, prop = 1, replace = TRUE) %>%
+    slice_sample(snowfall, prop = 1, replace = TRUE) |>
       summarize(
         mean_snow = mean(snowfall, na.rm = TRUE)
       )
@@ -240,14 +252,14 @@ Let's discuss the distribution of bootstrap means. The 2.5 percentile is approxi
 
 
 ## Summary and next steps
-The idea of sampling with replacement, generating a parameter estimate, and then repeating over several iterations is at the heart of many computational parameter estimation methods, such as Markov Chain Monte Carlo methods that we will explore in Chapter \@ref(mcmc-13). Bootstrapping (and other sampling with replacement techniques) makes nonlinear problems more tractable.
+The idea of sampling with replacement, generating a parameter estimate, and then repeating over several iterations is at the heart of many computational parameter estimation methods, such as Markov Chain Monte Carlo methods that we will explore in @sec-mcmc-13. Bootstrapping (and other sampling with replacement techniques) makes nonlinear problems more tractable.
 
 This chapter extended your abilities in `R` by showing you how to generate histograms, sample a dataset, and compute statistics. The goal here is to give you examples that you can re-use in this chapter's exercises. Enjoy!
 
 
 ## Exercises
 
-```{exercise}
+::: {#exr-hist-11}
 Histograms are an important visualization tool in descriptive statistics. Read the following essays on histograms, and then summarize 2-3 important points of what you learned reading these articles.
 
 
@@ -255,20 +267,20 @@ Histograms are an important visualization tool in descriptive statistics. Read t
 - [How histograms work](https://flowingdata.com/2017/06/07/how-histograms-work/)
 - [How to read histograms and use them in R](https://flowingdata.com/2014/02/27/how-to-read-histograms-and-use-them-in-r/)
 
-```
+:::
 
-```{exercise}
+::: {#exr-boot-sd-11}
 Display the bootstrap histogram of 1000 bootstrap samples for the standard deviation of the `snowfall` dataset. From this bootstrap distribution (for the standard deviation) what is the median and 95% confidence interval?
-```
+:::
 
 <!-- Taken from 373 textbook Fall 2020, pg 31 -->
 
-```{exercise snow-eurasia}
+::: {#exr-snow-eurasia}
 (Inspired by @devore_modern_2021) Average snow cover from 1970 - 1979 in October over Eurasia (in million km$^{2}$) was reported as the following:
 
-\begin{equation*}
+$$
 \{6.5, 12.0, 14.9, 10.0, 10.7, 7.9, 21.9, 12.5, 14.5, 9.2\}
-\end{equation*}
+$$
 
 
 a. Create a histogram for these data.
@@ -276,46 +288,48 @@ b. Compute the sample mean and median of this dataset.
 c. What would you report as a representative or typical value of snow cover for October?  Why?
 d. The 21.9 measurement looks like an outlier. What is the sample mean excluding that measurement?
 
-```
+:::
 
 
 
-```{exercise}
-Consider the equation $\displaystyle S(\theta)=(3-1.5^{1/\theta})^{2}$ for $\theta>0$. This function is an idealized example for the cost function in Figure \@ref(fig:nonlin-cost).
+::: {#exr-optim-non-lin-cost-11}
+Consider the equation $\displaystyle S(\theta)=(3-1.5^{1/\theta})^{2}$ for $\theta>0$. This function is an idealized example for the cost function in @fig-nonlin-cost.
 
 
 a. What is $S'(\theta)$?
 b. Make a plot of $S'(\theta)$. What are the locations of the critical points?
 c. Algebraically solve $S'(\theta)=0$. Does your computed critical point match up with the graph?
 
-```
+:::
 
 
 
-```{exercise}
+::: {#exr-snow-boot-11}
 Repeat the bootstrap sample for the mean of the snowfall dataset (`snowfall`) where the number of bootstrap samples is 10,000. Report the median and confidence intervals for the bootstrap distribution. What do you notice as the number of bootstrap samples increases?
-```
+
+:::
 
 
 
-```{exercise}
-Using the data in Exercise \@ref(exr:snow-eurasia), do a bootstrap sample with $N=1000$ to compute the a bootstrap estimate for the mean October snowfall cover in Eurasia. Compute the mean and 95% confidence interval for the bootstrap distribution.
+::: {#exr-snow-boot-eur-11}
+Using the data in @exr-snow-eurasia, do a bootstrap sample with $N=1000$ to compute the a bootstrap estimate for the mean October snowfall cover in Eurasia. Compute the mean and 95% confidence interval for the bootstrap distribution.
 
-```
+:::
 
-```{r summary-11, echo=FALSE, fig.cap = "Example computing a confidence interval with the `summary` command.",out.width="25%"}
+```{r, echo=FALSE, fig.cap = "Example computing a confidence interval with the `summary` command.",out.width="25%"}
+#| label: fig-summary-11
 
 knitr::include_graphics("figures/11-bootstrap/summary-output-11.png")
 ```
 
-```{exercise}
-We computed the 95% confidence interval using the `quantile` command. An alternative approach to summarize a distribution is with the `summary` command, as shown in Figure \@ref(fig:summary-11). We call this command using `summary(data_frame)`, where `data_frame` is the particular data frame you want to summarize. The output reports the minimum and maximum values of a dataset. The output `1st Qu.` and `3rd Qu.` are the 25th and 75th percentiles.
+::: {#exr-snow-eurasia-summ-11}
+We computed the 95% confidence interval using the `quantile` command. An alternative approach to summarize a distribution is with the `summary` command, as shown in @fig-summary-11. We call this command using `summary(data_frame)`, where `data_frame` is the particular data frame you want to summarize. The output reports the minimum and maximum values of a dataset. The output `1st Qu.` and `3rd Qu.` are the 25th and 75th percentiles.
 
-Do 1000 bootstrap samples using the data in Exercise \@ref(exr:snow-eurasia) and report the output from the `summary` command.
-```
+Do 1000 bootstrap samples using the data in @exr-snow-eurasia and report the output from the `summary` command.
+:::
 
 
-```{exercise}
+::: {#exr-precip-boot-11}
 The dataset `precipitation` lists rainfall data from a fall storm that came through the Twin Cities.
 
 
@@ -325,4 +339,4 @@ c. Do a bootstrap estimate with $N=100$ and $N=1000$ and plot their respective h
 d. For each of your bootstrap samples ($N=100$ and $N=1000$) compute the mean and 95% confidence interval for the bootstrap distribution.
 e. What would you report for the mean and its 95% confidence interval for this storm?
 
-```
+:::
