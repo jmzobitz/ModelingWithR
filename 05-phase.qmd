@@ -19,7 +19,7 @@ The general solution to the differential equation $\displaystyle \frac{dy}{dt}=-
 #| label: fig-exponential
 
 t <- seq(0, 5, length.out = 50)
-data.frame(time = t, s1 = exp(-t), s2 = 2 * exp(-t), s3 = -1 * exp(-t), s4 = -2 * exp(-t)) |>
+data.frame(time = t, s1 = 2* exp(-t), s2 = 1* exp(-t), s3 = -1 * exp(-t), s4 = -2 * exp(-t)) |>
   tidyr::pivot_longer(names_to = "constant", values_to = "soln", cols=c(-"time")) |>
   ggplot() +
   geom_line(aes(x = time, y = soln, color = constant), linewidth = 1) +
@@ -35,7 +35,7 @@ data.frame(time = t, s1 = exp(-t), s2 = 2 * exp(-t), s3 = -1 * exp(-t), s4 = -2 
   labs(x = "t", y = "y") +
   geom_hline(aes(yintercept = 0), linetype = "dashed") +
   ggthemes::scale_color_colorblind(
-    labels = c("C = 1", "C = 2", "C = -1", "C = -2"),
+    labels = c("C = 2", "C = 1", "C = -1", "C = -2"),
     name = NULL
   )
 ```
@@ -172,7 +172,7 @@ data.frame(point = c(-5, -2, 3), label = c("y':", "y' < 0", "y' > 0"), tendency 
 ```{r, echo=FALSE,fig.cap="Solution curves for the differential equation $y'=ry$, with $r>0$ for different initial conditions (values of $C$)."}
 #| label: fig-solncurve-1
 t <- seq(0, 2, length.out = 50)
-data.frame(time = t, s1 = exp(t), s2 = 2 * exp(t), s3 = -1 * exp(t), s4 = -2 * exp(t)) |>
+data.frame(time = t, s1 = 2*exp(t), s2 = 1 * exp(t), s3 = -1 * exp(t), s4 = -2 * exp(t)) |>
   pivot_longer(names_to = "constant", values_to = "soln", cols=c(-"time")) |>
   ggplot() +
   geom_line(aes(x = time, y = soln, color = constant), linewidth = 1) +
@@ -188,7 +188,7 @@ data.frame(time = t, s1 = exp(t), s2 = 2 * exp(t), s3 = -1 * exp(t), s4 = -2 * e
     axis.title.y = element_text(size = 14)
   ) +
   ggthemes::scale_color_colorblind(
-    labels = c("C = 1", "C = 2", "C = -1", "C = -2"),
+    labels = c("C = 2", "C = 1", "C = -1", "C = -2"),
     name = NULL
   )
 ```
