@@ -2,7 +2,7 @@
 
 
 ## What is parameter estimation?
-[Chapters @sec-intro-01 - @sec-exact-solns-07] introduced the idea of modeling with rates of change. There is much more to be stated regarding qualitative analyses of a differential equation [Chapters @sec-phase-05 and @sec-coupled-06], which we will return to starting in @sec-linearsystems-15. But for the moment, let's pause and recognize that a key motivation for modeling with rates of change is to quantify observed phenomena. 
+Chapters [-@sec-intro-01]  [-@sec-exact-solns-07] introduced the idea of modeling with rates of change. There is much more to be stated regarding qualitative analyses of a differential equation [Chapters @sec-phase-05 and @sec-coupled-06], which we will return to starting in @sec-linearsystems-15. But for the moment, let's pause and recognize that a key motivation for modeling with rates of change is to quantify observed phenomena. 
 
 Oftentimes, we wish to compare model outputs to measured data. While that may seem straightforward, sometimes models have parameters (such as $k$ and $\beta$ for @eq-flu-quarantine-06 in @sec-coupled-06). Parameter estimation is the process of determining model parameters from data.\index{parameter!estimation} Stated differently:
 
@@ -11,7 +11,7 @@ Oftentimes, we wish to compare model outputs to measured data. While that may se
 Over the next several chapters we will examine aspects of _parameter estimation_. Sometimes parameter estimation is synonymous with "fitting a model to data" and can also be called _data assimilation_ or _model-data fusion_.\index{data assimilation}\index{model!data fusion} We can address the parameter estimation problem from several different mathematical areas: _calculus_  (optimization), _statistics_ (likelihood functions), and _linear algebra_ (systems of linear equations). We will explore how we define "best" over several chapters, but let's first explore techniques of how this is done in `R` using simple linear regression.^[We will use `R` a lot in this chapter to make plots - so please visit @sec-r-intro-02 if you need some reminders on plotting in R.] Let's get started!
 
 ::: {.callout-note}
-This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`). See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)`. 
+This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`), as well as the `stats` library (which should be automatically loaded when `R` begins). See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)`. 
 :::
 
 
@@ -160,12 +160,16 @@ $$
 where $s$ is the amount of substrate, $K_{m}$ is half-saturation constant, and $V_{max}$ the maximum reaction rate. (Typically $V$ is used to signify the "velocity" of the reaction.)
 
 Consider you have the following data (from @keener_mathematical_2009):
+
+::: {#tbl-enzyme-data-08}
   
 *s* (mM) | 0.1 | 0.2 | 0.5 | 1.0 | 2.0 | 3.5 | 5.0
 -------------| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
  *V* (mM / s) | 0.04 | 0.08 | 0.17 | 0.24 | 0.32 | 0.39 | 0.42
 
-    
+Substrate (*s*) and reaction rate data (*V*) from @keener_mathematical_2009.
+
+::: 
 Apply parameter estimation techniques to estimate $K_{m}$ and $V_{max}$ and plot the resulting fitting curve with the data.
 :::
 
@@ -293,7 +297,7 @@ ggplot(data = enzyme_data) +
 ```
 
 
-```{r,fig.cap="Scatterplot of enzyme substrate data from @(exm-enzyme-08 along with the fitted curve.",echo=FALSE}
+```{r,fig.cap="Scatterplot of enzyme substrate data from @exm-enzyme-08 along with the fitted curve.",echo=FALSE}
 #| label: fig-enzyme-fitted-normal-08
 
 # Define the regression formula
@@ -326,6 +330,25 @@ p1 +
     axis.title.y = element_text(size = 14)
   ) 
 ```
+
+### {{< fa burst >}} Weighted linear regression
+For example, let's return back to @fig-enzyme-fitted-normal-08.  The Lineweaver-Burk plot has the inverse of two variables $s$ and $V$. As *s* and *V* both increases, then *1/s* and *1/V* both decrease, which may have the unintended consequence of biasing the fit at larger values of *s* and *V*. This can be problematic because much of the biochemical activity occur when *s* and *V* are low (@fig-enzyme-data-08).
+
+Another approach in linear regression is to assign weights to individual data points, which increases the influence that a given data point has on the best fit line.  This approach is called *weighted linear regression* or also *weighted least squares*. To account for this in `R`, there is an additional option called `weights`:
+
+```{r,eval=FALSE}
+# Define the regression formula
+enzyme_formula <- I(1 / V) ~ 1 + I(1 / s)
+
+# Apply the linear fit
+enzyme_fit_weighted <- lm(enzyme_formula, 
+                 data = enzyme_data,
+                 weights = enzyme_data$s)
+
+summary(enzyme_fit_weighted)
+```
+
+In @exr-enzyme-weight-08 you will investigate what happens when the weights are equal to $\sqrt{s}$. While the choice of weights may seem arbitrary, in @sec-cost-fns-10 we explore the concept of *cost functions*, which defines a model data residual.  As we will see, accounting for uncertainties in individual data points is an exmaple of *weighted linear regression*.
 
 
 ## Parameter estimation with nonlinear models
@@ -481,6 +504,16 @@ where $s$ is the amount of substrate, $K_{m}$ is half-saturation constant, and $
 
 :::
 
+::: {#exr-enzyme-weight-08}
+
+{{< fa burst >}} Fit a linear model to the enzyme data (the data table `enzyme_data`) in @exm-enzyme-08 using a linear model with $1/s$ and $1/V$ in two ways:
+
+1. A regular linear model (`lm`)
+2. A linear model (`lm`) using the option `weights=sqrt(enzyme_data$s)` ($\sqrt{s}$)
+
+Generate a plot of both fits to the data and compare paraemter estimates $K_{m}$ and $V_{max}$ in both cases. How does weighting the data affect the resulting fits? 
+
+:::
 
 
 ::: {#exr-enzyme-nls-08}
