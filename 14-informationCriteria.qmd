@@ -1,18 +1,20 @@
-# Information Criteria {#information-criteria-14}
+# Information Criteria {#sec-information-criteria-14}
 
 ```{r echo=FALSE}
 # Load this up here because we need the rmse function
 library(modelr)
 ```
 
-In Exercises \@ref(exr:yeast-v1-13) and \@ref(exr:yeast-v2-13) of Chapter \@ref(mcmc-13) we introduced two different empirical models for fitting the growth of `yeast` $V$ over time $t$. One model is a logistic model ($\displaystyle V = \frac{K}{1+e^{a-bt}}$), whereas the second model is a saturating function ($\displaystyle V= K + Ae^{-bt}$). A plot comparing MCMC parameter estimates for the two models is shown in Figure \@ref(fig:yeast-compare-14).
+In [Exercises @exr-yeast-v1-13] and [-@exr-yeast-v2-13] of @sec-mcmc-13 we introduced two different empirical models for fitting the growth of `yeast` $V$ over time $t$. One model is a logistic model ($\displaystyle V = \frac{K}{1+e^{a-bt}}$), whereas the second model is a saturating function ($\displaystyle V= K + Ae^{-bt}$). A plot comparing MCMC parameter estimates for the two models is shown in @fig-yeast-compare-14.
 
-```{r yeast-compare-14,fig.cap="Comparison of models for the growth of yeast in culture. Dots represent measured values from @gause_experimental_1932.",echo=FALSE}
+```{r,fig.cap="Comparison of models for the growth of yeast in culture. Dots represent measured values from @gause_experimental_1932.",echo=FALSE}
+#| label: fig-yeast-compare-14
+
 yeast_out <- tibble(
   time = seq(0, 60, length.out = 200),
   model1 = 12.8 / (1 + exp(log(12.8 / 0.45 - 1) - 0.242 * time)),
   model2 = 14.7 + (0.45 - 14.7) * exp(-0.0493 * time)
-) %>%
+) |>
   pivot_longer(cols = c(-"time"))
 
 ggplot() +
@@ -41,9 +43,13 @@ ggplot() +
 ```
 
 
-Figure \@ref(fig:yeast-compare-14) raises an interesting question. Sometimes we have multiple, convergent models to describe a context or situation. While having these different options is good, we also like to know which is the *best* model. How would you decide that?
+@fig-yeast-compare-14 raises an interesting question. Sometimes we have multiple, convergent models to describe a context or situation. While having these different options is good, we also like to know which is the *best* model. How would you decide that?
 
 This chapter focuses on objective criteria to assess what is called the *best approximating model* [@burnham_model_2002]. We will explore what are called *information criteria*, which is developed from statistical theory.\index{information criteria} Let's get started!
+
+::: {.callout-note}
+This chapter uses functions from base `R`: `lm`, `AIC`, and `BIC`, which ar all part of the `stats` library.  This library should be pre-loaded into `R`, but if not, can be loaded with `library(stats)`.  
+:::
 
 ## Model assessment guidelines
 
@@ -59,9 +65,11 @@ The first step is to develop some guidelines and metrics for model evaluation. H
 
 I may have hinted at some of these guidelines in earlier chapters. These questions are related to one another - and answering these questions (or ranking criteria for them) is at the heart of the topic of _model selection_.
 
-Perhaps you may be asking, why bother? Aren't more models better? Let's talk about a specific example, for which we return to the dataset `global_temperature` in the `demodelr` library. Recall this dataset represents the average global temperature anomaly relative to 1951-1980. When we did linear regression with this dataset in Chapter \@ref(linear-regression-08) the quadratic and cubic models were approximately the same (Figure \@ref(fig:global-temp-14)):
+Perhaps you may be asking, why bother? Aren't more models better? Let's talk about a specific example, for which we return to the dataset `global_temperature` in the `demodelr` library. Recall this dataset represents the average global temperature anomaly relative to 1951-1980. When we did linear regression with this dataset in @sec-linear-regression-08 the quadratic and cubic models were approximately the same (@fig-global-temp-14):
 
-```{r global-temp-14,echo=FALSE,fig.cap="Comparison of global temperature anomaly dataset with various polynomial fitted models."}
+```{r,echo=FALSE,fig.cap="Comparison of global temperature anomaly dataset with various polynomial fitted models."}
+#| label: fig-global-temp-14
+
 regression_formula0 <- temperature_anomaly ~ 1 + year_since_1880
 regression_formula1 <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2)
 regression_formula2 <- temperature_anomaly ~ 1 + year_since_1880 + I(year_since_1880^2) + I(year_since_1880^3)
@@ -98,16 +106,20 @@ ggplot(data = global_temperature, aes(x = year_since_1880, y = temperature_anoma
   scale_color_colorblind(labels = c("Linear", "Quadratic", "Cubic", "Quartic"), name = NULL)
 ```
 
-The variation in the different model fits for Figure \@ref(fig:global-temp-14) shows how different, but similar, the model results can be depending on the choice of regression function. Table \@ref(tab:gt-ll-14) displays summary results for the log-likelihood and the root mean square error (RMSE).^[The root mean square error is the computed as $\displaystyle \sqrt{\frac{\sum (y_{i}-f(x_{i}))^{2}}{N}}$.] In some cases, the log-likelihood decreases (indicating a more likely model), supported by the decrease in the RMSE indicating the fitted model more closely matches the observations. However the decrease in the log-likelihood and the RMSE is changing less as the complexity of the model (i.e. a higher degree polynomial) increases.
+The variation in the different model fits for @fig-global-temp-14 shows how different, but similar, the model results can be depending on the choice of regression function. @tbl-gt-ll-14 displays summary results for the log-likelihood and the root mean square error (RMSE).^[The root mean square error is the computed as $\displaystyle \sqrt{\frac{\sum (y_{i}-f(x_{i}))^{2}}{N}}$.] In some cases, the log-likelihood decreases (indicating a more likely model), supported by the decrease in the RMSE indicating the fitted model more closely matches the observations. However the decrease in the log-likelihood and the RMSE is changing less as the complexity of the model (i.e. a higher degree polynomial) increases.
 
-Table: (\#tab:gt-ll-14) Comparison of model fits for global temperature anomaly dataset shown in Figure \@ref(fig:global-temp-14).
+::: {#tbl-gt-ll-14}
 
-| Model | Log-likelihood^[Remember, log-likelihoods can be positive or negative; see Chapter \@ref(likelihood-09).] | RMSE |
+| Model | Log-likelihood^[Remember, log-likelihoods can be positive or negative; see @sec-likelihood-09.] | RMSE |
 | :-----------: | :-----------: | :-----------: |
 Linear | `r round(logLik(fit0),digits=3)` | `r round(rmse(fit0,data=global_temperature),digits=3)` |
 Quadratic | `r round(logLik(fit1),digits=3)` | `r round(rmse(fit1,data=global_temperature),digits=3)` |
 Cubic | `r round(logLik(fit2),digits=3)` |`r round(rmse(fit2,data=global_temperature),digits=3)` |
 Quartic | `r round(logLik(fit3),digits=3)` | `r round(rmse(fit3,data=global_temperature),digits=3)` |
+
+Comparison of model fits for global temperature anomaly dataset shown in @fig-global-temp-14.
+
+:::
 
 Further model evaluation can be examined by the following:
 
@@ -125,21 +137,19 @@ _Information criteria_ evaluate the tradeoff between model complexity (i.e. the 
 
 - The __Akaike Information Criterion__ ($AIC$, @akaike_new_1974) is the most commonly used information criteria: 
 
-\begin{equation} 
+$$ 
 AIC = -2 LL_{max} + 2 P
-(\#eq:aic)
-\end{equation}
+$$ {#eq-aic}
 
 - An alternative to the $AIC$ is the __Bayesian Information Criterion__ ($BIC$, @schwartz_estimating_1978)
 
-\begin{equation}
+$$
 BIC = -2 LL_{max} + P \ln (N)
-(\#eq:bic)
-\end{equation}
+$$ {#eq-bic}
 
-In Equations \@ref(eq:aic) and \@ref(eq:bic), $N$ is the number of data points, $P$ is the number of estimated parameters, and $LL_{max}$ is the log-likelihood for the parameter set that maximized the likelihood function. Equations \@ref(eq:aic) and \@ref(eq:bic) show the dependence on the log-likelihood function and the number of parameters. For both the $AIC$ and $BIC$  a lower value of the information criteria indicates greater support for the model from the data.
+In [Equations @eq-aic] and [-@eq-bic], $N$ is the number of data points, $P$ is the number of estimated parameters, and $LL_{max}$ is the log-likelihood for the parameter set that maximized the likelihood function. [Equations @eq-aic] and [-@eq-bic] show the dependence on the log-likelihood function and the number of parameters. For both the $AIC$ and $BIC$  a lower value of the information criteria indicates greater support for the model from the data.
 
-Notice how easy the $AIC$ and $BIC$ are to compute in Equations \@ref(eq:aic) and \@ref(eq:bic) (assuming you have the information at hand). When an empirical model fit is computed (i.e. using the command `lm`), `R` computes these easily with the functions `AIC` or `BIC`. To apply them you need to first do the model fit (with the function `lm`. Try this out by running the following code on your own:^[You can compute the log-likelihood with the function `logLik(fit)`, where `fit` is the result of your linear model fits.]:
+Notice how easy the $AIC$ and $BIC$ are to compute in [Equations @eq-aic] and [-@eq-bic] (assuming you have the information at hand). When an empirical model fit is computed (i.e. using the command `lm`), `R` computes these easily with the functions `AIC` or `BIC`. To apply them you need to first do the model fit (with the function `lm`. Try this out by running the following code on your own:^[You can compute the log-likelihood with the function `logLik(fit)`, where `fit` is the result of your linear model fits.]:
 
 ```{r,eval=FALSE}
 regression_formula <- temperature_anomaly ~ 1 + year_since_1880
@@ -149,11 +159,11 @@ BIC(fit)
 ```
 
 
-Table \@ref(tab:gt-ic-14) compares $AIC$ and $BIC$ for the models fitted using the global temperature anomaly dataset:
+@tbl-gt-ic-14 compares $AIC$ and $BIC$ for the models fitted using the global temperature anomaly dataset:
 
-<!-- Table: (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly data shown in Figure \@ref(fig:global-temp-14). -->
+<!-- Table: (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly data shown in @fig-global-temp-14. -->
 
-Table:  (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly dataset shown in Figure \@ref(fig:global-temp-14).
+::: {#tbl-gt-ic-14}
 
 | Model      | $AIC$                          | $BIC$                         |
 | :--------: | :----------------------------: | :----------------------------:| 
@@ -162,7 +172,11 @@ Table:  (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperatur
 | Cubic      | `r round(AIC(fit2),digits=3)`  | `r round(BIC(fit2),digits=3)` | 
 | Quartic    | `r round(AIC(fit3),digits=3)`  | `r round(BIC(fit3),digits=3)` | 
 
-Table \@ref(tab:gt-ic-14) shows that the cubic model is the better approximating model for both the $AIC$ and the $BIC$.
+Comparison of the $AIC$ and $BIC$ for global temperature anomaly dataset shown in @fig-global-temp-14.
+
+:::
+
+@tbl-gt-ic-14 shows that the cubic model is the better approximating model for both the $AIC$ and the $BIC$.
 
 
 ## A few cautionary notes
@@ -175,22 +189,22 @@ Table \@ref(tab:gt-ic-14) shows that the cubic model is the better approximating
 __The upshot:__ Information criteria are _one_ piece of evidence to help you to evaluate the best approximating model. You should do additional investigation (parameter evaluation, model-data fits, forecast values) in order to help determine the best model.
 
 ## Exercises
-```{exercise}
+::: {#exr-yeast-14}
 You are investigating different models for the growth of a yeast species in a population where $V$ is the rate of reaction and $s$ is the added substrate:
 
-\begin{equation*}
+$$
 \begin{split}
 \mbox{Model 1: } & V =  \frac{V_{max} s}{s+K_{m}} \\
 \mbox{Model 2: } & V = \frac{K}{1+e^{-a-bs}} \\
 \mbox{Model 3: } & V= K + Ae^{-bs}
 \end{split}
-\end{equation*}
+$$
 
 With a dataset of 7 observations you found that the log-likelihood for Model 1 is `26.426`, for Model 2 the log-likelihood is is `15.587`, and for Model 3 the the log-likelihood is `21.537`. Apply the $AIC$ and the $BIC$ to evaluate which model is the best approximating model. Be sure to identify the number of estimated parameters for each model.
-```
+:::
 
 
-```{exercise}
+::: {#exr-nutrient-14}
 An equation that relates a consumer's nutrient content (denoted as $y$) to the nutrient content of food (denoted as $x$) is given by: $\displaystyle y = c x^{1/\theta}$, where $\theta \geq 1$ and $c$ are parameters. We can apply linear regression to the dataset $(x, \; \ln(y) )$, so the intercept of the linear regression equals $\ln(c)$ and the slope equals $1 / \theta$.
 
 
@@ -200,12 +214,13 @@ c. Apply the function `logLik` to report the log-likelihood of the fit.
 d. What are the reported values of the $AIC$ and the $BIC$?
 e. An alternative linear model is the equation $y = a + b \sqrt{x}$. Use the R command `sqrt_fit <- lm(daphnia~I(sqrt(algae)),data = phosphorous)` to first obtain a fit for this model. Then compute the log-likelihood and the $AIC$ and the $BIC$. Of the two models (the log-transformed model and the square root model), which one is the better approximating model?
 
-```
+:::
 
 
 <!-- From Burnham and Anderson pg 135 of pdf -->
-```{exercise}
-(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in Figure \@ref(fig:pesticide-ch3), where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$) represent other bound forms of the respective state. In all seven different models can be derived.
+
+::: {#exr-ba-135-14}
+(Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in @fig-pesticide-ch3, where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$) represent other bound forms of the respective state. In all seven different models can be derived.
 
 These models were applied to a dataset with 36 measurements of the water, fish, and plants. The table for the log-likelihood for each model is shown below:
 
@@ -217,12 +232,11 @@ These models were applied to a dataset with 36 measurements of the water, fish, 
 
 
 
-a. Use Figure \@ref(fig:pesticide-ch3) to identify the number of parameters for each model.
+a. Use @fig-pesticide-ch3 to identify the number of parameters for each model.
 b. Apply the $AIC$ and the $BIC$ to the data in the above table to determine which is the best approximating model.
 
+:::
 
-```
-
-```{exercise}
-Use the information shown in Table \@ref(tab:gt-ll-14) to compute (by hand) the $AIC$ and the $BIC$ for each of the models for the `global_temperature` dataset (there are 142 observations). Do your results conform to what is presented in Table \@ref(tab:gt-ic-14)? How far off are your results? What would be a plausible explanation for the difference?
-```
+::: {#exr-aic-hand-14}
+Use the information shown in @tbl-gt-ll-14 to compute (by hand) the $AIC$ and the $BIC$ for each of the models for the `global_temperature` dataset (there are 142 observations). Do your results conform to what is presented in @tbl-gt-ic-14? How far off are your results? What would be a plausible explanation for the difference?
+:::
