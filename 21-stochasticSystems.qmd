@@ -165,8 +165,79 @@ If you tried generating @fig-moose-out-21 on your own you would not obtain the s
 
 As you can see when the probability of a snowy winter is very high ($p = 0.75$), the population decays exponentially. If that probability is lower, the moose population can still increase, but one bad year does knock the population down.
 
+### {{< fa burst>}} Improving function evaluation speed for `moose_snow`
+The code for the `moose_snow` presented above utilizes `for` loops and an `if` statement.  While the coding structure is readable, it may not be the most efficient.  Computer speeds and times vary, but using the the timing functions in `R` suggests that a baseline time of evaluation:
 
+```{r}
+set.seed(251608)
+start_time <- Sys.time()
 
+M0 <- 3000 # Initial population of moose
+N <- 100 # Number of years we simulate
+
+moose_result <- moose_snow(0.37)
+
+end_time <- Sys.time()
+
+# determine the time difference:
+moose_baseline <- end_time - start_time
+
+# print the result
+moose_baseline
+```
+
+Let's unpack this code a little bit:
+
+- `set.seed(251608)` sets the random number generator so the results can be reproducible in terms of the random numbers generated (so you can reproduce this on your own).
+- The function `Sys.time()` works like a stopwatch. With the variables `start_time` and `end_time` we know the exact computer time it takes to evaluate this function (which is the difference between `end_time` and `start_time`).
+
+There are three simple adjustments we can do to `moose_snow` to speed it up:
+
+1. Define a vector of uniform random numbers with `runif(N)` than `runif(1)`.
+2. Use that vector of random numbers to generate another that is the different birth rates in regular or snowy winters. The function `ifelse` in `R` does just that: if a condition is true (here a snowy winter), then the value for $r$ is 0.7, else it is 1.1.
+3. Because our moose population is determine iteratively ($M_{t+1}=rM_{t}$), at time $t+1$ the population is a *product* of all the previous iterations. The function `cumprod` (cumulative product) can do that. So for a vector $\vec{v}=\begin{pmatrix} v_{1} & v_{2} & v_{3} \end{pmatrix}$, the cumulative product of $\vec{v}$ is $\begin{pmatrix} v_{1} & v_{1} \cdot v_{2} & v_{1} \cdot v_{2} \cdot v_{3} \end{pmatrix}$.
+
+The total of these three adjustments is the following function I call `moose_snow_fast`:
+
+```{r}
+moose_snow_fast = function(snowfall_prob) {
+  prob_vec <- runif(N)  # Set up a vector of probabilities
+  r_vec = ifelse(prob_vec < snowfall_prob, 0.7, 1.1) # Determine the growth rate each year
+  
+  # Set up the output vector with the initial value and r_vec
+  out_moose <- c(M0, r_vec)
+  
+  # Compute the cumulative product
+  out_moose <- cumprod(out_moose)
+  
+  return(out_moose)
+}
+
+```
+
+Now let's compare the time of this adjusted code:
+
+```{r}
+set.seed(251608)
+start_time <- Sys.time()
+
+M0 <- 3000 # Initial population of moose
+N <- 100 # Number of years we simulate
+
+moose_result <- moose_snow_fast(0.37)
+
+end_time <- Sys.time()
+
+# determine the time difference:
+moose_fast <- end_time - start_time
+
+# print the result
+moose_fast
+```
+
+Wow!  The fast code was approximately `r round(as.numeric(moose_baseline)/as.numeric(moose_fast),2)` times faster - which may not be *that* much of a difference, but these efficiencies accumulate to your favor.
+
+When dealing with complex code that takes a long time evaluate, it is helpful sometimes to see what performance gains can be made, and a good place to start is "vectorizing" your code or evaluating the neccesity of `for` loops or `if` statements.
 
 ## Discrete systems of equations
 Another way to extend @eq-moose is to account for both adult ($M$) and juvenile ($J$) moose populations with @eq-moose-juvenile:
