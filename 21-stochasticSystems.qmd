@@ -1,13 +1,15 @@
-# (PART) Stochastic Differential Equations {.unnumbered} 
-
-
-# Stochastic Biological Systems {#stoch-sys-21}
+# Stochastic Biological Systems {#sec-stoch-sys-21}
 
 
 ## Introducing stochastic effects
 Up to this point we have studied *deterministic* differential equations.\index{differential equation!deterministic} We use the word deterministic because given an initial condition and parameters, the solution trajectory is known. In this part we are going to study *stochastic* differential equations or SDEs for short.\index{differential equation!stochastic} A stochastic differential equation means that the differential equation is subject to random effects - either in the parameters (which may cause a change in the stability for a time) or in the variables themselves.
 
 Stochastic differential equations can be studied using computational approaches. This part will give you an introduction to SDEs with some focus on solution techniques, which I hope you will be able to apply in other contexts relevant to you. Understanding how to model SDEs requires learning some new mathematics and approaches to numerical simulation. Let's get started!
+
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, `tibble` (all part of the `tidyverse`), and the matrix multiplication operator `%*%` . See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)`. 
+:::
+
 
 <!-- ### Author: JMZ, modified from Logan and Wolesesnky "Mathematical Methods in Biology" -->
 <!-- ### Purpose: Create a sandhill crane model of discrete dynamics x(t+1)=r*x(t), as detailed on page 311 -->
@@ -18,15 +20,15 @@ Stochastic differential equations can be studied using computational approaches.
 Let's focus on an example that involves discrete dynamical systems. Moose are large animals (part of the deer family), weighing 1000 pounds, that can be found in [Northern Minnesota](https://www.dnr.state.mn.us/mammals/moose.html).\index{discrete dynamical system!moose model}\index{model!moose population}  The moose population was 8000 in the early 2000s, but recent [surveys](https://files.dnr.state.mn.us/wildlife/moose/moosesurvey.pdf) show the population is maybe stabilized at 3000.
 
 
-A starting model that describes their population dynamics is the discrete dynamical system in Equation \@ref(eq:moose):
+A starting model that describes their population dynamics is the discrete dynamical system in @eq-moose:
 
-\begin{equation}
-M_{t+1} = M_{t} + b \cdot M_{t} - d \cdot M_{t}, (\#eq:moose)
-\end{equation}
+$$
+M_{t+1} = M_{t} + b \cdot M_{t} - d \cdot M_{t},
+$$  {#eq-moose}
 
-where $M_{t}$ is the population of the moose in year $t$, and $b$ the birth rate and $d$ the death rate. Equation \@ref(eq:moose) can be reduced down to $M_{t+1}=r M_{t}$ where $r=1+b-d$ is the net birth/death rate. This model states that the population of moose in the next year is proportional to the current population.
+where $M_{t}$ is the population of the moose in year $t$, and $b$ the birth rate and $d$ the death rate. @eq-moose can be reduced down to $M_{t+1}=r M_{t}$ where $r=1+b-d$ is the net birth/death rate. This model states that the population of moose in the next year is proportional to the current population.
 
-Equation \@ref(eq:moose) is a little bit different from a continuous dynamical system, but can be simulated pretty easily by defining a function. 
+@eq-moose is a little bit different from a continuous dynamical system, but can be simulated pretty easily by defining a function. 
 
 ```{r}
 
@@ -42,16 +44,16 @@ moose <- function(r) {
 }
 ```
 
-Notice how the function `moose` returns the current population of moose after $N$ years with the net birth rate $r$. Let's take a look at the results for different values of $r$ (Figure \@ref(fig:moose-det-21)).
+Notice how the function `moose` returns the current population of moose after $N$ years with the net birth rate $r$. Let's take a look at the results for different values of $r$ (@fig-moose-det-21).
 
-```{r moose-det-21,echo=FALSE,fig.cap="Simulation of the moose population with different birth rates."}
-
+```{r,echo=FALSE,fig.cap="Simulation of the moose population with different birth rates."}
+#| label: fig-moose-det-21
 moose_rates <- tibble(
   years = 0:N,
   r0.4 = moose(0.4),
   r0.8 = moose(0.8),
   r1.1 = moose(1.1)
-) %>%
+) |>
   pivot_longer(cols = c(-"years"))
 
 
@@ -68,30 +70,31 @@ ggplot(data = moose_rates) +
     axis.title.x = element_text(size = 14),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(size = 10),
-    axis.title.y = element_text(size = 14)
+    axis.title.y = element_text(size = 14),
+    legend.title = element_text(size=14)
   ) +
   scale_color_colorblind(name = "Net birth rate:", labels = c("r = 0.4", "r = 0.8", "r = 1.1"))
 ```
 
-Notice how for some values of $r$ the population starts to decline, stay the same, or increase. To analyze Equation \@ref(eq:moose), just like with a continuous differential equation we want to look for solutions that are in steady state, or ones where the population is staying the same. In other words this means that $M_{t+1}=M_{t}$, or $M_{t}=rM_{t}$. If we simplify this expression this means that $M_{t}-r M_{t}=0$, or $(1-r)M_{t}=0$. Assuming that $M_{t}$ is not equal to zero, then this equation is consistent only when $r=1$. This makes sense: we know $r=1-b-d$, so the only way this can be one is if $b=d$, or the births balance out the deaths.
+Notice how for some values of $r$ the population starts to decline, stay the same, or increase. To analyze @eq-moose, just like with a continuous differential equation we want to look for solutions that are in steady state, or ones where the population is staying the same. In other words this means that $M_{t+1}=M_{t}$, or $M_{t}=rM_{t}$. If we simplify this expression this means that $M_{t}-r M_{t}=0$, or $(1-r)M_{t}=0$. Assuming that $M_{t}$ is not equal to zero, then this equation is consistent only when $r=1$. This makes sense: we know $r=1-b-d$, so the only way this can be one is if $b=d$, or the births balance out the deaths.
 
-Okay, so we found our equilibrium solution. The next goal is to determine the general solution to Equation \@ref(eq:moose). In Chapter \@ref(exact-solns-07) for continuous differential equations, a starting point for a general solution was an exponential function. For discrete dynamical systems we will also assume a general solution is exponential, but this time we represent the solution as $M_{t}=M_{0} \cdot v^{t}$, which is an exponential equation. The parameter $M_{0}$ is the initial population of moose (here it equals 3000). Now let's determine $v$ in Equation \@ref(eq:moose):
+Okay, so we found our equilibrium solution. The next goal is to determine the general solution to @eq-moose. In @sec-exact-solns-07 for continuous differential equations, a starting point for a general solution was an exponential function. For discrete dynamical systems we will also assume a general solution is exponential, but this time we represent the solution as $M_{t}=M_{0} \cdot v^{t}$, which is an exponential equation. The parameter $M_{0}$ is the initial population of moose (here it equals 3000). Now let's determine $v$ in @eq-moose:
 
-\begin{equation}
+$$
 M_{t+1} = r M_{t} \rightarrow 3000 \cdot v^{t+1} = r \cdot 3000 \cdot v^{t}
-\end{equation}
+$$
 
 Our goal is to figure out a value for $v$ that is consistent with this expression. Just like we did with continuous differential equations we can arrange the following equation, using the fact that $v^{t+1}=v^{t}\cdot v$:
 
-\begin{equation}
+$$
 3000 v^{t} (v-r) = 0
-\end{equation}
+$$
 
-Since we assume $v\neq 0$, the only possibility is if $v=r$. Equation \@ref(eq:moose-soln) represents the general solution for Equation \@ref(eq:moose):
+Since we assume $v\neq 0$, the only possibility is if $v=r$. @eq-moose-soln represents the general solution for @eq-moose:
 
-\begin{equation}
-M_{t}=3000 r^{t} (\#eq:moose-soln)
-\end{equation}
+$$
+M_{t}=3000 r^{t}
+$$  {#eq-moose-soln}
 
 We know that if $r>1$ we have exponential growth exponential decay when $r<1$ exponential decay, consistent with our results above.
 
@@ -121,10 +124,10 @@ moose_snow <- function(snowfall_prob) {
 
 
 
-Figure \@ref(fig:moose-out-21) displays different solution trajectories of the moose population over time for different probabilities of a deep snowpack.
+@fig-moose-out-21 displays different solution trajectories of the moose population over time for different probabilities of a deep snowpack.
 
-```{r moose-out-21,echo=FALSE,fig.cap= "Moose populations with different probability of adjusting to deep snowpacks."}
-
+```{r,echo=FALSE,fig.cap= "Moose populations with different probability of adjusting to deep snowpacks."}
+#| label: fig-moose-out-21
 M0 <- 100 # Initial population of moose
 N <- 10 # Number of years we simulate
 
@@ -134,7 +137,7 @@ moose_snow_pop <- tibble(
   p0.25 = moose_snow(0.25),
   p0.5 = moose_snow(0.5),
   p0.75 = moose_snow(0.75)
-) %>%
+) |>
   pivot_longer(cols = c(-"years"))
 
 
@@ -158,7 +161,7 @@ ggplot(data = moose_snow_pop) +
 
 ```
 
-If you tried generating Figure \@ref(fig:moose-out-21) on your own you would not obtain the same figure. We are drawing random numbers for each year, so you should have different trajectories. While this may seem like a problem, one key thing that we will learn later in Chapter \@ref(stoch-sim-22) is there is a stronger underlying signal when we compute *multiple* simulations and then compute an ensemble average.
+If you tried generating @fig-moose-out-21 on your own you would not obtain the same figure. We are drawing random numbers for each year, so you should have different trajectories. While this may seem like a problem, one key thing that we will learn later in @sec-stoch-sim-22 is there is a stronger underlying signal when we compute *multiple* simulations and then compute an ensemble average.
 
 As you can see when the probability of a snowy winter is very high ($p = 0.75$), the population decays exponentially. If that probability is lower, the moose population can still increase, but one bad year does knock the population down.
 
@@ -166,16 +169,16 @@ As you can see when the probability of a snowy winter is very high ($p = 0.75$),
 
 
 ## Discrete systems of equations
-Another way to extend Equation \@ref(eq:moose) is to account for both adult ($M$) and juvenile ($J$) moose populations with Equation \@ref(eq:moose-juvenile):
+Another way to extend @eq-moose is to account for both adult ($M$) and juvenile ($J$) moose populations with @eq-moose-juvenile:
 
-\begin{equation}
+$$
 \begin{split}
 J_{t+1} &=f \cdot M_{t} \\
 M_{t+1} &= g \cdot J_{t} + p \cdot M_{t}
-\end{split} (\#eq:moose-juvenile)
-\end{equation}
+\end{split}
+$$  {#eq-moose-juvenile}
 
-Equation \@ref(eq:moose-juvenile) is a little different from \@ref(eq:moose) because it includes juvenile and adult moose populations, which have the following parameters:
+@eq-moose-juvenile is a little different from @eq-moose because it includes juvenile and adult moose populations, which have the following parameters:
 
 - $f$: represents the birth rate of new juvenile moose
 - $g$: represents the maturation rate of juvenile moose
@@ -213,7 +216,7 @@ moose_two_stage <- function(f, g, p) {
 }
 ```
 
-To simulate the dynamics we just call the function `moose_two_stage` and plot in Figure \@ref(fig:moose-2-21):
+To simulate the dynamics we just call the function `moose_two_stage` and plot in @fig-moose-2-21:
 
 ```{r eval=FALSE}
 
@@ -232,14 +235,14 @@ ggplot(data = moose_two_stage_rates) +
   )
 ```
 
-```{r moose-2-21,fig.cap="Simulation of a two stage moose population model.",echo=FALSE}
-
+```{r,fig.cap="Simulation of a two stage moose population model.",echo=FALSE}
+#| label: fig-moose-2-21
 moose_two_stage_rates <- moose_two_stage(
   f = 0.5,
   g = 0.6,
   p = 0.7
-) %>%
-  pivot_longer(cols = c(-"years")) %>%
+) |>
+  pivot_longer(cols = c(-"years")) |>
   mutate(name = str_to_title(name))
 
 ggplot(data = moose_two_stage_rates) +
@@ -255,34 +258,98 @@ ggplot(data = moose_two_stage_rates) +
     axis.title.x = element_text(size = 14),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(size = 10),
-    axis.title.y = element_text(size = 14)
+    axis.title.y = element_text(size = 14),
+    legend.title = element_text(size=14)
   ) +
   scale_color_colorblind(name = "Stage:")
 ```
 
 
-Looking at Figure \@ref(fig:moose-2-21), it seems like both populations stabilize after a few years. We could further analyze this model for stable population states (in fact, it would be similar to determining eigenvalues as in Chapter \@ref(eigenvalues-18)). Additional extensions could also incorporate adjustments to the parameters $f$, $g$, and $p$ in snow years (Exercise \@ref(exr:moose-2-snowy)).
+Looking at @fig-moose-2-21, it seems like both populations stabilize after a few years. We could further analyze this model for stable population states (in fact, it would be similar to determining eigenvalues as in @sec-eigenvalues-18). Additional extensions could also incorporate adjustments to the parameters $f$, $g$, and $p$ in snow years (@exr-moose-2-snowy).
 
 As you can see, introducing stochastic or random effects to a model yields some interesting (and perhaps more realistic) results. Next we will examine how computing can further explore stochastic models and how to generate expected patterns from all this randomness. Onward!
+
+### {{< fa burst >}} A matrix formulation for discrete systems of equations
+@eq-moose-juvenile can also be written with matrix notation (similar to how we used matrices to understand systems on linear differential equations in @sec-linearsystems-15:
+
+$$
+\begin{split}
+J_{t+1} &=f \cdot M_{t} \\
+M_{t+1} &= g \cdot J_{t} + p \cdot M_{t}
+\end{split} \rightarrow \begin{pmatrix} J_{t+1} \\ M_{t+1} \end{pmatrix} = \begin{pmatrix} 0 & f \\ g & p \end{pmatrix} \begin{pmatrix} J_{t} \\ M_{t} \end{pmatrix}
+$$  {#eq-moose-juvenile-rev}
+
+In @eq-moose-juvenile-rev we can identify the matrix $\displaystyle A=\begin{pmatrix} 0 & f \\ g & p \end{pmatrix}$, then sample code with the function `moose_matrix` is shown below:
+
+```{r}
+moose_matrix = function(N, initial_population, A, round = TRUE) {
+  
+  # N: number of iterations
+  # initial_population: starting value for moose and juveniles
+  # A: growth matrix
+  # round: an option of we want to present the results in whole numbers
+  
+  M <- initial_population
+  R <- array(0, dim = c(2, N+1)) # holds results- add one more entriy
+  R[,1] <- M
+  
+  for(i in seq(2, N+1)) {
+    M <- A %*% M   # the %*% operator is matrix multiplication
+    R[, i] <- M
+  }
+  # Results:
+  R <- data.frame(t = seq(0, N), J = R[1,], M = R[2,])
+  
+  # If we desire whole numbers, we can return that as well:
+  if(round) { R = round(R) }
+  
+  return(R)
+}
+```
+
+Notice how the function `moose_matrix` has an option called `round`, which will round the results of the population to the nearest whole number.  To evaluate this function, we can need to define the initial population and entries of the matrix `A`:
+
+```{r,eval=FALSE}
+# Initial population:
+M0 <- 900 # Adult moose
+J0 <- 100 # Juvenile moose
+initial_moose <- c(M=900, J=100)
+
+# Coefficients:
+f <- 0.5
+g <- 0.6
+p  <- 0.7
+
+# Define your growth matrix A
+A <- matrix(c(0, f, g, p), ncol=2, byrow=T)
+
+# Number of timesteps
+N <- 10
+
+moose_matrix(N, initial_moose, A)
+```
+
+The function `moose_matrix` can be extended to even more systems of populations. Because matrix multiplication in `R` is computationally optimized, you may see a noticeable difference in evaluation time with this approach for larger systems of equations. optimized can be computationally efficient.  
 
 
 ## Exercises
 <!-- DO SOME MODELS WITH LOONS HERE (SEE PUBS) -->
-```{exercise}
+
+::: {#exr-moose-adj-21}
 Re-run the moose population model with probabilities of adjusting to the deep snowpack at $p = 0, \; 0.1, \; 0.9, \mbox{ and} \;1$. How does adjusting the probability affect the moose population after 10 years?
-```
+:::
 
 
 
-```{exercise}
-Modify the function `moose_snow` so that `runif(1) < snowfall_prob)` is changed to `runif(1) > snowfall_prob)`. How does that code change the resulting solution trajectories in Figure \@ref(fig:moose-out-21)?  Why is this not the correct way to code changes in the net birth rate in deep snowpacks?
+::: {#exr-inequ-adj-21}
+Modify the function `moose_snow` so that `runif(1) < snowfall_prob)` is changed to `runif(1) > snowfall_prob)`. How does that code change the resulting solution trajectories in @fig-moose-out-21?  Why is this not the correct way to code changes in the net birth rate in deep snowpacks?
 
-```
+:::
 
 
 
-```{exercise}
-Modify the two stage moose population model (Equation \@ref(eq:moose-juvenile)) with the following parameters and plot the resulting adult and juvenile populations:
+::: {#exr-moose-2-sim-21}
+Modify the two stage moose population model (@eq-moose-juvenile) with the following parameters and plot the resulting adult and juvenile populations:
   
 
 a. $f = 0.6$, $g = 0.6$, $p = 0.7$
@@ -291,39 +358,89 @@ c. $f = 0.3$, $g = 0.6$, $p = 0.5$
 
 
 You may assume $M_{0} = 900$ and $J_{0}=100$.  
+:::
+
+::: {#exr-moose-matrix-snow-21}
+{{< fa burst >}} This exercise will have you modify the function `moose_matrix` to consider different growth matrices $A$ in snowy winters.  Let's say the birth rate $f$ juvenile moose is 0.5, the maturation rate $g$ is 0.6, and the survival probability of adult moose is 0.7.  But in snowy winters, the survival probability of adult moose drops to 0.4. 
+
+a. Identify the entries of the two matrices in regular winters (`A_reg`) and snow winters (`A_snowy`).
+b. The following function defines `moose_matrix_snow` to account the probability of a snowy winter:
+
+```{r, eval=FALSE}
+moose_matrix_snow = function(N, 
+                             initial_population,
+                             A_regular,
+                             A_snow,
+                             snowfall_prob,
+                             round = TRUE) {
+  
+  # N: number of iterations
+  # initial_population: starting value for moose and juveniles
+  # A_regular: growth matrix in regular winters
+  # A_snow: growth matrix in snowy winters
+  # snowfall_prob: probability of a snowy winter
+  # round: an option of we want to present the results in whole numbers
+  
+  
+  M <- initial_population
+  R <- array(0, dim = c(2, N+1)) # holds results- add one more entriy
+  R[,1] <- M
+  
+  for(i in seq(2, N+1)) {
+    
+    if(runif(1)< snowfall_prob) { # it is a snowy winter
+      M <- A_snow %*% M   # snowy winter the %*% operator is matrix multiplication
+    } else {  # it is not a snowy winter
+      M <- A_regular %*%M
+    }
+   
+    R[, i] <- M
+  }
+  # Results:
+  R <- data.frame(t = seq(0, N), J = R[1,], M = R[2,])
+  
+  # If we desire whole numbers, we can return it
+  if(round) { R$J = round(R$J); R$M = round(R$M) }
+  
+  return(R)
+}
+
 ```
 
+Store this function in your `R` workspace. Let $N=10$, and initially there are 900 adult and 100 juvenile moose.. Evaluate the effect of the probability of a snowfall winter (`snowfall_prob = 0.1`, `snowfall_prob = 0.3`, `snowfall_prob = 0.5`) on the juvenile and adult moose populations. Compare your results to the case when snowy winters are not taken into consideration.
+
+:::
 
 
-
-```{exercise}
+::: {#exr-casino-21}
 You are playing a casino game. If you win the game you earn \$10. If you lose the game you lose your bet of \$10. The probability of winning or losing is 50-50 (0.50). You decide to play the game 20 times and then cash out your net earnings.
 
 a. Write code that is able to simulate this stochastic process. Plot your results.
 b. Run this code five different times. What do you think your long term net earnings would be?
 c. Now assume that you have a 40\% chance of winning. Re-run your code to see how that affects your net earnings.
 
-```
+:::
 
 
 
-```{exercise moose-2-snowy}
+::: {#exr-moose-2-snowy}
 Modify the two stage moose population model (Equation 21.5) to account for years with large snowdepths. In normal years, $f=0.5$, $g=0.6$, $p=0.7$. However for snowy years, $f=0.3$, $g=0.6$, $p=0.5$. Generate code that can account for these variable rates (similar to the moose population model). You may assume $M_{0} = 900$, $J_{0}=100$, and $N$ (the number of years) is 30. Plot simulations when the probability of snowy winters is $s=0.05$ $s=0.10$, or $s=0.20$. Comment on the long-term dynamics of the moose for these simulations.
-```
+:::
 
 
-```{exercise}
+::: {#exr-pop-solve-21}
 A population grows according the the growth law $x_{t+1}=r_{t}x_{t}$.
 
 a. Determine the general solution to this discrete dynamical system.
 b. Plot a sample growth curve with $r_{t}=0.86$ and $r_{t}=1.16$, with $x_{0}=100$. Show your solution for $t=50$ generations.
 c. Now consider a model where $r_{t}=0.86$ with probability 1/2 and $r_{t}=1.16$ with probability 1/2. Write a function that will predict the population after $t=50$. Show three or four different realizations of this stochastic process.
 
-```
+:::
 
 
  <!-- %LW #2 page 317 -->
-```{exercise}
+ 
+::: {#exr-lw-2-317-21}
 (Inspired by @logan_mathematical_2009) A rectangular preserve has area $a$. At one end of the boundary of the preserve (contained within the area), is a small band of land of area ($a_{b}$) from which animals disperse into the wilderness. Only animals at that eged disperse. Let $u_{t}$ be the number of animals in $a$ at any time $t$. The growth rate of all the animals in $a$ is $r$. The rate at which animals disperse from the strip is proportional to the fraction of the animals in the edge band, with proportionality constant $\epsilon$.
 
 
@@ -331,4 +448,4 @@ a. Draw a picture of the situation described above.
 b. Explain why the equation that describes the dynamics is $\displaystyle u_{t+1}=r \, u_{t} - \epsilon \frac{a_{b}}{a} u_{t}$.
 c. Determine conditions on the parameter $r$ as a function of the other parameters under which the population is growing.
 
-```
+:::
