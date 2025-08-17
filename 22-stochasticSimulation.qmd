@@ -1,24 +1,32 @@
-# Simulating and Visualizing Randomness {#stoch-sim-22}
+# Simulating and Visualizing Randomness {#sec-stoch-sim-22}
 
-In Chapter \@ref(stoch-sys-21) we examined models for stochastic biological systems. These types of models are an introduction to the study of stochastic differential equations (SDEs). A common theme to SDEs is learning how to analyze and visualize randomness, broadly defined. In order to do that we will need to level up our skills to summarize a cohort of simulations over time. Let's get started!
+In @sec-stoch-sys-21 we examined models for stochastic biological systems. These types of models are an introduction to the study of stochastic differential equations (SDEs). A common theme to SDEs is learning how to analyze and visualize randomness, broadly defined. In order to do that we will need to level up our skills to summarize a cohort of simulations over time. Let's get started!
+
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, `dplyr`, `tidyr`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
 
 ## Ensemble averages
-Consider Figure \@ref(fig:kuopio-weather), which shows the weather forecast for Kuopio, a city in Finland [@finnish_meteorological_institute_weather_2021]:^[While I could have picked any city, a lot of this textbook was written while I was on sabbatical in Kuopio. I highly recommend Finland as a country to visit.] 
+Consider @fig-kuopio-weather, which shows the weather forecast for Kuopio, a city in Finland [@finnish_meteorological_institute_weather_2021]:^[While I could have picked any city, a lot of this textbook was written while I was on sabbatical in Kuopio. I highly recommend Finland as a country to visit.] 
 
-```{r kuopio-weather, echo=FALSE,out.width = "80%",fig.cap = "Long term weather forecast for Kuopio, a city in Finland, from the Finnish Weather Institute. Accessed 16-Dec 2021."}
+```{r, echo=FALSE,out.width = "80%",fig.cap = "Long term weather forecast for Kuopio, a city in Finland, from the Finnish Weather Institute. Accessed 16-Dec 2021."}
+#| label: fig-kuopio-weather
+
 knitr::include_graphics("figures/22-simulation/kuopio.png")
 ```
 
-Figure \@ref(fig:kuopio-weather) shows a great example of what is called an *ensemble average*.\index{ensemble average} The horizontal axis lists the time of day and the vertical axis is the temperature (the bar graph represents precipitation). The forecast temperature at a given point in time can have a range of outcomes, with the median of the distribution as the "temperature probability forecast"[^stochasticsimulation-1]. The red shading states that 80% of the outcomes fall in a given range, so while the median temperature on Monday, December 20 (labeled as Mo 20.12 - dates are represented as DAY-MONTH-YEAR) is  $-10^{\circ}$C, it may range between $-16$ and $-4^{\circ}$C (3 to 24 $^{\circ}$F, brrr!). Based on the legends given, we would say the 80% confidence interval is between $-10$ to $-4^{\circ}$C, or the models have 80% confidence for the temperature to be between that range of temperatures.
+@fig-kuopio-weather shows a great example of what is called an *ensemble average*.\index{ensemble average} The horizontal axis lists the time of day and the vertical axis is the temperature (the bar graph represents precipitation). The forecast temperature at a given point in time can have a range of outcomes, with the median of the distribution as the "temperature probability forecast"[^stochasticsimulation-1]. The red shading states that 80% of the outcomes fall in a given range, so while the median temperature on Monday, December 20 (labeled as Mo 20.12 - dates are represented as DAY-MONTH-YEAR) is  $-10^{\circ}$C, it may range between $-16$ and $-4^{\circ}$C (3 to 24 $^{\circ}$F, brrr!). Based on the legends given, we would say the 80% confidence interval is between $-10$ to $-4^{\circ}$C, or the models have 80% confidence for the temperature to be between that range of temperatures.
 
 [^stochasticsimulation-1]: Notice the meteorologist's temperature forecast on Wednesday, December 22 - sometimes what they predict may diverge from the model outcomes!
 
-Because there may be different factors that alter the weather in a particular spot (e.g. the timing of a low pressure front, clouds, etc.) there are different possibilities for an outcome of the weather forecast. While it may seem like forecasting weather is impossible to do, sometimes these changes lead to small fluctuations in the forecasted weather at a given point. The ensemble average in Figure \@ref(fig:kuopio-weather) becomes more uncertain (wider shading), as unforeseen events may drastically change the weather in the long term.
+Because there may be different factors that alter the weather in a particular spot (e.g. the timing of a low pressure front, clouds, etc.) there are different possibilities for an outcome of the weather forecast. While it may seem like forecasting weather is impossible to do, sometimes these changes lead to small fluctuations in the forecasted weather at a given point. The ensemble average in @fig-kuopio-weather becomes more uncertain (wider shading), as unforeseen events may drastically change the weather in the long term.
 
 ### Spaghetti plots
-Now let's focus on how to construct an ensemble average, but first let's start with a sample dataset. Consider the following data in Table \@ref(tab:simul-table). Notice how all the simulations (`sim1`, `sim2`, `sim3`) share the variable `t` in common, so it makes sense to plot them on the same axis in Figure \@ref(fig:simul-graph-prev). We call a plot of all of the simulations together a *spaghetti plot*, because, well, it can look like a bowl of spaghetti noodles was dumped all over the plotting space.\index{plot!spaghetti}
+Now let's focus on how to construct an ensemble average, but first let's start with a sample dataset. Consider the following data in @tbl-simul-table. Notice how all the simulations (`sim1`, `sim2`, `sim3`) share the variable `t` in common, so it makes sense to plot them on the same axis in @fig-simul-graph-prev. We call a plot of all of the simulations together a *spaghetti plot*, because, well, it can look like a bowl of spaghetti noodles was dumped all over the plotting space.\index{plot!spaghetti}
 
-```{r simul-table, echo=FALSE}
+```{r, echo=FALSE}
+#| label: tbl-simul-table
+
 my_table <- tibble(
   t = 1:5,
   sim1 = round(runif(5, min = 0, max = 5), digits = 2),
@@ -31,7 +39,8 @@ knitr::kable(my_table, caption = "Simulations of a variable at different times."
 
 
 
-```{r simul-graph-prev,fig.cap="Spaghetti plot of the three simulations from Table \\@ref(tab:simul-table).",echo=FALSE}
+```{r,fig.cap="Spaghetti plot of the three simulations from @tbl-simul-table.",echo=FALSE}
+#| label: fig-simul-graph-prev
 
 my_table |>
   pivot_longer(cols = c("sim1":"sim3"), 
@@ -54,10 +63,10 @@ my_table |>
 
 ```
 
-While making the spaghetti plot isn't bad when you have three simulations, with (a lot) more simulations this would be a pain! An ensemble average computes *across* the rows in Table \@ref(tab:simul-table) (could be an average or a quantile) to generate a new column in the data. Building an ensemble average is a step by step process that involves a series of processes that transform a dataset where you will need to first pivot the dataset and then group and summarize.
+While making the spaghetti plot isn't bad when you have three simulations, with (a lot) more simulations this would be a pain! An ensemble average computes *across* the rows in @tbl-simul-table (could be an average or a quantile) to generate a new column in the data. Building an ensemble average is a step by step process that involves a series of processes that transform a dataset where you will need to first pivot the dataset and then group and summarize.
 
 ### Pivot
-When you have multiple columns of a plot that you want to show together (such as a spaghetti plot) we can use a command from the `tidyr` package called [`pivot_longer`](https://tidyr.tidyverse.org/articles/pivot.html) that gathers different columns together (also shown in Table \@ref(tab:simul-table-long)).
+When you have multiple columns of a plot that you want to show together (such as a spaghetti plot) we can use a command from the `tidyr` package called [`pivot_longer`](https://tidyr.tidyverse.org/articles/pivot.html) that gathers different columns together (also shown in @tbl-simul-table-long).
 
 ```{r}
 my_table_long <- my_table |>
@@ -65,11 +74,13 @@ my_table_long <- my_table |>
                names_to = "name", values_to = "value")
 ```
 
-```{r simul-table-long,echo=FALSE}
+```{r,echo=FALSE}
+#| label: tbl-simul-table-long
+
 knitr::kable(my_table_long, caption = "Simulations of a variable at different times, condensed into a long table.")
 ```
 
-Notice how the command `pivot_longer` takes the different simulations (`sim1`, `sim2`, `sim3`) and reassigns the column names to a new column called `name`, with values in the different columns appropriately assigned to the column `value`. This process called pivoting creates a new data frame, which makes it easier to generate the spaghetti plot (Figure \@ref(fig:simul-graph-prev)). Try the following code out on your own to confirm this:
+Notice how the command `pivot_longer` takes the different simulations (`sim1`, `sim2`, `sim3`) and reassigns the column names to a new column called `name`, with values in the different columns appropriately assigned to the column `value`. This process called pivoting creates a new data frame, which makes it easier to generate the spaghetti plot (@fig-simul-graph-prev). Try the following code out on your own to confirm this:
 
 
 ```{r eval=FALSE}
@@ -81,7 +92,7 @@ my_table_long |>
 ```
 
 ### Group and summarize
-The next step after pivoting is to collect the time points at $t=1$ together, $t=2$ together, and so on. In each of these groups we then compute the mean (average). This process is called *grouping* and then applying a *summarizing* function to all the members in a particular group (which in this case is the `mean`). The code to do this summarizing is shown below, with the results in Table \@ref(tab:table-summary):
+The next step after pivoting is to collect the time points at $t=1$ together, $t=2$ together, and so on. In each of these groups we then compute the mean (average). This process is called *grouping* and then applying a *summarizing* function to all the members in a particular group (which in this case is the `mean`). The code to do this summarizing is shown below, with the results in @tbl-table-summary:
 
 ```{r}
 summarized_table <- my_table_long |>
@@ -89,7 +100,9 @@ summarized_table <- my_table_long |>
   summarize(mean_val = mean(value))
 ```
 
-```{r table-summary,echo=FALSE}
+```{r,echo=FALSE}
+#| label: tbl-table-summary
+
 knitr::kable(t(round(summarized_table,2)), caption = "Ensemble averages for the three simulations at each of the times $t$.")
 ```
 
@@ -107,7 +120,7 @@ To explain this code a little more:
 - The command `group_by(t)` means collect similar time points together.
 - The next line computes the mean. The command `summarize` means that we are going to create a new data frame column (labeled `mean_val` that is the mean of all the grouped times, from the `value` column.
 
-We can add this mean value to our data (Figure \@ref(fig:simul-graph-prev)), represented with a thick red line. Try the following code out on your own:
+We can add this mean value to our data (@fig-simul-graph-prev), represented with a thick red line. Try the following code out on your own:
 
 ```{r eval = FALSE}
 my_table_long |>
@@ -138,7 +151,7 @@ The previous example introduced the concept of pivoting data and computing an en
 We will apply this workflow step by step with code and results provided.
 
 ### Do once
-To investigate the effect of the initial condition on the solution we will choose the initial condition from a uniform distribution between 0 and 20, shown in the following code and plotted in Figure \@ref(fig:logistic-example-rev):
+To investigate the effect of the initial condition on the solution we will choose the initial condition from a uniform distribution between 0 and 20, shown in the following code and plotted in @fig-logistic-example-rev:
 
 ```{r,eval=FALSE}
 
@@ -180,7 +193,8 @@ ggplot() +
   ) 
 ```
 
-```{r logistic-example-rev,fig.cap="Two solutions to the logistic differential equation with a random initial condition.",echo=FALSE}
+```{r,fig.cap="Two solutions to the logistic differential equation with a random initial condition.",echo=FALSE}
+#| label: fig-logistic-example-rev
 
 # Define the rate equation
 logistic_eq <- c(dx ~ r * x * (1 - x / K)) 
@@ -262,7 +276,9 @@ logistic_sim |>
 ```
 
 
-```{r logistic-example-many,fig.cap="Spaghetti plot for logistic differential equation with 500 random initial conditions.",echo=FALSE}
+```{r,fig.cap="Spaghetti plot for logistic differential equation with 500 random initial conditions.",echo=FALSE}
+#| label: fig-logistic-example-many
+
 n_sims <- 500 # The number of simulations
 
 # Compute solutions
@@ -379,7 +395,7 @@ To plot the 95% confidence interval we introduce the plot geom called `geom_ribb
 logistic_quantile |>
   ggplot() +
   geom_line(aes(x = t, y = q0.5), 
-            color = "red", size = 2, inherit.aes = FALSE
+            color = "red", linewidth = 2, inherit.aes = FALSE
             ) +
   geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),
               alpha = 0.2, fill = "red", inherit.aes = FALSE
@@ -388,11 +404,12 @@ logistic_quantile |>
   labs(x = "Time", y = "Ensemble average")
 ```
 
-```{r logistic-conf,fig.cap="Ensemble average plot for the logistic differential equation with 500 random initial conditions.",echo=FALSE}
+```{r,fig.cap="Ensemble average plot for the logistic differential equation with 500 random initial conditions.",echo=FALSE}
+#| label: fig-logistic-conf
 logistic_quantile |>
   ggplot() +
   geom_line(aes(x = t, y = q0.5), 
-            color = "red", size = 1, inherit.aes = FALSE
+            color = "red", linewidth = 1, inherit.aes = FALSE
             ) +
   geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),
               alpha = 0.2, fill = "red", inherit.aes = FALSE
@@ -416,32 +433,33 @@ Making ensemble averages isn't easy and requires strengthening your computationa
 
 ## Exercises
 <!-- EXERCISES - how are the logistic results different with varying k? varying r? what would you expect? - do a stochastic lotka-volterra or something stable (predator-prey) - find an ensemble average plot and interpret it. - do random initial conditions with neutral stability problem (birfurcation). - what if they plotted the ensemble phase plane? HMMM - bonus problem. -->
-```{exercise}
-Using the code to produce Figure \@ref(fig:logistic-conf):
+
+::: {#exr-adjust-fig-22}
+Using the code to produce @fig-logistic-conf:
   
   a. Adjust the `alpha` level to a number between 0 and 1. What does that do to the plot?
   b. Adjust the `fill` level to a color of your choosing. A list of R Colors can be found at the [R Color chart](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/).
 
-```
+:::
 
-```{exercise}
+::: {#exr-tidy-22}
 Read the Chapter 12 (tidy data) in @wickham_r_2017. In this chapter you will learn about tidy data. Explain what tidy data is and the potential uses for pivoting data wider or longer.
-```
+:::
 
-```{exercise}
+::: {#exr-doc-quant-22}
 Look at the documentation for quantile (remember you can type `?quantile` at the command line to see the associated help for this function). Change the ensemble average in `quantile_vals` to compute the 25%, 50%, and 75% percentile for `logistic_sim`. Finally, produce a ensemble average plot of this percentile.
-```
+:::
 
 
-```{exercise}
+::: {#exr-log-mod-22}
 Consider the logistic differential equation: $\displaystyle \frac{dx}{dt} = rx\left(1- \frac{x}{K}\right)$. The function `logistic_mod` below takes the initial value problem $x(0)=3$ and solves the differential equation.
 
 a. Run `logistic_mod(r=0.8,K=100)` and plot its result.
 b. Run 500 simulations with varying $r$ chosen from a uniform distribution with minimum value of 0.4 and maximum value of 1.0. Create a spaghetti and ensemble average plot. Set $K=100$.
 c. Run 500 simulations with varying $K$ chosen from a uniform distribution with minimum value of 50 and maximum value of 150. Create a spaghetti and ensemble average plot. Set $r=0.8$.
-d. Compare your results along with Figures \@ref(fig:logistic-example-many) and \@ref(fig:logistic-conf). How does randomizing the initial condition or the parameters affect the results?
+d. Compare your results along with Figures [-@fig-logistic-example-many] and [@fig-logistic-conf]. How does randomizing the initial condition or the parameters affect the results?
 
-```
+:::
 
 
 ```{r,eval=FALSE}
@@ -463,12 +481,14 @@ logistic_mod <- function(r,K) {
 }
 ```
 
-```{exercise}
+::: {#exr-pivoting-22}
 Using the data frame `my_table`, compare the following code below. The data frame `table1` is skinny and long, and the second data frame `table2` is called short and wide. Why did we need to make this data frame short and wide for plotting?
 
-```
+:::
 
-```{r code-chunk-compare,eval=FALSE}
+```{r,eval=FALSE}
+#| label: code-chunk-compare
+
 # First code chunk
 table1 <- my_table |>
   rowwise(t) |>
@@ -487,22 +507,22 @@ table2 <- my_table |>
 ```
 
 
-```{exercise}
+::: {#exr-limit-cycle-22}
 Consider the following differential equation:
 
-\begin{equation}
+$$
 \begin{split}
 \frac{dx}{dt} =-y-x(x^2+y^2-1) \\
 \frac{dy}{dt}=x-y(x^2+y^2-1)
 \end{split}
-\end{equation}
+$$
 
 a. Generate a phase plane for this differential equation. Store this phase plane in a variable called `pp1`. Set your x and y windows to be between $-1$ and $1$.
 b. The code below defines a function `limit_cycle_mod` that creates a solution trajectory of the differential equation. Super-impose a few different solution trajectories with random initial conditions onto your phase plane (`pp1`). Use initial conditions `x0` and `y0` between 0 and 1. Be sure to use the plot geom `geom_path`.
 c. Modify the code from this chapter to run 50 different simulations with random initial conditions `x0` and `y0` between 0 and 1. *Note:* It may be helpful to include the code `map(~ limit_cycle_mod(runif(1),runif(1)))`.
 d. Plot the initial conditions from your simulation onto your phase plane. Isn't the result pretty?
   
-```
+:::
 
 ```{r eval=FALSE}
 limit_cycle_mod <- function(x0,y0) {
