@@ -1,11 +1,15 @@
-# The Metropolis-Hastings Algorithm {#metropolis-12}
+# The Metropolis-Hastings Algorithm {#sec-metropolis-12}
 
-Cost or likelihood functions (Chapters \@ref(likelihood-09) and \@ref(cost-fns-10)) are a powerful approach to estimate model parameters for a dataset. Bootstrap sampling (Chapter \@ref(bootstrap-11)) is an efficient computational method to extend the reach of a dataset to estimate population level parameters. With all these elements in place we will discuss a powerful algorithm that will efficiently sample a likelihood function to estimate parameters for a model. Let's get started!
+Cost or likelihood functions (Chapters [-@sec-likelihood-09] and [-@sec-cost-fns-10]) are a powerful approach to estimate model parameters for a dataset. Bootstrap sampling (@sec-bootstrap-11) is an efficient computational method to extend the reach of a dataset to estimate population level parameters. With all these elements in place we will discuss a powerful algorithm that will efficiently sample a likelihood function to estimate parameters for a model. Let's get started!
+
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
 
 
 ## Estimating the growth of a dog
 
-In Chapter \@ref(r-intro-02) we introduced the dataset `wilson`, which reported data on the [weight of the puppy Wilson](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/) as he grew, shown again in Figure \@ref(fig:wilson-data-12). Because we will re-use the scatter plot in Figure \@ref(fig:wilson-data-12) several times, we define the variable `wilson_data_plot` so we don't have to re-copy the code over and over.^[Making a base plot and repeatedly adding to it is a really good coding practice for `R`.]
+In @sec-r-intro-02 we introduced the dataset `wilson`, which reported data on the [weight of the puppy Wilson](http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/) as he grew, shown again in @fig-wilson-data-12. Because we will re-use the scatter plot in @fig-wilson-data-12 several times, we define the variable `wilson_data_plot` so we don't have to re-copy the code over and over.^[Making a base plot and repeatedly adding to it is a really good coding practice for `R`.]
 
 ```{r eval = FALSE}
 wilson_data_plot <- ggplot(data = wilson) +
@@ -18,7 +22,8 @@ wilson_data_plot <- ggplot(data = wilson) +
 wilson_data_plot
 ```
 
-```{r wilson-data-12,fig.cap="Weight of the dog Wilson over time.",echo=FALSE}
+```{r,fig.cap="Weight of the dog Wilson over time.",echo=FALSE}
+#| label: fig-wilson-data-12
 wilson_data_plot <- ggplot(data = wilson) +
   geom_point(aes(x = days, y = weight), size = 1, color = "red") +
   labs(
@@ -39,17 +44,18 @@ wilson_data_plot <- ggplot(data = wilson) +
 wilson_data_plot
 ```
 
-Let $D$ be the days since birth and $W$ Wilson's weight in pounds, Equation \@ref(eq:wilson-sat-12) is a model that describes Wilson's weight over time:
+Let $D$ be the days since birth and $W$ Wilson's weight in pounds, @eq-wilson-sat-12 is a model that describes Wilson's weight over time:
 
-\begin{equation}
-W =f(D,p_{1})= \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}} (\#eq:wilson-sat-12)
-\end{equation}
+$$
+W =f(D,p_{1})= \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}}
+$$  {#eq-wilson-sat-12}
 
-Equation \@ref(eq:wilson-sat-12) has three different parameters $p_{1}$, $p_{2}$, and $p_{3}$ to be estimated. For convenience we will set $p_{2}= 2.461935$ and  $p_{3} = 0.017032$ and estimate $p_{1}$, which for this model represents the long-term weight for Wilson, or a horizontal asymptote for Equation \@ref(eq:wilson-sat-12) (Exercise \@ref(exr:limit-12)).
+@eq-wilson-sat-12 has three different parameters $p_{1}$, $p_{2}$, and $p_{3}$ to be estimated. For convenience we will set $p_{2}= 2.461935$ and  $p_{3} = 0.017032$ and estimate $p_{1}$, which for this model represents the long-term weight for Wilson, or a horizontal asymptote for @eq-wilson-sat-12 (@exr-limit-12).
 
-Let's take an initial guess for the parameter $p_{1}$. From Figure \@ref(fig:wilson-data-12) a reasonable guess for $p_{1}$ would be 78. As we did with Figure \@ref(fig:wilson-data-12), we are going to store the updated plot as a variable. Try this code out on your own. 
+Let's take an initial guess for the parameter $p_{1}$. From @fig-wilson-data-12 a reasonable guess for $p_{1}$ would be 78. As we did with @fig-wilson-data-12, we are going to store the updated plot as a variable. Try this code out on your own. 
 
-```{r wilson-with-guess-12,fig.cap="Weight of the dog Wilson with initial guess $p_{1}=78$.",eval = FALSE}
+```{r,fig.cap="Weight of the dog Wilson with initial guess $p_{1}=78$.",eval = FALSE}
+#| label: fig-wilson-with-guess-12
 
 # Define a data frame for W = f(D,78)
 days <- seq(0, 1500, by = 1)
@@ -76,13 +82,13 @@ my_guess_plot
 Perhaps let's try another guess for $p_{1}$ a little lower than $p_{1}=78$. Re-run the prior code, but this time set $p_{1}=65$. Does that model better represent the `wilson` data?
 
 ## Likelihood ratios for parameter estimation {#lr-12}
-We have two potential values for $p_{1}$ (78 or 65). While you may be able to decide which parameter is better "by eye", let's discuss a way to quantify this some more. How we do that is with the likelihood function for these data. We will apply the standard assumptions that the nineteen measurements of Wilson's weight over time are all independent and identically distributed, creating the following likelihood function (Equation \@ref(eq:wilson-like-12)): 
+We have two potential values for $p_{1}$ (78 or 65). While you may be able to decide which parameter is better "by eye", let's discuss a way to quantify this some more. How we do that is with the likelihood function for these data. We will apply the standard assumptions that the nineteen measurements of Wilson's weight over time are all independent and identically distributed, creating the following likelihood function (@eq-wilson-like-12): 
 
-\begin{equation}
-L(p_{1}) = \prod_{i=1}^{19} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{(W_{i}-f(D_{i},p_{1}))^{2}}{2 \sigma^{2}}} (\#eq:wilson-like-12)
-\end{equation}
+$$
+L(p_{1}) = \prod_{i=1}^{19} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{(W_{i}-f(D_{i},p_{1}))^{2}}{2 \sigma^{2}}}
+$$  {#eq-wilson-like-12}
 
-We can easily compute the associated likelihood values for Equation \@ref(eq:wilson-like-12) with the `R` function `compute_likelihood` from Chapter \@ref(likelihood-09):
+We can easily compute the associated likelihood values for @eq-wilson-like-12 with the `R` function `compute_likelihood` from @sec-likelihood-09:
 
 
 ```{r}
@@ -105,27 +111,27 @@ out_values <-
 out_values
 ```
 
-Hopefully this code seems familiar to you from Chapter \@ref(likelihood-09), but of note are the following:
+Hopefully this code seems familiar to you from @sec-likelihood-09, but of note are the following:
 
 - We want to compare two values of `p1`, so when we defined `parameters` we included the two values of $p_{1}$ when defining `parameters`. The same values of `p2` and `p3` will apply to both. Don't believe me? Type `parameters` at the console line to see!
 - Recall that when we apply `compute_likelihood` a list is returned (`likelihood` and `opt_value`). For this case we just want the `likelihood` data frame, hence the code `$likelihood` at the end of `compute_likelihood`.
 
 So we computed $L(78)$=`r out_values$l_hood[[1]]` and $L(65)$=`r out_values$l_hood[[2]]`. Since $L(65)>L(78)$ we would say $p_{65}$ is the more likely parameter value.
 
-Notice how we computed $L(65)$ and $L(78)$ separately and then compared the two values. Another approach is to examine the *ratio* of the likelihoods (Equation \@ref(eq:like-ratio-12)):
+Notice how we computed $L(65)$ and $L(78)$ separately and then compared the two values. Another approach is to examine the *ratio* of the likelihoods (@eq-like-ratio-12):
 
-\begin{equation}
-\mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) } (\#eq:like-ratio-12)
-\end{equation}
+$$
+\mbox{ Likelihood ratio: } \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }
+$$ {#eq-like-ratio-12}
 
 The utility of the likelihood ratio is that we can say that if the likelihood ratio is *greater* than 1, $p_{1}^{proposed}$ is preferred.\index{likelihood!ratio} If this ratio is *less* than 1, $p_{1}^{current}$ is preferred.
 
-Applying Equation \@ref(eq:like-ratio-12) with $p_{1}^{proposed}=65$ and $p_{1}^{current}=78$, we have $\displaystyle \frac{ L(65) }{ L(78) }=$ `r round(out_values$l_hood[[2]]/out_values$l_hood[[1]])`, further confirming $p_{1}=65$ is more likely compared to the value of $p_{1}=78$.
+Applying @eq-like-ratio-12 with $p_{1}^{proposed}=65$ and $p_{1}^{current}=78$, we have $\displaystyle \frac{ L(65) }{ L(78) }=$ `r round(out_values$l_hood[[2]]/out_values$l_hood[[1]])`, further confirming $p_{1}=65$ is more likely compared to the value of $p_{1}=78$.
 
 ### Iterative improvement with likelihood ratios
-We can improve on estimating $p_{1}$ for Equation \@ref(eq:wilson-sat-12) by continuing to compute likelihood ratios. However, since $p_{1}=65$ is the more likely value (currently), then we will set $p_{1}^{current}=65$ for Equation \@ref(eq:like-ratio-12).
+We can improve on estimating $p_{1}$ for @eq-wilson-sat-12 by continuing to compute likelihood ratios. However, since $p_{1}=65$ is the more likely value (currently), then we will set $p_{1}^{current}=65$ for @eq-like-ratio-12.
 
-To simplify things, let's define a function that will quickly compute Equation \@ref(eq:wilson-sat-12) for this dataset:
+To simplify things, let's define a function that will quickly compute @eq-wilson-sat-12 for this dataset:
 
 ```{r}
 # A function that computes the likelihood ratio for Wilson's weight
@@ -159,9 +165,11 @@ likelihood_ratio_wilson(65, 78)
 You should notice that the reported likelihood ratio matches up with our earlier computations!  Perhaps a better guess for $p_{1}$ would be somewhere between 65 and 78. Let's try to compute the likelihood ratio for $p_{1}=70$ compared to $p_{1}=65$. Try computing `likelihood_ratio_wilson(70,65)` - you should see that it is about 7.5 million times more likely!
 
 
-I think we are onto something - Figure \@ref(fig:all-three-wilson) compares the modeled values of Wilson's weight for the different parameters:
+I think we are onto something - @fig-all-three-wilson compares the modeled values of Wilson's weight for the different parameters:
 
-```{r all-three-wilson,fig.cap="Comparison of our three estimates for Wilson's weight over time.",echo=FALSE,warning=FALSE,message = FALSE}
+```{r,fig.cap="Comparison of our three estimates for Wilson's weight over time.",echo=FALSE,warning=FALSE,message = FALSE}
+#| label: fig-all-three-wilson
+
 # Define a data frame for W = f(D,65)
 days <- seq(0, 1500, by = 1)
 
@@ -172,7 +180,7 @@ mass_1 <- 78 / (1 + exp(p2 - p3 * days))
 mass_2 <- 65 / (1 + exp(p2 - p3 * days))
 mass_3 <- 70 / (1 + exp(p2 - p3 * days))
 
-my_guess_all <- tibble(days, `78` = mass_1, `65` = mass_2, `70` = mass_3) %>%
+my_guess_all <- tibble(days, `78` = mass_1, `65` = mass_2, `70` = mass_3) |>
   pivot_longer(cols = c(-"days"))
 
 # Now add our guess of p1 = 70 to the plot.
@@ -200,9 +208,9 @@ At the `R` console type `runif(1)` - this creates one random number from the uni
 The process to keep the proposed value based on some decision metric is called a *decision step*.
 
 ## The Metropolis-Hastings algorithm for parameter estimation
-Section \@ref(lr-12) outlined an iterative approach of applying likelihood ratios to estimate $p_{1}$. Let's organize all the work in a table (Table \@ref(tab:mh-table-12)).
+Section \@ref(lr-12) outlined an iterative approach of applying likelihood ratios to estimate $p_{1}$. Let's organize all the work in a table (@tbl-mh-table-12).
 
-Table: (\#tab:mh-table-12) Organizational table of Metropolis-Hastings algorithm to estimate $p_{1}$ from the `wilson` dataset.
+::: {#tbl-mh-table-12}
 
 | Iteration | Current value of $p_{1}$  | Proposed value of $p_{1}$ | $\displaystyle\frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) }$ | Value of `runif(1)` | Accept proposed $p_{1}$?
 |:------:|:-----:|:-----|:-----:|:-----:|:-----:|
@@ -212,7 +220,11 @@ Table: (\#tab:mh-table-12) Organizational table of Metropolis-Hastings algorithm
 | 3 | 70 | 74 | 0.09985308 | 0.126 | no
 | 4 | 70 | ... | ... | ... | ...
 
-Table \@ref(tab:mh-table-12) is the essence of what is called the [Metropolis-Hastings algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).\index{Metropolis-Hastings algorithm} The goal of this algorithm method is to determine the parameter set that optimizes the likelihood function, or makes the likelihood ratio greater than unity. Here are the key components for this algorithm:
+Organizational table of Metropolis-Hastings algorithm to estimate $p_{1}$ from the `wilson` dataset.
+
+:::
+
+@tbl-mh-table-12 is the essence of what is called the [Metropolis-Hastings algorithm](https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm).\index{Metropolis-Hastings algorithm} The goal of this algorithm method is to determine the parameter set that optimizes the likelihood function, or makes the likelihood ratio greater than unity. Here are the key components for this algorithm:
 
 
 1. A defined likelihood function.
@@ -225,10 +237,10 @@ Table \@ref(tab:mh-table-12) is the essence of what is called the [Metropolis-Ha
 
 
 ### Improving the Metropolis-Hastings algorithm
-We have done the Metropolis-Hastings algorithm "by hand", which may seem tedious to do, but it helps build your own iterative understanding of the underlying process. Here's the good news: we can easily automate the Metropolis-Hastings algorithm, which we will explore in Chapter \@ref(mcmc-13). To note, there are several modifications we can do to make the Metropolis-Hastings algorithm a more efficient and robust method:
+We have done the Metropolis-Hastings algorithm "by hand", which may seem tedious to do, but it helps build your own iterative understanding of the underlying process. Here's the good news: we can easily automate the Metropolis-Hastings algorithm, which we will explore in @sec-mcmc-13. To note, there are several modifications we can do to make the Metropolis-Hastings algorithm a more efficient and robust method:
 
 
-- While we have focused on implementation of the Metropolis-Hastings algorithm with one parameter, this is easily extended to sets of parameter values (e.g. estimating $p_{1}$, $p_{2}$, and $p_{3}$ in Equation \@ref(eq:wilson-sat-12)). However it may take longer to determine the global optimum because we change one parameter value at a time.
+- While we have focused on implementation of the Metropolis-Hastings algorithm with one parameter, this is easily extended to sets of parameter values (e.g. estimating $p_{1}$, $p_{2}$, and $p_{3}$ in @eq-wilson-sat-12). However it may take longer to determine the global optimum because we change one parameter value at a time.
 - As you would expect, the more times we iterate through this process, the better. Your initial guesses probably weren't that great (or close to the global optimum), so a common procedure is to throw out the first percentage of iterations and call that the "burn-in" period.
 - Different (usually in parallel) "chains" of parameter estimates are used. Each chain starts from a different starting point. Once the number of iterations is reached, the final parameter set is chosen from the chain with the optimized likelihood. The practice of running multiple chains is a safeguard to prevent the algorithm converging on a local optimum.
 - Since the likelihood ratio may generate large or small numbers, the ratio of log-likelihoods is usually implemented. A log-likelihood ratio then computes the *difference* between the proposed and current parameter values. Computing the difference between two numbers is computationally easier than dividing two numbers. Here is some sample code that implements the log-likelihood ratio:
@@ -270,45 +282,45 @@ log_likelihood_ratio_wilson <- function(proposed, current) {
 
 
 ## Exercises
-```{exercise}
+::: {#exr-lr-explain-12}
 Using `likelihood_ratio_wilson`, explain why `likelihood_ratio_wilson(65,78)`$\neq$`likelihood_ratio_wilson(78,65)`.
-```
+:::
 
 
-```{exercise limit-12}
+::: {#exr-limit-12}
 Show that $\displaystyle \lim_{D \rightarrow \infty} \frac{p_{1}}{1+e^{(p_{2}-p_{3}D)}} = p_{1}$. *Hint: use the fact that* $e^{A-B}= e^{A}e^{-B}$. Note that $p_{1}$, $p_{2}$, and $p_{3}$ are all positive parameters.
-```
+:::
 
-```{exercise}
+::: {#exr-lr-simplify-12}
 Simplify the expression $\displaystyle \ln \left( \frac{ L(p_{1}^{proposed}) }{ L(p_{1}^{current}) } \right)$.
-```
+:::
 
-```{exercise wilson-more-12}
-Using the dataset `wilson` from this chapter, complete 10 iterations of the Metropolis-Hastings algorithm by continuing Table \@ref(tab:mh-table-12). See if you can get the value of $p_{1}$ to 2 decimal places of accuracy. Be sure to include a plot of the data and the model with the final estimated value of $p_{1}$.
-```
+::: {#exr-wilson-more-12}
+Using the dataset `wilson` from this chapter, complete 10 iterations of the Metropolis-Hastings algorithm by continuing @tbl-mh-table-12. See if you can get the value of $p_{1}$ to 2 decimal places of accuracy. Be sure to include a plot of the data and the model with the final estimated value of $p_{1}$.
+:::
 
 
-```{exercise}
+::: {#exr-mh-nutrient-12}
 Apply 10 iterations of the Metropolis-Hastings Algorithm to estimate $\theta$ for the nutrient equation $\displaystyle y=1.737 x^{1/\theta}$  using the dataset `phosphorous`, where $y=$`daphnia` and $x=$`algae`. You will first need to construct a likelihood ratio similar to the function `likelihood_ratio_wilson` or `log_likelihood_ratio_wilson` in this chapter. Compare your final estimated value of $\theta$ with the data in one plot.
-```
+:::
 
 
-```{exercise}
+::: {#exr-wilson-alt-12}
 An alternative model for the dog's mass is the following differential equation:
 
-\begin{equation}
+$$
 \frac{dW}{dt} = -k (W-p_{1})
-\end{equation}
+$$
 
 
-a. Apply separation of variables and $W(0)=5$ and the value of $p_{1}$ from Exercise \@ref(exr:wilson-more-12) to determine the solution for this differential equation.
+a. Apply separation of variables and $W(0)=5$ and the value of $p_{1}$ from @exr-wilson-more-12 to determine the solution for this differential equation.
 b. Apply 10 iterations of the Metropolis-Hastings algorithm to estimate the value of $k$ to three decimal places accuracy. The true value of $k$ is between 0 and 1.
 c. Compare your final estimated value of $k$ with the data in one plot.
 
-```
+:::
 
 
-```{exercise full-linear-12}
+::: {#exr-full-linear-12}
 Consider the linear model $y=6.94+bx$ for the following dataset:
 
 
@@ -318,10 +330,10 @@ Consider the linear model $y=6.94+bx$ for the following dataset:
 
   
 Apply 10 iterations of the Metropolis-Hastings algorithm to determine $b$.
-```
+:::
 
 
 
-```{exercise}
+::: {#exr-wilson-log-12}
 For the `wilson` dataset, repeat three steps of the parameter estimation to determine $p_{1}$ as in this chapter, but this time use `log_likelihood_ratio_wilson` to estimate $p_{1}$. Which function (`likelihood_ratio_wilson` or `log_likelihood_ratio_wilson`) do you think is easier in practice?
-```
+:::
