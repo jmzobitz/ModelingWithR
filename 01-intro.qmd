@@ -67,7 +67,7 @@ $$ {#eq-00infected}
 
 The *solution* to a differential equation is a function $I(t)$. When we "solve" a differential equation we determine the family of functions consistent with our rate equation.^[You may be used to working with *algebraic equations* (e.g. solve $x^{2}-4=0$ for $x$) rather than differential equations. For algebraic equations the solution can be points (for our example, the solution to $x^2-4=0$ is $x=\pm2$).] There are a lot of techniques to solve a differential equation; we will explore some in @sec-exact-solns-07.
 
-The proportionality constant or *parameter* $k$ is important to understand the solution to @eq-00infected. Even though no numerical value for $k$ is specified, you can always solve an equation without specifying the parameter. In some situations we may not be as concerned with the particular _value_ of the parameter but rather its influence on the long-term behavior of the system (this is a key aspect of bifurcation theory\index{bifurcation} described in @sec-bifurcation-20. Otherwise we can use the collected data shown above with the given model to determine the value for $k$. This combination of a mathematical model with data is called *data assimilation* or *model-data fusion* (see [Chapters @sec-linear-regression-08-@sec-information-criteria-14]).
+The proportionality constant or *parameter* $k$ is important to understand the solution to @eq-00infected. Even though no numerical value for $k$ is specified, you can always solve an equation without specifying the parameter. In some situations we may not be as concerned with the particular _value_ of the parameter but rather its influence on the long-term behavior of the system (this is a key aspect of bifurcation theory\index{bifurcation} described in @sec-bifurcation-20. Otherwise we can use the collected data shown above with the given model to determine the value for $k$. This combination of a mathematical model with data is called *data assimilation* or *model-data fusion* (see Chapters [-@sec-linear-regression-08]-[-@sec-information-criteria-14]).
 
 
 How plausible is this first model? The first model assumes the rate of change (@eq-00infected) gets larger as the number of infected people $I$ increases. This reasoning certainly seems plausible: when there are so many people infected it can be hard to stay healthy! At some point the number of people who are *not* sick will reach zero, making the rate of infection zero (or no increase). In the case of Ebola or any other infectious disease, stringent public health measures would be enacted if the number of people infected became too large.^[The COVID-19 pandemic that began in 2020 is an example of the heroic efforts of public health officials.] Following public health measures we would expect that the rate of infection would decrease and the number of infections to slow. So perhaps another model this can capture this "slowing down" of the infection rate is more plausible. 
@@ -107,7 +107,7 @@ $$
 $$ {#eq-02coupled}
 
 
-The solution to @eq-02coupled is functions $S(t)$ and $I(t)$ that evolve over time. We don't have the tools to determine the exact solutions for @eq-02coupled yet (we will study systems like these in [Chapters @sec-linearsystems-15-@sec-bifurcation-20]). However something interesting occurs with @eq-02coupled when we add the rates $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ together (@eq-single-02):
+The solution to @eq-02coupled is functions $S(t)$ and $I(t)$ that evolve over time. We don't have the tools to determine the exact solutions for @eq-02coupled yet (we will study systems like these in Chapters [-@sec-linearsystems-15]-[-@sec-bifurcation-20]). However something interesting occurs with @eq-02coupled when we add the rates $\displaystyle \frac{dS}{dt}$ and $\displaystyle \frac{dI}{dt}$ together (@eq-single-02):
 
 $$
 \frac{dS}{dt} +  \frac{dI}{dt} = \frac{d}{dt}(S+I) = 0
@@ -319,7 +319,7 @@ ebola |>
 
 ::: {#exr-general-01}
 The general solutions for the saturating and the logistic models are:
-    $$
+$$
 \begin{split}
 \mbox{Saturating model: } & I(t) = N-(N-I_{0})e^{-kt} \\
 \mbox{Logistic model: } &  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
@@ -330,7 +330,8 @@ where $I_{0}$ is the initial number of people infected and $N$ is the overall po
 
 ::: {#exr-general-specific-01}
 The general solutions for the saturating and the logistic models are:
-    $$
+
+$$
 \begin{split}
 \mbox{Saturating model: } & I(t) = N-(N-I_{0})e^{-kt} \\
 \mbox{Logistic model: } &  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
@@ -355,7 +356,12 @@ where $I_{0}$ is the initial number of people infected and $N$ is the overall po
 
 
 \end{tikzpicture}
+
+
+
 ```
+
+
 
 ::: {#exr-simple-mig-01}
 @fig-exercise-imm shows a schematic diagram which is a variation on @fig-initial-si. In this case people are entering the the susceptible population $S$ at a rate $\beta$, so the population is not conserved. What is the coupled system of differential equations for this model?
@@ -366,8 +372,8 @@ where $I_{0}$ is the initial number of people infected and $N$ is the overall po
 ::: {#exr-sethi-01}
 A model that describes the growth of sales of a product in response to advertising is the following:
   
-  $$
-  \frac{dS}{dt} = .55\sqrt{1-S}-S,
+$$
+\frac{dS}{dt} = .55\sqrt{1-S}-S,
 $$
   where $S$ is the product's share of the market (scaled between 0 and 1) [@sethi_deterministic_1983]. Use this information to answer the following questions:
   
@@ -377,7 +383,7 @@ b. Interpret your plot to predict when the market share will be increasing and d
 c. A second campaign has the following differential equation:
 
 $$
-  \frac{dS}{dt} = .2\sqrt{1-S}-S
+\frac{dS}{dt} = .2\sqrt{1-S}-S
 $$
   
 What is the steady state value and how does it compare to the previous one?
@@ -431,11 +437,12 @@ A model for the outbreak of the flu assumes that the rate people get infected is
 :::
 
 <!-- Van den Berg page 19 -->
+
 ::: {#exr-vdb-01}
 
 (Inspired by @berg_mathematical_2011) Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of $S$ in the blood is the following:
 
-  $$
+$$
 \frac{dS}{dt} = I + p \cdot (W - S),
 $$
 where the parameter $I$ represents the active uptake of salt, $p$ is the permeability of the skin, and $W$ is the salinity in the water. Use this information to answer the following questions:
@@ -449,6 +456,7 @@ b. With the steady state solution, what parameters ($I$, $p$, or $W$) cause the 
 
 
 <!-- From LW -->
+
 ::: {#exr-immigration-01}
 (Inspired by @logan_mathematical_2009) The immigration rate of bird species (species per time) from a mainland to an offshore island is $I_{m} \cdot (1-S/P)$, where $I_{m}$ is the maximum immigration rate, $P$ is the size of the source pool of species on the mainland, and $S$ is the number of species already occupying the island. Additionally the extinction rate is $E \cdot S / P$, where $E$ is the maximum extinction rate. The growth rate of the number of species on the island is the immigration rate minus the extinction rate.
 
@@ -470,5 +478,73 @@ b. A cube (assume size is measured with length $l$)
 
 :::
 
+::: {#exr-new-rates-01}
+{{< fa burst >}} The following figure shows a diagram in which people are entering the the infected population $I$ at a rate $\gamma$, so the total population size is not constant. What is the coupled system of differential equations for this model?
+
+```{tikz,echo=FALSE,message=FALSE}
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=2cm]
+
+\node [vspecies] (S) {$S$} ;
+\node [vspecies, right of = S] (I) {$I$} ;
+\node [above of = I] (gamma) {} ;
+\draw [->,thick] (S) --  node {\small{$k$}} (I) ;
+\draw [->,thick] (gamma) --  node {\small{$\gamma$}} (I) ;
 
 
+\end{tikzpicture}
+```
+
+:::
+
+
+::: {#exr-adele-01}
+u
+{{< fa burst >}} The singer Adele was correct - ["Rumor has it."](https://youtu.be/A8IRqCJVkOo?si=yeBf6_KwyXptrojP) The spread of a rumor through a population can be modeled with a differential equation. The following differential equation describes the rate of change in the proportion of the people who know the rumor $R$ as the time $t$ increases (in hours:)
+
+$$
+\begin{split}
+    \mbox{Saturating model: } & R(t) = 1-0.8e^{-0.6t} \\
+    \mbox{Logistic model: } &  R(t) = \frac{0.2 }{0.2+0.8e^{-0.6t}},
+\end{split}
+$$
+
+a.  For both models, what is the value long term value $N$ (i.e. $\displaystyle \lim_{t \rightarrow \infty} I(t)$)?
+b.  What is the initial value $I_{0}$?
+c.  Plot the saturating and logistic models and include a careful sketch in your solution, showing all the limiting behavior. Which model makes more sense to you?
+
+:::
+
+
+<!-- See hansen_long-term_2020 for excess herpes mortality, shkolnikov_what_2022 baseline mortality, ayoub_characterizing_2019 for incidence (beta) and  Jones-on-R0.pdf for background on the SI model.  -->
+
+::: {#exr-herpes-01}
+{{< fa burst >}} An important parameter in modeling the spread of diseases is the $R_{0}$, which represents if a disease will become an epidemic. If $R_{0}>1$, then the disease will become an epidemic. If $R_{0}<1$, then it will not. For a disease like Herpes, one model is a susceptible - infected ($SI$) model, assuming there is no recovery from Herpes. For this case, an expression for $R_{0}$ is the the following:\
+
+$$
+R_{0} = \frac{\beta}{\mu + \delta},
+$$
+
+where $\beta$ represents the rate of transmission, $\mu$ the baseline mortality rate, and $\delta$ the mortality rate induced by the disease.
+
+a.  Let $\mu = \frac{1}{1000}$ and $\delta = \frac{1.193}{1000}$. Plot $R_{0}$ as a function $\beta$ and include your plot in the response. Make sure $0 \leq R_{0} \leq 2$. (You will need to find an appropriate window for $\beta$.). What is the threshold value for $\beta$ for an epidemic?
+b.  Let $\mu = \frac{1}{1000}$ and $\beta = \frac{2}{100}$. Plot $R_{0}$ as a function $\delta$ and include your plot in the response. Make sure $0 \leq R_{0} \leq 2$. (You will need to find an appropriate window for $\delta$.). What is the threshold value for $\delta$ for an epidemic?
+
+:::
+
+
+::: {#exr-adver-redux-1}
+
+{{< fa burst >}} Another example of an advertising model is
+
+$$
+\frac{dS}{dt} = \frac{rU}{M}(M-S) - \lambda S,
+$$
+
+where $S$ is the product's share of the market (scaled between 0 and 1), $r$ is the response to advertising, $U$ is the advertising expenditure, $M$ is the fixed market potential of the product $S$, and $\lambda$ is the decay rate for market share.
+
+a.  Solve $\displaystyle \frac{dS}{dt}$ for the steady state value (where $\displaystyle \frac{dS}{dt}=0$). Your final answers should be expressed in terms of the parameters. Show your work.
+b.  Using your expression for the steady state value from (a), evaluate what happens to the steady state in the extreme cases when $M=0$ or $M=1$. Is it possible to get 100% of the market share ($S=1$) when you have the ability to have 100% of the market ($M=1$)?
+c.  Using your expression for the steady state value from (a), evaluate what happens to the steady state as $U$ grows large (in other words, you spend as much on advertising as possible, or $U \rightarrow \infty$). Why does that answer make sense in the context of the problem?
+:::
