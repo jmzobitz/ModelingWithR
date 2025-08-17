@@ -30,7 +30,7 @@ $$ {#eq-compete-03}
 
 You may recognize that @eq-compete-03 is similar to @eq-single-02 in @sec-intro-01 for the spread of Ebola. It is not surprising to have similar differential equations appear in different contexts. We will see throughout this book that it is more advantageous to learn techniques to analyze models qualitatively rather than memorize several different types of models and not see the connections between them.
 
-An interesting solution to a differential equation is the _steady state_ or _equilibrium solution_.\index{steady state}\index{#equilibrium solution}  Equilibrium solutions occur where the rates of change are zero. For @eq-compete-03, this means that we are solving $\displaystyle \frac{dN}{dt} = \alpha \cdot (E-N)  = 0$. Granted, the expression $\alpha \cdot (E-N)$ may look like alphabet soup, but it is helpful to remember that $\alpha$ and $E$ are both parameters; the steady state occurs when the expression $E-N$ equals zero, or when $N = E$. We may consider the new species $N$ to be established when it reaches the same population level as $E$. Identifying steady states in a model aids in understanding the behavior of any solutions for a differential equation. [Chapters @sec-phase-05 and @sec-coupled-06] dig deeper into steady states and their calculation.
+An interesting solution to a differential equation is the _steady state_ or _equilibrium solution_.\index{steady state}\index{#equilibrium solution}  Equilibrium solutions occur where the rates of change are zero. For @eq-compete-03, this means that we are solving $\displaystyle \frac{dN}{dt} = \alpha \cdot (E-N)  = 0$. Granted, the expression $\alpha \cdot (E-N)$ may look like alphabet soup, but it is helpful to remember that $\alpha$ and $E$ are both parameters; the steady state occurs when the expression $E-N$ equals zero, or when $N = E$. We may consider the new species $N$ to be established when it reaches the same population level as $E$. Identifying steady states in a model aids in understanding the behavior of any solutions for a differential equation. Chapters [-@sec-phase-05] and [-@sec-coupled-06] dig deeper into steady states and their calculation.
 
 ## The Law of Mass Action
 Our next example focuses on how to generate a model that borrows concepts from modeling chemical reactions. For example let's say you have a substrate *A* that reacts with enzyme *B* to form a product *S*. One common way to represent this process is with a reaction equation (@eq-reaction-03):\index{reaction equation}
@@ -458,5 +458,48 @@ f. The rate that a virus is spread to the population is proportional to the prob
 <!-- From Burnham and Anderson pg 135 of pdf -->
 ::: {#exr-burn-and-03}
 (Inspired by @burnham_model_2002) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in @fig-pesticide-ch3, where $F$ represents the amount of pesticide in the fish, $W$ the amount of pesticide in the water, and $S$ the amount of pesticide in the soil. The prime (e.g. $F'$, $W'$, and $S'$ represent other bound forms of the respective state). In all seven different models can be derived. For each of the model schematics, apply the Law of Mass Action to write down a system of differential equations.
+:::
+
+
+::: {#exr-microbe-rates-03}
+
+{{< fa burst >}} You are tasked with developing models for soil carbon dynamics. Different types of reaction schemes for this system are shown in the figure below, where $S$ represents the amount of carbon in the soil, $M$ the amount of carbon in soil microbes, $R$ the amount of carbon in tree roots, and $A$ the amount of carbon in the atmosphere. For each of the model schematics in the figure below, apply the Law of Mass Action to write down a system of differential equations.
+
+```{tikz,warning=FALSE,message=FALSE,echo=FALSE,fig.cap="Modeled reaction schemes representing soil carbon dynamics."}
+
+
+\tikzstyle{vspecies}=[rectangle,minimum size=0.5cm,draw=black]
+\begin{tikzpicture}[auto, outer sep=1pt, node distance=1.5cm]
+
+%% Model 1  Null
+\node [vspecies] (R) {$R$} ;
+\node [vspecies, right of = R] (S) {$S$} ;
+\node [vspecies, above of = R] (A) {$A$} ;
+\node [vspecies, above of = A,node distance = 1cm] (model) {\textbf{Null Model}};
+\draw [->] ([yshift=3pt]R.east) --  node[below] {\small{$k_R$}} ([yshift=3pt]S.west) ;
+
+\draw [->] ([xshift=0]S.north) --  node[right] {\small{$k_S$}} ([xshift=0pt]A.east) ;
+\draw [->] ([xshift=0]A.south) --  node[left] {\small{$k_A$}} ([xshift=0pt]R.north) ;
+
+
+%%% Model 2  Microbe
+\node [vspecies, right of = A, node distance = 6 cm] (A2) {$A$} ;
+\node [vspecies, below of = A2] (S2) {$S$} ;
+\node [vspecies, left of = S2] (R2) {$R$} ;
+\node [vspecies, left of = R2] (M2) {$M$} ;
+\node [vspecies, above of = R2,node distance = 2.5cm] (model2) {\textbf{Microbe Model}};
+\draw [->] ([xshift=0]S2.north) --  node[right] {\small{$k_S$}} ([xshift=0pt]A2.south) ;
+\draw [->] ([yshift=3pt]R2.east) --  node[below] {\small{$\delta_R$}} ([yshift=3pt]S2.west) ;
+\draw [->] ([yshift=3pt]R2.west) --  node[below] {\small{$k_R$}} ([yshift=3pt]M2.east) ;
+\draw [->] ([xshift=0]A2.west) --  node[left] {\small{$k_A$}} ([xshift=0pt]R2.north) ;
+\draw [->] ([xshift=0]A2.west) --  node[left] {\small{$k_M$}} ([xshift=0pt]M2.north) ;
+
+
+
+
+\end{tikzpicture}
+```
+
+
 :::
 
