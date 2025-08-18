@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 26&nbsp; Statistics of a Stochastic Differential Equation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./27-solvingSDEs.html" rel="next">
+<link href="./25-sdes.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p04-stochastic.html">Stochastic Differential Equations</a></li><li class="breadcrumb-item"><a href="./26-birthDeath.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#expected-value-of-a-stochastic-process" id="toc-expected-value-of-a-stochastic-process" class="nav-link active" data-scroll-target="#expected-value-of-a-stochastic-process"><span class="header-section-number">26.1</span> Expected value of a stochastic process</a>
+  <ul class="collapse">
+  <li><a href="#a-purely-stochastic-process" id="toc-a-purely-stochastic-process" class="nav-link" data-scroll-target="#a-purely-stochastic-process"><span class="header-section-number">26.1.1</span> A purely stochastic process</a></li>
+  <li><a href="#stochastics-with-drift" id="toc-stochastics-with-drift" class="nav-link" data-scroll-target="#stochastics-with-drift"><span class="header-section-number">26.1.2</span> Stochastics with drift</a></li>
+  </ul></li>
+  <li><a href="#birth-death-processes" id="toc-birth-death-processes" class="nav-link" data-scroll-target="#birth-death-processes"><span class="header-section-number">26.2</span> Birth-death processes</a></li>
+  <li><a href="#wrapping-up" id="toc-wrapping-up" class="nav-link" data-scroll-target="#wrapping-up"><span class="header-section-number">26.3</span> Wrapping up</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">26.4</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p04-stochastic.html">Stochastic Differential Equations</a></li><li class="breadcrumb-item"><a href="./26-birthDeath.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-simul-stoch-26" class="quarto-section-identifier"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="25-sdes.html" class="quarto-xref"><span>Chapter 25</span></a> you explored ways to incorporate stochastic processes into a differential equation. The workflow (Do once <span class="math inline">\(\rightarrow\)</span> Do several times <span class="math inline">\(\rightarrow\)</span> Summarize <span class="math inline">\(\rightarrow\)</span> Visualize) generated ensemble averages of several different realizations of a stochastic process, which allowed you to visually characterize the solution.</p>
+<p>The ensemble average indicates that the solution to a stochastic process is a probability distribution (similar to what we studied in <a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a>). More importantly, this probability distribution may evolve and change in time. This chapter examines how this distribution changes in time by computing statistics from these stochastic processes. Additionally we will also investigate stochastic processes with tools from Markov modeling (such as the random walk mathematics from <a href="23-randomWalks.html" class="quarto-xref"><span>Chapter 23</span></a>. Let’s get started!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses following libraries: <code>ggplot2</code>, <code>purrr</code>, and <code>dplyr</code> (all part of the <code>tidyverse</code>) and data tables from <code>demodelr</code>. See <a href="02-Rintro.html#sec-packages-02" class="quarto-xref"><span>Section 2.3</span></a> on how to install packages. Prior to running any code in this section, include <code>library(tidyverse)</code> and <code>library(demodelr)</code>.</p>
+</div>
+</div>
+<section id="expected-value-of-a-stochastic-process" class="level2" data-number="26.1">
+<h2 data-number="26.1" class="anchored" data-anchor-id="expected-value-of-a-stochastic-process"><span class="header-section-number">26.1</span> Expected value of a stochastic process</h2>
+<p><a href="25-sdes.html" class="quarto-xref"><span>Chapter 25</span></a> introduced a general form of a stochastic differential equation for a single variable <span class="math inline">\(X\)</span>:</p>
+<p><span id="eq-general-sde-26"><span class="math display">\[
+dX = a(X,t) \; dt + b(X,t) \, dW(t)
+\tag{26.1}\]</span></span></p>
+<p>We will now look at a few idealized examples of <a href="#eq-general-sde-26" class="quarto-xref">Equation&nbsp;<span>26.1</span></a> to understand the behavior of simulated solutions.</p>
+<section id="a-purely-stochastic-process" class="level3" data-number="26.1.1">
+<h3 data-number="26.1.1" class="anchored" data-anchor-id="a-purely-stochastic-process"><span class="header-section-number">26.1.1</span> A purely stochastic process</h3>
+<p>The first example is when <span class="math inline">\(a(X,t)=0\)</span> and <span class="math inline">\(b(X,t)=1\)</span> (a constant) in <a href="#eq-general-sde-26" class="quarto-xref">Equation&nbsp;<span>26.1</span></a>, so <span class="math inline">\(\displaystyle dX =  dW(t)\)</span>. We call this example a purely stochastic process. Let’s code this up using the function <code>sde</code> to examine one realization (<a href="#fig-b-once" class="quarto-xref">Figure&nbsp;<span>26.1</span></a>) with <span class="math inline">\(\Delta t =0.2\)</span> and <span class="math inline">\(X(0)=0\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sde <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set up vector of results</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Iterate through this random process.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the time vector</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out) <span class="sc">+</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-b-once" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-b-once-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-b-once-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-b-once-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.1: One realization of the stochastic differential equation <span class="math inline">\(dX = 2 \; dW(t)\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s highlight two parts from the function <code>sde</code>:</p>
+<ol type="1">
+<li>Notice the line <code>x[i] &lt;- x[i-1] + rnorm(1)*sqrt(dt)</code> where we iterate through the random process with the term <span class="math inline">\(\sqrt{dt}\)</span>, similar to what we did in <a href="25-sdes.html" class="quarto-xref"><span>Chapter 25</span></a>.</li>
+<li>To produce the correct time intervals in <a href="#fig-b-once" class="quarto-xref">Figure&nbsp;<span>26.1</span></a> we defined a time vector: <code>t &lt;- seq(0,length.out=number_steps,by=dt)</code>.</li>
+</ol>
+<p>When we repeat this process several times and plot of the results, we have the following ensemble average in <a href="#fig-b-many" class="quarto-xref">Figure&nbsp;<span>26.2</span></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sde_run <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span>n_sims, <span class="sc">~</span> <span class="fu">list</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">"sim"</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">"simulation"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>summarized_sde <span class="ot">&lt;-</span> sde_run <span class="sc">|&gt;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">|&gt;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># remove NA values</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"q_name"</span>, <span class="at">values_from =</span> <span class="st">"q_val"</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"q{q_name}"</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the plot</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde) <span class="sc">+</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-b-many" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-b-many-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-b-many-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-b-many-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.2: Ensemble average of 1000 realizations of the stochastic differential equation <span class="math inline">\(dX = dW(t)\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>I sure hope (again!) the results are very similar to ones generated in Chapters <a href="23-randomWalks.html" class="quarto-xref"><span>23</span></a> and <a href="24-diffusion.html" class="quarto-xref"><span>24</span></a> (especially Figures <a href="23-randomWalks.html#fig-ensemble-ave-23" class="quarto-xref"><span>23.4</span></a> and <a href="24-diffusion.html#fig-ensemble-ave-24" class="quarto-xref"><span>24.4</span></a>) - this is no coincidence! <a href="24-diffusion.html#fig-ensemble-ave-24" class="quarto-xref">Figure&nbsp;<span>24.4</span></a> is another simulation of Brownian motion with <span class="math inline">\(D = 1/2\)</span>.</p>
+</section>
+<section id="stochastics-with-drift" class="level3" data-number="26.1.2">
+<h3 data-number="26.1.2" class="anchored" data-anchor-id="stochastics-with-drift"><span class="header-section-number">26.1.2</span> Stochastics with drift</h3>
+<p>The second example is a modification where <span class="math inline">\(a(X,t)=2\)</span> and <span class="math inline">\(b(X,t)=1\)</span> in <a href="#eq-general-sde-26" class="quarto-xref">Equation&nbsp;<span>26.1</span></a>, yielding <span class="math inline">\(\displaystyle dX = 2 \; dt + dW(t)\)</span>. To simulate this stochastic process you can easily modify this approach by modifying the function <code>sde</code>, which I will call <code>sde_v2</code>. The code to simulate the stochastic process and visualize the ensemble average (<a href="#fig-a-ensemble" class="quarto-xref">Figure&nbsp;<span>26.3</span></a>) is shown below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sde_v2 <span class="ot">&lt;-</span> <span class="cf">function</span>(number_steps, dt) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># The value of b</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># The initial condition</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Set up vector of results</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">array</span>(x0, <span class="at">dim =</span> number_steps)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>number_steps) {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    x[i] <span class="ot">&lt;-</span> x[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> a <span class="sc">*</span> dt <span class="sc">+</span> b <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the time vectror</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># The number of simulations</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>sde_v2_run <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span>n_sims, <span class="sc">~</span> <span class="fu">list</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">"sim"</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">|&gt;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">sde_v2</span>(<span class="dv">1000</span>, .<span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">"simulation"</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="do">### Summarize the variables</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>summarized_sde_v2 <span class="ot">&lt;-</span> sde_v2_run <span class="sc">|&gt;</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">|&gt;</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span> <span class="co"># Remove NA values</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"q_name"</span>, <span class="at">values_from =</span> <span class="st">"q_val"</span>,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"q{q_name}"</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="do">### Make the plot</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_sde_v2) <span class="sc">+</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>)) <span class="sc">+</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-a-ensemble" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-a-ensemble-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-a-ensemble-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-a-ensemble-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.3: Ensemble average of 1000 realizations of the stochastic process <span class="math inline">\(dX = 2 \; dt + dW(t)\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-a-ensemble" class="quarto-xref">Figure&nbsp;<span>26.3</span></a>, the median seems to follow a straight line. Approximating the final position of the median at <span class="math inline">\(t=200\)</span> and <span class="math inline">\(X=400\)</span>, the slope of this line <span class="math inline">\(\displaystyle \frac{\Delta X}{\Delta t} \approx \frac{400}{200} = 2\)</span>. So we could say that the median of this distribution follows the line <span class="math inline">\(X=2t\)</span>. I recognize the ensemble average computes the <em>median</em> which is not the <em>average</em>. Because we are simulating this process with random variables drawn from a normal distribution we assume the median approximates the average.</p>
+<p>Let’s generalize the lessons learned from these examples. The solution to the SDE <span class="math inline">\(\displaystyle dX = a(X,t) \; dt + b(X,t) \, dW(t)\)</span> is probability distribution <span class="math inline">\(p(X,t)\)</span>. The expected value, <span class="math inline">\(\mu\)</span>, is denoted as <span class="math inline">\(E[p(X,t)]\)</span>. The solution to the differential equation <span class="math inline">\(\displaystyle dX = a(X,t) \; dt\)</span> equals the expected value <span class="math inline">\(\mu\)</span>. This result should make some intuitive sense: stochastic differential equations should - on the average - converge to the deterministic solution.</p>
+<p>The variance is a little harder to compute as the definition of the variance of a random variable <span class="math inline">\(Y\)</span> is <span class="math inline">\(\displaystyle \sigma^{2} = E[(Y - \mu)^{2}] = \sigma^{2}= E[Y^{2}] - (E[Y] )^{2}\)</span>. However, what we <em>can</em> say is that the variance should be proportional (in some way) to <span class="math inline">\(b(X,t) \; dt\)</span>. In both our cases studied here <span class="math inline">\(b(X,t)=1\)</span>, so we can infer that the variance grows in time.</p>
+</section>
+</section>
+<section id="birth-death-processes" class="level2" data-number="26.2">
+<h2 data-number="26.2" class="anchored" data-anchor-id="birth-death-processes"><span class="header-section-number">26.2</span> Birth-death processes</h2>
+<p>In <a href="21-stochasticSystems.html" class="quarto-xref"><span>Chapter 21</span></a> we examined a model of moose population dynamics with stochastic population fluctuations. In many biological contexts this makes sense: rarely do biological processes follow a deterministic curve. On the other hand, models usually start with a differential equation. What are we to do?</p>
+<p>To reconcile this, another way to generate a stochastic process is through consideration of the differential equation itself. Let’s go back to the logistic population model but re-written in a specific way (<a href="#eq-log-sde-26" class="quarto-xref">Equation&nbsp;<span>26.2</span></a>).</p>
+<p><span id="eq-log-sde-26"><span class="math display">\[
+\frac{dx}{dt} = r x \left( 1 - \frac{x}{K} \right) = r x - \frac{rx^{2}}{K}
+\tag{26.2}\]</span></span></p>
+<p>From <a href="#eq-log-sde-26" class="quarto-xref">Equation&nbsp;<span>26.2</span></a>, we can obtain a change in the variable <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(\Delta x\)</span>) over <span class="math inline">\(\Delta t\)</span> units by re-writing the differential equation in differential form:</p>
+<p><span id="eq-log-sde-diff-26"><span class="math display">\[
+\Delta x = r x \Delta t - \frac{rx^{2}}{K} \Delta t
+\tag{26.3}\]</span></span></p>
+<p><a href="#eq-log-sde-diff-26" class="quarto-xref">Equation&nbsp;<span>26.3</span></a> is separated into two terms - one that increases the variable <span class="math inline">\(x\)</span> (represented by <span class="math inline">\(r x \Delta t\)</span>, the same units as <span class="math inline">\(x\)</span>) and one that decreases the variable (represented by <span class="math inline">\(\displaystyle \frac{rx^{2}}{K} \Delta t\)</span>, the same units as <span class="math inline">\(x\)</span>). We will consider these changes in <span class="math inline">\(x\)</span> with the associated Markov random variable <span class="math inline">\(\Delta X\)</span> organized in <a href="#tbl-probability-tab-26" class="quarto-xref">Table&nbsp;<span>26.1</span></a>. (It is okay and understandable if you envison <span class="math inline">\(\Delta x\)</span> and <span class="math inline">\(\Delta X\)</span> as conceptually similar.)</p>
+<div id="tbl-probability-tab-26" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-probability-tab-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;26.1: Unit increment changes for the Markov variable <span class="math inline">\(\Delta x\)</span>, based on <a href="#eq-log-sde-diff-26" class="quarto-xref">Equation&nbsp;<span>26.3</span></a>.
+</figcaption>
+<div aria-describedby="tbl-probability-tab-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Outcome</th>
+<th>Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Delta X = 1\)</span> (population change by 1)</td>
+<td><span class="math inline">\(r X \; \Delta t\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Delta X = -1\)</span> (population change by <span class="math inline">\(-1\)</span>)</td>
+<td><span class="math inline">\(\displaystyle \frac{rX^{2}}{K} \; \Delta t\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Delta X = 0\)</span> (no population change)</td>
+<td><span class="math inline">\(\displaystyle 1 - rX \; \Delta t - \frac{rX^{2}}{K} \; \Delta t\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>It also may be helpful to think of these changes on the following number line (<a href="#fig-random-walk-stoch-26" class="quarto-xref">Figure&nbsp;<span>26.4</span></a>), similar to how we examined the random walk number line (or Markov process) from <a href="23-randomWalks.html" class="quarto-xref"><span>Chapter 23</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-random-walk-stoch-26" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-random-walk-stoch-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-random-walk-stoch-26-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-random-walk-stoch-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.4: A random walk for Equation @ref(eq:log-sde-diff-26).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>It may seem odd to think of the different outcomes (<span class="math inline">\(\Delta X\)</span> equals 1, <span class="math inline">\(-1\)</span>, or 1) as probabilities. Assuming that the time interval <span class="math inline">\(\Delta t\)</span> is small enough, this won’t be a numerical difficulty. Let’s compute <span class="math inline">\(E[\Delta X]\)</span> and the variance <span class="math inline">\(\sigma^{2}\)</span> as we did in <a href="23-randomWalks.html" class="quarto-xref"><span>Chapter 23</span></a>. The computation of <span class="math inline">\(\mu\)</span> is shown in <a href="#eq-log-sde-mu-26" class="quarto-xref">Equation&nbsp;<span>26.4</span></a>.</p>
+<p><span id="eq-log-sde-mu-26"><span class="math display">\[
+\begin{split}
+\mu = E[\Delta X] &amp;= (1) \cdot \mbox{Pr}(\Delta X = 1) + (- 1) \cdot \mbox{Pr}(\Delta X = -1)  + (0) \cdot \mbox{Pr}(\Delta X = 0) \\
+&amp;= (1) \cdot \left( r X \; \Delta t \right) + (-1)  \frac{rX^{2}}{K} \; \Delta t \\
+&amp;= r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t
+\end{split}
+\tag{26.4}\]</span></span></p>
+<p>Observe that the right hand side of <a href="#eq-log-sde-mu-26" class="quarto-xref">Equation&nbsp;<span>26.4</span></a> is similar to the right hand side of the original differential equation (<a href="#eq-log-sde-diff-26" class="quarto-xref">Equation&nbsp;<span>26.3</span></a>))!</p>
+<p>Next let’s also calculate the variance of <span class="math inline">\(\Delta X\)</span> (<a href="#eq-log-sde-sigma-26" class="quarto-xref">Equation&nbsp;<span>26.5</span></a>).</p>
+<p><span id="eq-log-sde-sigma-26"><span class="math display">\[
+\begin{split}
+\sigma^{2} &amp;= E[(\Delta X)^{2}] - (E[\Delta X] )^{2} \\
+&amp;= (1)^{2} \cdot \mbox{Pr}(\Delta X = 1) + (- 1)^{2} \cdot \mbox{Pr}(\Delta X = -1)  + (0)^{2} \cdot \mbox{Pr}(\Delta X = 0) - (E[\Delta X] )^{2} \\
+&amp;= (1) \cdot \left( r X \; \Delta t \right) + (1)  \frac{rX^{2}}{K} \; \Delta t  - \left( r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t \right)^{2}
+\end{split}
+\tag{26.5}\]</span></span></p>
+<p>Notice the term <span class="math inline">\(\displaystyle \left( r X \; \Delta t - \frac{rX^{2}}{K} \; \Delta t \right)^{2}\)</span> in <a href="#eq-log-sde-sigma-26" class="quarto-xref">Equation&nbsp;<span>26.5</span></a>. While this may seem complicated, we are going to simplify things by only computing the variance to the first order in <span class="math inline">\(\Delta t\)</span>. Because of that, we are going to assume that in <span class="math inline">\(\sigma^{2}\)</span> any terms involving <span class="math inline">\((\Delta t)^{2}\)</span> are small, or in effect negligible. While this is a huge simplifying assumption for the variance, it is useful!</p>
+<p>The combination of the mean (<a href="#eq-log-sde-mu-26" class="quarto-xref">Equation&nbsp;<span>26.4</span></a>) and variance (<a href="#eq-log-sde-sigma-26" class="quarto-xref">Equation&nbsp;<span>26.5</span></a>) yields the stochastic process in <a href="#eq-log-markov-26" class="quarto-xref">Equation&nbsp;<span>26.6</span></a>.</p>
+<p><span id="eq-log-markov-26"><span class="math display">\[
+\begin{split}
+dX &amp;= \mu + \sigma \; dW(t) \\
+&amp;= \left( r X - \frac{rX^{2}}{K} \right) \; dt + \sqrt{\left(  r X  +  \frac{rX^{2}}{K}  \right)} \; dW(t)
+\end{split}
+\tag{26.6}\]</span></span></p>
+<p>To simulate this stochastic process we will modify <code>euler_stochastic</code> from <a href="25-sdes.html" class="quarto-xref"><span>Chapter 25</span></a>, appending <code>_log</code> to denote “logistic” for each of the parts and applying the workflow (Do once <span class="math inline">\(\rightarrow\)</span> Do several times <span class="math inline">\(\rightarrow\)</span> Summarize <span class="math inline">\(\rightarrow\)</span> Visualize). One realization of this stochastic process is shown in <a href="#fig-log-sde-26" class="quarto-xref">Figure&nbsp;<span>26.5</span></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the birth and death parts of the DE:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>deterministic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> r <span class="sc">*</span> x <span class="sc">-</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>stochastic_rate_log <span class="ot">&lt;-</span> <span class="fu">c</span>(dx <span class="sc">~</span> <span class="fu">sqrt</span>(r <span class="sc">*</span> x <span class="sc">+</span> r <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> K))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the initial condition and any parameters</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>init_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">x =</span> <span class="dv">3</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>parameters_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">r =</span> <span class="fl">0.8</span>, <span class="at">K =</span> <span class="dv">100</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify how long we run the simulation</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>deltaT_log <span class="ot">&lt;-</span> .<span class="dv">05</span> <span class="co"># timestep length</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>time_steps_log <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="co"># must be a number greater than 1</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the diffusion coefficient</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>D_log <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Do one simulation of this differential equation</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>out_log <span class="ot">&lt;-</span> <span class="fu">euler_stochastic</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">initial_condition =</span> init_log,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> D_log</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out the solution</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> out_log) <span class="sc">+</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-log-sde-26" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-log-sde-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-log-sde-26-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-log-sde-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.5: One realization of <a href="#eq-log-markov-26" class="quarto-xref">Equation&nbsp;<span>26.6</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The following code will produce a spaghetti plot from 100 different simulations. Try this code out on your own.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Many solutions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># The number of simulations</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute solutions</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>logistic_sim_r <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span>n_sims, <span class="sc">~</span> <span class="fu">list</span>())  <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">paste0</span>(<span class="st">"sim"</span>, <span class="dv">1</span><span class="sc">:</span>n_sims)) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">euler_stochastic</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">deterministic_rate =</span> deterministic_rate_log,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">stochastic_rate =</span> stochastic_rate_log,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">initial_condition =</span> init_log,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">parameters =</span> parameters_log,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">deltaT =</span> deltaT_log,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_steps =</span> time_steps_log,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">D =</span> D_log</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span>.x, <span class="at">.id =</span> <span class="st">"simulation"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot these all together</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> logistic_sim_r) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x, <span class="at">color =</span> simulation)) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, <a href="#fig-ensemble-r-26" class="quarto-xref">Figure&nbsp;<span>26.6</span></a> displays the ensemble average plot from all the simulations. <a href="#fig-ensemble-r-26" class="quarto-xref">Figure&nbsp;<span>26.6</span></a> also includes the solution to the the logistic differential equation for comparison.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Quantiles and summarize</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>quantile_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the variables</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>summarized_logistic <span class="ot">&lt;-</span> logistic_sim_r <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(t) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_val =</span> <span class="fu">quantile</span>(x, <span class="co"># x is the column to compute the quantiles</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">probs =</span> quantile_vals,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_name =</span> quantile_vals</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"q_name"</span>, <span class="at">values_from =</span> <span class="st">"q_val"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"q{q_name}"</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>logistic_solution <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">97</span> <span class="sc">/</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.8</span> <span class="sc">*</span> t))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the plot</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> summarized_logistic) <span class="sc">+</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> q0<span class="fl">.5</span>), </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">ymin =</span> q0<span class="fl">.025</span>, <span class="at">ymax =</span> q0<span class="fl">.975</span>), </span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">fill =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> logistic_solution, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> x), </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ensemble-r-26" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ensemble-r-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="26-birthDeath_files/figure-html/fig-ensemble-r-26-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ensemble-r-26-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.6: Ensemble average of 100 simulations of <a href="#eq-log-markov-26" class="quarto-xref">Equation&nbsp;<span>26.6</span></a> (in red). The red line represents the median with the shading the 95% confidence interval. For comparison, the deterministic solution to the logistic differential equation is the dashed black curve.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Awesome! Notice how the median in the ensemble average plot in <a href="#fig-ensemble-r-26" class="quarto-xref">Figure&nbsp;<span>26.6</span></a> closely tracks the deterministic solution.</p>
+<p>The types of stochastic processes we are describing in this chapter are called “birth-death” processes. Here is another way to think about <a href="#eq-log-sde-diff-26" class="quarto-xref">Equation&nbsp;<span>26.3</span></a>:</p>
+<p><span id="eq-birth-death-log-26"><span class="math display">\[
+\begin{split}
+r x \; \Delta t   &amp;= \alpha(x) \\
+\frac{rx^{2}}{K} \; \Delta t &amp;= \delta(x)
+\end{split}
+\tag{26.7}\]</span></span></p>
+<p>In this way, we think of <span class="math inline">\(\alpha(x)\)</span> in <a href="#eq-birth-death-log-26" class="quarto-xref">Equation&nbsp;<span>26.7</span></a> as a “birth process” and <span class="math inline">\(\delta(x)\)</span> as a “death process”. When we computed the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> for <a href="#eq-log-sde-diff-26" class="quarto-xref">Equation&nbsp;<span>26.3</span></a> we had the mean <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and variance <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span>. (You should double check to make sure this is the case!). Here is an interesting fact: <span class="math inline">\(\mu = \alpha(x)-\delta(x)\)</span> and <span class="math inline">\(\sigma^{2}=\alpha(x)+\delta(x)\)</span> hold up for <em>any</em> differential equation where we have identified a birth (<span class="math inline">\(\alpha(x)\)</span>) or death (<span class="math inline">\(\delta(x)\)</span>) process.</p>
+<p>Generalizing birth-death processes for a system of differential equations is a little more involved as there are more possibilities involved when computing <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. We don’t tackle this complexity here, but some considerations are thinking through <em>all</em> possible combinations of increase or decrease in the variables. For example, one variable could increase where the other decreases, both could increase, or one variable decreases and the other remains the same. In addition, the standard deviation is computed by the square root of the variance, and for a linear system of equations the matrix square root involves matrix decompositions. If you are curious to know more, see <span class="citation" data-cites="logan_mathematical_2009">Logan and Wolesensky (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span> for more information on implementing birth-death processes for a system of differential equations.</p>
+</section>
+<section id="wrapping-up" class="level2" data-number="26.3">
+<h2 data-number="26.3" class="anchored" data-anchor-id="wrapping-up"><span class="header-section-number">26.3</span> Wrapping up</h2>
+<p>In the exercises for this chapter you will solve problems involving applications of stochastic processes in biological contexts. The nice part is that the framework presented here generalizes to several other contexts where a stochastic process can be identified. This chapter contained several key points about statistics for the SDE <span class="math inline">\(dX = a(X,t) \; dt + b(X,t) \; dW(t)\)</span> and its solution <span class="math inline">\(p(X,t)\)</span>, summarized below:</p>
+<ul>
+<li>The solution of the deterministic equation <span class="math inline">\(dX = a(X,t) \; dt\)</span> equals <span class="math inline">\(E[p(X,t)]\)</span>. The variance is proportional (but not equal) to the solution of <span class="math inline">\(dX = b(X,t) \; dt\)</span>.</li>
+<li>The SDE can be simulated by Brownian motion, so <span class="math inline">\(dX \approx \Delta X = a(X,t) \; \Delta t + b(X,t)\; \sqrt{2D \, \Delta t} \, Z\)</span>, where <span class="math inline">\(Z\)</span> is a random variable from a unit normal distribution (so in <code>R</code> we would use <code>rnorm(1)</code>).</li>
+<li>Since <span class="math inline">\(\Delta x = x_{n+1}-x_{n}\)</span>, then we have <span class="math inline">\(x_{n+1} = x_{n} + \mu + a(X,t) \; \Delta t + b(X,t)\; \sqrt{2D \, \Delta t} \, Z\)</span> (the Euler-Maruyama method).</li>
+<li>Several realizations of the SDE and subsequent computation of the ensemble average approximately characterize the distribution <span class="math inline">\(p(X,t)\)</span>.</li>
+</ul>
+<p><a href="27-solvingSDEs.html" class="quarto-xref"><span>Chapter 27</span></a> will revisit some of the examples studied in this chapter, but apply tools to further characterize the distribution <span class="math inline">\(p(X,t)\)</span> with partial differential equations. There are still more mathematics to investigate, so onward!</p>
+</section>
+<section id="exercises" class="level2" data-number="26.4">
+<h2 data-number="26.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">26.4</span> Exercises</h2>
+<div id="exr-diff-sim-new-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.1</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> Simulate the stochastic process <span class="math inline">\(dX = -0.2 \; dW(t)\)</span> with the following values:</p>
+<ul>
+<li><span class="math inline">\(D = 1\)</span></li>
+<li><span class="math inline">\(\Delta t= 0.05\)</span></li>
+<li>Timesteps: 200</li>
+<li>Initial condition: <span class="math inline">\(X(0)=1\)</span>.</li>
+<li>Set the number of simulations to be 100.</li>
+</ul>
+<p>Generate a spaghetti plot and ensemble average of your simluation results.</p>
+</div>
+<div id="exr-diff-sim-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.2</strong></span> Simulate the stochastic process <span class="math inline">\(dX = 2 \; dW(t)\)</span> with the following values:</p>
+<ul>
+<li><span class="math inline">\(D = 1\)</span></li>
+<li><span class="math inline">\(\Delta t= 0.05\)</span></li>
+<li>Timesteps: 200</li>
+<li>Initial condition: <span class="math inline">\(X(0)=1\)</span>.</li>
+<li>Set the number of simulations to be 100.</li>
+</ul>
+<p>Generate a spaghetti plot and ensemble average of your simluation results.</p>
+</div>
+<div id="exr-sde-alt-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.3</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> An alternative formulation of the function <code>sde</code> can also be implemented using the function <code>cumsum</code>, or cumulative summation:</p>
+<p>he function <code>brownian_motion</code> can also be implemented using the function <code>cumsum</code>, or cumulative summation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sde_alt <span class="ot">=</span> <span class="cf">function</span>(number_steps, dt, <span class="at">x0 =</span> <span class="dv">0</span>) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># number_steps: length of sde</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dt: timestep length</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># x0: initial condition</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up vector of results</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(number_steps) <span class="sc">*</span> <span class="fu">sqrt</span>(dt)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Results:</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    x[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0  <span class="co"># Set the first step as the initial condition</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(x) <span class="co"># Add up the results</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the time vector</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="at">length.out =</span> number_steps, <span class="at">by =</span> dt)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  out_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(t, x)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out_x)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Evaluate <code>sde_alt</code> to recreate <a href="#fig-b-once" class="quarto-xref">Figure&nbsp;<span>26.1</span></a>.</p>
+</div>
+<div id="exr-change-d-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.4</strong></span> Return to the simulation of the logistic differential equation in this chapter. To generate <a href="#fig-ensemble-r-26" class="quarto-xref">Figure&nbsp;<span>26.6</span></a> we set <span class="math inline">\(D = 1\)</span>. What happens to the resulting ensemble average plots when <span class="math inline">\(D =0, \;  0.01, \; 0.1, \; 1, \; 10\)</span>? You may use the following values:</p>
+<ul>
+<li>Set the number of simulations to be 100.</li>
+<li>Initial condition: <span class="math inline">\(x(0)=3\)</span></li>
+<li>Parameters: <span class="math inline">\(r=0.8\)</span>, <span class="math inline">\(K=100\)</span>.</li>
+<li><span class="math inline">\(\Delta t = 0.05\)</span> for 200 time steps.</li>
+</ul>
+</div>
+<div id="exr-log-split-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.5</strong></span> For the logistic differential equation consider the following splitting of <span class="math inline">\(\alpha(x)\)</span> and <span class="math inline">\(\delta(x)\)</span> as a birth-death process:</p>
+<p><span class="math display">\[
+\begin{split}
+\alpha(x) &amp;= rx - \frac{rx^{2}}{2K} \\
+\delta(x) &amp;=  \frac{rx^{2}}{2K}
+\end{split}
+\]</span></p>
+<p>Simulate this SDE with the following values:</p>
+<ul>
+<li>Initial condition: <span class="math inline">\(x(0)=3\)</span></li>
+<li>Parameters: <span class="math inline">\(r=0.8\)</span>, <span class="math inline">\(K=100\)</span>.</li>
+<li><span class="math inline">\(\Delta t = 0.05\)</span> for 200 time steps.</li>
+<li><span class="math inline">\(D=1\)</span>.</li>
+</ul>
+<p>Generate an ensemble average plot. How does this SDE compare to <a href="#fig-ensemble-r-26" class="quarto-xref">Figure&nbsp;<span>26.6</span></a>?</p>
+</div>
+<!-- Based off LW pg 346 #3 -->
+<div id="exr-lw-346-3-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.6</strong></span> Let <span class="math inline">\(S(t)\)</span> denote the cumulative snowfall at a location at time <span class="math inline">\(t\)</span>, which we will assume to be a random process. Assume that probability of the change in the cumulative amount of snow from day <span class="math inline">\(t\)</span> to day <span class="math inline">\(t+\Delta t\)</span> is the following:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">change</th>
+<th style="text-align: center;">probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\Delta S = \sigma\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\lambda \Delta t\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\Delta S = 0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1- \lambda \Delta t\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The parameter <span class="math inline">\(\lambda\)</span> represents the frequency of snowfall and <span class="math inline">\(\sigma\)</span> the amount of the snowfall in inches. For example, during January in Minneapolis, Minnesota, the probability <span class="math inline">\(\lambda\)</span> of it snowing 4 inches or more is 0.016, with <span class="math inline">\(\sigma=4\)</span>. (This assumes a Poisson process with rate = 0.5/31, according to the <a href="https://www.dnr.state.mn.us/climate/twin_cities/snow_event_counts.html">Minnesota DNR.</a>). The stochastic differential equation generated by this process is <span class="math inline">\(dS = \lambda \sigma \; dt + \sqrt{\lambda \sigma^{2}} \; dW(t) = .064 \; dt + .506 \; dW(t)\)</span>$ .</p>
+<ol type="a">
+<li>With this information, what is <span class="math inline">\(E[\Delta S]\)</span> and the variance of <span class="math inline">\(\Delta S\)</span>?</li>
+<li>Simulate and summarize this stochastic process. Use <span class="math inline">\(S(0)=0\)</span> and run 500 simulations of this stochastic process. Simulate this process for a month, using <span class="math inline">\(\Delta t = 0.1\)</span> for 300 timesteps and with <span class="math inline">\(D=1\)</span>. Show the resulting spaghetti plot and interpret your results.</li>
+</ol>
+</div>
+<!-- Ornstein uhlenbeck process -->
+<div id="exr-orn-uhl-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.7</strong></span> Consider the stochastic differential equation <span class="math inline">\(\displaystyle dS = \left( 1 - S \right) \; dt + \sigma \; dW(t)\)</span>, where <span class="math inline">\(\sigma\)</span> controls the amount of stochastic noise. For this stochastic differential equation what is <span class="math inline">\(E[S]\)</span> and Var<span class="math inline">\((S)\)</span>?</p>
+</div>
+<div id="exr-bd-26" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 26.8</strong></span> Consider the equation</p>
+<p><span class="math display">\[
+\Delta x = \alpha(x) \; \Delta t - \delta(x) \; \Delta t
+\]</span></p>
+<p>If we consider <span class="math inline">\(\Delta x\)</span> to be a random variable, show that the expected value <span class="math inline">\(\mu\)</span> equals <span class="math inline">\(\alpha(x) \; \Delta t - \delta(x) \; \Delta t\)</span> and the variance <span class="math inline">\(\sigma^{2}\)</span>, to first order, equals <span class="math inline">\(\alpha(x) \; \Delta t + \delta(x) \; \Delta t\)</span>.</p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-logan_mathematical_2009" class="csl-entry" role="listitem">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./25-sdes.html" class="pagination-link" aria-label="Simulating Stochastic Differential Equations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./27-solvingSDEs.html" class="pagination-link" aria-label="Solutions to Stochastic Differential Equations">
+        <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

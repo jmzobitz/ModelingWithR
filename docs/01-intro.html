@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 1&nbsp; Models of Rates with Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-Rintro.html" rel="next">
+<link href="./p01-models.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p01-models.html">Models with Differential Equations</a></li><li class="breadcrumb-item"><a href="./01-intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#rates-of-change-in-the-world-a-model-is-born" id="toc-rates-of-change-in-the-world-a-model-is-born" class="nav-link active" data-scroll-target="#rates-of-change-in-the-world-a-model-is-born"><span class="header-section-number">1.1</span> Rates of change in the world: a model is born</a></li>
+  <li><a href="#modeling-in-context-the-spread-of-a-disease" id="toc-modeling-in-context-the-spread-of-a-disease" class="nav-link" data-scroll-target="#modeling-in-context-the-spread-of-a-disease"><span class="header-section-number">1.2</span> Modeling in context: the spread of a disease</a>
+  <ul class="collapse">
+  <li><a href="#model-1-infection-rate-proportional-to-number-infected" id="toc-model-1-infection-rate-proportional-to-number-infected" class="nav-link" data-scroll-target="#model-1-infection-rate-proportional-to-number-infected"><span class="header-section-number">1.2.1</span> Model 1: Infection rate proportional to number infected</a></li>
+  <li><a href="#model-2-infection-rate-proportional-to-number-not-infected" id="toc-model-2-infection-rate-proportional-to-number-not-infected" class="nav-link" data-scroll-target="#model-2-infection-rate-proportional-to-number-not-infected"><span class="header-section-number">1.2.2</span> Model 2: Infection rate proportional to number NOT infected</a></li>
+  <li><a href="#model-3-infection-rate-proportional-to-infected-meeting-not-infected" id="toc-model-3-infection-rate-proportional-to-infected-meeting-not-infected" class="nav-link" data-scroll-target="#model-3-infection-rate-proportional-to-infected-meeting-not-infected"><span class="header-section-number">1.2.3</span> Model 3: Infection rate proportional to infected meeting not infected</a></li>
+  </ul></li>
+  <li><a href="#model-solutions" id="toc-model-solutions" class="nav-link" data-scroll-target="#model-solutions"><span class="header-section-number">1.3</span> Model solutions</a></li>
+  <li><a href="#which-model-is-best" id="toc-which-model-is-best" class="nav-link" data-scroll-target="#which-model-is-best"><span class="header-section-number">1.4</span> Which model is best?</a></li>
+  <li><a href="#start-here" id="toc-start-here" class="nav-link" data-scroll-target="#start-here"><span class="header-section-number">1.5</span> Start here</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">1.6</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p01-models.html">Models with Differential Equations</a></li><li class="breadcrumb-item"><a href="./01-intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-intro-01" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="rates-of-change-in-the-world-a-model-is-born" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="rates-of-change-in-the-world-a-model-is-born"><span class="header-section-number">1.1</span> Rates of change in the world: a model is born</h2>
+<p>This book focuses on understanding <em>rates of change</em> and their application to modeling real-world phenomena with contexts from the natural sciences. Additionally, this book emphasizes <em>using</em> equations with data, building both competence and confidence to construct and evaluate a mathematical model with data. Perhaps these emphases are different from when you analyzed rates of change in a calculus course; consider the following types of questions:</p>
+<ul>
+<li>If <span class="math inline">\(y = xe^{-x}\)</span>, what is the derivative function <span class="math inline">\(f'(x)\)</span>?</li>
+<li>What is the equation of the tangent line to <span class="math inline">\(y=x^{3}-x\)</span> at <span class="math inline">\(a=1\)</span>?</li>
+<li>Where is the graph of <span class="math inline">\(\sin(x)\)</span> increasing at an increasing rate?</li>
+<li>If you release a ball from the top of a skyscraper 500 meters above the ground, what is its speed when it impacts the ground?</li>
+<li>What is the largest area that can be enclosed in a chicken coop with 100 feet of fencing, with one side being along a wall?</li>
+</ul>
+<p>The first three questions do not appear to be connected in a real-world context in their framing - but the last two questions <em>do</em> have some context from real-world situations. The given context may reveal underlying assumptions or physical principles, which are the starting point to build a mathematical model. For the chicken coop problem, perhaps the next step is to use the assumed geometry (rectangle) with the 100 feet of fencing to develop a function for the area.</p>
+<p>Maybe the context includes observational data and several different (perhaps conflicting) assumptions about the context at hand. For example, how does air resistance affect the ball’s velocity? Would a circular chicken coop maximize the area more than a rectangular coop? For both of these cases, which model is the best one to approximate any observational data? The short answer: it depends. To understand why, let’s take a look at another problem in context.</p>
+</section>
+<section id="modeling-in-context-the-spread-of-a-disease" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="modeling-in-context-the-spread-of-a-disease"><span class="header-section-number">1.2</span> Modeling in context: the spread of a disease</h2>
+<p>Consider the data in <a href="#fig-sierra-leone-01" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>, which come from an <a href="https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/index.html">Ebola outbreak</a> in Sierra Leone in 2014. (Data provided from <span class="citation" data-cites="matthes_bisc204biomodeling_2021">Matthes (<a href="#ref-matthes_bisc204biomodeling_2021" role="doc-biblioref">2021</a>)</span>.) The vertical axis in <a href="#fig-sierra-leone-01" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> represents Ebola <em>infections</em> over 2 years from initial monitoring in March 2014.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sierra-leone-01" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sierra-leone-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-sierra-leone-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sierra-leone-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Infections from a 2014 Ebola outbreak in Sierra Leone, with the initial monitoring in March 2014.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Constructing a model from disease dynamics is part of the field of <a href="https://en.wikipedia.org/wiki/Mathematical_modelling_of_infectious_disease">mathematical epidemiology.</a> Here we focus on person to person or population spread of Ebola. Other types of models could focus on the immune response within a single person - perhaps with a goal to design effective types of treatments to reduce the severity of infection. How we construct a mathematical model for this outbreak largely depends on the assumptions underlying the biological dynamics of disease transmission (which we will call the <em>infection rate</em>). Three plausible assumptions for the infection rate are the following:</p>
+<ol type="1">
+<li>The infection rate is proportional to the number of people infected.</li>
+<li>The infection rate is proportional to the number of people <strong>not</strong> infected.</li>
+<li>The infection rate is proportional to the number of infected people coming into contact with those not infected.</li>
+</ol>
+<p>Now let’s explore how to translate these assumptions into a mathematical model. Since we are discussing <em>rates</em> of infection, this means we will need a <em>rate of change</em> or derivative. Let’s use the letter <span class="math inline">\(I\)</span> to represent the number of people that are infected.</p>
+<section id="model-1-infection-rate-proportional-to-number-infected" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="model-1-infection-rate-proportional-to-number-infected"><span class="header-section-number">1.2.1</span> Model 1: Infection rate proportional to number infected</h3>
+<p>The first assumption states that the infection rate is proportional to the number of people infected. Translated into an equation this would be the following:</p>
+<p><span id="eq-00infected"><span class="math display">\[
+\frac{dI}{dt} = kI
+\tag{1.1}\]</span></span></p>
+<p><a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> is an example of a <em>differential equation</em>, which is just a mathematical equation with rates of change. In <a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> <span class="math inline">\(k\)</span> is a proportionality constant or parameter, with units of time<span class="math inline">\(^{-1}\)</span> for consistency.</p>
+<p>The <em>solution</em> to a differential equation is a function <span class="math inline">\(I(t)\)</span>. When we “solve” a differential equation we determine the family of functions consistent with our rate equation.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> There are a lot of techniques to solve a differential equation; we will explore some in <a href="07-exactSolutions.html" class="quarto-xref"><span>Chapter 7</span></a>.</p>
+<p>The proportionality constant or <em>parameter</em> <span class="math inline">\(k\)</span> is important to understand the solution to <a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>. Even though no numerical value for <span class="math inline">\(k\)</span> is specified, you can always solve an equation without specifying the parameter. In some situations we may not be as concerned with the particular <em>value</em> of the parameter but rather its influence on the long-term behavior of the system (this is a key aspect of bifurcation theory described in <a href="20-bifurcation.html" class="quarto-xref"><span>Chapter 20</span></a>. Otherwise we can use the collected data shown above with the given model to determine the value for <span class="math inline">\(k\)</span>. This combination of a mathematical model with data is called <em>data assimilation</em> or <em>model-data fusion</em> (see Chapters <a href="08-linearRegression.html" class="quarto-xref"><span>8</span></a>-<a href="14-informationCriteria.html" class="quarto-xref"><span>14</span></a>).</p>
+<p>How plausible is this first model? The first model assumes the rate of change (<a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>) gets larger as the number of infected people <span class="math inline">\(I\)</span> increases. This reasoning certainly seems plausible: when there are so many people infected it can be hard to stay healthy! At some point the number of people who are <em>not</em> sick will reach zero, making the rate of infection zero (or no increase). In the case of Ebola or any other infectious disease, stringent public health measures would be enacted if the number of people infected became too large.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Following public health measures we would expect that the rate of infection would decrease and the number of infections to slow. So perhaps another model this can capture this “slowing down” of the infection rate is more plausible.</p>
+</section>
+<section id="model-2-infection-rate-proportional-to-number-not-infected" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="model-2-infection-rate-proportional-to-number-not-infected"><span class="header-section-number">1.2.2</span> Model 2: Infection rate proportional to number NOT infected</h3>
+<p>The second model considers the interaction between people who are sick (which we have denoted as <span class="math inline">\(I\)</span>) and people who are <em>not</em> sick, which we will call <span class="math inline">\(S\)</span>, or susceptible. <a href="#eq-01notinfected" class="quarto-xref">Equation&nbsp;<span>1.2</span></a> is an example of a differential equation that models this interation:</p>
+<p><span id="eq-01notinfected"><span class="math display">\[
+\frac{dI}{dt} = kS
+\tag{1.2}\]</span></span></p>
+<p>As with <a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> the parameter <span class="math inline">\(k\)</span> represents an infection rate. We would expect that both <span class="math inline">\(I\)</span> and <span class="math inline">\(S\)</span> change in time as the infection occurs; for a finite population as more people get sick (<span class="math inline">\(I\)</span>), that would mean that <span class="math inline">\(S\)</span> would decrease. In effect, Model 2 should have <em>two</em> rates of change: one for <span class="math inline">\(I\)</span> and one for <span class="math inline">\(S\)</span>. <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows a schematic of this process of infection.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-initial-si" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-initial-si-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-initial-si-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-initial-si-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.2: Schematic diagram for Model 2, showing that the rate of infection is proportional to the number of susceptible people <span class="math inline">\(S\)</span>. Assuming a constant population size <span class="math inline">\(N\)</span>, the differential equation for Model 2 is given by <a href="#eq-single-02" class="quarto-xref">Equation&nbsp;<span>1.4</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>There are three reasons why I like to use diagrams like <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>:</p>
+<ol type="1">
+<li>Diagrams build a bridge between biological processes and mathematical models.</li>
+<li>Diagrams signal which rates (if any) can be conserved (more on this below).</li>
+<li>Diagrams help to identify assumed parameters (i.e.&nbsp;<span class="math inline">\(k\)</span> in <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>).</li>
+<li>Diagrams suggest how to construct differential equations for this mathematical model. <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> suggests a flow between the suspectible state <span class="math inline">\(S\)</span> to the infected state <span class="math inline">\(I\)</span>. So then the rate of change equation for <span class="math inline">\(S\)</span> is <span class="math inline">\(\displaystyle \frac{dS}{dt} = -kS\)</span> (the parameter listed above the arrow in <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>). <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a> combines all this thinking and <a href="#eq-01notinfected" class="quarto-xref">Equation&nbsp;<span>1.2</span></a> into the following coupled system of differential equations in <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a>:</li>
+</ol>
+<p><span id="eq-02coupled"><span class="math display">\[
+\begin{split}
+\frac{dS}{dt} &amp;= -kS \\
+\frac{dI}{dt} &amp;= kS
+\end{split}
+\tag{1.3}\]</span></span></p>
+<p>The solution to <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a> is functions <span class="math inline">\(S(t)\)</span> and <span class="math inline">\(I(t)\)</span> that evolve over time. We don’t have the tools to determine the exact solutions for <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a> yet (we will study systems like these in Chapters <a href="15-linearSystems.html" class="quarto-xref"><span>15</span></a>-<a href="20-bifurcation.html" class="quarto-xref"><span>20</span></a>). However something interesting occurs with <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a> when we add the rates <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> and <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> together (<a href="#eq-single-02" class="quarto-xref">Equation&nbsp;<span>1.4</span></a>):</p>
+<p><span id="eq-single-02"><span class="math display">\[
+\frac{dS}{dt} +  \frac{dI}{dt} = \frac{d}{dt}(S+I) = 0
+\tag{1.4}\]</span></span></p>
+<p>If a rate of change equals zero then the corresponding function is constant. In effect, <a href="#eq-single-02" class="quarto-xref">Equation&nbsp;<span>1.4</span></a> means that the combined variable <span class="math inline">\(S+I\)</span> is constant, so we could say that <span class="math inline">\(S+I=N\)</span>, where <span class="math inline">\(N\)</span> is the total population size. The expression <span class="math inline">\(S+I=N\)</span> is an example of a conservation law for our system.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> also suggests a conservation law because there are no additional arrows going into or from the variables <span class="math inline">\(S\)</span> or <span class="math inline">\(I\)</span>. Since <span class="math inline">\(S=N-I\)</span>, <a href="#eq-02coupled" class="quarto-xref">Equation&nbsp;<span>1.3</span></a> can be re-written with a single equation (<a href="#eq-02single" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>):</p>
+<p><span id="eq-02single"><span class="math display">\[
+\frac{dI}{dt} = k(N-I)
+\tag{1.5}\]</span></span></p>
+<p><a href="#eq-02single" class="quarto-xref">Equation&nbsp;<span>1.5</span></a> also indicates limiting behavior for Model 2. As the number of infected people reaches <span class="math inline">\(N\)</span> (the total population size), the values of <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> approaches zero, meaning <span class="math inline">\(I\)</span> doesn’t change. Biologically this would suggest that eventually everyone in the population would get sick with the disease (assuming no one has any natural immunity). <a href="#eq-02single" class="quarto-xref">Equation&nbsp;<span>1.5</span></a> also has one caveat: if there are no infected people around (<span class="math inline">\(I=0\)</span>) <em>the disease can still be transmitted</em>, which might not make good biological sense. The next model (Model 3) tries to amend that shortcoming.</p>
+</section>
+<section id="model-3-infection-rate-proportional-to-infected-meeting-not-infected" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="model-3-infection-rate-proportional-to-infected-meeting-not-infected"><span class="header-section-number">1.2.3</span> Model 3: Infection rate proportional to infected meeting not infected</h3>
+<p>Now consider a third model that rectifies some of the shortcomings of the second model (the second model rectified the shortcomings of the first model). The third model states that the rate of infection is due to those who are sick infecting those who are not sick. This scenario would also make some sense, as it focuses on the <em>transmission</em> of the disease between susceptibles and infected people. So if nobody is sick (<span class="math inline">\(I=0\)</span>) then the disease is not spread. Likewise if there are no susceptibles (<span class="math inline">\(S=0\)</span>), the disease is not spread as well.</p>
+<p>In this case the diagram outlining the third model looks something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-logistic-scheme" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-logistic-scheme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-logistic-scheme-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logistic-scheme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.3: Schematic diagram for Model 3, showing that the rate of infection is proportional to the number of susceptible people <span class="math inline">\(S\)</span> encountering an infected person <span class="math inline">\(I\)</span>. Assuming a constant population size <span class="math inline">\(N\)</span>, the differential equation for Model 3 is given by <a href="#eq-logistic-01" class="quarto-xref">Equation&nbsp;<span>1.7</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice how in <a href="#fig-logistic-scheme" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> there is an additional variable <span class="math inline">\(S\)</span> associated with <span class="math inline">\(k\)</span> to show how the rate of infection depends on <span class="math inline">\(S\)</span>. <a href="#eq-logistic-sys-01" class="quarto-xref">Equation&nbsp;<span>1.6</span></a> contains the differential equations that describe the scenario outlined in <a href="#fig-logistic-scheme" class="quarto-xref">Figure&nbsp;<span>1.3</span></a>:</p>
+<p><span id="eq-logistic-sys-01"><span class="math display">\[
+\begin{split}
+\frac{dS}{dt} &amp;= -kSI \\
+\frac{dI}{dt} &amp;= kSI
+\end{split}
+\tag{1.6}\]</span></span></p>
+<p>Similar to Model 2 we can combine the two equations to yield a single differential equation (<a href="#eq-logistic-01" class="quarto-xref">Equation&nbsp;<span>1.7</span></a>):</p>
+<p><span id="eq-logistic-01"><span class="math display">\[
+\frac{dI}{dt} = k\cdot I \cdot (N-I)
+\tag{1.7}\]</span></span></p>
+<p><a href="#eq-logistic-01" class="quarto-xref">Equation&nbsp;<span>1.7</span></a> appears similar to <a href="#eq-02single" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>, doesn’t it? However in <a href="#eq-logistic-01" class="quarto-xref">Equation&nbsp;<span>1.7</span></a> notice the variable <span class="math inline">\(I\)</span> outside the expression <span class="math inline">\((N-I)\)</span>. If <span class="math inline">\(I=0\)</span>, then there is no increase in infection (the rate is zero). If <span class="math inline">\(I=N\)</span> (the total population size) then there is no increase in the infection (the rate is zero as well). Model 3 seems to be more consistent with the biological reasoning for the spread of infection.</p>
+<p>Let’s compare all the rates for all three models together in <a href="#fig-threeRates-01" class="quarto-xref">Figure&nbsp;<span>1.4</span></a>. <a href="#fig-threeRates-01" class="quarto-xref">Figure&nbsp;<span>1.4</span></a> has a lot to unpack, but we can use some of our understanding of rates of change in calculus to compare the three models. Notice how the sign of <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> is always positive for Model 1, indicating that the solution (<span class="math inline">\(I\)</span>) is always increasing. For Models 2 and 3, <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> equals zero when <span class="math inline">\(I=10\)</span>, which also is the value for <span class="math inline">\(N\)</span> After that case, <span class="math inline">\(\displaystyle \frac{dI}{dt}\)</span> turns negative, meaning that <span class="math inline">\(I\)</span> is decreasing.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-threeRates-01" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-threeRates-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-threeRates-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-threeRates-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.4: Comparing the rates of change for three models (<a href="#eq-00infected" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>, <a href="#eq-02single" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>, and <a href="#eq-logistic-01" class="quarto-xref">Equation&nbsp;<span>1.7</span></a>), with <span class="math inline">\(k=1\)</span> and <span class="math inline">\(N=10\)</span>).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In summary, examining the graphs of the rates can tell a lot about the <em>qualitative behavior</em> of a solution to a differential equation even without the solution.</p>
+</section>
+</section>
+<section id="model-solutions" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="model-solutions"><span class="header-section-number">1.3</span> Model solutions</h2>
+<p>Let’s return back to possible solutions (in this case formulas for <span class="math inline">\(I(t)\)</span>) for our models. Usually a differential equation also has a starting or an initial value (typically at <span class="math inline">\(t=0\)</span>) that actualizes the solution. When we state a differential equation with a starting value we have an <strong>initial value problem</strong>. We will represent that initial value as <span class="math inline">\(I(0)=I_{0}\)</span>.</p>
+<p>With that assumption, we can (and will solve later!) the following solutions for these models:</p>
+<p><span id="eq-all3-01"><span class="math display">\[
+\begin{split}
+\mbox{ Model 1 (Exponential): } &amp; I(t) = I_{0}e^{kt} \\
+\mbox{Model 2 (Saturating): } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Model 3 (Logistic): } &amp; I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}}
+\end{split}
+\tag{1.8}\]</span></span></p>
+<p>Notice how I assigned the names to each model (Exponential, Saturating, and Logistic). That may not mean much at the moment, but <a href="#fig-three-soln" class="quarto-xref">Figure&nbsp;<span>1.5</span></a>) plots the three functions <span class="math inline">\(I(t)\)</span> together when <span class="math inline">\(I_{0}=250\)</span>, <span class="math inline">\(k=0.023\)</span>, and <span class="math inline">\(N=13600\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-three-soln" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-three-soln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-three-soln-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-three-soln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.5: Three models (Exponential, Saturating, and Logistic; <a href="#eq-all3-01" class="quarto-xref">Equation&nbsp;<span>1.8</span></a>) compared.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice how in <a href="#fig-three-soln" class="quarto-xref">Figure&nbsp;<span>1.5</span></a>, Model 1 increases quickly - it actually grows without bound off the chart! Model 2 and Model 3 have saturating behavior, but it looks like Model 3 might be the one that actually captures the trend of the data.</p>
+</section>
+<section id="which-model-is-best" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="which-model-is-best"><span class="header-section-number">1.4</span> Which model is best?</h2>
+<p>All three of these scenarios describe different modeling scenarios. With the saturating and logistic models (Models 2 and 3) we have some limiting behavior, the possibility that the rate of infection slows. Of the two models, which one is the <em>best</em> one? Here could be some possible criteria we could evaluate:</p>
+<ul>
+<li>Do the model outputs match the data?</li>
+<li>For timeseries data are the trends accurately represented?</li>
+<li>Can the model be coded easily into the computer?</li>
+<li>How will model outputs compare with newly collected measurements?</li>
+<li>Regarding model complexity - how many equations do we have?</li>
+<li>Are the number of model parameters too few or too many?</li>
+</ul>
+<p>We will address several of these critera later on in this textbook when we discuss <em>model selection</em> (<a href="14-informationCriteria.html" class="quarto-xref"><span>Chapter 14</span></a>). Model selection is one key part of the modeling hypothesis - where we investigate the implications of a particular model analyzed. If we don’t do this, we don’t have an opportunity to test out what is plausible for our models.</p>
+</section>
+<section id="start-here" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="start-here"><span class="header-section-number">1.5</span> Start here</h2>
+<p>In summary, it turns out that even with some initial assumptions we can very quickly build up a mathematical model to explain data. Even with these first steps we have a lot more to uncover:</p>
+<ul>
+<li>How would you determine the parameters <span class="math inline">\(k\)</span> and <span class="math inline">\(N\)</span> with the collected data?</li>
+<li>Are there other more complicated models?</li>
+<li>What exact techniques are used to determine the solution <span class="math inline">\(I(t)\)</span>?</li>
+<li>Are there other numerical techniques to approximate the solution <span class="math inline">\(I(t)\)</span>?</li>
+<li>What happens to our solutions when the parameters <span class="math inline">\(k\)</span> and <span class="math inline">\(N\)</span> change?</li>
+<li>What happens to our solutions when the number of infected people changes randomly for some reason?</li>
+</ul>
+<p>This text will study answers to these questions and more. Let’s get started!</p>
+</section>
+<section id="exercises" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.6</span> Exercises</h2>
+<div id="exr-plot-soln" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.1</strong></span> Solutions to an outbreak model of the flu are the following:</p>
+<p><span class="math display">\[
+\begin{split}
+\mbox{Saturating model: } &amp; I(t) = 3000-2990e^{-.1t} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{30000 }{10+2990e^{-.15t}},
+\end{split}
+\]</span></p>
+<p>where <span class="math inline">\(t\)</span> is in days. Use these two functions to answer the following questions:</p>
+<ol type="a">
+<li>Plot the saturating and logistic models when <span class="math inline">\(0 \leq t \leq 100\)</span>.</li>
+<li>For both models, how would you describe the growth of the outbreak as <span class="math inline">\(t\)</span> increases? How many people will be infected overall?<br>
+</li>
+<li>Finally, for both models evaluate <span class="math inline">\(\lim_{t \rightarrow \infty} I(t)\)</span>. How do these results compare to values found on your graph?</li>
+</ol>
+</div>
+<div id="exr-liberia-n-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.2</strong></span> The Ebola outbreak for the country of Liberia in 2014 is shown in <a href="#fig-out-liberia" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>. If we were to apply the logistic model (Model 3) based on this graphic what would be your estimate for <span class="math inline">\(N\)</span>?</p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-out-liberia" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-out-liberia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-out-liberia-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-out-liberia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.6: Infections from a 2014 Ebola outbreak in Liberia, with the initial monitoring in March 2014.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exr-general-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.3</strong></span> The general solutions for the saturating and the logistic models are: <span class="math display">\[
+\begin{split}
+\mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
+\end{split}
+\]</span> where <span class="math inline">\(I_{0}\)</span> is the initial number of people infected and <span class="math inline">\(N\)</span> is the overall population size. Using the functions from <a href="#exr-plot-soln" class="quarto-xref">Exercise&nbsp;<span>1.1</span></a> for both models, what are the values for <span class="math inline">\(N\)</span> and <span class="math inline">\(I_{0}\)</span>?</p>
+</div>
+<div id="exr-general-specific-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.4</strong></span> The general solutions for the saturating and the logistic models are:</p>
+<p><span class="math display">\[
+\begin{split}
+\mbox{Saturating model: } &amp; I(t) = N-(N-I_{0})e^{-kt} \\
+\mbox{Logistic model: } &amp;  I(t) = \frac{N \cdot I_{0} }{I_{0}+(N-I_{0})e^{-kt}},
+\end{split}
+\]</span> where <span class="math inline">\(I_{0}\)</span> is the initial number of people infected and <span class="math inline">\(N\)</span> is the overall population size. For both models carefully evaluate the limits to show <span class="math inline">\(\lim_{t \rightarrow \infty} I(t)=N\)</span>. How do these limiting values compare to the steady-state values you found for Models 2 and 3 in <a href="#fig-three-soln" class="quarto-xref">Figure&nbsp;<span>1.5</span></a>), where <span class="math inline">\(N=13600\)</span>?</p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-exercise-imm" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exercise-imm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-intro_files/figure-html/fig-exercise-imm-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exercise-imm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.7: Schematic diagram for <a href="#exr-simple-mig-01" class="quarto-xref">Exercise&nbsp;<span>1.5</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exr-simple-mig-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.5</strong></span> <a href="#fig-exercise-imm" class="quarto-xref">Figure&nbsp;<span>1.7</span></a> shows a schematic diagram which is a variation on <a href="#fig-initial-si" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>. In this case people are entering the the susceptible population <span class="math inline">\(S\)</span> at a rate <span class="math inline">\(\beta\)</span>, so the population is not conserved. What is the coupled system of differential equations for this model?</p>
+</div>
+<!-- Sethi model for advertising -->
+<div id="exr-sethi-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.6</strong></span> A model that describes the growth of sales of a product in response to advertising is the following:</p>
+<p><span class="math display">\[
+\frac{dS}{dt} = .55\sqrt{1-S}-S,
+\]</span> where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1) <span class="citation" data-cites="sethi_deterministic_1983">(<a href="#ref-sethi_deterministic_1983" role="doc-biblioref">Sethi 1983</a>)</span>. Use this information to answer the following questions:</p>
+<ol type="a">
+<li>Make a plot of the function <span class="math inline">\(f(S)=.55\sqrt{1-S}-S\)</span>. for <span class="math inline">\(0 \leq S \leq 1\)</span>.</li>
+<li>Interpret your plot to predict when the market share will be increasing and decreasing. At what value is <span class="math inline">\(\displaystyle \frac{dS}{dt}=0\)</span>? (This is called the <em>steady state</em> value.) </li>
+<li>A second campaign has the following differential equation:</li>
+</ol>
+<p><span class="math display">\[
+\frac{dS}{dt} = .2\sqrt{1-S}-S
+\]</span></p>
+<p>What is the steady state value and how does it compare to the previous one?</p>
+</div>
+<div id="exr-advert-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.7</strong></span> A more general form of the advertising model is</p>
+<p><span class="math display">\[
+\frac{dS}{dt} = r\sqrt{1-S}-S,
+\]</span></p>
+<p>where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1). The parameter <span class="math inline">\(r\)</span> is related to the effectiveness of the advertising (between 0 and 1).</p>
+<ol type="a">
+<li>Solve <span class="math inline">\(\displaystyle \frac{dS}{dt} = r\sqrt{1-S}-S\)</span> for the steady state value (where <span class="math inline">\(\displaystyle \frac{dS}{dt}=0\)</span>). Your final answer should be expressed as a function <span class="math inline">\(S(r)\)</span> - for which you will need to use the quadratic formula.</li>
+<li>Make a plot of the steady state value as a function of <span class="math inline">\(r\)</span>, where <span class="math inline">\(0 \leq r \leq 1\)</span>.</li>
+<li>Based on your plot, what can you conclude about the steady state value as the effectiveness of the advertising increases?</li>
+</ol>
+</div>
+<div id="exr-stoich-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.8</strong></span> A common saying is “you are what you eat.” An equation that relates an organism’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food or resource (denoted as <span class="math inline">\(x\)</span>) is given by:</p>
+<p><span class="math display">\[
+y = c x^{1/\theta},
+\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> and <span class="math inline">\(c\)</span> are both constants. Units on <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are expressed as a proportion of a given nutrient (such as nitrogen or carbon). For example, when <span class="math inline">\(c=1\)</span> and <span class="math inline">\(\theta = 1\)</span> the function is <span class="math inline">\(y=x\)</span>. In this case the point <span class="math inline">\((0.05,0.05)\)</span> would say that nutrient composition for the organism and resource would be the same.</p>
+<ol type="a">
+<li>Now assume that <span class="math inline">\(c=1\)</span>. How does the nutrient content of the organism compare to the resource when <span class="math inline">\(\theta=2\)</span>? Draw a sample curve and interpret it, contrasting it to when <span class="math inline">\(\theta = 1\)</span>.</li>
+<li>Now assume that <span class="math inline">\(c=1\)</span>. How does the nutrient content of the organism compare to the resource when <span class="math inline">\(\theta=5\)</span>? Draw a sample curve and interpret it, contrasting this curve to the previous two.</li>
+<li>What do you think will happen when <span class="math inline">\(\theta \rightarrow \infty\)</span>? Draw some sample curves to help illustrate your findings.</li>
+</ol>
+</div>
+<div id="exr-outbreak-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.9</strong></span> A model for the outbreak of a cold virus assumes that the rate people get infected is proportional to infected people contacting susceptible people, as with Model 3 (the Logistic model). However people who are infected can also recover and become susceptible again with rate <span class="math inline">\(\alpha\)</span>. Construct a diagram similar to <a href="#fig-logistic-scheme" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> for this scenario and also write down what you think the system of differential equations would be.</p>
+</div>
+<div id="exr-flu-quarantine-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.10</strong></span> A model for the outbreak of the flu assumes that the rate people get infected is proportional to infected people contacting susceptible people, as in Model 3. However people also recover from the flu, denoted with the variable <span class="math inline">\(R\)</span>. Assume that the rate of recovery is proportional to the number of infected people with parameter <span class="math inline">\(\beta\)</span>. Construct a diagram similar to <a href="#fig-logistic-scheme" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> for this scenario and also write down what you think the system of differential equations would be.</p>
+</div>
+<!-- Van den Berg page 19 -->
+<div id="exr-vdb-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.11</strong></span> (Inspired by <span class="citation" data-cites="berg_mathematical_2011">Berg (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) Organisms that live in a saline environment biochemically maintain the amount of salt in their blood stream. An equation that represents the level of <span class="math inline">\(S\)</span> in the blood is the following:</p>
+<p><span class="math display">\[
+\frac{dS}{dt} = I + p \cdot (W - S),
+\]</span> where the parameter <span class="math inline">\(I\)</span> represents the active uptake of salt, <span class="math inline">\(p\)</span> is the permeability of the skin, and <span class="math inline">\(W\)</span> is the salinity in the water. Use this information to answer the following questions:</p>
+<ol type="a">
+<li>What is that value of <span class="math inline">\(S\)</span> at <em>steady state</em>, or when <span class="math inline">\(\displaystyle \frac{dS}{dt} = 0\)</span>? Your final answer should be a function <span class="math inline">\(S(I,p,W)\)</span>.</li>
+<li>With the steady state solution, what parameters (<span class="math inline">\(I\)</span>, <span class="math inline">\(p\)</span>, or <span class="math inline">\(W\)</span>) cause the steady state value <span class="math inline">\(S\)</span> to increase?</li>
+</ol>
+</div>
+<!-- From LW -->
+<div id="exr-immigration-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.12</strong></span> (Inspired by <span class="citation" data-cites="logan_mathematical_2009">Logan and Wolesensky (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) The immigration rate of bird species (species per time) from a mainland to an offshore island is <span class="math inline">\(I_{m} \cdot (1-S/P)\)</span>, where <span class="math inline">\(I_{m}\)</span> is the maximum immigration rate, <span class="math inline">\(P\)</span> is the size of the source pool of species on the mainland, and <span class="math inline">\(S\)</span> is the number of species already occupying the island. Additionally the extinction rate is <span class="math inline">\(E \cdot S / P\)</span>, where <span class="math inline">\(E\)</span> is the maximum extinction rate. The growth rate of the number of species on the island is the immigration rate minus the extinction rate.</p>
+<ol type="a">
+<li>Make representative plots of the immigration and the extinction rates as a function of <span class="math inline">\(S\)</span>. You may set <span class="math inline">\(I_{m}\)</span>, <span class="math inline">\(P\)</span>, and <span class="math inline">\(E\)</span> all equal to 1.</li>
+<li>Determine the number of species for which the net growth rate is zero, or the number of species is in equilibrium. Express your answer as <span class="math inline">\(S\)</span> as a function of <span class="math inline">\(I_{m}\)</span>, <span class="math inline">\(P\)</span>, and <span class="math inline">\(E\)</span>.</li>
+<li>Suppose that two islands of the same size are at different distances from the mainland. Birds arrive from the source pool and they have the same extinction rate on each island. However the maximum immigration rate is larger for the island farther away. Which of the two islands will have the larger number of species at equilibrium?</li>
+</ol>
+</div>
+<!-- Based off LW pg 4 -->
+<div id="exr-logan-assim-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.13</strong></span> (Inspired by <span class="citation" data-cites="logan_mathematical_2009">Logan and Wolesensky (<a href="#ref-logan_mathematical_2009" role="doc-biblioref">2009</a>)</span>) Assume that an animal assimilates nutrients at a rate <span class="math inline">\(R\)</span> proportional to its surface area. Also assume that it uses nutrients at a rate proportional to its volume. You may assume that the size of the animal is implicitly a function of the nutrient intake and usage, so <span class="math inline">\(R = k_{A} A - k_{V} V\)</span>, where <span class="math inline">\(k_{A}\)</span> and <span class="math inline">\(k_{V}\)</span> are constants, <span class="math inline">\(A\)</span> is the surface area, and <span class="math inline">\(V\)</span> the volume. Determine expressions for the size of the animal if its intake and use rates were in balance (meaning <span class="math inline">\(R\)</span> is set to zero), assuming the animal is the following shapes:</p>
+<ol type="a">
+<li>A sphere (assume size is measured with radius <span class="math inline">\(r\)</span>) <em>Note:</em> first determine the geometric formulas for surface area and volume.</li>
+<li>A cube (assume size is measured with length <span class="math inline">\(l\)</span>)</li>
+</ol>
+</div>
+<div id="exr-new-rates-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.14</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> The following figure shows a diagram in which people are entering the the infected population <span class="math inline">\(I\)</span> at a rate <span class="math inline">\(\gamma\)</span>, so the total population size is not constant. What is the coupled system of differential equations for this model?</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-intro_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exr-adele-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.15</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> The singer Adele was correct - <a href="https://youtu.be/A8IRqCJVkOo?si=yeBf6_KwyXptrojP">“Rumor has it.”</a> The spread of a rumor through a population can be modeled with a differential equation. The following differential equation describes the rate of change in the proportion of the people who know the rumor <span class="math inline">\(R\)</span> as the time <span class="math inline">\(t\)</span> increases (in hours:)</p>
+<p><span class="math display">\[
+\begin{split}
+    \mbox{Saturating model: } &amp; R(t) = 1-0.8e^{-0.6t} \\
+    \mbox{Logistic model: } &amp;  R(t) = \frac{0.2 }{0.2+0.8e^{-0.6t}},
+\end{split}
+\]</span></p>
+<ol type="a">
+<li>For both models, what is the value long term value <span class="math inline">\(N\)</span> (i.e.&nbsp;<span class="math inline">\(\displaystyle \lim_{t \rightarrow \infty} I(t)\)</span>)?</li>
+<li>What is the initial value <span class="math inline">\(I_{0}\)</span>?</li>
+<li>Plot the saturating and logistic models and include a careful sketch in your solution, showing all the limiting behavior. Which model makes more sense to you?</li>
+</ol>
+</div>
+<!-- See hansen_long-term_2020 for excess herpes mortality, shkolnikov_what_2022 baseline mortality, ayoub_characterizing_2019 for incidence (beta) and  Jones-on-R0.pdf for background on the SI model.  -->
+<div id="exr-herpes-01" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.16</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> An important parameter in modeling the spread of diseases is <span class="math inline">\(R_{0}\)</span>, which represents if a disease will become an epidemic. If <span class="math inline">\(R_{0}&gt;1\)</span>, then the disease will become an epidemic. If <span class="math inline">\(R_{0}&lt;1\)</span>, then it will not. For a disease like Herpes, one model is a susceptible - infected (<span class="math inline">\(SI\)</span>) model, assuming there is no recovery from Herpes. For this case, an expression for <span class="math inline">\(R_{0}\)</span> is the the following:<br>
+</p>
+<p><span class="math display">\[
+R_{0} = \frac{\beta}{\mu + \delta},
+\]</span></p>
+<p>where <span class="math inline">\(\beta\)</span> represents the rate of transmission, <span class="math inline">\(\mu\)</span> the baseline mortality rate, and <span class="math inline">\(\delta\)</span> the mortality rate induced by the disease.</p>
+<ol type="a">
+<li>Let <span class="math inline">\(\mu = \frac{1}{1000}\)</span> and <span class="math inline">\(\delta = \frac{1.193}{1000}\)</span>. Plot <span class="math inline">\(R_{0}\)</span> as a function <span class="math inline">\(\beta\)</span> and include your plot in the response. Make sure <span class="math inline">\(0 \leq R_{0} \leq 2\)</span>. (You will need to find an appropriate window for <span class="math inline">\(\beta\)</span>.). What is the threshold value for <span class="math inline">\(\beta\)</span> for an epidemic?</li>
+<li>Let <span class="math inline">\(\mu = \frac{1}{1000}\)</span> and <span class="math inline">\(\beta = \frac{2}{100}\)</span>. Plot <span class="math inline">\(R_{0}\)</span> as a function <span class="math inline">\(\delta\)</span> and include your plot in the response. Make sure <span class="math inline">\(0 \leq R_{0} \leq 2\)</span>. (You will need to find an appropriate window for <span class="math inline">\(\delta\)</span>.). What is the threshold value for <span class="math inline">\(\delta\)</span> for an epidemic?</li>
+</ol>
+</div>
+<div id="exr-adver-redux-1" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.17</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> Another example of an advertising model is</p>
+<p><span class="math display">\[
+\frac{dS}{dt} = \frac{rU}{M}(M-S) - \lambda S,
+\]</span></p>
+<p>where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1), <span class="math inline">\(r\)</span> is the response to advertising, <span class="math inline">\(U\)</span> is the advertising expenditure, <span class="math inline">\(M\)</span> is the fixed market potential of the product <span class="math inline">\(S\)</span>, and <span class="math inline">\(\lambda\)</span> is the decay rate for market share.</p>
+<ol type="a">
+<li>Solve <span class="math inline">\(\displaystyle \frac{dS}{dt}\)</span> for the steady state value (where <span class="math inline">\(\displaystyle \frac{dS}{dt}=0\)</span>). Your final answers should be expressed in terms of the parameters. Show your work.</li>
+<li>Using your expression for the steady state value from (a), evaluate what happens to the steady state in the extreme cases when <span class="math inline">\(M=0\)</span> or <span class="math inline">\(M=1\)</span>. Is it possible to get 100% of the market share (<span class="math inline">\(S=1\)</span>) when you have the ability to have 100% of the market (<span class="math inline">\(M=1\)</span>)?</li>
+<li>Using your expression for the steady state value from (a), evaluate what happens to the steady state as <span class="math inline">\(U\)</span> grows large (in other words, you spend as much on advertising as possible, or <span class="math inline">\(U \rightarrow \infty\)</span>). Why does that answer make sense in the context of the problem?</li>
+</ol>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-berg_mathematical_2011" class="csl-entry" role="listitem">
+Berg, Hugo van den. 2011. <em>Mathematical <span>Models</span> of <span>Biological Systems</span></em>. <span>Oxford, New York</span>: <span>Oxford University Press</span>.
+</div>
+<div id="ref-logan_mathematical_2009" class="csl-entry" role="listitem">
+Logan, J. David, and William Wolesensky. 2009. <em>Mathematical <span>Methods</span> in <span>Biology</span></em>. 1st ed. <span>Hoboken, N.J</span>: <span>W</span>iley.
+</div>
+<div id="ref-matthes_bisc204biomodeling_2021" class="csl-entry" role="listitem">
+Matthes, Jackie. 2021. <span>“<span>BISC204</span>_<span>BioModeling</span>.”</span> <a href="https://github.com/jhmatthes/BISC204\_BioModeling">https://github.com/jhmatthes/BISC204\_BioModeling</a>.
+</div>
+<div id="ref-sethi_deterministic_1983" class="csl-entry" role="listitem">
+Sethi, Suresh P. 1983. <span>“Deterministic and Stochastic Optimization of a Dynamic Advertising Model.”</span> <em>Optimal Control Applications and Methods</em> 4 (2): 179–84. <a href="https://doi.org/10.1002/oca.4660040207">https://doi.org/10.1002/oca.4660040207</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>You may be used to working with <em>algebraic equations</em> (e.g.&nbsp;solve <span class="math inline">\(x^{2}-4=0\)</span> for <span class="math inline">\(x\)</span>) rather than differential equations. For algebraic equations the solution can be points (for our example, the solution to <span class="math inline">\(x^2-4=0\)</span> is <span class="math inline">\(x=\pm2\)</span>).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The COVID-19 pandemic that began in 2020 is an example of the heroic efforts of public health officials.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>A finite population (meaning nobody can exit or enter the population) usually should have some type of conservation law.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./p01-models.html" class="pagination-link" aria-label="Models with Differential Equations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Models with Differential Equations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02-Rintro.html" class="pagination-link" aria-label="Introduction to R">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

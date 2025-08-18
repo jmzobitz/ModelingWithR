@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 10&nbsp; Cost Functions and Bayes’ Rule</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11-bootstrap.html" rel="next">
+<link href="./09-likelihood.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./10-costFunctions.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#cost-functions-and-model-data-residuals" id="toc-cost-functions-and-model-data-residuals" class="nav-link active" data-scroll-target="#cost-functions-and-model-data-residuals"><span class="header-section-number">10.1</span> Cost functions and model-data residuals</a>
+  <ul class="collapse">
+  <li><a href="#accounting-for-uncertainty" id="toc-accounting-for-uncertainty" class="nav-link" data-scroll-target="#accounting-for-uncertainty"><span class="header-section-number">10.1.1</span> Accounting for uncertainty</a></li>
+  <li><a href="#comparing-cost-and-log-likelihood-functions" id="toc-comparing-cost-and-log-likelihood-functions" class="nav-link" data-scroll-target="#comparing-cost-and-log-likelihood-functions"><span class="header-section-number">10.1.2</span> Comparing cost and log-likelihood functions</a></li>
+  </ul></li>
+  <li><a href="#further-extensions-to-the-cost-function" id="toc-further-extensions-to-the-cost-function" class="nav-link" data-scroll-target="#further-extensions-to-the-cost-function"><span class="header-section-number">10.2</span> Further extensions to the cost function</a></li>
+  <li><a href="#conditional-probabilities-and-bayes-rule" id="toc-conditional-probabilities-and-bayes-rule" class="nav-link" data-scroll-target="#conditional-probabilities-and-bayes-rule"><span class="header-section-number">10.3</span> Conditional probabilities and Bayes’ rule</a>
+  <ul class="collapse">
+  <li><a href="#conditional-probabilities" id="toc-conditional-probabilities" class="nav-link" data-scroll-target="#conditional-probabilities"><span class="header-section-number">10.3.1</span> Conditional probabilities</a></li>
+  <li><a href="#bayes-rule" id="toc-bayes-rule" class="nav-link" data-scroll-target="#bayes-rule"><span class="header-section-number">10.3.2</span> Bayes’ rule</a></li>
+  </ul></li>
+  <li><a href="#bayes-rule-in-action" id="toc-bayes-rule-in-action" class="nav-link" data-scroll-target="#bayes-rule-in-action"><span class="header-section-number">10.4</span> Bayes’ rule in action</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">10.5</span> Next steps</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">10.6</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./10-costFunctions.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-cost-fns-10" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a> introduced likelihood functions as an approach to tackle parameter estimation. However this is not the only approach to understand model-data fusion. This chapter introduces <em>cost functions</em>, which estimates parameters from data using a least squares approach. Want to know a secret? Cost functions are very closely related to log-likelihood functions. This chapter will explore this idea some more, first by exploring model-data residuals, defining a cost function, and then connecting them back to likelihood functions. To complete the circle, this chapter ends by discussing Bayes’ Rule, which will further strengthen the connection between cost and likelihood functions. Let’s get started!</p>
+<section id="cost-functions-and-model-data-residuals" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="cost-functions-and-model-data-residuals"><span class="header-section-number">10.1</span> Cost functions and model-data residuals</h2>
+<p>Let’s revisit the linear regression problem from <a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a>. Recall <a href="09-likelihood.html#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a> from <a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a>. With these data we wanted to fit a function of the form <span class="math inline">\(y=bx\)</span> (forcing the intercept term to be zero). We will extend <a href="09-likelihood.html#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a> to include the model-data residual computed as <span class="math inline">\(y-bx\)</span> in <a href="#tbl-md-resid-10" class="quarto-xref">Table&nbsp;<span>10.1</span></a>:</p>
+<div id="tbl-md-resid-10" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-md-resid-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10.1: A small, limited dataset (<a href="09-likelihood.html#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a>) with the computed model-data residual with parameter <span class="math inline">\(b\)</span>, along with model-data residuals for different values of <span class="math inline">\(b\)</span>.
+</figcaption>
+<div aria-describedby="tbl-md-resid-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(x\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(bx\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y-bx\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(b=1\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(b=3\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(b=-1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(b\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(3-b\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(2b\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(5-2b\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">-1</td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(4b\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4-4b\)</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">-8</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;"><span class="math inline">\(4b\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(10-4b\)</span></td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">-2</td>
+<td style="text-align: left;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Also included in <a href="#tbl-md-resid-10" class="quarto-xref">Table&nbsp;<span>10.1</span></a> are the model-data residual values for different values of <span class="math inline">\(b\)</span>. Notably values of the residuals can be negative and some can be positive - which makes it tricky to assess the “best” value of <span class="math inline">\(b\)</span> from the residuals alone. (If we found a value of <span class="math inline">\(b\)</span> where the residuals were all zero, then we would have the “best” value of <span class="math inline">\(b\)</span>!<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>).</p>
+<p>To assess the overall residuals as a function of the value of <span class="math inline">\(b\)</span>, we need to take into consideration not just the value of the residual (positive or negative), but rather some way to measure the overall distance of <em>all</em> the residuals from a given value of <span class="math inline">\(b\)</span>. One way to define that is with a function that squares each residual (so that negative and positive values don’t cancel each other) and adds each of those results together. We call this the <em>sum squared residuals</em>. So for example, the sum squared residual when <span class="math inline">\(b=1\)</span> is shown in <a href="#eq-b-1-10" class="quarto-xref">Equation&nbsp;<span>10.1</span></a>:</p>
+<p><span id="eq-b-1-10"><span class="math display">\[
+\mbox{ Sum square residual: } 2^{2}+3^{2}+0^{2}+6^{2} = 49
+\tag{10.1}\]</span></span></p>
+<p>The other square residuals are <span class="math inline">\(68\)</span> when <span class="math inline">\(b=3\)</span> and <span class="math inline">\(325\)</span> when <span class="math inline">\(b=-1\)</span>. So of these choices for <span class="math inline">\(b\)</span>, the one that minimizes the square residual is <span class="math inline">\(b=1\)</span>.</p>
+<p>Let’s generalize this to determine a function to compute the sum square residual for any value of <span class="math inline">\(b\)</span>. This function, denoted as <span class="math inline">\(S(b)\)</span>, is called the cost function (<a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a>):</p>
+<p><span id="eq-sb-10"><span class="math display">\[
+S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2
+\tag{10.2}\]</span></span></p>
+<p><a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a> is a function of one variable (<span class="math inline">\(b\)</span>). <a href="#fig-quadsb" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows a graph of <span class="math inline">\(S(b)\)</span>. Notice how the plot of <span class="math inline">\(S(b)\)</span> is a nice quadratic function, with a minimum at <span class="math inline">\(b=1.865\)</span>. Did you notice that this value for <span class="math inline">\(b\)</span> is the same value for the minimum that we found from <a href="09-likelihood.html#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a> in <a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a>? In Exercise @ref(exr:cost-min-10) you will use calculus to determine the optimum value of <span class="math inline">\(S(b)\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quadsb" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quadsb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="10-costFunctions_files/figure-html/fig-quadsb-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quadsb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Plot of <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a>. The vertical line denotes the minimum value at <span class="math inline">\(b=1.865\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="accounting-for-uncertainty" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="accounting-for-uncertainty"><span class="header-section-number">10.1.1</span> Accounting for uncertainty</h3>
+<p>The cost function can also incorporate uncertainty in the value of the response variable <span class="math inline">\(y\)</span>. We will define this uncertainty as <span class="math inline">\(\sigma\)</span> and have it be the same for each value <span class="math inline">\(y_{i}\)</span>. In some cases the uncertainty may vary from measurement to measurement - but the concepts presented here can generalize. To account for this uncertainty we divide each of the square residuals in <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a> by <span class="math inline">\(\sigma^{2}\)</span>, as shown in <a href="#eq-sb-general-10" class="quarto-xref">Equation&nbsp;<span>10.3</span></a> using <span class="math inline">\(\sum\)</span> notation.</p>
+<p><span id="eq-sb-general-10"><span class="math display">\[
+S(\vec{\alpha}) = \sum_{i=1}^{N} \frac{(y_{i}-f(x,\vec{\alpha}))^{2}}{\sigma^{2}}
+\tag{10.3}\]</span></span></p>
+<p>As an example, comparing <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a> to <a href="#eq-sb-general-10" class="quarto-xref">Equation&nbsp;<span>10.3</span></a> we have <span class="math inline">\(N=4\)</span>, <span class="math inline">\(f(x_{i},\vec{\alpha} ) =bx\)</span>, and <span class="math inline">\(\sigma = 1\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+<section id="comparing-cost-and-log-likelihood-functions" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="comparing-cost-and-log-likelihood-functions"><span class="header-section-number">10.1.2</span> Comparing cost and log-likelihood functions</h3>
+<p><a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a> defined the log-likelihood function (<a href="09-likelihood.html#eq-loglikely" class="quarto-xref">Equation&nbsp;<span>9.7</span></a>), which for the small dataset we are studying is represented with <a href="#eq-loglikely-10" class="quarto-xref">Equation&nbsp;<span>10.4</span></a> where <span class="math inline">\(\sigma = 1\)</span> and <span class="math inline">\(N=4\)</span>:</p>
+<p><span id="eq-loglikely-10"><span class="math display">\[
+\begin{split}
+\ln(L(b | \vec{x},\vec{y} )) &amp;= -2 \ln(2) - 2 \ln (\pi) - 2 \ln(1) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
+&amp;-\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2} \\
+&amp;= -2 \ln(2) - 2 \ln (\pi) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2} \\
+&amp; -\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2}
+\end{split}
+\tag{10.4}\]</span></span></p>
+<p>(Note that in <a href="#eq-loglikely-10" class="quarto-xref">Equation&nbsp;<span>10.4</span></a> the expression <span class="math inline">\(-2 \ln(1)\)</span> is 0.) If we compare <a href="#eq-loglikely-10" class="quarto-xref">Equation&nbsp;<span>10.4</span></a> with <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a>, then we have <span class="math inline">\(\ln(L(b | \vec{x},\vec{y} )) = -2 \ln(2) - 2 \ln (\pi) - \frac{1}{2} \cdot S(b)\)</span>. <strong>This is no coincidence</strong>: log-likelihood functions are similar to cost functions! While <a href="#eq-loglikely-10" class="quarto-xref">Equation&nbsp;<span>10.4</span></a> contains some extra factors, they only shift vertically or expand the graph of <span class="math inline">\(\ln(L(b | \vec{x},\vec{y} ))\)</span> compared to <span class="math inline">\(S(b)\)</span>. This “coincidence” is only true when <span class="math inline">\(\sigma\)</span> is the same for all <span class="math inline">\(y_{i}\)</span>. Can you explain why?</p>
+<p>For both log-likelihood or cost functions the goal is optimization. Vertically shifting or expanding a function does not change the <em>location</em> of an optimum value (Why? Think back to derivatives from Calculus I). In fact, a quadratic cost function yields the same results as the log-likelihood function assuming the residuals are normally distributed.</p>
+</section>
+</section>
+<section id="further-extensions-to-the-cost-function" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="further-extensions-to-the-cost-function"><span class="header-section-number">10.2</span> Further extensions to the cost function</h2>
+<p>The cost function <span class="math inline">\(S(b)\)</span> can be extended additionally to incorporate other types of data. For example, if we knew there was a given range of values that would make sense (say <span class="math inline">\(b\)</span> is near 1.3 with a standard deviation of 0.1), we should be able to incorporate this information into the cost function. We do this by adding an additional term to <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a> (<span class="math inline">\(\tilde{S}(b)\)</span>, <a href="#eq-priorcost-10" class="quarto-xref">Equation&nbsp;<span>10.5</span></a>, also is graphed in <a href="#fig-prior-cost" class="quarto-xref">Figure&nbsp;<span>10.2</span></a>).</p>
+<p><span id="eq-priorcost-10"><span class="math display">\[
+\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{0.1^2}
+\tag{10.5}\]</span></span></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prior-cost" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prior-cost-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="10-costFunctions_files/figure-html/fig-prior-cost-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prior-cost-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.2: Comparing two cost functions <span class="math inline">\(S(b)\)</span> (black) and <span class="math inline">\(\tilde{S}(b)\)</span> (black dashed line)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Aha! <a href="#fig-prior-cost" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows how the revised cost function <span class="math inline">\(\tilde{S}(b)\)</span> changes the optimum value. Numerically this works out to be <span class="math inline">\(\tilde{b}=\)</span> 1.45. In Exercise @ref(exr:cost-min-10) you will verify this new minimum value and compare the results to the fitted value of <span class="math inline">\(b=1.86\)</span>.</p>
+<p>Adding this prior information seems like an effective approach. Many times a study wants to build upon the existing body of literature and to take that into account. This approach of including prior information into the cost function can also be considered a <em>Bayesian</em> approach.</p>
+</section>
+<section id="conditional-probabilities-and-bayes-rule" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="conditional-probabilities-and-bayes-rule"><span class="header-section-number">10.3</span> Conditional probabilities and Bayes’ rule</h2>
+<!-- Adapted from Silver, *The Signal and the Noise*, 2012. -->
+<p>We first need to understand Bayes’ rule and conditional probability, with an example.</p>
+<div id="exm-president-pop" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.1</strong></span> The following table shows results from a survey of people’s views on the economy (optimistic or pessimistic) and whether or not they voted for the incumbent President in the last election. Percentages are reported as decimals. Probability tables are a clever way to organize this information.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Probability</th>
+<th style="text-align: center;">Optimistic</th>
+<th style="text-align: left;">Pessimistic</th>
+<th style="text-align: left;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Voted for the incumbent President</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: left;">0.20</td>
+<td style="text-align: left;">0.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Did not vote for incumbent President</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: left;">0.45</td>
+<td style="text-align: left;">0.60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Total</td>
+<td style="text-align: center;">0.35</td>
+<td style="text-align: left;">0.65</td>
+<td style="text-align: left;">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>Compute the probability of having an optimistic view on the economy.</p>
+</div>
+<div class="{sol-president-pop}">
+<p>Based on the probability table, we define the following probabilities:</p>
+<ul>
+<li>The probability you voted for the incumbent President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the incumbent President <em>and</em> have an <strong>optimistic</strong> view on the economy is 0.15</li>
+<li>The probability you voted for the incumbent President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.20</li>
+<li>The probability you <strong>did not</strong> vote for the incumbent President <em>and</em> have an <strong>pessimistic</strong> view on the economy is 0.45</li>
+</ul>
+<p>We calculate the probability of having an <strong>optimistic view on the economy</strong> by adding the probabilities with an optimistic view, whether or not they voted for the incumbent President. For this example, this probability sums to 0.20 + 0.15 = 0.35, or 35%.</p>
+<p>On the other hand, the probability you have a pessimistic view on the economy is 0.20 + 0.45 = 0.65, or 65%. Notice how the two of these together (probability of optimistic and pessimistic views of the economy is 1, or 100% of the outcomes.)</p>
+</div>
+<section id="conditional-probabilities" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="conditional-probabilities"><span class="header-section-number">10.3.1</span> Conditional probabilities</h3>
+<p>Next, let’s discuss conditional probabilities. A conditional probability is the probability of an outcome given some previous outcome, or <span class="math inline">\(\mbox{Pr} (A | B)\)</span>, where Pr means “probability of an outcome” and <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are two different outcomes or events. In probability theory you might study the following law of conditional probability:</p>
+<p><span id="eq-law-cond-prop"><span class="math display">\[
+\begin{split}
+\mbox{Pr}(A \mbox { and } B) &amp;= \mbox{Pr} (A \mbox{ given } B) \cdot  \mbox{Pr}(B) \\
+&amp;= \mbox{Pr} (A | B) \cdot  \mbox{Pr}(B) \\
+  &amp;= \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)
+\end{split}
+\tag{10.6}\]</span></span></p>
+<p>Typically when expressing conditional probabilities we remove “and” and write <span class="math inline">\(P(A \mbox{ and } B)\)</span> as <span class="math inline">\(P(AB)\)</span> and “given” as <span class="math inline">\(P(A \mbox{ given } B)\)</span> as <span class="math inline">\(P(A|B)\)</span>.</p>
+<div id="exm-pres-pop-2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.2</strong></span> Continuing with <a href="#exm-president-pop" class="quarto-xref">Example&nbsp;<span>10.1</span></a>, sometimes people believe that your views of the economy <a href="https://www.cbsnews.com/news/how-much-impact-can-a-president-have-on-the-economy/">influence whether you are going to vote for the incumbent President in an election.</a> Use the information from the table in <a href="#exm-president-pop" class="quarto-xref">Example&nbsp;<span>10.1</span></a> to compute the probability you voted for the incumbent President <em>given</em> you have an optimistic view of the economy.</p>
+</div>
+<div id="sol-pres-pop-con" class="proof solution">
+<p><span class="proof-title"><em>Solution 10.1</em>. </span>To compute the probability you voted for the incumbent President <em>given</em> you have an optimistic view of the economy is a rearrangement of <a href="#eq-law-cond-prop" class="quarto-xref">Equation&nbsp;<span>10.6</span></a>:</p>
+<p><span id="eq-econ-cond-prop"><span class="math display">\[
+\begin{split}
+\mbox{Pr(Voted for incumbent President | Optimistic View on Economy)} = \\
+\frac{\mbox{Pr(Voted for incumbent President and Optimistic View on Economy)}}{\mbox{Pr(Optimistic View on Economy)}} = \\
+\frac{0.20}{0.35} = 0.57
+\end{split}
+\tag{10.7}\]</span></span></p>
+<p>So if you have an optimistic view on the economy, there is a 57% chance you will vote for the incumbent President. Contrast this result to the probability that you voted for the incumbent President (<a href="#exm-president-pop" class="quarto-xref">Example&nbsp;<span>10.1</span></a>), which is only 40%. Perhaps your view of the economy does indeed influence whether or not you would vote to re-elect the incumbent President.</p>
+</div>
+</section>
+<section id="bayes-rule" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="bayes-rule"><span class="header-section-number">10.3.2</span> Bayes’ rule</h3>
+<p>Using the incumbent President and economy example as a framework, we will introduce <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a>, which is a re-arrangment of the rule for conditional probability:</p>
+<p><span id="eq-bayes-rule-10"><span class="math display">\[
+\mbox{Pr} (A | B) = \frac{ \mbox{Pr} (B | A) \cdot  \mbox{Pr}(A)}{\mbox{Pr}(B) }
+\tag{10.8}\]</span></span></p>
+<p>It turns out Bayes’ Rule is a really helpful way to understand how we can systematically incorporate this prior information into the likelihood function (and by association the cost function). For parameter estimation our goal is to estimate parameters, given the data. Another way to state Bayes’ Rule in <a href="#eq-bayes-rule-10" class="quarto-xref">Equation&nbsp;<span>10.8</span></a> is using terms of parameters and data:</p>
+<p><span id="eq-bayes-rule-data-10"><span class="math display">\[
+\mbox{Pr}( \mbox{ parameters } | \mbox{ data }) = \frac{\mbox{Pr}( \mbox{ data } | \mbox{ parameters }) \cdot \mbox{ Pr}( \mbox{ parameters }) }{\mbox{Pr}(\mbox{ data }) }
+\tag{10.9}\]</span></span></p>
+<p>While <a href="#eq-bayes-rule-data-10" class="quarto-xref">Equation&nbsp;<span>10.9</span></a> seems pretty conceptual, here are some key highlights:</p>
+<ul>
+<li>In practice, the term <span class="math inline">\(\mbox{Pr}( \mbox{ data } | \mbox{ parameters })\)</span> in <a href="#eq-bayes-rule-data-10" class="quarto-xref">Equation&nbsp;<span>10.9</span></a> is the likelihood function (<a href="09-likelihood.html#eq-likelihood-prod-param-09" class="quarto-xref">Equation&nbsp;<span>9.5</span></a>).</li>
+<li>The term <span class="math inline">\(\mbox{Pr}( \mbox{ parameters })\)</span> is the probability distribution of the <em>prior information</em> on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as <span class="math inline">\(\mbox{Pr}( \mbox{ data } | \mbox{ parameters })\)</span> (typically normally distributed), prior information has a multiplicative effect on the likelihood function (<span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span>). (Or an additive effect on the log-likelihood function.) <em>This is good news!</em> When we added that additional term for prior information into <span class="math inline">\(\tilde{S}(b)\)</span> in <a href="#eq-priorcost-10" class="quarto-xref">Equation&nbsp;<span>10.5</span></a>, we accounted for the prior information correctly. In Exercise @ref(exr:log-cost-verify) you will explore how the log-likelihood is related to the cost function.</li>
+<li>The expression <span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span> is the start of a framework for a probability density function, which should integrate to unity. (You will explore this more if you study probability theory.) This denominator term is called a <a href="https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem">normalizing constant</a>. Since our overall goal is to select parameters that optimize <span class="math inline">\(\mbox{Pr}( \mbox{ parameters } | \mbox{ data })\)</span>, the expression in the denominator (<span class="math inline">\(\mbox{Pr}(\mbox{ data })\)</span> ) does not change the <em>location</em> of the optimum values.</li>
+</ul>
+</section>
+</section>
+<section id="bayes-rule-in-action" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="bayes-rule-in-action"><span class="header-section-number">10.4</span> Bayes’ rule in action</h2>
+<p>Wow - we made some significant progress in our conceptual understanding of how to incorporate models and data! Let’s see how this applies to our linear regression problem (<span class="math inline">\(y=bx\)</span>). We have the following assumptions:</p>
+<ul>
+<li><strong>Assumption 1:</strong> The data are independent, identically distributed. We can then write the likelihood function as the following:</li>
+</ul>
+<p><span class="math display">\[
+\mbox{Pr}(\vec{y} | b) = \left( \frac{1}{\sqrt{2 \pi} \sigma}\right)^{4} e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}}
+\]</span></p>
+<ul>
+<li><strong>Assumption 2:</strong> Prior knowledge expects us to say that <span class="math inline">\(b\)</span> is normally distributed with mean 1.3 and standard deviation 0.1. Incorporating this information allows us to write the following:</li>
+</ul>
+<p><span class="math display">\[
+\mbox{Pr}(b) =\frac{1}{\sqrt{2 \pi} \cdot 0.1} e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\]</span></p>
+<p>When we combine the two pieces of information, the probability of <span class="math inline">\(b\)</span>, given the data <span class="math inline">\(\vec{y}\)</span>, is the following:</p>
+<p><span id="eq-likelihood-bayes-10"><span class="math display">\[
+\mbox{Pr}(b | \vec{y}) \approx e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(b-1.3)^{2}}{2 \cdot 0.1^{2}}}
+\tag{10.10}\]</span></span></p>
+<p>Notice we are ignoring the terms <span class="math inline">\(\displaystyle \left( \frac{1}{\sqrt{2 \pi} \cdot \sigma }\right)^{4}\)</span> and <span class="math inline">\(\displaystyle \frac{1}{\sqrt{2 \pi} \cdot 0.1}\)</span>, because per our discussion above not including them does not change the <em>location</em> of the optimum value, only the value of the likelihood function. The plot of <span class="math inline">\(\mbox{Pr}(b | \vec{y})\)</span>, assuming <span class="math inline">\(\sigma = 1\)</span> is shown in <a href="#fig-likelihood-bayes" class="quarto-xref">Figure&nbsp;<span>10.3</span></a>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-likelihood-bayes" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-likelihood-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="10-costFunctions_files/figure-html/fig-likelihood-bayes-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-likelihood-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.3: <a href="#eq-likelihood-bayes-10" class="quarto-xref">Equation&nbsp;<span>10.10</span></a> with optimum value at <span class="math inline">\(b=1.45\)</span> denoted in a blue dashed line.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>It looks like the value that optimizes our posterior probability is <span class="math inline">\(b=\)</span> 1.45. This is similar the value of <span class="math inline">\(\tilde{b}\)</span> from <a href="#eq-priorcost-10" class="quarto-xref">Equation&nbsp;<span>10.5</span></a>. Again, <em>this is no coincidence</em>. Adding in prior information to the cost function or using Bayes’ Rule are equivalent approaches.</p>
+</section>
+<section id="next-steps" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">10.5</span> Next steps</h2>
+<p>Now that we have seen the usefulness of cost functions and Bayes’ Rule we can begin to apply this to larger problems involving more equations and data. In order to do that we need to explore some computational methods to scale this problem up - which we will do in subsequent chapters.</p>
+</section>
+<section id="exercises" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">10.6</span> Exercises</h2>
+<!-- Other potential problems: -->
+<!-- - Do some likelihood functions with uniform prior (the simple ones) -->
+<!-- -  -->
+<!-- HW: they adjust the distribution to a uniform on the simple linear regression -->
+<!-- Write out the likelihood function (try programming for something simple) -->
+<!-- Verify that dividing by the data doesn't affect the location of the optimum -->
+<!-- Prove a uniform distribution doesn't affect the function -->
+<div id="exr-cost-min-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.1</strong></span> The following problem works with <a href="09-likelihood.html#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a> to determine the value of <span class="math inline">\(b\)</span> with the function <span class="math inline">\(y=bx\)</span> as in this chapter.</p>
+<ol type="a">
+<li>Using calculus, show that the cost function <span class="math inline">\(S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2\)</span> has a minimum value at <span class="math inline">\(b=1.865\)</span>.</li>
+<li>What is the value of <span class="math inline">\(S(1.865)\)</span>?</li>
+<li>Use a similar approach to determine the minimum of the revised cost function <span class="math inline">\(\tilde{S}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + (b-1.3)^2\)</span>. Call this value <span class="math inline">\(\tilde{b}\)</span>.</li>
+<li>How do the values of <span class="math inline">\(S(1.865)\)</span> and <span class="math inline">\(\tilde{S}(\tilde{b})\)</span> compare?</li>
+<li>Make a plot of the cost functions <span class="math inline">\(S(b)\)</span> and <span class="math inline">\(\tilde{S}(b)\)</span> to verify the optimum values.</li>
+<li>Make a scatter plot with the data and the function <span class="math inline">\(y=bx\)</span> and <span class="math inline">\(y=\tilde{b}x\)</span>. How do the two estimates compare with the data?</li>
+</ol>
+</div>
+<div id="exr-calc-opt-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.2</strong></span> Use calculus to determine the optimum value of <span class="math inline">\(b\)</span> for <a href="#eq-loglikely-10" class="quarto-xref">Equation&nbsp;<span>10.4</span></a>. Do you obtain the same value of <span class="math inline">\(b\)</span> for <a href="#eq-sb-10" class="quarto-xref">Equation&nbsp;<span>10.2</span></a>?</p>
+</div>
+<p><!-- From van den Berg, pg 59, exercise 3.13 --></p>
+<div id="exr-phos-09" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.3</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> (Inspired from <span class="citation" data-cites="berg_mathematical_2011">Berg (<a href="#ref-berg_mathematical_2011" role="doc-biblioref">2011</a>)</span>) Consider the nutrient equation <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span> using the dataset <code>phosphorous</code>.</p>
+<ol type="a">
+<li>Write down a formula for the objective function <span class="math inline">\(S(c,\theta)\)</span> that characterizes this equation (that includes the dataset <code>phosphorous</code>).</li>
+<li>Fix <span class="math inline">\(c=1.737\)</span>. Make a <code>ggplot</code> of <span class="math inline">\(S(1.737,\theta)\)</span> for <span class="math inline">\(1 \leq \theta \leq 10\)</span>.</li>
+<li>How many critical points does this function have over this interval? Which value of <span class="math inline">\(\theta\)</span> is the global minimum?</li>
+</ol>
+</div>
+<div id="exr-phos-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.4</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> Use the cost function <span class="math inline">\(S(1.737,\theta)\)</span> from <a href="#exr-phos-09" class="quarto-xref">Exercise&nbsp;<span>10.3</span></a> to answer the following questions:</p>
+<ol type="a">
+<li>Researchers believe that <span class="math inline">\(\theta \approx 7\)</span>. One way to do this is to include an additional term of <span class="math inline">\((\theta-7)^{2}\)</span> in the cost function. Re-write your formula from <a href="#exr-phos-09" class="quarto-xref">Exercise&nbsp;<span>10.3</span></a>b <span class="math inline">\(S(1.737,\theta)\)</span> to account for this additional (prior) information. Call this revised function <span class="math inline">\(S_{b}(1.737,\theta)\)</span></li>
+<li>Make a graph of <span class="math inline">\(S_{b}(1.737,\theta)\)</span> and determine where the global optimum value occurs.</li>
+<li>How does the inclusion of this additional information change the shape of the cost function and the location of the global minimum, compared to <span class="math inline">\(S(1.737,\theta)\)</span>?</li>
+<li>Finally, reconsider the fact that <span class="math inline">\(\theta \approx 7 \pm .5\)</span> (as prior information). To account for this in your cost function, the additional term in <span class="math inline">\(S_{b}(1.737,\theta)\)</span> could be modified to <span class="math inline">\(\displaystyle \frac{ (\theta-7)^{2}}{0.5^{2}}\)</span>. How does that additional modification change <span class="math inline">\(S_{b}(1.737,\theta)\)</span> further and the location of the global minimum?</li>
+<li>Let’s say researchers believe <span class="math inline">\(\theta \approx \mu \pm \sigma\)</span>. What would be a general expression to include in the original cost function <span class="math inline">\(S(1.737,\theta)\)</span> to account for this information? Your final expression will have <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> in it.</li>
+<li>Use <a href="https://www.desmos.com/calculator">desmos</a> or other graphic software to investigate what would happen in your general expression as <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. First set <span class="math inline">\(\sigma=0.5\)</span> and let <span class="math inline">\(\mu=7\)</span> be a slider. Investigate values of <span class="math inline">\(\mu\)</span> between 3 and 10 and report what happens. Next set <span class="math inline">\(\mu=7\)</span> and let <span class="math inline">\(\sigma = 0.5\)</span> be a slider. Investigate values of <span class="math inline">\(\sigma\)</span> between 0.1 and 1 and report what happens.</li>
+</ol>
+</div>
+<div id="exr-uncert-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.5</strong></span> One way to generalize the notion of prior information using cost functions is to include a term that represents the degree of uncertainty in the prior information, such as <span class="math inline">\(\sigma\)</span>. For the problem <span class="math inline">\(y=bx\)</span> this leads to the following cost function: <span class="math inline">\(\displaystyle \tilde{S}_{revised}(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2 + \frac{(b-1.3)^2}{\sigma^{2}}\)</span>.</p>
+<p>Use calculus to determine the optimum value for <span class="math inline">\(\tilde{S}_{revised}(b)\)</span>, expressed in terms of <span class="math inline">\(\tilde{b}_{revised} = f(\sigma)\)</span> (your optimum value will be a function of <span class="math inline">\(\sigma\)</span>). What happens to <span class="math inline">\(\tilde{b}_{revised}\)</span> as <span class="math inline">\(\sigma \rightarrow \infty\)</span>?</p>
+</div>
+<div id="exr-log-cost-verify" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.6</strong></span> For this problem you will minimize some generic functions.</p>
+<ol type="a">
+<li>Using calculus, verify that the optimum value of <span class="math inline">\(y=ax^{2}+bx+c\)</span> occurs at <span class="math inline">\(\displaystyle x=-\frac{b}{2a}\)</span>. (You can assume <span class="math inline">\(a&gt;0\)</span>.)</li>
+<li>Using calculus, verify that a critical point of <span class="math inline">\(z=e^{-(ax^{2}+bx+c)^{2}}\)</span> also occurs at <span class="math inline">\(\displaystyle x=-\frac{b}{2a}\)</span>. <em>Note: this is a good exercise to practice your differentiation skills!</em></li>
+<li>Algebraically show that <span class="math inline">\(\ln(z) = -y\)</span>.</li>
+<li>Explain why <span class="math inline">\(y\)</span> is similar to a cost function <span class="math inline">\(S(b)\)</span> and <span class="math inline">\(z\)</span> is similar to a likelihood function.</li>
+</ol>
+</div>
+<div id="exr-pres-rev-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.7</strong></span> This problem continues the re-election of the incumbent President and viewpoint on the economy in <a href="#exm-president-pop" class="quarto-xref">Example&nbsp;<span>10.1</span></a>. Determine the following conditional probabilities:</p>
+<ol type="a">
+<li>Determine the probability that you <strong>voted for the incumbent President</strong> given that you have a <strong>pessimistic view on the economy</strong>.</li>
+<li>Determine the probability that you <strong>did not vote for the incumbent President</strong> given that you have an <strong>pessimistic view on the economy</strong>.</li>
+<li>Determine the probability that you <strong>did not vote for the incumbent President</strong> given that you have an <strong>optimistic view on the economy</strong>.</li>
+<li>Determine the probability that you have an <strong>pessimistic view on the economy</strong> given that you <strong>voted for the incumbent President</strong>.</li>
+<li>Determine the probability that you have an <strong>optimistic view on the economy</strong> given that you <strong>did not vote for the incumbent President</strong>.</li>
+</ol>
+</div>
+<div id="exr-pres-incum-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.8</strong></span> Incumbents have an advantage in re-election due to wider name recognition, which may boost their re-election chances, as shown in the following table:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Probability</th>
+<th style="text-align: center;">Being elected</th>
+<th style="text-align: left;">Not being elected</th>
+<th style="text-align: left;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Having name recognition</td>
+<td style="text-align: center;">0.55</td>
+<td style="text-align: left;">0.25</td>
+<td style="text-align: left;">0.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Not having name recognition</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Total</td>
+<td style="text-align: center;">0.60</td>
+<td style="text-align: left;">0.40</td>
+<td style="text-align: left;">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>Use Bayes’ Rule to determine the probability of being elected, given that you have name recognition.</p>
+</div>
+<div id="exr-bayes-diff-10" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.9</strong></span> Demonstrate how Bayes’ Rule differs from the law of conditional probability.</p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-berg_mathematical_2011" class="csl-entry" role="listitem">
+Berg, Hugo van den. 2011. <em>Mathematical <span>Models</span> of <span>Biological Systems</span></em>. <span>Oxford, New York</span>: <span>Oxford University Press</span>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>To be fair, that means the data would be perfectly on a line; not too interesting of a problem, right?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><i class="fa-solid fa-burst" aria-label="burst"></i> <a href="#eq-sb-general-10" class="quarto-xref">Equation&nbsp;<span>10.3</span></a> could be considered a form of <em>weighted linear regression</em> as explored in <a href="08-linearRegression.html" class="quarto-xref"><span>Chapter 8</span></a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./09-likelihood.html" class="pagination-link" aria-label="Probability and Likelihood Functions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11-bootstrap.html" class="pagination-link" aria-label="Sampling Distributions and the Bootstrap Method">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

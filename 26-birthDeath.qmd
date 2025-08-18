@@ -654,6 +654,36 @@ Simulate the stochastic process $dX = 2 \; dW(t)$ with the following values:
 Generate a spaghetti plot and ensemble average of your simluation results.
 :::
 
+::: {#exr-sde-alt-26}
+{{< fa burst >}} An alternative formulation of the function `sde` can also be implemented using the function `cumsum`, or cumulative summation:  
+
+he function `brownian_motion` can also be implemented using the function `cumsum`, or cumulative summation:
+
+```{r,eval=FALSE}
+sde_alt = function(number_steps, dt, x0 = 0) {
+  # number_steps: length of sde
+  # dt: timestep length
+  # x0: initial condition
+	
+	# Set up vector of results
+	x <- rnorm(number_steps) * sqrt(dt)
+	
+	# Results:
+	x[1] <- x0  # Set the first step as the initial condition
+	x <- cumsum(x) # Add up the results
+
+	# Create the time vector
+  t <- seq(0, length.out = number_steps, by = dt)
+  out_x <- tibble(t, x)
+  return(out_x)
+	
+}
+
+```
+
+Evaluate `sde_alt` to recreate @fig-b-once.
+
+:::
 
 ::: {#exr-change-d-26}
 Return to the simulation of the logistic differential equation in this chapter. To generate @fig-ensemble-r-26 we set $D = 1$. What happens to the resulting ensemble average plots when $D =0, \;  0.01, \; 0.1, \; 1, \; 10$? You may use the following values:

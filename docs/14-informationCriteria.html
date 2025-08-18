@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 14&nbsp; Information Criteria</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./p03-stability.html" rel="next">
+<link href="./13-mcmc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./14-informationCriteria.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#model-assessment-guidelines" id="toc-model-assessment-guidelines" class="nav-link active" data-scroll-target="#model-assessment-guidelines"><span class="header-section-number">14.1</span> Model assessment guidelines</a></li>
+  <li><a href="#information-criteria-for-assessing-competing-models" id="toc-information-criteria-for-assessing-competing-models" class="nav-link" data-scroll-target="#information-criteria-for-assessing-competing-models"><span class="header-section-number">14.2</span> Information criteria for assessing competing models</a></li>
+  <li><a href="#a-few-cautionary-notes" id="toc-a-few-cautionary-notes" class="nav-link" data-scroll-target="#a-few-cautionary-notes"><span class="header-section-number">14.3</span> A few cautionary notes</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">14.4</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./14-informationCriteria.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-information-criteria-14" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="13-mcmc.html#exr-yeast-v1-13" class="quarto-xref">Exercises&nbsp;<span>13.5</span></a> and <a href="13-mcmc.html#exr-yeast-v2-13" class="quarto-xref"><span>13.6</span></a> of <a href="13-mcmc.html" class="quarto-xref"><span>Chapter 13</span></a> we introduced two different empirical models for fitting the growth of <code>yeast</code> <span class="math inline">\(V\)</span> over time <span class="math inline">\(t\)</span>. One model is a logistic model (<span class="math inline">\(\displaystyle V = \frac{K}{1+e^{a-bt}}\)</span>), whereas the second model is a saturating function (<span class="math inline">\(\displaystyle V= K + Ae^{-bt}\)</span>). A plot comparing MCMC parameter estimates for the two models is shown in <a href="#fig-yeast-compare-14" class="quarto-xref">Figure&nbsp;<span>14.1</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-yeast-compare-14" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-yeast-compare-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="14-informationCriteria_files/figure-html/fig-yeast-compare-14-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yeast-compare-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.1: Comparison of models for the growth of yeast in culture. Dots represent measured values from <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-yeast-compare-14" class="quarto-xref">Figure&nbsp;<span>14.1</span></a> raises an interesting question. Sometimes we have multiple, convergent models to describe a context or situation. While having these different options is good, we also like to know which is the <em>best</em> model. How would you decide that?</p>
+<p>This chapter focuses on objective criteria to assess what is called the <em>best approximating model</em> <span class="citation" data-cites="burnham_model_2002">(<a href="#ref-burnham_model_2002" role="doc-biblioref">Burnham and Anderson 2002</a>)</span>. We will explore what are called <em>information criteria</em>, which is developed from statistical theory. Let’s get started!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses functions from base <code>R</code>: <code>lm</code>, <code>AIC</code>, and <code>BIC</code>, which ar all part of the <code>stats</code> library. This library should be pre-loaded into <code>R</code>, but if not, can be loaded with <code>library(stats)</code>.</p>
+</div>
+</div>
+<section id="model-assessment-guidelines" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="model-assessment-guidelines"><span class="header-section-number">14.1</span> Model assessment guidelines</h2>
+<p>The first step is to develop some guidelines and metrics for model evaluation. Here would be the start of a list of things to consider, represented as questions:</p>
+<ul>
+<li>The model complexity - how many equations do we have?</li>
+<li>The number of parameters - a few or many?</li>
+<li>Do the model outputs match the data?</li>
+<li>How will model prediction compare to any newly collected measurements?</li>
+<li>Are the trends accurately represented (especially for timeseries data)?</li>
+<li>Is the selected model easy to use, simulate, and forecast?</li>
+</ul>
+<p>I may have hinted at some of these guidelines in earlier chapters. These questions are related to one another - and answering these questions (or ranking criteria for them) is at the heart of the topic of <em>model selection</em>.</p>
+<p>Perhaps you may be asking, why bother? Aren’t more models better? Let’s talk about a specific example, for which we return to the dataset <code>global_temperature</code> in the <code>demodelr</code> library. Recall this dataset represents the average global temperature anomaly relative to 1951-1980. When we did linear regression with this dataset in <a href="08-linearRegression.html" class="quarto-xref"><span>Chapter 8</span></a> the quadratic and cubic models were approximately the same (<a href="#fig-global-temp-14" class="quarto-xref">Figure&nbsp;<span>14.2</span></a>):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-global-temp-14" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-global-temp-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="14-informationCriteria_files/figure-html/fig-global-temp-14-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-global-temp-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.2: Comparison of global temperature anomaly dataset with various polynomial fitted models.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The variation in the different model fits for <a href="#fig-global-temp-14" class="quarto-xref">Figure&nbsp;<span>14.2</span></a> shows how different, but similar, the model results can be depending on the choice of regression function. <a href="#tbl-gt-ll-14" class="quarto-xref">Table&nbsp;<span>14.1</span></a> displays summary results for the log-likelihood and the root mean square error (RMSE).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> In some cases, the log-likelihood decreases (indicating a more likely model), supported by the decrease in the RMSE indicating the fitted model more closely matches the observations. However the decrease in the log-likelihood and the RMSE is changing less as the complexity of the model (i.e.&nbsp;a higher degree polynomial) increases.</p>
+<div id="tbl-gt-ll-14" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gt-ll-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;14.1: Comparison of model fits for global temperature anomaly dataset shown in <a href="#fig-global-temp-14" class="quarto-xref">Figure&nbsp;<span>14.2</span></a>.
+</figcaption>
+<div aria-describedby="tbl-gt-ll-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Log-likelihood<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></th>
+<th style="text-align: center;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Linear</td>
+<td style="text-align: center;">45.04</td>
+<td style="text-align: center;">0.176</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Quadratic</td>
+<td style="text-align: center;">103.305</td>
+<td style="text-align: center;">0.117</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Cubic</td>
+<td style="text-align: center;">105.788</td>
+<td style="text-align: center;">0.115</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Quartic</td>
+<td style="text-align: center;">112.5</td>
+<td style="text-align: center;">0.11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Further model evaluation can be examined by the following:</p>
+<ul>
+<li>Compare the measured values of <span class="math inline">\(\vec{y}\)</span> to the modeled values of <span class="math inline">\(\vec{y}\)</span> in a 1:1 plot. Does <span class="math inline">\(g\)</span> do a better job predicting <span class="math inline">\(\vec{y}\)</span> than <span class="math inline">\(f\)</span>?</li>
+<li>Related to that, compare the likelihood function values of <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span>. We would favor the model that has the lower log-likelihood.</li>
+<li>Compare the number of parameters in each model <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span>. We would favor the model that has the fewest number of parameters.</li>
+</ul>
+<p>Given the above question, we can state the model selection problem as the following:</p>
+<blockquote class="blockquote">
+<p>When we have two <span class="math inline">\(f(\vec{x}, \vec{\alpha})\)</span> and <span class="math inline">\(g(\vec{x}, \vec{\beta})\)</span> for the data <span class="math inline">\(\vec{y}\)</span>, how would we determine which one (<span class="math inline">\(f\)</span> or <span class="math inline">\(g\)</span> or perhaps another alternative model) is the best approximating model?</p>
+</blockquote>
+</section>
+<section id="information-criteria-for-assessing-competing-models" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="information-criteria-for-assessing-competing-models"><span class="header-section-number">14.2</span> Information criteria for assessing competing models</h2>
+<p><em>Information criteria</em> evaluate the tradeoff between model complexity (i.e.&nbsp;the number of parameters used) and with the log-likelihood (a measure of how well the model fits the data). There are several types of information criteria, but we are going to focus on two:</p>
+<ul>
+<li>The <strong>Akaike Information Criterion</strong> (<span class="math inline">\(AIC\)</span>, <span class="citation" data-cites="akaike_new_1974">Akaike (<a href="#ref-akaike_new_1974" role="doc-biblioref">1974</a>)</span>) is the most commonly used information criteria:</li>
+</ul>
+<p><span id="eq-aic"><span class="math display">\[
+AIC = -2 LL_{max} + 2 P
+\tag{14.1}\]</span></span></p>
+<ul>
+<li>An alternative to the <span class="math inline">\(AIC\)</span> is the <strong>Bayesian Information Criterion</strong> (<span class="math inline">\(BIC\)</span>, <span class="citation" data-cites="schwartz_estimating_1978">Schwartz (<a href="#ref-schwartz_estimating_1978" role="doc-biblioref">1978</a>)</span>)</li>
+</ul>
+<p><span id="eq-bic"><span class="math display">\[
+BIC = -2 LL_{max} + P \ln (N)
+\tag{14.2}\]</span></span></p>
+<p>In Equations <a href="#eq-aic" class="quarto-xref"><span>14.1</span></a> and <a href="#eq-bic" class="quarto-xref"><span>14.2</span></a>, <span class="math inline">\(N\)</span> is the number of data points, <span class="math inline">\(P\)</span> is the number of estimated parameters, and <span class="math inline">\(LL_{max}\)</span> is the log-likelihood for the parameter set that maximized the likelihood function. Equations <a href="#eq-aic" class="quarto-xref"><span>14.1</span></a> and <a href="#eq-bic" class="quarto-xref"><span>14.2</span></a> show the dependence on the log-likelihood function and the number of parameters. For both the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> a lower value of the information criteria indicates greater support for the model from the data.</p>
+<p>Notice how easy the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> are to compute in <a href="#eq-aic" class="quarto-xref">Equations&nbsp;<span>14.1</span></a> and <a href="#eq-bic" class="quarto-xref"><span>14.2</span></a> (assuming you have the information at hand). When an empirical model fit is computed (i.e.&nbsp;using the command <code>lm</code>), <code>R</code> computes these easily with the functions <code>AIC</code> or <code>BIC</code>. To apply them you need to first do the model fit (with the function <code>lm</code>. Try this out by running the following code on your own:<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>regression_formula <span class="ot">&lt;-</span> temperature_anomaly <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> year_since_1880</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(regression_formula, <span class="at">data =</span> global_temperature)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#tbl-gt-ic-14" class="quarto-xref">Table&nbsp;<span>14.2</span></a> compares <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> for the models fitted using the global temperature anomaly dataset:</p>
+<!-- Table: (\#tab:gt-ic-14) Comparison of the $AIC$ and $BIC$ for global temperature anomaly data shown in @fig-global-temp-14. -->
+<div id="tbl-gt-ic-14" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gt-ic-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;14.2: Comparison of the <span class="math inline">\(AIC\)</span> and <span class="math inline">\(BIC\)</span> for global temperature anomaly dataset shown in <a href="#fig-global-temp-14" class="quarto-xref">Figure&nbsp;<span>14.2</span></a>.
+</figcaption>
+<div aria-describedby="tbl-gt-ic-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 42%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;"><span class="math inline">\(AIC\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(BIC\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Linear</td>
+<td style="text-align: center;">-84.08</td>
+<td style="text-align: center;">-75.213</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Quadratic</td>
+<td style="text-align: center;">-198.609</td>
+<td style="text-align: center;">-186.786</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Cubic</td>
+<td style="text-align: center;">-201.576</td>
+<td style="text-align: center;">-186.797</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Quartic</td>
+<td style="text-align: center;">-213</td>
+<td style="text-align: center;">-195.265</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p><a href="#tbl-gt-ic-14" class="quarto-xref">Table&nbsp;<span>14.2</span></a> shows that the cubic model is the better approximating model for both the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span>.</p>
+</section>
+<section id="a-few-cautionary-notes" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="a-few-cautionary-notes"><span class="header-section-number">14.3</span> A few cautionary notes</h2>
+<ul>
+<li>Information criteria are relative measures. In a study it may be more helpful to report the change in the information criteria, or even a ratio (see <span class="citation" data-cites="burnham_model_2002">Burnham and Anderson (<a href="#ref-burnham_model_2002" role="doc-biblioref">2002</a>)</span> for a detailed analysis).</li>
+<li>Information criteria are not cross-comparable across studies. If you are pulling in a model from another study, it is helpful to re-calculate the information criteria.</li>
+<li>An advantage to the <span class="math inline">\(BIC\)</span> is that it measures tradeoffs between favoring a model that has the fewer number of data needed to estimate parameters. Other information criteria examine the distribution of the likelihood function and parameters.</li>
+</ul>
+<p><strong>The upshot:</strong> Information criteria are <em>one</em> piece of evidence to help you to evaluate the best approximating model. You should do additional investigation (parameter evaluation, model-data fits, forecast values) in order to help determine the best model.</p>
+</section>
+<section id="exercises" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">14.4</span> Exercises</h2>
+<div id="exr-yeast-14" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.1</strong></span> You are investigating different models for the growth of a yeast species in a population where <span class="math inline">\(V\)</span> is the rate of reaction and <span class="math inline">\(s\)</span> is the added substrate:</p>
+<p><span class="math display">\[
+\begin{split}
+\mbox{Model 1: } &amp; V =  \frac{V_{max} s}{s+K_{m}} \\
+\mbox{Model 2: } &amp; V = \frac{K}{1+e^{-a-bs}} \\
+\mbox{Model 3: } &amp; V= K + Ae^{-bs}
+\end{split}
+\]</span></p>
+<p>With a dataset of 7 observations you found that the log-likelihood for Model 1 is <code>26.426</code>, for Model 2 the log-likelihood is is <code>15.587</code>, and for Model 3 the the log-likelihood is <code>21.537</code>. Apply the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> to evaluate which model is the best approximating model. Be sure to identify the number of estimated parameters for each model.</p>
+</div>
+<div id="exr-nutrient-14" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.2</strong></span> An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>, where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c\)</span> are parameters. We can apply linear regression to the dataset <span class="math inline">\((x, \; \ln(y) )\)</span>, so the intercept of the linear regression equals <span class="math inline">\(\ln(c)\)</span> and the slope equals <span class="math inline">\(1 / \theta\)</span>.</p>
+<ol type="a">
+<li>Show that you can write this equation as a linear equation by applying a logarithm to both sides and simplifying.</li>
+<li>With the dataset <code>phosphorous</code>, take the logarithm of the <code>daphnia</code> variable and then determine a linear regression fit for your new linear equation. What are the reported values of the slope and intercept from the linear regression, and by association, <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span>?</li>
+<li>Apply the function <code>logLik</code> to report the log-likelihood of the fit.</li>
+<li>What are the reported values of the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span>?</li>
+<li>An alternative linear model is the equation <span class="math inline">\(y = a + b \sqrt{x}\)</span>. Use the R command <code>sqrt_fit &lt;- lm(daphnia~I(sqrt(algae)),data = phosphorous)</code> to first obtain a fit for this model. Then compute the log-likelihood and the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span>. Of the two models (the log-transformed model and the square root model), which one is the better approximating model?</li>
+</ol>
+</div>
+<!-- From Burnham and Anderson pg 135 of pdf -->
+<div id="exr-ba-135-14" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.3</strong></span> (Inspired by <span class="citation" data-cites="burnham_model_2002">Burnham and Anderson (<a href="#ref-burnham_model_2002" role="doc-biblioref">2002</a>)</span>) You are tasked with the job of investigating the effect of a pesticide on water quality, in terms of its effects on the health of the plants and fish in the ecosystem. Different models can be created that investigate the effect of the pesticide. Different types of reaction schemes for this system are shown in <a href="03-modelingWithRates.html#fig-pesticide-ch3" class="quarto-xref">Figure&nbsp;<span>3.7</span></a>, where <span class="math inline">\(F\)</span> represents the amount of pesticide in the fish, <span class="math inline">\(W\)</span> the amount of pesticide in the water, and <span class="math inline">\(S\)</span> the amount of pesticide in the soil. The prime (e.g.&nbsp;<span class="math inline">\(F'\)</span>, <span class="math inline">\(W'\)</span>, and <span class="math inline">\(S'\)</span>) represent other bound forms of the respective state. In all seven different models can be derived.</p>
+<p>These models were applied to a dataset with 36 measurements of the water, fish, and plants. The table for the log-likelihood for each model is shown below:</p>
+<table class="table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">1a</th>
+<th style="text-align: center;">2a</th>
+<th style="text-align: center;">2b</th>
+<th style="text-align: center;">3a</th>
+<th style="text-align: center;">3b</th>
+<th style="text-align: center;">4a</th>
+<th style="text-align: center;">4b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Log-likelihood</td>
+<td style="text-align: center;">-90.105</td>
+<td style="text-align: center;">-71.986</td>
+<td style="text-align: center;">-56.869</td>
+<td style="text-align: center;">-31.598</td>
+<td style="text-align: center;">-31.563</td>
+<td style="text-align: center;">-8.770</td>
+<td style="text-align: center;">-14.238</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Use <a href="03-modelingWithRates.html#fig-pesticide-ch3" class="quarto-xref">Figure&nbsp;<span>3.7</span></a> to identify the number of parameters for each model.</li>
+<li>Apply the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> to the data in the above table to determine which is the best approximating model.</li>
+</ol>
+</div>
+<div id="exr-aic-hand-14" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 14.4</strong></span> Use the information shown in <a href="#tbl-gt-ll-14" class="quarto-xref">Table&nbsp;<span>14.1</span></a> to compute (by hand) the <span class="math inline">\(AIC\)</span> and the <span class="math inline">\(BIC\)</span> for each of the models for the <code>global_temperature</code> dataset (there are 142 observations). Do your results conform to what is presented in <a href="#tbl-gt-ic-14" class="quarto-xref">Table&nbsp;<span>14.2</span></a>? How far off are your results? What would be a plausible explanation for the difference?</p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-akaike_new_1974" class="csl-entry" role="listitem">
+Akaike, Hirotugu. 1974. <span>“A New Look at the Statistical Model Identification.”</span> <em>IEEE Transactions on Automatic Control</em> 19 (6): 716–23. <a href="https://doi.org/10.1109/TAC.1974.1100705">https://doi.org/10.1109/TAC.1974.1100705</a>.
+</div>
+<div id="ref-burnham_model_2002" class="csl-entry" role="listitem">
+Burnham, Kenneth P., and David R. Anderson. 2002. <em>Model <span>Selection</span> and <span>Multimodel Inference</span></em>. <span>New York, NY</span>: <span>Springer New York</span>.
+</div>
+<div id="ref-gause_experimental_1932" class="csl-entry" role="listitem">
+Gause, G. F. 1932. <span>“Experimental <span>Studies</span> on the <span>Struggle</span> for <span>Existence</span>: <span>I</span>. <span>Mixed Population</span> of <span>Two Species</span> of <span>Yeast</span>.”</span> <em>Journal of Experimental Biology</em> 9 (4): 389–402.
+</div>
+<div id="ref-schwartz_estimating_1978" class="csl-entry" role="listitem">
+Schwartz, G. 1978. <span>“Estimating the Dimensions of a Model.”</span> <em>Annals of Statistics</em> 6 (2): 461–64.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The root mean square error is the computed as <span class="math inline">\(\displaystyle \sqrt{\frac{\sum (y_{i}-f(x_{i}))^{2}}{N}}\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Remember, log-likelihoods can be positive or negative; see <a href="09-likelihood.html" class="quarto-xref"><span>Chapter 9</span></a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>You can compute the log-likelihood with the function <code>logLik(fit)</code>, where <code>fit</code> is the result of your linear model fits.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./13-mcmc.html" class="pagination-link" aria-label="Markov Chain Monte Carlo Parameter Estimation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./p03-stability.html" class="pagination-link" aria-label="Stability Analysis for Differential Equations">
+        <span class="nav-page-text">Stability Analysis for Differential Equations</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

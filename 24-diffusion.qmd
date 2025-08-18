@@ -185,6 +185,7 @@ try1 <- brownian_motion(100, 0.5, 0.1)
 plot(try1, type = "l")
 ```
 
+
 ### Do several times
 Once we have the function for Brownian motion defined we can then run this process several times and plot the spaghetti plot (try the following code out on your own):
 
@@ -208,6 +209,8 @@ ggplot(data = brownian_motion_sim, aes(x = t, y = x)) +
   ggtitle("Random Walk") +
   guides(color = "none")
 ```
+
+{{< fa burst >}} Notice the use of the [`map`](https://purrr.tidyverse.org/reference/map.html) function from the `purrr` library. This is a function to do repeated iteration. If you prefer base `R` implementation, you can replace `map(1:n_sims, ~ list())` with `replicate(n_sims, { list() })` or even `rep(list(), length.out = n_sims)`.
 
 ### Summarize and visualize
 Finally, the 95% confidence interval is computed and plotted in @fig-ensemble-ave-24, using similar code from @sec-stoch-sim-22 to compute the ensemble average. Note that the horizontal axis is time so each step is scaled by `dt`.
@@ -285,7 +288,29 @@ The equation for the normal distribution is $\displaystyle f(x)=\frac{1}{\sqrt{2
 :::
 
 
+::: {#exr-brownian-alt-24}
+{{< fa burst >}} The function `brownian_motion` can also be implemented using the function `cumsum`, or cumulative summation:
 
+```{r,eval=FALSE}
+brownian_motion_alt = function(number_steps, D, deltaT) {
+	# number_steps: length of random walk
+  # D: diffusion coefficient
+	# deltaT: timestep length
+  
+  # random lengths
+	r <- rnorm(number_steps) * sqrt(2 * D * deltaT)
+	r[1] <- 0 # start at 0
+	
+	# Results:
+	out <- cumsum(r)
+	out <- tibble(t = 0:(number_steps - 1), x = out)
+	
+	return(out)
+}
+```
+
+Evaluate `brownian_motion_alt` to recreate @fig-sample-brownian.
+:::
 
 ::: {#exr-int-normal-24}
 For this problem you will investigate $p(x,t)$ (@eq-diff-eq-soln) with $\displaystyle D=\frac{1}{2}$.

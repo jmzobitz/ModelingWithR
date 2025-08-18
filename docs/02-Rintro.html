@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 2&nbsp; Introduction to R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-modelingWithRates.html" rel="next">
+<link href="./01-intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p01-models.html">Models with Differential Equations</a></li><li class="breadcrumb-item"><a href="./02-Rintro.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#r-and-rstudio" id="toc-r-and-rstudio" class="nav-link active" data-scroll-target="#r-and-rstudio"><span class="header-section-number">2.1</span> <code>R</code> and RStudio</a>
+  <ul class="collapse">
+  <li><a href="#why-do-we-have-two-programs" id="toc-why-do-we-have-two-programs" class="nav-link" data-scroll-target="#why-do-we-have-two-programs"><span class="header-section-number">2.1.1</span> Why do we have two programs?</a></li>
+  </ul></li>
+  <li><a href="#first-steps-getting-acquainted-with-r" id="toc-first-steps-getting-acquainted-with-r" class="nav-link" data-scroll-target="#first-steps-getting-acquainted-with-r"><span class="header-section-number">2.2</span> First steps: getting acquainted with <code>R</code></a>
+  <ul class="collapse">
+  <li><a href="#working-with-r" id="toc-working-with-r" class="nav-link" data-scroll-target="#working-with-r"><span class="header-section-number">2.2.1</span> Working with <code>R</code></a></li>
+  <li><a href="#saving-your-work" id="toc-saving-your-work" class="nav-link" data-scroll-target="#saving-your-work"><span class="header-section-number">2.2.2</span> Saving your work</a></li>
+  </ul></li>
+  <li><a href="#sec-packages-02" id="toc-sec-packages-02" class="nav-link" data-scroll-target="#sec-packages-02"><span class="header-section-number">2.3</span> Increasing functionality with packages</a></li>
+  <li><a href="#working-with-r-variables-data-frames-and-datasets" id="toc-working-with-r-variables-data-frames-and-datasets" class="nav-link" data-scroll-target="#working-with-r-variables-data-frames-and-datasets"><span class="header-section-number">2.4</span> Working with <code>R</code>: variables, data frames, and datasets</a>
+  <ul class="collapse">
+  <li><a href="#creating-variables" id="toc-creating-variables" class="nav-link" data-scroll-target="#creating-variables"><span class="header-section-number">2.4.1</span> Creating variables</a></li>
+  <li><a href="#data-frames" id="toc-data-frames" class="nav-link" data-scroll-target="#data-frames"><span class="header-section-number">2.4.2</span> Data frames</a></li>
+  <li><a href="#reading-in-datasets" id="toc-reading-in-datasets" class="nav-link" data-scroll-target="#reading-in-datasets"><span class="header-section-number">2.4.3</span> Reading in datasets</a></li>
+  </ul></li>
+  <li><a href="#visualization-with-r" id="toc-visualization-with-r" class="nav-link" data-scroll-target="#visualization-with-r"><span class="header-section-number">2.5</span> Visualization with <code>R</code></a>
+  <ul class="collapse">
+  <li><a href="#making-a-scatterplot" id="toc-making-a-scatterplot" class="nav-link" data-scroll-target="#making-a-scatterplot"><span class="header-section-number">2.5.1</span> Making a scatterplot</a></li>
+  <li><a href="#making-a-line-plot" id="toc-making-a-line-plot" class="nav-link" data-scroll-target="#making-a-line-plot"><span class="header-section-number">2.5.2</span> Making a line plot</a></li>
+  <li><a href="#changing-options" id="toc-changing-options" class="nav-link" data-scroll-target="#changing-options"><span class="header-section-number">2.5.3</span> Changing options</a></li>
+  <li><a href="#combining-scatter-and-line-plots." id="toc-combining-scatter-and-line-plots." class="nav-link" data-scroll-target="#combining-scatter-and-line-plots."><span class="header-section-number">2.5.4</span> Combining scatter and line plots.</a></li>
+  </ul></li>
+  <li><a href="#defining-functions" id="toc-defining-functions" class="nav-link" data-scroll-target="#defining-functions"><span class="header-section-number">2.6</span> Defining functions</a>
+  <ul class="collapse">
+  <li><a href="#functions-with-multiple-inputs" id="toc-functions-with-multiple-inputs" class="nav-link" data-scroll-target="#functions-with-multiple-inputs"><span class="header-section-number">2.6.1</span> Functions with multiple inputs</a></li>
+  </ul></li>
+  <li><a href="#concluding-thoughts" id="toc-concluding-thoughts" class="nav-link" data-scroll-target="#concluding-thoughts"><span class="header-section-number">2.7</span> Concluding thoughts</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">2.8</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p01-models.html">Models with Differential Equations</a></li><li class="breadcrumb-item"><a href="./02-Rintro.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-r-intro-02" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The primary tools we will use to analyze models for this book are <code>R</code> <span class="citation" data-cites="R-base">(<a href="#ref-R-base" role="doc-biblioref">R Core Team 2020</a>)</span> and <code>RStudio</code> <span class="citation" data-cites="rstudio_team_rstudio_2020">(<a href="#ref-rstudio_team_rstudio_2020" role="doc-biblioref">RStudio Team 2020</a>)</span>. These programs are powerful ones to learn! Admittedly learning a new software may be challenging; however I think it is worth it. With <code>R</code> you will have enormous flexibility to efficiently utilize data, design effective visualizations, and process statistical models. Let’s get started!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses following libraries: <code>ggplot2</code>, and <code>tibble</code> (all part of the <code>tidyverse</code>) and <code>demodelr</code>. See <a href="#sec-packages-02" class="quarto-xref"><span>Section 2.3</span></a> on how to install packages. Prior to running any code in this section, include <code>library(tidyverse)</code> and <code>library(demodelr)</code>.</p>
+</div>
+</div>
+<section id="r-and-rstudio" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="r-and-rstudio"><span class="header-section-number">2.1</span> <code>R</code> and RStudio</h2>
+<p>First let’s talk terminology. The program <code>RStudio</code> is called an <em>Integrated Development Environment</em> for the statistical software language <code>R</code>.</p>
+<p>To get both <code>R</code> and <code>RStudio</code> requires two separate downloads and files, which can be found here:</p>
+<ul>
+<li><code>R</code>: <a href="https://cran.r-project.org/mirrors.html" class="uri">https://cran.r-project.org/mirrors.html</a> (You need to select a location to download from; choose any one that is geographically close to you.)</li>
+<li><code>RStudio</code>: <a href="https://www.rstudio.com/products/rstudio/download/" class="uri">https://www.rstudio.com/products/rstudio/download/</a></li>
+</ul>
+<section id="why-do-we-have-two-programs" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="why-do-we-have-two-programs"><span class="header-section-number">2.1.1</span> Why do we have two programs?</h3>
+<p>Think of <code>R</code> as your basic program - this is the engine that does the computation. <code>RStudio</code> is a program where you can see everything you are working on in one place. <a href="#fig-r-studio-pane" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows an example of a typical <code>RStudio</code> workspace:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-r-studio-pane" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-r-studio-pane-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/02-intro/rStudio-pane.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-r-studio-pane-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: A sample workspace from one of my projects.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>There are 4 key panels that I work with, clockwise from the top:</p>
+<ul>
+<li>The <strong>source</strong> window is in the upper left - notice how those have different tabs associated with them. You can have multiple source files that you can toggle between. For the moment think of these as commands that you will want to send to R.</li>
+<li>The <strong>environment</strong> and <strong>history</strong> pane - these tables allow you to see what variables are stored locally in your environment, or the history of commands.</li>
+<li>The <strong>files</strong> or <strong>plots</strong> pane (a simple plot I was working on is shown currently), but you can toggle between the tabs. The files tab shows the files in the current <code>Rstudio</code> project directory.</li>
+<li>Finally, the <strong>console</strong> pane is the place where <code>R</code> works and runs commands. You can type in there directly; otherwise we will also just “send” commands from the source down to the console.</li>
+</ul>
+<p>Now we are ready to work with <code>R</code> and <code>RStudio</code>!</p>
+</section>
+</section>
+<section id="first-steps-getting-acquainted-with-r" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="first-steps-getting-acquainted-with-r"><span class="header-section-number">2.2</span> First steps: getting acquainted with <code>R</code></h2>
+<p>Open up <code>RStudio</code>. The first task is to create a project file. A project is a central place to organize your materials. If you have previous experience with <code>R</code> you may be familiar with how the program is picky about its working directory - or the location on the computer where computations, files, and data are currently saved. Creating a project file is an easy way to avoid some of that fussiness. Here are the steps to accomplish this:</p>
+<ol type="1">
+<li>In <code>RStudio</code> select “File” then “New Project”.</li>
+<li>Next select the first option “New Directory” in the window - this will create a new folder on your computer.</li>
+<li>At the next window choose “New Directory” or “Existing Directory”. Depending on the option you choose, you will have some choice as to where you want to place this project.</li>
+<li>Name the project as you like.</li>
+<li>Click the “Create Project” button.</li>
+</ol>
+<p>It might be helpful to think of a project file as a physical folder where you store papers that have something in common (such as class notes). When you want to work on the project, you open up your folder (and similarly close your project when you are done). At the point of return, you can re-open your folder and pick up where you left off. An <code>RStudio</code> project is similar in that regard as well.</p>
+<section id="working-with-r" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="working-with-r"><span class="header-section-number">2.2.1</span> Working with <code>R</code></h3>
+<p>Our next step: how does <code>R</code> compute something? For example if we wanted to compute <code>4+9</code> we could type this command in the <code>R</code> console (lower left) window.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Try this out now:</p>
+<ol type="1">
+<li>In the console type <code>4+9</code></li>
+<li>Then hit enter (or return)</li>
+<li>Is the result 13?</li>
+</ol>
+<p>Success! While this workflow is helpful for a single expression, making use of script files (<code>.R</code> file) can help run multiple steps of code at once. Script files are located in the upper left hand corner of your <code>RStudio</code> window - or the source window. (You may not have anything there when you start working on a project, so let’s create one.)</p>
+<ol type="1">
+<li>In <code>RStudio</code> select “File” then “New File”</li>
+<li>Next select the first option “New Script”</li>
+<li>A new window called “UntitledX” should appear, where X is a number. You are set to go!<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+</ol>
+<p>Source files allow you to type in <code>R</code> code and then evaluate, which is sometimes called “sending a command to the console” - or moving an <code>R</code> statement from the source window to the console. Working with a script file allows you to fix any coding errors more quickly and then re-run your code rather than re-type everything. Let’s practice this. Type <code>4+9</code> in the script file. To evaluate this statement you have several options:</p>
+<ol type="1">
+<li>Copying and pasting the command to the window. Shortcuts are Ctrl+C / Command+C for copying and Ctrl+V / Command+C for Windows / Mac.</li>
+<li>Run one line at a time. This means that your cursor is at the line in your source file; then click the “Run” button in the upper right hand side of the source window. Shortcuts are Ctrl+Enter / Command+Enter.</li>
+<li>You can also source the entire script file, which means running all the lines from top to bottom. You do this by clicking the source button, or with shortcuts Ctrl+Shift+Enter / Cmd+Shift+Enter (Windows / Mac). Understandably for several lines of code this makes things easier.</li>
+</ol>
+<p>Sometimes source files contain comments, which are helpful notes to you, or future you, or anyone else you want to share your work with. Comments in <code>R</code> are used with the hashtag (<code>#</code>), which appear as green text in <code>RStudio</code>.</p>
+</section>
+<section id="saving-your-work" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="saving-your-work"><span class="header-section-number">2.2.2</span> Saving your work</h3>
+<p>The neat part about a source file is that it allows you to save the file (Ctrl+S / Cmd+S). The first time you do this you may need to give this a name. The location where this file will be saved is in the same directory as your <code>.Rproj</code> project file. Now you have a file that you can come back to! In general I try to use descriptive names of files so I can refer back to them later.</p>
+</section>
+</section>
+<section id="sec-packages-02" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-packages-02"><span class="header-section-number">2.3</span> Increasing functionality with packages</h2>
+<p>Packages are one way that <code>R</code> gets some awesome versatility. Packages are contributed, specialized code produced by users (just like you!), and shared with the world. Packages are similar to apps on your phone, which rather than obtaining them from the app store can be found in two different places:</p>
+<ul>
+<li><a href="https://cran.r-project.org/">CRAN</a>, which stands for <strong>C</strong>omprehensive <strong>R</strong> <strong>A</strong>rchive <strong>N</strong>etwork. This is the clearing house for many contributed packages - and allows for easy cross-platform functionality.</li>
+<li>Github. This is another place where people can share code and packages (including myself!). The code here has not been vetted through CRAN for compatibility, but if you trust the person sharing the code, it should work.</li>
+</ul>
+<p>Let’s now start to download some useful packages. The first package is <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>, which is actually a collection of packages. If you take an introductory data science course you will most likely be learning more about this package, but to install this at the command line you type the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Typing this line will connect to the CRAN download mirrors and install this set of packages locally to your computer. It make take some time, but be patient. Sometimes when you are installing packages you may be prompted to install additional packages. In this case just say yes.</p>
+<p>For this textbook I have written a collection of functions and data that we will use. This package name is called <code>demodelr</code> (<strong>D</strong>ifferential <strong>E</strong>quations and <strong>Model</strong>s in <strong>R</strong>; <span class="citation" data-cites="R-demodelr">Zobitz (<a href="#ref-R-demodelr" role="doc-biblioref">2022</a>)</span>).<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> To install this package you will run the following line:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"demodelr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is the good news: <em>you only need to install a package once before using it!</em> To load the package up into your workspace you use the command <code>library</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: compute the growth in weight of a dog over time.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Author: JMZ</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Last modified: 02-17-2022</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(demodelr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You need to load these libraries <em>each time you restart your R session</em>. This is part of the benefit of a script file - at the start I always declare the libraries that I will need. In addition, the first few lines of the script file contains comments (prefaced with <code>#</code>) to denote the basic purpose of the file, who wrote it, and the date it was last revised. This type of information is good programming practice. If you are a newbie to programming with <code>R</code>, building these habits will become second nature as you progress in your abilities.</p>
+</section>
+<section id="working-with-r-variables-data-frames-and-datasets" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="working-with-r-variables-data-frames-and-datasets"><span class="header-section-number">2.4</span> Working with <code>R</code>: variables, data frames, and datasets</h2>
+<section id="creating-variables" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="creating-variables"><span class="header-section-number">2.4.1</span> Creating variables</h3>
+<p>The next thing we will want to do is to define variables that are stored locally, which is easy to do:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>my_result <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The symbol <code>&lt;-</code> is assignment (you can use equals (=), but it is good coding practice to use the arrow for assignment). Notice how I named the variable called <code>my_result</code>. Generally I prefer using <em>descriptive</em> names for variables for the context at hand. (In other words, the variable <code>x</code> would be an odd choice - too ambiguous.) I also used snake case to string together multiple words. In practice you can use snake case, or alphabetic cases (<code>myResult</code>) or even <code>my.result</code> (although that may not be preferred practice in the long run). However, if you name variables as <code>my-result</code> it looks like subtraction between variables <code>my</code> and <code>result</code>. I try to follow the <a href="https://style.tidyverse.org/">tidyverse style guide</a> whenever possible.</p>
+<p>Once we have defined a variable, we can compute with it. For example <code>10*my_result</code> should yield 130. Cool, no?</p>
+<p>Sequences defined as vectors are another useful construction. In <code>R</code> this is done with the <code>seq</code> function along with additional information such as the starting value, ending value, and step size. As an example, let’s define a sequence, spaced from 0 to 5 with spacing of 0.05 and then store this sequence as variable called <code>my_sequence</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>my_sequence <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The format for the function <code>seq</code> is <code>seq(from=start,to=end,by=step_size)</code>. The <code>seq</code> command is a pretty flexible - there are alternative ways you can generate a sequence by specifying the starting and the end values along with the number of points. If you want to know more about <code>seq</code> you can always use <code>?</code> followed by the command - that will bring up the help values:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>?seq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once you get more comfortable with syntax in <code>R</code>, you will see that <code>seq(0,5,0.5)</code> gives the same result as <code>seq(from=0,to=5,by=0.05)</code>, but it is helpful to write your code <em>so that you can understand what it does</em>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+</section>
+<section id="data-frames" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="data-frames"><span class="header-section-number">2.4.2</span> Data frames</h3>
+<p>A key structure in <code>R</code> is that of a data frame, which allows different types of data to be collected together. A data frame is like a spreadsheet where each column is a value and each row a value (much like you would find in a spreadsheet). As an example, a data frame may list values for solutions to a differential equation, like we did with our three infection models in <a href="01-intro.html" class="quarto-xref"><span>Chapter 1</span></a> (<a href="#tbl-model-table" class="quarto-xref">Table&nbsp;<span>2.1</span></a>).</p>
+<div id="tbl-model-table" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.1: Sample model solutions for an exponential, saturating, or logistic differential equation
+</figcaption>
+<div aria-describedby="tbl-model-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<table class="lightable-paper cell table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">model_1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">model_2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">model_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">250</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">258</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">257</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">265</td>
+<td style="text-align: right;">1027</td>
+<td style="text-align: right;">265</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">274</td>
+<td style="text-align: right;">1399</td>
+<td style="text-align: right;">273</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">282</td>
+<td style="text-align: right;">1760</td>
+<td style="text-align: right;">281</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</figure>
+</div>
+<p>Data frames are an example of <em>tidy</em> data, where each row is an observation, each column a variable (which can be quantitative or categorical). There are several different ways to define a data frame in <code>R</code>. I am going to rely on the approach utilized by the <code>tidyverse</code>, which defines data frames as <a href="https://tibble.tidyverse.org/"><code>tibbles</code></a>.</p>
+<p>As an example, the following code defines a data frame that computes the quadratic function <span class="math inline">\(y=3x^2-2x\)</span> for <span class="math inline">\(-5 \leq x \leq 2\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">to =</span> <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> x</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>my_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> x,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>) <span class="co"># Notice how x and y are specifically defined</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the data frame <code>my_data</code> uses the column (variable) names of <code>x</code> and <code>y</code>. You could have also used <code>tibble(x,y)</code>, but it is helpful to name the columns in the way that you would like them to be named.</p>
+<p>In addition to defining a data frame, <code>R</code> also contains several datasets in memory. In fact to see all the datasets, type <code>data()</code> at the console. Packages may also have datasets bundled with them. If you want to see the datasets for the <code>demodelr</code> package, you would type <code>data(package = "demodelr")</code> at the console.</p>
+</section>
+<section id="reading-in-datasets" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="reading-in-datasets"><span class="header-section-number">2.4.3</span> Reading in datasets</h3>
+<p>Another <code>R</code> skill is importing data into <code>R</code>. Data come in several different types of formats, but one of the more versatile ones is a csv (<strong>c</strong>omma <strong>s</strong>eparated <strong>v</strong>alues) file. A csv file is a simplified version of an Excel or Google spreadsheet.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> To read in the file you will use the command <code>read_csv</code> (part of the <code>readr</code> package in the <code>tidyverse</code>). The <code>read_csv</code> command which has the following structure, where FILENAME refers to the location of the file on your computer:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>in_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(FILENAME)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For example the following code would read in a csv file of Ebola data located in the project directory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"ebola.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice the quotes around the FILENAME.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> The command <code>read_csv</code> is part of the <code>tidyverse</code>, but the function <code>read.csv</code> uses base <code>R</code>. They operate a little differently, but this book will use the <code>read_csv</code> command.</p>
+</section>
+</section>
+<section id="visualization-with-r" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="visualization-with-r"><span class="header-section-number">2.5</span> Visualization with <code>R</code></h2>
+<p>Now we are ready to begin visualizing data frames. Two types of plots that we will need to make will be a scatter plot and a line plot. We are going to consider both of these separately, with examples that you should be able to customize.</p>
+<section id="making-a-scatterplot" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="making-a-scatterplot"><span class="header-section-number">2.5.1</span> Making a scatterplot</h3>
+<p>One dataset we have is the weight of a dog over time, adapted from <a href="http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/">this referenced website.</a> The data frame we will use is called <code>wilson</code> and is part of the <code>demodelr</code> library. You can also explore the documentation for this dataset by typing <code>?wilson</code> at the console. The <code>wilson</code> dataset has two variables here: <span class="math inline">\(D=\)</span> the age of the dog in days and <span class="math inline">\(W=\)</span> the weight of the dog in pounds. I have the data loaded into the <code>demodelr</code> package, which you can investigate by typing the following at the command line:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(wilson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that this data frame has two variables: <code>days</code> and <code>weight</code>. To make a scatter plot of these data we are going to use the command <code>ggplot</code> in <a href="#fig-wilson-weight-02" class="quarto-xref">Figure&nbsp;<span>2.2</span></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson) <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Days since birth"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Weight (pounds)"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-wilson-weight-02" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wilson-weight-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02-Rintro_files/figure-html/fig-wilson-weight-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wilson-weight-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: Measured weight of the dog Wilson over time.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wow! The code to produce <a href="#fig-wilson-weight-02" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> looks complicated. Let’s break this down step by step:</p>
+<ul>
+<li><code>ggplot(data = wilson) +</code> sets up the graphics structure and identifies the name of the data frame we are including.</li>
+<li><code>geom_point(aes(x = days, y = weight))</code> defines the type of plot we are going to be making.</li>
+<li><code>geom_point()</code> defines the type of plot geometry (or <em>geom</em>) we are using here - in this case, a point plot.</li>
+<li><code>aes(x = days, y = weight)</code> maps the <em>aesthetics</em> of the plot. On the <span class="math inline">\(x\)</span> axis is the <code>days</code> variable; on the <span class="math inline">\(y\)</span> axis is the <code>weight</code> variable. You may also write this as <code>mapping = aes(x = days, y = weight)</code>.</li>
+<li>The statement beginning with <code>labs(x=...)</code> defines the labels on the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes.</li>
+</ul>
+<p>I know this seems like a lot of code to make a visualization, but this structure is actually used for some more advanced data visualization. Think of the <code>+</code> structure at the end of each line as the connector between <code>ggplot</code> and the plot <code>geom</code>. Trust me - learning how to make informative plots can be a useful skill!</p>
+</section>
+<section id="making-a-line-plot" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="making-a-line-plot"><span class="header-section-number">2.5.2</span> Making a line plot</h3>
+<p>Using the same <code>wilson</code> data, later on we will discover that the function <span class="math inline">\(\displaystyle W =f(D)= \frac{70}{1+e^{2.46-0.017D}}\)</span>. represents these data. In order to make a graph of this function we need to first build a data frame (<a href="#fig-wilson-model-02" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose spacing that is "smooth enough"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1500</span>, <span class="at">by =</span> <span class="dv">1</span>) </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>weight <span class="ot">&lt;-</span> <span class="dv">70</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="fl">2.46</span> <span class="sc">-</span> <span class="fl">0.017</span> <span class="sc">*</span> days))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>wilson_model <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">days =</span> days,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">weight =</span> weight</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson_model) <span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Days since birth"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Weight (pounds)"</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-wilson-model-02" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wilson-model-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02-Rintro_files/figure-html/fig-wilson-model-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wilson-model-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: Logistic model equation to describe the weight of the dog Wilson over time.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice that once we have the data frame set up, the structure is very similar to the scatter plot - but this time we are using <code>geom_line()</code> rather than <code>geom_point</code>.</p>
+</section>
+<section id="changing-options" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="changing-options"><span class="header-section-number">2.5.3</span> Changing options</h3>
+<p>Curious about using a different color in your plot or a thicker line? That is fairly easy to do. For example if we wanted to make either our points or line a different color, we adjust the <code>ggplot</code> to the following code (not evaluated here, but try it out on your own):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">2</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">"Days since birth"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"Weight (pounds)"</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice how the command <code>color='red'</code> was applied <em>outside</em> of the aes - which means it gets mapped to each of the points in the data frame. <code>size=2</code> refers to the size (in millimeters) of the points. I’ve linked more options about the colors and sizes you can use here:</p>
+<ul>
+<li><strong>Named colors in R:</strong> <a href="https://www.r-graph-gallery.com/42-colors-names.html">gallery of <code>R</code> colors.</a> Scroll down to “Picking one color in R” - you can see the list of options!</li>
+<li><strong>More colors:</strong> <a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/">colors in <code>ggplot</code>.</a>. More information about working with colors.</li>
+<li><strong>Using hexadecimal colors:</strong> <a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#hexadecimal-color-code-chart">hexadecimal colors.</a> (You specify these by the code so <code>"#FF3300"</code> is a red color.)</li>
+<li><strong>Changing sizes of lines and points:</strong> <a href="https://ggplot2.tidyverse.org/articles/ggplot2-specs.html">modifying a <code>ggplot</code>.</a></li>
+</ul>
+</section>
+<section id="combining-scatter-and-line-plots." class="level3" data-number="2.5.4">
+<h3 data-number="2.5.4" class="anchored" data-anchor-id="combining-scatter-and-line-plots."><span class="header-section-number">2.5.4</span> Combining scatter and line plots.</h3>
+<p>Combining the data (<a href="#fig-wilson-weight-02" class="quarto-xref">Figure&nbsp;<span>2.2</span></a>) with the model (<a href="#fig-wilson-model-02" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>) in the same plot can be done by combining the <code>geom_point</code> with the <code>geom_line</code>, as shown in the following code (try it out on your own):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> wilson) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> wilson_model, <span class="fu">aes</span>(<span class="at">x =</span> days, <span class="at">y =</span> weight)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Days since birth"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Weight (pounds)"</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice in the above code a subtle difference when I added in the dataset <code>wilson_model</code> with <code>geom_line</code>: you need to name the <code>data</code> bringing in a new data frame to a plot geom. While it may be useful to have a <a href="http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/">plot legend</a>, for this textbook the context will be apparent without having a legend.</p>
+</section>
+</section>
+<section id="defining-functions" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="defining-functions"><span class="header-section-number">2.6</span> Defining functions</h2>
+<p>We will study lots of other built-in functions for this course, but you may also be wondering how you define your own function (let’s say <span class="math inline">\(y=x^{3}\)</span>). We need the following construct for our code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>function_name <span class="ot">&lt;-</span> <span class="cf">function</span>(inputs) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Code</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(outputs)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here <code>function_name</code> serves as what you call the function, inputs are what you need in order to run the function, and outputs are what gets returned. So if we are doing <span class="math inline">\(y=x^{3}\)</span> then we will call that function <code>cubic</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cubic <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So now if we want to evaluate <span class="math inline">\(y(2)=2^{3}\)</span> at the console we type <code>cubic(2)</code>. Neat! The following code will make a plot of the function <span class="math inline">\(y=x^{3}\)</span> using <code>cubic</code> (try this out on your own):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">cubic</span>(x)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>my_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> my_data) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="functions-with-multiple-inputs" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="functions-with-multiple-inputs"><span class="header-section-number">2.6.1</span> Functions with multiple inputs</h3>
+<p>Sometimes you may want to define a function with different input parameters, so for example the function <span class="math inline">\(y=x^{3}+c\)</span>. To define that, we can modify the function to have input variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cubic_revised <span class="ot">&lt;-</span> <span class="cf">function</span>(x, c) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> c</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To create and plot several examples of the function <code>cubic</code> for different values of <span class="math inline">\(c\)</span> is shown in the following code and <a href="#fig-cubic-all-02" class="quarto-xref">Figure&nbsp;<span>2.4</span></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>my_data_revised <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> x,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">c_zero =</span> <span class="fu">cubic_revised</span>(x, <span class="dv">0</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">c_pos1 =</span> <span class="fu">cubic_revised</span>(x, <span class="dv">1</span>),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">c_pos2 =</span> <span class="fu">cubic_revised</span>(x, <span class="dv">2</span>),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">c_neg1 =</span> <span class="fu">cubic_revised</span>(x, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> my_data_revised) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> c_zero)) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> c_pos1)) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> c_pos2)) <span class="sc">+</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> c_neg1)) <span class="sc">+</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-cubic-all-02" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cubic-all-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="02-Rintro_files/figure-html/fig-cubic-all-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cubic-all-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: Plot of several cubic functions <span class="math inline">\(y=x^{3}+c\)</span> when <span class="math inline">\(c=-1,0,1,2\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice how I defined multiple columns of the data frame <code>my_data_revised</code> in the <code>tibble</code> command, and then used mutiple <code>geom_line</code> commands to plot the data. Since we had combined the different values of <code>c</code> in a single data frame we didn’t need to define the <code>data</code> with each instance of <code>geom_line</code>.</p>
+</section>
+</section>
+<section id="concluding-thoughts" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="concluding-thoughts"><span class="header-section-number">2.7</span> Concluding thoughts</h2>
+<p>This is not meant to be a self-contained chapter in <code>R</code> but rather one so that you can quickly compute to code. Curious to learn more? Thankfully there are several good resources. Here are few of my favorites that I turn to:</p>
+<ul>
+<li><a href="http://www.cookbook-r.com/"><strong>R Graphics</strong>.</a> This is a go-to resource for making graphics. (I also use Google a lot too.)</li>
+<li><a href="https://bookdown.org/ndphillips/YaRrr/"><strong>The Pirates Guide to R</strong>.</a> This book promises to build your R knowledge from the ground up.</li>
+<li><a href="http://swcarpentry.github.io/r-novice-gapminder/"><strong>R for Reproducible Scientific Analysis</strong>.</a> This set of guided tutorials can help you build your programming skills in R.</li>
+<li><a href="https://r4ds.had.co.nz/"><strong>R for Data Science</strong>.</a> This is a useful book to take your R knowledge to the next level.</li>
+</ul>
+<p>The best piece of advice: DON’T PANIC! Patience and persistence are your friend. Reach out for help, and recognize that like with any new endeavor, practice makes progress.</p>
+</section>
+<section id="exercises" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.8</span> Exercises</h2>
+<div id="exr-r-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.1</strong></span> Create a folder on your computer and a project file where you will store all your <code>R</code> work.</p>
+</div>
+<div id="exr-pkg-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.2</strong></span> Install the packages <code>devtools</code>, <code>tidyverse</code> to your <code>R</code> installation. Once that is done, then install the package <code>demodelr</code>.</p>
+</div>
+<div id="exr-vars-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.3</strong></span> What are the variables listed in the dataset <code>phosphorous</code> in the <code>demodelr</code> library? (Hint: try the command <code>?phosphorous</code>.)</p>
+</div>
+<div id="exr-phos-scatter-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.4</strong></span> Make a scatterplot (<code>geom_point()</code>) of the dataset <code>phosphorous</code> in the <code>demodelr</code> library. Be sure to label the axes with descriptive titles.</p>
+</div>
+<div id="exr-wils-fig-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.5</strong></span> Change <a href="#fig-wilson-model-02" class="quarto-xref">Figure&nbsp;<span>2.3</span></a> so the line is blue and the size is 4 mm.</p>
+</div>
+<div id="exr-wilson-col-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.6</strong></span> Change the color of the points in <a href="#fig-wilson-weight-02" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> to either a hexadecimal color or a named color of your choice.</p>
+</div>
+<div id="exr-plot-seq-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.7</strong></span> For this exercise you will do some plotting:</p>
+<ol type="a">
+<li>Define a sequence (call this sequence <span class="math inline">\(x\)</span>) that ranges between <span class="math inline">\(-12\)</span> to <span class="math inline">\(12\)</span> with spacing of <span class="math inline">\(.05\)</span>.</li>
+<li>Also define the variable <span class="math inline">\(y\)</span> such that <span class="math inline">\(y=\sin(x)\)</span>.</li>
+<li>Make a scatter plot to graph <span class="math inline">\(y=\sin(x)\)</span>. Set the points to be red.</li>
+<li>Make a line plot to graph <span class="math inline">\(y=\sin(x)\)</span>. Label the x-axis with your favorite book title. Label the y-axis with your favorite food to eat.</li>
+</ol>
+</div>
+<div id="exr-nutrient-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.8</strong></span> An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>, where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c&gt;0\)</span> are both constants. Let’s just assume that <span class="math inline">\(c=1\)</span> and the <span class="math inline">\(0 \leq x \leq 1\)</span>.</p>
+<ol type="a">
+<li>Construct a function called <code>nutrient</code> that will make a sequence of <code>y</code> values for an input <code>x</code> and <code>theta</code> (<span class="math inline">\(\theta\)</span>).</li>
+<li>Use your <code>nutrient</code> function to create a line plot (<code>geom_line()</code>) for five different values of <span class="math inline">\(\theta&gt;1\)</span>, appropriately labeling all axes.</li>
+</ol>
+</div>
+<div id="exr-daph-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.9</strong></span> The dataset <code>phosphorous</code> in the <code>demodelr</code> library contains measurements of the phosphorous content of <em>Daphnia</em> and its primary food source algae.</p>
+<p>Researchers believe that <em>Daphnia</em> has strict homeostatic regulation of the phosphorous contained in algae, and want to determine the value of <span class="math inline">\(\theta\)</span> in the equation <span class="math inline">\(y= \displaystyle y = c x^{1/\theta}\)</span>. They have already determined that the value of <span class="math inline">\(c=1.737\)</span>.</p>
+<ol type="a">
+<li>Complete Exercise @ref(exr:phos-scatter-02). Be sure to label the axes correctly.</li>
+<li>Use your function <code>nutrient</code> from Exercise @ref(exr:nutrient-02) to make an initial guess for <code>theta</code> (<span class="math inline">\(\theta\)</span>) that is consistent with the data. You can evaluate your guess by plotting (with <code>geom_line()</code>) against the data.</li>
+<li>Use guess and check to refine the value of <span class="math inline">\(\theta\)</span> that seems to work best.</li>
+<li>Report your value of <span class="math inline">\(\theta\)</span>.</li>
+</ol>
+</div>
+<div id="exr-function-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.10</strong></span> For this exercise you will investigate some built-in functions. Remember you can learn more about a function by typing <code>?FUNCTION</code>, where <code>FUNCTION</code> is the name.</p>
+<ol type="a">
+<li>Explain (using your own words) what the function <code>runif(1,100,1000)</code> does.</li>
+<li>Explain (using your own words) what the function <code>ceiling()</code> does, showing an example of its use.</li>
+</ol>
+</div>
+<div id="exr-ebola-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.11</strong></span> The Ebola outbreak in Africa in 2014 severely affected the country of Sierra Leone. A model for the number of Ebola infections <span class="math inline">\(I\)</span> is given by the following equation: <span class="math display">\[ I(t) = \frac{K \cdot I_{0} }{I_{0} + (K-I_{0})  \exp(-rt)}, \]</span> where <span class="math inline">\(K = 13580\)</span>, <span class="math inline">\(I_{0}=251\)</span> and <span class="math inline">\(r = 0.0227\)</span>. The variable <span class="math inline">\(t\)</span> is in days. Use <code>geom_line()</code> to visualize this curve from <span class="math inline">\(0 \leq t \leq 700\)</span>.</p>
+</div>
+<div id="exr-piecewise-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.12</strong></span> Consider the following piecewise function:</p>
+<p><span class="math display">\[\begin{equation}
+y =
+\begin{cases}
+x^2 &amp; \text{ for } 0 \leq x &lt; 1,\\
+2-x &amp;\text{ for } 1 \leq x \leq  2 \\
+\end{cases}
+\end{equation}\]</span></p>
+<ol type="a">
+<li>Define a function in <code>R</code> that computes <span class="math inline">\(y\)</span> for <span class="math inline">\(0 \leq x \leq 2\)</span>.</li>
+<li>Use <code>geom_line()</code> to generate a graph of <span class="math inline">\(y(x)\)</span> over the interval <span class="math inline">\(0 \leq x \leq 2\)</span>.</li>
+</ol>
+</div>
+<div id="exr-insect-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.13</strong></span> An insect’s development rate <span class="math inline">\(r\)</span> depends on temperature <span class="math inline">\(T\)</span> (degrees Celsius) according to the following equation:</p>
+<p><span class="math display">\[\begin{equation}
+r =
+\begin{cases}
+0.1 &amp; \text{ for } 17 \leq T &lt; 27,\\
+0 &amp;\text{ otherwise.}
+\end{cases}
+\end{equation}\]</span></p>
+<ol type="a">
+<li>Define a function in <code>R</code> that computes <span class="math inline">\(r\)</span> for <span class="math inline">\(0 \leq T \leq 30\)</span>.</li>
+<li>Use <code>geom_line()</code> to generate a graph of <span class="math inline">\(r(T)\)</span> over the interval <span class="math inline">\(0 \leq T \leq 30\)</span>.</li>
+</ol>
+</div>
+<div id="exr-herpes-plot-02" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.14</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> An important parameter in modeling the spread of diseases is the <span class="math inline">\(R_{0}\)</span>, which represents if a disease will become an epidemic. If <span class="math inline">\(R_{0}&gt;1\)</span>, then the disease will become an epidemic. If <span class="math inline">\(R_{0}&lt;1\)</span>, then it will not. For a disease like Herpes, one model is a susceptible - infected (<span class="math inline">\(SI\)</span>) model, assuming there is no recovery from Herpes. For this case, an expression for <span class="math inline">\(R_{0}\)</span> is the the following:<br>
+</p>
+<p><span class="math display">\[
+R_{0} = \frac{\beta}{\mu + \delta},
+\]</span></p>
+<p>where <span class="math inline">\(\beta\)</span> represents the rate of transmission, <span class="math inline">\(\mu\)</span> the baseline mortality rate, and <span class="math inline">\(\delta\)</span> the mortality rate induced by the disease.</p>
+<ol type="a">
+<li>Using <code>R</code> and <code>ggplot2</code>, let <span class="math inline">\(\mu = \frac{1}{1000}\)</span> and <span class="math inline">\(\delta = \frac{1.193}{1000}\)</span>. Plot <span class="math inline">\(R_{0}\)</span> as a function <span class="math inline">\(\beta\)</span> and include your plot in the response. Make sure <span class="math inline">\(0 \leq R_{0} \leq 2\)</span>. (You will need to find an appropriate window for <span class="math inline">\(\beta\)</span>.). What is the threshold value for <span class="math inline">\(\beta\)</span> for an epidemic? Be sure to label your axes appropriately.</li>
+<li>Using <code>R</code> and <code>ggplot2</code>, let <span class="math inline">\(\mu = \frac{1}{1000}\)</span> and <span class="math inline">\(\beta = \frac{2}{100}\)</span>. Plot <span class="math inline">\(R_{0}\)</span> as a function <span class="math inline">\(\delta\)</span> and include your plot in the response. Make sure <span class="math inline">\(0 \leq R_{0} \leq 2\)</span>. (You will need to find an appropriate window for <span class="math inline">\(\delta\)</span>.). What is the threshold value for <span class="math inline">\(\delta\)</span> for an epidemic? Be sure to label your axes appropriately.</li>
+</ol>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-R-base" class="csl-entry" role="listitem">
+R Core Team. 2020. <em>R: <span>A</span> Language and Environment for Statistical Computing</em>. Manual. Vienna, Austria: R Foundation for Statistical Computing.
+</div>
+<div id="ref-rstudio_team_rstudio_2020" class="csl-entry" role="listitem">
+RStudio Team. 2020. <em><span>RStudio</span>: <span>Integrated</span> Development Environment for <span>R</span></em>. Manual. <span>Boston, MA</span>: <span>RStudio, PBC</span>. <a href="http://www.rstudio.com/">http://www.rstudio.com/</a>.
+</div>
+<div id="ref-wilson_best_2014" class="csl-entry" role="listitem">
+Wilson, Greg, D. A. Aruliah, C. Titus Brown, Neil P. Chue Hong, Matt Davis, Richard T. Guy, Steven H. D. Haddock, et al. 2014. <span>“Best <span>Practices</span> for <span>Scientific Computing</span>.”</span> <em>PLoS Biol</em> 12 (1): e1001745. <a href="https://doi.org/10.1371/journal.pbio.1001745">https://doi.org/10.1371/journal.pbio.1001745</a>.
+</div>
+<div id="ref-R-demodelr" class="csl-entry" role="listitem">
+Zobitz, John. 2022. <span>“Demodelr: <span>Simulating Differential Equations</span> with <span>Data</span>.”</span>
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>I know you know the result is 13, but this is an illustrative example.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><strong>Pro tip:</strong> There are shortcuts to creating a new file: Ctrl+Shift+N (Windows and Linux) or Command+Shift+N (Mac).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>You can also find <code>demodelr</code> on github as well: <a href="https://github.com/jmzobitz/demodelr" class="uri">https://github.com/jmzobitz/demodelr</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>I believe that code should be built for humans, not computers; see <span class="citation" data-cites="wilson_best_2014">Wilson et al. (<a href="#ref-wilson_best_2014" role="doc-biblioref">2014</a>)</span> for more information.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>While the following steps focus on csv files, <code>R</code> can read in Excel files with the <code>readxl</code> package (<a href="https://readxl.tidyverse.org/" class="uri">https://readxl.tidyverse.org/</a>) or Google sheets with the <code>googlesheets4</code> package (<a href="https://googlesheets4.tidyverse.org/" class="uri">https://googlesheets4.tidyverse.org/</a>).<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><strong>Pro tip:</strong> It is helpful to make a subfolder of your <code>R</code> project called data, where all csv files are stored. Then if you have the data files in the data folder, in RStudio you can type “data” and it may start to autocomplete - this is handy.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-intro.html" class="pagination-link" aria-label="Models of Rates with Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-modelingWithRates.html" class="pagination-link" aria-label="Modeling with Rates of Change">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 18&nbsp; What are Eigenvalues?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./19-qualitativeStability.html" rel="next">
+<link href="./17-jacobian.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p03-stability.html">Stability Analysis for Differential Equations</a></li><li class="breadcrumb-item"><a href="./18-eigenvalues.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">18.1</span> Introduction</a></li>
+  <li><a href="#straight-line-solutions" id="toc-straight-line-solutions" class="nav-link" data-scroll-target="#straight-line-solutions"><span class="header-section-number">18.2</span> Straight line solutions</a></li>
+  <li><a href="#computing-eigenvalues-and-eigenvectors" id="toc-computing-eigenvalues-and-eigenvectors" class="nav-link" data-scroll-target="#computing-eigenvalues-and-eigenvectors"><span class="header-section-number">18.3</span> Computing eigenvalues and eigenvectors</a>
+  <ul class="collapse">
+  <li><a href="#computing-eigenvalues-with-demodelr" id="toc-computing-eigenvalues-with-demodelr" class="nav-link" data-scroll-target="#computing-eigenvalues-with-demodelr"><span class="header-section-number">18.3.1</span> Computing eigenvalues with demodelr</a></li>
+  </ul></li>
+  <li><a href="#what-do-eigenvalues-tell-us" id="toc-what-do-eigenvalues-tell-us" class="nav-link" data-scroll-target="#what-do-eigenvalues-tell-us"><span class="header-section-number">18.4</span> What do eigenvalues tell us?</a>
+  <ul class="collapse">
+  <li><a href="#sources-all-eigenvalues-positive" id="toc-sources-all-eigenvalues-positive" class="nav-link" data-scroll-target="#sources-all-eigenvalues-positive"><span class="header-section-number">18.4.1</span> Sources: all eigenvalues positive</a></li>
+  <li><a href="#sinks-all-eigenvalues-negative" id="toc-sinks-all-eigenvalues-negative" class="nav-link" data-scroll-target="#sinks-all-eigenvalues-negative"><span class="header-section-number">18.4.2</span> Sinks: all eigenvalues negative</a></li>
+  <li><a href="#saddle-nodes-one-positive-and-one-negative-eigenvalue" id="toc-saddle-nodes-one-positive-and-one-negative-eigenvalue" class="nav-link" data-scroll-target="#saddle-nodes-one-positive-and-one-negative-eigenvalue"><span class="header-section-number">18.4.3</span> Saddle nodes: one positive and one negative eigenvalue</a></li>
+  <li><a href="#spirals-imaginary-eigenvalues" id="toc-spirals-imaginary-eigenvalues" class="nav-link" data-scroll-target="#spirals-imaginary-eigenvalues"><span class="header-section-number">18.4.4</span> Spirals: imaginary eigenvalues</a></li>
+  <li><a href="#repeated-eigenvalues" id="toc-repeated-eigenvalues" class="nav-link" data-scroll-target="#repeated-eigenvalues"><span class="header-section-number">18.4.5</span> Repeated eigenvalues</a></li>
+  </ul></li>
+  <li><a href="#concluding-thoughts" id="toc-concluding-thoughts" class="nav-link" data-scroll-target="#concluding-thoughts"><span class="header-section-number">18.5</span> Concluding thoughts</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">18.6</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p03-stability.html">Stability Analysis for Differential Equations</a></li><li class="breadcrumb-item"><a href="./18-eigenvalues.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-eigenvalues-18" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">18.1</span> Introduction</h2>
+<p>This chapter focuses on developing a tool to understand the stability of an equilibrium solution. This tool is determining eigenvalues and eigenvectors. We connect eigenvectors and eigenvalues back to straight-line solutions introduced in <a href="15-linearSystems.html" class="quarto-xref"><span>Chapter 15</span></a>. You will see how eigenvalues are determined is through solving a polynomial equation. Finally we investigate how the values of the eigenvalues are reflected in the directions of the arrows in the phase plane. There is a lot here to unpack, so let’s get started!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses following libraries: <code>ggplot2</code> (part of the <code>tidyverse</code>) and <code>demodelr</code>. See <a href="02-Rintro.html#sec-packages-02" class="quarto-xref"><span>Section 2.3</span></a> on how to install packages. Prior to running any code in this section, include <code>library(tidyverse)</code> and <code>library(demodelr)</code>.</p>
+</div>
+</div>
+</section>
+<section id="straight-line-solutions" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="straight-line-solutions"><span class="header-section-number">18.2</span> Straight line solutions</h2>
+<p>Consider this following linear system of equations:</p>
+<p><span id="eq-system-ch18"><span class="math display">\[
+\begin{split}
+\frac{dx}{dt} &amp;= 2x-y \\
+\frac{dy}{dt} &amp;= 2x+5
+\end{split}
+\tag{18.1}\]</span></span></p>
+<p>In <a href="15-linearSystems.html" class="quarto-xref"><span>Chapter 15</span></a> we identified two straight line solutions:</p>
+<ul>
+<li>Solution 1: <span class="math inline">\(\displaystyle  \vec{s}_{1}(t) =e^{4t}  \begin{pmatrix} 1 \\ -2  \end{pmatrix}\)</span></li>
+<li>Solution 2: <span class="math inline">\(\displaystyle \vec{s}_{2}(t) = e^{3t}  \begin{pmatrix} -1 \\ 1\end{pmatrix}\)</span></li>
+</ul>
+<p>Let’s verify that Solution 2 is indeed a solution to this linear system. First we will take the derivative of Solution 2:</p>
+<p><span class="math display">\[
+\frac{d}{dt} \left( \vec{s}_{2}(t)  \right) = 3 e^{3t}  \begin{pmatrix} -1 \\ 1\end{pmatrix} = \begin{pmatrix} -3e^{3t} \\ 3e^{3t} \end{pmatrix}
+\]</span></p>
+<p>Let’s compare this solution to the right hand side of the differential equation, recognizing that the <span class="math inline">\(x\)</span> component of <span class="math inline">\(\vec{s}_{2}(t)\)</span> is <span class="math inline">\(-e^{3t}\)</span> and the <span class="math inline">\(y\)</span> component of <span class="math inline">\(\vec{s}_{2}(t)\)</span> is <span class="math inline">\(e^{3t}\)</span>:</p>
+<p><span class="math display">\[
+\begin{split}
+2x-y &amp;= -2e^{3t}-e^{3t} = -3e^{3t} \\
+2x+5y &amp;= -2e^{3t}+5e^{3t} = 3e^{3t}
+\end{split}
+\]</span></p>
+<p>So, indeed <span class="math inline">\(\vec{s}_{2}(t)\)</span> <em>is</em> a solution to the differential equation. However something interesting is occurring. Notice how <span class="math inline">\(\displaystyle \frac{d}{dt} \left( \vec{s}_{2}(t)  \right)\)</span> equals <span class="math inline">\(3 \vec{s}_{2}(t)\)</span>, which was the same as the right hand side of the differential equation.</p>
+<p>While we wrote the right hand side of <a href="#eq-system-ch18" class="quarto-xref">Equation&nbsp;<span>18.1</span></a> component by component, we could also write it as <span class="math inline">\(A \vec{x}\)</span>, where <span class="math inline">\(\displaystyle A = \begin{pmatrix} 2 &amp; -1 \\ 2 &amp;  5 \end{pmatrix}\)</span>. Because we verified <span class="math inline">\(\vec{s}_{2}(t)\)</span> was a solution to the differential equation, we could also have said that <span class="math inline">\(A \vec{s}_{2}(t) = 3 \vec{s}_{2}(t)\)</span>.</p>
+<p>So we have two interesting facts here:</p>
+<ul>
+<li>A straight line solution to a system of linear differential equations <span class="math inline">\((\displaystyle \frac{d \vec{x}}{dt} = A \vec{x}\)</span>) has the form <span class="math inline">\(\vec{s}(t) = c_{1} e^{\lambda t} \; \vec{v}\)</span>, where <span class="math inline">\(c_{1}\)</span> is a constant and <span class="math inline">\(\vec{v}\)</span> a constant vector.</li>
+<li>Differentiating <span class="math inline">\(\vec{s}(t)\)</span> yields <span class="math inline">\(\displaystyle \frac{d}{dt} \left(  \vec{s}(t) \right) = \lambda \vec{s}(t)\)</span>.</li>
+<li>Consequently <span class="math inline">\(\lambda \vec{s}(t)=A \vec{s}(t)\)</span> in order for <span class="math inline">\(\vec{s}(t)\)</span> to be a solution.</li>
+</ul>
+<p>All of these facts (in particular <span class="math inline">\(\lambda \vec{s}(t)=A \vec{s}(t)\)</span>) set up an interesting equation: <span class="math inline">\(\displaystyle \lambda c_{1} e^{\lambda t}\vec{v} = c_{1} e^{\lambda t} A \vec{v}\)</span>. Applying concepts from linear algebra, in order for the solution <span class="math inline">\(\vec{s}(t)\)</span> to be consistent, <span class="math inline">\(A \vec{v} - \lambda I \vec{v} = \vec{0}\)</span>, where <span class="math inline">\(\vec{0}\)</span> is a vector of all zeros and <span class="math inline">\(I\)</span> is called the <em>identity matrix</em>, or a square matrix with ones along the diagonal and zero everywhere else. The goal is to find a <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\vec{v}\)</span> consistent with this equation. </p>
+<p>Let’s apply some terminology here. For these special straight line solutions, we give a particular name to <span class="math inline">\(\vec{v}\)</span> - we call it the <em>eigenvector</em>. The name we give to <span class="math inline">\(\lambda\)</span> is the <em>eigenvalue</em>. (Eigen means <em>own</em> in German - get it?) </p>
+<p>So how do we <em>determine</em> an eigenvalue or eigenvector? We do this by first determining the eigenvalues <span class="math inline">\(\lambda\)</span>. This is done by solving the equation <span class="math inline">\(\det (A - \lambda I ) =0\)</span> for <span class="math inline">\(\lambda\)</span>, where <span class="math inline">\(\det(M)\)</span> is the determinant. Once the eigenvalues are found, we then compute the eigenvectors by solving the equation <span class="math inline">\(A \vec{v} - \lambda \vec{v} = \vec{0}\)</span>.</p>
+<p>Let’s take a time out. I recognize that we are starting to get deeper into linear algebra which may be some unfamiliar concepts. However we will just highlight key results that we will need - so hopefully that will give you a leg up when you study linear algebra - it is a great topic! Let’s get to work.</p>
+</section>
+<section id="computing-eigenvalues-and-eigenvectors" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="computing-eigenvalues-and-eigenvectors"><span class="header-section-number">18.3</span> Computing eigenvalues and eigenvectors</h2>
+<p>Let’s dig into understanding the equation <span class="math inline">\(\det (A - \lambda I ) =0\)</span> for a two-linear system of differential equations. In this case, <span class="math inline">\(A\)</span> is the matrix <span class="math inline">\(\displaystyle  \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span>, for which then <span class="math inline">\(A - \lambda I\)</span> is the following matrix:</p>
+<p><span id="eq-2by2-ch18"><span class="math display">\[
+A - \lambda I=\begin{pmatrix} a - \lambda &amp; b \\ c &amp; d-\lambda \end{pmatrix}
+\tag{18.2}\]</span></span></p>
+<p>The determinant of a 2 <span class="math inline">\(\times\)</span> 2 matrix is formed by the product of the diagonal entries less the product of the off-diagonal entries. For <a href="#eq-2by2-ch18" class="quarto-xref">Equation&nbsp;<span>18.2</span></a>, <span class="math inline">\(\det(A-\lambda I)=0\)</span> is the equation <span class="math inline">\((a-\lambda)(d-\lambda)-bc=0\)</span>. Our goal is to solve this equation for <span class="math inline">\(\lambda\)</span>, which are the eigenvalues for this system.</p>
+<div id="exm-evec-18" class="theorem example">
+<p><span class="theorem-title"><strong>Example 18.1</strong></span> Compute the eigenvalues for the matrix <span class="math inline">\(\displaystyle A =  \begin{pmatrix} -1 &amp; 1 \\ 0 &amp;  3 \end{pmatrix}\)</span>.</p>
+</div>
+<div id="sol-evec-18" class="proof solution">
+<p><span class="proof-title"><em>Solution 18.1</em>. </span>The matrix <span class="math inline">\(A-\lambda I\)</span> is <span class="math inline">\(\displaystyle A-\lambda I =  \begin{pmatrix} -1-\lambda &amp; 1 \\ 0 &amp;  3-\lambda \end{pmatrix}\)</span>. So we have:</p>
+<p><span class="math display">\[
+\det(A-\lambda I) =  (-1-\lambda)(3-\lambda) - 0 = 0
+\]</span></p>
+<p>Solving the equation <span class="math inline">\((-1-\lambda)(3-\lambda)=0\)</span> yields two eigenvalues: <span class="math inline">\(\lambda = -1\)</span> or <span class="math inline">\(\lambda = 3\)</span>.</p>
+</div>
+<p>More generally the equation <span class="math inline">\(\det(A - \lambda I)\)</span> yields a polynomial equation in <span class="math inline">\(\lambda\)</span>. We call this equation the <em>characteristic polynomial</em> and denote it by <span class="math inline">\(f(\lambda)\)</span>. In the case of a two-dimensional system of equations, <span class="math inline">\(f(\lambda)\)</span> will be a quadratic equation (see <a href="#exr-ch-eq-exr-18" class="quarto-xref">Exercise&nbsp;<span>18.9</span></a>).</p>
+<p>Once we have determined the eigenvalues, we next compute the eigenvectors associated with each eigenvalue. Remember that an eigenvector is a vector <span class="math inline">\(\vec{v}\)</span> consistent with <span class="math inline">\(A \vec{v} = \lambda \vec{v}\)</span> or <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span>. How we do this is through algebra, as is done in the following example:</p>
+<div id="exm-evec-18-2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 18.2</strong></span> Compute the eigenvectors for the matrix <span class="math inline">\(\displaystyle A =  \begin{pmatrix} -1 &amp; 1 \\ 0 &amp;  3 \end{pmatrix}\)</span> from <a href="#exm-evec-18" class="quarto-xref">Example&nbsp;<span>18.1</span></a>.</p>
+</div>
+<div id="sol-evec-18-2" class="proof solution">
+<p><span class="proof-title"><em>Solution 18.2</em>. </span>First for general <span class="math inline">\(\lambda\)</span>, consider the expression <span class="math inline">\(A \vec{v} - \lambda \vec{v} =\vec{0}\)</span>, where <span class="math inline">\(\displaystyle \vec{v} = \begin{pmatrix} v_{1} \\ v_{2} \end{pmatrix}\)</span>:</p>
+<p><span id="eq-eval-ex-ch18"><span class="math display">\[
+A \vec{v} - \lambda \vec{v}  =  \vec{0} \rightarrow \begin{pmatrix} -v_{1} +v_{2} - \lambda v_{1} = 0  \\ 3v_{2} - \lambda v_{2} =0 \end{pmatrix}
+\tag{18.3}\]</span></span></p>
+<p>We use the two expressions (<span class="math inline">\(-v_{1} +v_{2} - \lambda v_{1} = 0\)</span> and <span class="math inline">\(3v_{2} - \lambda v_{2} =0\)</span>) in <a href="#eq-eval-ex-ch18" class="quarto-xref">Equation&nbsp;<span>18.3</span></a> to determine the eigenvector <span class="math inline">\(\vec{v}\)</span>. We need to consider both eigenvalues (<span class="math inline">\(\lambda = -1\)</span> and <span class="math inline">\(\lambda =3\)</span>) separately to yield two different eigenvectors:</p>
+<div class="line-block">- <strong>Case 1 <span class="math inline">\(\lambda = -1\)</span></strong>: The first expression in <a href="#eq-eval-ex-ch18" class="quarto-xref">Equation&nbsp;<span>18.3</span></a> yields <span class="math inline">\(-v_{1} +v_{2} + v_{1} = 0\)</span>, or <span class="math inline">\(v_{2}=0\)</span> after simplifying. For the second expression we have <span class="math inline">\(3v_{2} + v_{2} =0 \rightarrow 4v_{2} = 0\)</span>, so that tells us again that <span class="math inline">\(v_{2}=0\)</span>. Notice we’ve determined a value for the second component <span class="math inline">\(v_{2}\)</span>, but not <span class="math inline">\(v_{1}\)</span>. In this case, we say that the first component to the vector <span class="math inline">\(\vec{v}\)</span> is a <em>free parameter</em>., so the eigenvector can be expressed as <span class="math inline">\(\displaystyle \begin{pmatrix} c_{1} \\ 0 \end{pmatrix}\)</span>, where <span class="math inline">\(c_{1}\)</span> is the free parameter. Another way to express this eigenvector is <span class="math inline">\(\displaystyle c_{1} u_{1}\)</span>, with <span class="math inline">\(u_{1}=\begin{pmatrix} 1 \\ 0 \end{pmatrix}\)</span>. The eigenvector in this case is <span class="math inline">\(\displaystyle \begin{pmatrix} 1 \\ 0 \end{pmatrix}\)</span>. (We generally write eigenvectors without the arbitrary constants.) This particular straight line solution is <span class="math inline">\(\displaystyle s_{1}(t)=c_{1}e^{-t}u_{1}\)</span>, where <span class="math inline">\(c_{1}\)</span> is a free variable.</div>
+<p>&nbsp;</p>
+<div class="line-block">- <strong>Case 2 <span class="math inline">\(\lambda = 3\)</span></strong>: For the second equation we have <span class="math inline">\(3v_{2} - 3v_{2}=0\)</span>, which is always true. However in the first equation we have <span class="math inline">\(- v_{1} + v_{2} - 3v_{1} = 0\)</span>, or <span class="math inline">\(v_{2} = 4v_{1}\)</span>. In this case, <span class="math inline">\(v_{1}\)</span> can be a free parameter; however, <span class="math inline">\(v_{2}\)</span> will have to be four times the value of <span class="math inline">\(v_{1}\)</span>. Hence, this particular straight line solution is <span class="math inline">\(\displaystyle s_{2}(t)=e^{3t} \begin{pmatrix} c_{2} \\ 4 c_{2} \end{pmatrix}\)</span>, or also as <span class="math inline">\(\displaystyle s_{2}(t)=c_{2} e^{3t} \vec{u}_{2}\)</span>, with <span class="math inline">\(\displaystyle \vec{u}_{2}= \begin{pmatrix} 1 \\ 4 \end{pmatrix}\)</span>. The eigenvector in this case is <span class="math inline">\(\displaystyle \begin{pmatrix} 1 \\ 4 \end{pmatrix}\)</span>.</div>
+<div class="line-block">Notice that in both of our cases we had a free variable (<span class="math inline">\(c_{1}\)</span> or <span class="math inline">\(c_{2}\)</span>), which are also constants in our final solution for the differential equation.</div>
+</div>
+<p>Once we have computed the eigenvalues and eigenvectors, we are now ready to express the most general solution for a system of differential equations. For a two-dimensional system of linear differential equations (<span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}\)</span>), the most general solution is given by <a href="#eq-gen-soln-18" class="quarto-xref">Equation&nbsp;<span>18.5</span></a>:</p>
+<p><span id="eq-gen-soln-18"><span class="math display">\[
+\vec{x}(t) = c_{1} e^{\lambda_{1}t} \vec{v}_{1} + c_{2} e^{\lambda_{2}t} \vec{v}_{2}
+\tag{18.4}\]</span></span></p>
+<div id="exm-linsol-18" class="theorem example">
+<p><span class="theorem-title"><strong>Example 18.3</strong></span> What is the solution to the differential equation <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} =  \begin{pmatrix} -1 &amp; 1 \\ 0 &amp;  3 \end{pmatrix} \vec{x}\)</span>?</p>
+</div>
+<div class="{sol-linsol-18}">
+<p>Since we have already computed the eigenvalues and eigenvectors, our most general solution for this differential equation is:</p>
+<p><span class="math display">\[\begin{equation*}
+\vec{x} = c_{1} e^{- t} \begin{pmatrix} 1 \\ 0 \end{pmatrix}  + c_{2} e^{3t} \begin{pmatrix} 1 \\ 4 \end{pmatrix},
+\end{equation*}\]</span></p>
+<p>with <span class="math inline">\(c_{1}\)</span> and <span class="math inline">\(c_{2}\)</span> defined as constants.</p>
+</div>
+<section id="computing-eigenvalues-with-demodelr" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="computing-eigenvalues-with-demodelr"><span class="header-section-number">18.3.1</span> Computing eigenvalues with demodelr</h3>
+<p>While computing eigenvalues and eigenvectors is a good algebraic exercise, we can also program this in <code>R</code> using the function <code>eigenvalues</code> from the <code>demodelr</code> package. The syntax works where <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span> is entered in as <code>eigenvalues(a,b,c,d,matrix_rows)</code> where <code>matrix_rows</code> is the number of rows.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> What gets returned from the function will be the eigenvalues and eigenvectors for any square matrix.</p>
+<p>Let’s compute the eigenvalues for the matrix <span class="math inline">\(\displaystyle \begin{pmatrix} -1 &amp; 1 \\ 0 &amp; 3 \end{pmatrix}\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For a two-dimensional equation the code assumes </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the default is a 2 by 2 matrix.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>demodelr<span class="sc">::</span><span class="fu">eigenvalues</span>(<span class="at">matrix_entries =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">matrix_rows =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>eigen() decomposition
+$values
+[1]  3 -1
+
+$vectors
+         X1 X2
+1 0.2425356  1
+2 0.9701425  0</code></pre>
+</div>
+</div>
+<p>Notice that the eigenvalues and the eigenvectors get returned with the <code>eigenvalues</code> function. How you read the output for the eigenvector is that <code>X1</code> is the eigenvector associated with the first eigenvalue (<span class="math inline">\(\lambda = 3\)</span>) and <code>X2</code> is the eigenvector associated with the second eigenvalue (<span class="math inline">\(\lambda = -1\)</span>). The eigenvector associated with <span class="math inline">\(\lambda=3\)</span> is a little different from what we computed - <code>R</code> will <em>normalize</em> the vector, which means that its total length will be one.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> For example <span class="math inline">\(\displaystyle \vec{v}_{2} = \begin{pmatrix} 1 \\ 4 \end{pmatrix}\)</span>, so <span class="math inline">\(||\vec{v}|| = \sqrt{5}\)</span>, and the normalized vector is <span class="math inline">\(\displaystyle \begin{pmatrix} 1/\sqrt{5} \\ 4/\sqrt{5} \end{pmatrix}\)</span>, which you can verify is the same as the reported eigenvector from the <code>eigenvalues</code> function.</p>
+</section>
+</section>
+<section id="what-do-eigenvalues-tell-us" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="what-do-eigenvalues-tell-us"><span class="header-section-number">18.4</span> What do eigenvalues tell us?</h2>
+<p>Here the focus of the chapter changes a little bit. Now we focus on understanding how the phase plane for a differential equation gives clues about the stability for an equilibrium solution. This is intentional: once we have found the eigenvalues, determining eigenvectors can seem rather mundane at times (and perhaps heavy on the algebra). Studying the eigenvalues helps us understand the qualitative nature of the solution to a differential equation. Let’s think about the characteristic equation <span class="math inline">\(f(\lambda)\)</span> for a two-dimensional system of differential equations:</p>
+<p><span id="eq-gen-soln-18"><span class="math display">\[
+\begin{split}
+f(\lambda) &amp;= \det(A - \lambda I) \\
+&amp;= (a - \lambda)(d-\lambda)-bc \\
+&amp;= \lambda^{2} - (a+d) \lambda + ad-bc
+\end{split}
+\tag{18.5}\]</span></span></p>
+<p>Notice how <span class="math inline">\(f(\lambda)\)</span> is a quadratic equation. You may recall that quadratic equations have zero, one, or two distinct solutions. If there are no solutions, we say the solutions are imaginary (more on that later). Also the signs of solutions may be positive or negative. There are so many different combinations! What types of phase planes do all those different types of eigenvalues produce? The following examine representative examples of all the possible eigenvalues you may obtain for a two-dimensional linear system of differential equations (which can be generalized to higher-dimensional systems).</p>
+<section id="sources-all-eigenvalues-positive" class="level3" data-number="18.4.1">
+<h3 data-number="18.4.1" class="anchored" data-anchor-id="sources-all-eigenvalues-positive"><span class="header-section-number">18.4.1</span> Sources: all eigenvalues positive</h3>
+<p>Consider the differential equation in <a href="#eq-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.6</span></a>:</p>
+<p><span id="eq-source-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} 2 &amp; 0 \\ 1 &amp;  1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.6}\]</span></span></p>
+<p>Computing the eigenvalues for <a href="#eq-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.6</span></a> shows that they are both positive:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvalues</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>eigen() decomposition
+$values
+[1] 2 1
+
+$vectors
+         X1 X2
+1 0.7071068  0
+2 0.7071068  1</code></pre>
+</div>
+</div>
+<p>The phase plane for this matrix <span class="math inline">\(A\)</span> is shown in <a href="#fig-source-18" class="quarto-xref">Figure&nbsp;<span>18.1</span></a>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-source-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-source-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-source-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-source-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.1: Phase plane for <a href="#eq-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.6</span></a>, which shows the equilibrium solution is a source (also known as an unstable node).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice how the phase plane in <a href="#fig-source-18" class="quarto-xref">Figure&nbsp;<span>18.1</span></a> has all the arrows pointing from the origin. In this case we call the origin equilibrium solution a <em>source</em>, or also an <em>unstable node</em>. Plotting the components of <span class="math inline">\(\vec{x}(t)\)</span> as functions of <span class="math inline">\(t\)</span> would show the dependent values increase exponentially as time increases.</p>
+</section>
+<section id="sinks-all-eigenvalues-negative" class="level3" data-number="18.4.2">
+<h3 data-number="18.4.2" class="anchored" data-anchor-id="sinks-all-eigenvalues-negative"><span class="header-section-number">18.4.2</span> Sinks: all eigenvalues negative</h3>
+<p>Consider the differential equation in <a href="#eq-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.7</span></a>, which is a <em>slight</em> modification from <a href="#eq-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.6</span></a>:</p>
+<p><span id="eq-sink-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} -2 &amp; 0 \\ 1 &amp;  -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.7}\]</span></span></p>
+<p>The eigenvalues for <a href="#eq-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.7</span></a> are both negative (verify this on your own). The resulting phase plane for <a href="#eq-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.7</span></a> then has all the arrows pointing towards the origin, shown in <a href="#fig-sink-18" class="quarto-xref">Figure&nbsp;<span>18.2</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sink-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sink-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-sink-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sink-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.2: Phase plane for <a href="#eq-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.7</span></a>, which shows the equilibrium solution is a sink (also known as a stable node).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Based on the phase plane in <a href="#fig-sink-18" class="quarto-xref">Figure&nbsp;<span>18.2</span></a>, solutions to <a href="#eq-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.7</span></a> would asymptotically approach the origin. We say the equilibrium solution is a <em>sink</em>, also known as a <em>stable node</em>.</p>
+</section>
+<section id="saddle-nodes-one-positive-and-one-negative-eigenvalue" class="level3" data-number="18.4.3">
+<h3 data-number="18.4.3" class="anchored" data-anchor-id="saddle-nodes-one-positive-and-one-negative-eigenvalue"><span class="header-section-number">18.4.3</span> Saddle nodes: one positive and one negative eigenvalue</h3>
+<p>Consider the differential equation in <a href="#eq-saddle-ex-18" class="quarto-xref">Equation&nbsp;<span>18.8</span></a>:</p>
+<p><span id="eq-saddle-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} 3 &amp; -2 \\ 1 &amp;  -1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.8}\]</span></span></p>
+<p><a href="#eq-saddle-ex-18" class="quarto-xref">Equation&nbsp;<span>18.8</span></a> has <span class="math inline">\(\lambda_{1}=2.414\)</span> and <span class="math inline">\(\lambda_{2}=-0.414\)</span> (verify this on your own). Because the differential equation has one positive and one negative eigenvalue the equilibrium solution the phase plane for this differential equation looks a little different, as is shown in <a href="#fig-saddle-18" class="quarto-xref">Figure&nbsp;<span>18.3</span></a>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-saddle-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-saddle-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-saddle-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-saddle-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.3: Phase plane for <a href="#eq-saddle-ex-18" class="quarto-xref">Equation&nbsp;<span>18.8</span></a>, which shows the equilibrium solution is a saddle node.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This equilibrium solution is called a <em>saddle node</em>. From the horizontal direction, the arrows point <em>away</em> from the origin, but in the vertical direction the arrows point <em>towards</em> the origin. This behavior is caused by the opposing signs of the eigenvalues - one part of the solution in <a href="#eq-gen-soln-18" class="quarto-xref">Equation&nbsp;<span>18.5</span></a> (the one associated with the negative eigenvalue) decays asymptotically to zero. The other positive eigenvalue is associated with the asymptotically unstable, giving the solution trajectory the shape of a saddle.</p>
+</section>
+<section id="spirals-imaginary-eigenvalues" class="level3" data-number="18.4.4">
+<h3 data-number="18.4.4" class="anchored" data-anchor-id="spirals-imaginary-eigenvalues"><span class="header-section-number">18.4.4</span> Spirals: imaginary eigenvalues</h3>
+<p>Consider the differential equation in <a href="#eq-spiral-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.9</span></a>:</p>
+<p><span id="eq-spiral-sink-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} -3 &amp; -8 \\ 4 &amp;  -6 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.9}\]</span></span></p>
+<p>There are two eigenvalues to this system: <span class="math inline">\(\lambda = -4.5+5.45i\)</span> and <span class="math inline">\(\lambda = -4.5 - 5.45i\)</span> (you can confirm this on your own). In this case the <span class="math inline">\(i\)</span> means the eigenvalues are imaginary. Notice how the eigenvalues are similar, but the signs on the second term differ. We say the eigenvalues are <em>complex conjugates</em> of each other, and write them in the form <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>. In this example <span class="math inline">\(\alpha = -4.5\)</span> and <span class="math inline">\(\beta = 5.45\)</span>. <a href="#fig-spiral-sink-18" class="quarto-xref">Figure&nbsp;<span>18.4</span></a> shows the phase plane for this system.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-spiral-sink-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-spiral-sink-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-spiral-sink-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spiral-sink-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.4: Phase plane for <a href="#eq-spiral-sink-ex-18" class="quarto-xref">Equation&nbsp;<span>18.9</span></a>, which shows the equilibrium solution is a spiral sink.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The phase plane in <a href="#fig-spiral-sink-18" class="quarto-xref">Figure&nbsp;<span>18.4</span></a> has some spiraling motion to it. Why does that occur? Imaginary eigenvalues can occur when the characteristic equation <span class="math inline">\(\det(A-\lambda I)=0\)</span> has imaginary solutions. More generally, we say <span class="math inline">\(\lambda = \alpha \pm \beta i\)</span>. Because the eigenvalues are complex, we would also expect the eigenvectors to be complex as well (i.e.&nbsp;<span class="math inline">\(\vec{v} \pm i \vec{w}\)</span>). Don’t let the term <em>imaginary</em> fool you: by using properties from complex analysis it can be shown that when eigenvalues are imaginary, the template for the solution is given in <a href="#eq-imag-eval-18" class="quarto-xref">Equation&nbsp;<span>18.10</span></a>:</p>
+<p><span id="eq-imag-eval-18"><span class="math display">\[
+\vec{x}(t) = c_{1} e^{\alpha t} ( \vec{w} \cos (\beta t) - \vec{v} \sin (\beta t)) + c_{2} e^{\alpha t} ( \vec{w} \cos (\beta t) + \vec{v} \sin (\beta t))
+\tag{18.10}\]</span></span></p>
+<p>The trigonometric terms in <a href="#eq-imag-eval-18" class="quarto-xref">Equation&nbsp;<span>18.10</span></a> suggest that the solution has some periodic behavior if we plot the components of <span class="math inline">\(\vec{x}(t)\)</span> as functions of <span class="math inline">\(t\)</span>. But when we plot the solution in the <span class="math inline">\(xy\)</span> plane that periodic behavior gets translated to spiraling motion in <a href="#fig-spiral-sink-18" class="quarto-xref">Figure&nbsp;<span>18.4</span></a>. When <span class="math inline">\(\alpha &lt; 0\)</span> we say the equilibrium solution is a <em>spiral sink</em> because the exponential terms in <a href="#eq-imag-eval-18" class="quarto-xref">Equation&nbsp;<span>18.10</span></a> decay asymptotically to zero.</p>
+<p>As you would expect when <span class="math inline">\(\alpha &gt; 0\)</span> we classify a phase plane as a <em>spiral source</em> (shown in <a href="#eq-spiral-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.11</span></a> and <a href="#fig-spiral-source-18" class="quarto-xref">Figure&nbsp;<span>18.5</span></a>).</p>
+<p><span id="eq-spiral-source-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} 4 &amp; -5 \\ 3 &amp;  2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.11}\]</span></span></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-spiral-source-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-spiral-source-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-spiral-source-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spiral-source-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.5: Phase plane <a href="#eq-spiral-source-ex-18" class="quarto-xref">Equation&nbsp;<span>18.11</span></a> which shows the equilibrium solution is a spiral source.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The final case for imaginary eigenvalues is when <span class="math inline">\(\alpha = 0\)</span>, which is termed a <em>center</em>. As an example, let’s examine the phase plane for the system in <a href="#eq-center-ex-18" class="quarto-xref">Equation&nbsp;<span>18.12</span></a>:</p>
+<p><span id="eq-center-ex-18"><span class="math display">\[
+\begin{pmatrix} x' \\ y' \end{pmatrix} =\begin{pmatrix} 0 &amp; -1 \\ 1 &amp;  0 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix}
+\tag{18.12}\]</span></span></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-center-18" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-center-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="18-eigenvalues_files/figure-html/fig-center-18-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-center-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.6: Phase plane for <a href="#eq-center-ex-18" class="quarto-xref">Equation&nbsp;<span>18.12</span></a>, which shows the equilibrium solution is a center.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice how the phase plane arrows in <a href="#fig-center-18" class="quarto-xref">Figure&nbsp;<span>18.6</span></a> neither spin in nor out, but seem to point in a circle. In fact, the formula of the solution to this equation can be represented as a circle. The solution to this differential equation is a circle, which is found with <span class="math inline">\(\alpha = 0\)</span> in <a href="#eq-imag-eval-18" class="quarto-xref">Equation&nbsp;<span>18.10</span></a>.</p>
+</section>
+<section id="repeated-eigenvalues" class="level3" data-number="18.4.5">
+<h3 data-number="18.4.5" class="anchored" data-anchor-id="repeated-eigenvalues"><span class="header-section-number">18.4.5</span> Repeated eigenvalues</h3>
+<p>For repeated eigenvalues (where <span class="math inline">\(\lambda_{1}=\lambda_{2}\)</span>) the stability of the solution still depends on the sign of the sole eigenvalue <span class="math inline">\(\lambda\)</span>. However in this case the form of the solution changes as shown in <a href="#eq-repeat-eval-18" class="quarto-xref">Equation&nbsp;<span>18.13</span></a>:</p>
+<p><span id="eq-repeat-eval-18"><span class="math display">\[
+\vec{x}(t) = \left( c_{1} \vec{v}_{1} + c_{2} \vec{v}_{2} \right) e^{\lambda t} + c_{2} \vec{v}_{1} t e^{\lambda t}
+\tag{18.13}\]</span></span></p>
+</section>
+</section>
+<section id="concluding-thoughts" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="concluding-thoughts"><span class="header-section-number">18.5</span> Concluding thoughts</h2>
+<p>As you can see there is a lot of interesting behavior with eigenvalues and eigenvectors! But in all cases, stability of the equilibrium solution really focuses on the eigenvalues and their relative (positive or negative) sign. How the straight line solutions <em>approach</em> the equilibrium solution is a function of the eigenvectors.</p>
+</section>
+<section id="exercises" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">18.6</span> Exercises</h2>
+<div id="exr-ch-eq-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.1</strong></span> What are the characteristic equations for the following systems of differential equations?</p>
+<ol type="a">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 4x, \;  \frac{dy}{dt} = -y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = x+y, \;  \frac{dy}{dt} = x-y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 9x +15y, \;  \frac{dy}{dt} = 7x + 2y\)</span></li>
+</ol>
+</div>
+<div id="exr-verify-soln-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.2</strong></span> Verify that <span class="math inline">\(\displaystyle s_{1}(t) =  \begin{pmatrix} e^{3t} \\ -e^{3t} \end{pmatrix}\)</span> is a solution to the system of differential equations <span class="math inline">\(\displaystyle \frac{dx}{dt} = 2x-y\)</span> and <span class="math inline">\(\displaystyle \frac{dy}{dt} = 2x+5y\)</span>.</p>
+</div>
+<div id="exr-what-evec-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.3</strong></span> The matrix <span class="math inline">\(\displaystyle \begin{pmatrix} 2 &amp; -1 \\ 2 &amp; 5 \end{pmatrix}\)</span> has <span class="math inline">\(\lambda = 4\)</span> as an eigenvalue. Use this information to calculate (by hand) the eigenvector <span class="math inline">\(\vec{v}\)</span> associated with this eigenvalue.</p>
+</div>
+<div id="exr-compute-eval-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.4</strong></span> Compute the eigenvalues and eigenvectors for the following linear systems. Based on the eigenvalues, classify if the equilibrium solution is stable or unstable. Finally write down the most general solution for the system of equations.</p>
+<ol type="a">
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 2x-6y, \;  \frac{dy}{dt} = x-2y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 9x-22y, \;  \frac{dy}{dt} = 3x-7y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 4x - 2y, \;  \frac{dy}{dt} = 2x - 2y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt}= 4x-15y, \; \frac{dy}{dt}=2x-7y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 3x-18y, \;  \frac{dy}{dt} = x-5y\)</span></li>
+<li><span class="math inline">\(\displaystyle \frac{dx}{dt} = 5x-12y, \;  \frac{dy}{dt} = x-2y\)</span></li>
+</ol>
+</div>
+<div id="exr-nonlin-jac-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.5</strong></span> Consider the following nonlinear system:</p>
+<p><span class="math display">\[
+\begin{split}
+\frac{dx}{dt} &amp;= y-x \\
+\frac{dy}{dt} &amp;=-y + \frac{5x^2}{4+x^{2}}
+\end{split}
+\]</span></p>
+<ol type="a">
+<li>Previously you verified that <span class="math inline">\((x,y)=(1,1)\)</span> is an equilibrium solution for this system. What is the Jacobian matrix at that equilibrium solution?</li>
+<li>Generate a phase plane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
+</div>
+<div id="exr-nonlin-jac2-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.6</strong></span> Consider the following nonlinear system:</p>
+<p><span class="math display">\[
+\begin{split}
+\frac{dx}{dt} &amp;= x-2y-xy \\
+\frac{dy}{dt} &amp;= -y+xy- 2xy^{3}
+\end{split}
+\]</span></p>
+<ol type="a">
+<li>Verify that <span class="math inline">\((x,y)=(0,0)\)</span> is an equilibrium solution for this system. What is the Jacobian matrix at that equilibrium solution?</li>
+<li>Generate a phase plane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
+</div>
+<div id="exr-jacob-phase-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.7</strong></span> Consider the following system:</p>
+<p><span class="math display">\[
+\begin{split}
+\frac{dx}{dt} &amp;= y^{2} \\
+\frac{dy}{dt} &amp;= - x
+\end{split}
+\]</span></p>
+<ol type="a">
+<li>There is one equilibrium solution to this system of equations. What is it?</li>
+<li>What is the Jacobian matrix for this equilibrium solution?</li>
+<li>Generate a phase plane for the Jacobian matrix.</li>
+<li>What are the eigenvalues for the Jacobian matrix at the equilbrium solution?</li>
+<li>Based on the eigenvalues, how would you classify the stability of the equilibrium solution?</li>
+</ol>
+</div>
+<div id="exr-gen-lin-sys-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.8</strong></span> Consider the general system of differential equations <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{x} = A \vec{x}\)</span>.</p>
+<ol type="a">
+<li>Given the function <span class="math inline">\(\vec{s}(t)=e^{\lambda t} \vec{v}\)</span>, where <span class="math inline">\(\vec{v}\)</span> is a constant vector, what is an expression for <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{s}(t)\)</span>?</li>
+<li>Given the function <span class="math inline">\(\vec{s}(t)=e^{\lambda t} \vec{v}\)</span>, where <span class="math inline">\(\vec{v}\)</span> is a constant vector, what is an expression for <span class="math inline">\(A \; \vec{s}(t)\)</span>?</li>
+<li>Now use the previous results in the expression <span class="math inline">\(\displaystyle \frac{d}{dt} \vec{s}(t) = A \vec{s}(t)\)</span>. Explain why it must be the case that <span class="math inline">\(\lambda \vec{v} = A \vec{v}\)</span> (assuming <span class="math inline">\(\vec{v} \neq 0\)</span>).</li>
+</ol>
+</div>
+<div id="exr-ch-eq-exr-18" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 18.9</strong></span> In this chapter we learned that for a two-dimensional matrix <span class="math inline">\(\displaystyle A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span>, eigenvalues can be found by solving the characteristic equation <span class="math inline">\(\det(A-\lambda I)=0\)</span>, or <span class="math inline">\(\lambda^{2} - (a+d) \lambda + (ad-bc) = 0\)</span>. Use the quadratic formula to get an expression for the eigenvalues <span class="math inline">\(\lambda\)</span> in terms of <span class="math inline">\(a\)</span>,<span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>, and <span class="math inline">\(d\)</span>.</p>
+</div>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>If you have a 2 by 2 matrix, you can leave out <code>matrix_rows</code> (so just <code>eigenvalues(a,b,c,d)</code>) as the default is a 2 by 2 matrix.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The length of a vector <span class="math inline">\(\vec{v}\)</span> is denoted as <span class="math inline">\(||\vec{v}||\)</span> and is computed the following way: <span class="math inline">\(||\vec{v}||=\sqrt{v_{1}^{2}+v_{2}^{2}+...+v_{n}^{2}}\)</span>. We normalize a vector to a length of 1 by dividing each component by its length.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./17-jacobian.html" class="pagination-link" aria-label="Local Linearization and the Jacobian">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./19-qualitativeStability.html" class="pagination-link" aria-label="Qualitative Stability Analysis">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

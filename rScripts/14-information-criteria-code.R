@@ -78,7 +78,7 @@ yeast_out <- tibble(
 
 ggplot() +
   geom_point(data = yeast, aes(x=time, y= volume),size=2) +
-  geom_line(data =yeast_out,aes(x=time,y=value,color=name,linetype=name),size=1) +
+  geom_line(data =yeast_out,aes(x=time,y=value,color=name,linetype=name),linewidth=1) +
   labs(x="Time (days)",y="Volume (cubic centimeters)",color="Model",linetype="Model") +
   scale_color_discrete(breaks=c("model1", "model2"),
                       labels=c("Logistic model", "Saturating model")) +

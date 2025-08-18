@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring Modeling with Data and Differential Equations Using R - 9&nbsp; Probability and Likelihood Functions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10-costFunctions.html" rel="next">
+<link href="./08-linearRegression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./09-likelihood.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Exploring Modeling with Data and Differential Equations Using R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p01-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models with Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Models of Rates with Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Rintro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-modelingWithRates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modeling with Rates of Change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-eulersmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Euler’s Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Phase Lines and Equilibrium Solutions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-coupledSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coupled Systems of Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-exactSolutions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Exact Solutions to Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p02-parameter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Parameterizing Models with Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-linearRegression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-likelihood.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-costFunctions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Sampling Distributions and the Bootstrap Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-metropolis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">The Metropolis-Hastings Algorithm</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Markov Chain Monte Carlo Parameter Estimation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14-informationCriteria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p03-stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stability Analysis for Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15-linearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Systems of Linear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-nonlinearSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Systems of Nonlinear Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17-jacobian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Local Linearization and the Jacobian</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18-eigenvalues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What are Eigenvalues?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19-qualitativeStability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Qualitative Stability Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-bifurcation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Bifurcation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./p04-stochastic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stochastic Differential Equations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-stochasticSystems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stochastic Biological Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-stochasticSimulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Simulating and Visualizing Randomness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-randomWalks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Random Walks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-diffusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Diffusion and Brownian Motion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-sdes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Simulating Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./26-birthDeath.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Statistics of a Stochastic Differential Equation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./27-solvingSDEs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Solutions to Stochastic Differential Equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#linear-regression-on-a-small-dataset" id="toc-linear-regression-on-a-small-dataset" class="nav-link active" data-scroll-target="#linear-regression-on-a-small-dataset"><span class="header-section-number">9.1</span> Linear regression on a small dataset</a></li>
+  <li><a href="#continuous-probability-density-functions" id="toc-continuous-probability-density-functions" class="nav-link" data-scroll-target="#continuous-probability-density-functions"><span class="header-section-number">9.2</span> Continuous probability density functions</a></li>
+  <li><a href="#connecting-probabilities-to-linear-regression" id="toc-connecting-probabilities-to-linear-regression" class="nav-link" data-scroll-target="#connecting-probabilities-to-linear-regression"><span class="header-section-number">9.3</span> Connecting probabilities to linear regression</a></li>
+  <li><a href="#visualizing-likelihood-surfaces" id="toc-visualizing-likelihood-surfaces" class="nav-link" data-scroll-target="#visualizing-likelihood-surfaces"><span class="header-section-number">9.4</span> Visualizing likelihood surfaces</a></li>
+  <li><a href="#looking-back-and-forward" id="toc-looking-back-and-forward" class="nav-link" data-scroll-target="#looking-back-and-forward"><span class="header-section-number">9.5</span> Looking back and forward</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">9.6</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p02-parameter.html">Parameterizing Models with Data</a></li><li class="breadcrumb-item"><a href="./09-likelihood.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-likelihood-09" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability and Likelihood Functions</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="08-linearRegression.html" class="quarto-xref"><span>Chapter 8</span></a> we began to the process of parameter estimation. We revisit parameter estimation here by applying <em>likelihood functions</em>, which is a topic from probability and statistics. Probability is the association of a set of observable events to a quantitative scale between 0 and 1. Informally, a value of zero means that event is not possible; 1 means that it definitely can happen.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> We will only consider continuous events with the range of parameter estimation problems examined here.</p>
+<p>This chapter will introduce likelihood functions but also discuss some interesting visualization techniques of multivariable functions and contour plots. As with <a href="08-linearRegression.html" class="quarto-xref"><span>Chapter 8</span></a> we are starting to build out some <code>R</code> skills and techniques that you can apply in other contexts. Let’s get started!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter uses following libraries: <code>ggplot2</code>, and <code>tibble</code> (all part of the <code>tidyverse</code>) and <code>demodelr</code>. See <a href="02-Rintro.html#sec-packages-02" class="quarto-xref"><span>Section 2.3</span></a> on how to install packages. Prior to running any code in this section, include <code>library(tidyverse)</code> and <code>library(demodelr)</code>.</p>
+</div>
+</div>
+<section id="linear-regression-on-a-small-dataset" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="linear-regression-on-a-small-dataset"><span class="header-section-number">9.1</span> Linear regression on a small dataset</h2>
+<p><a href="#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a> displays a dataset with a limited number of points where we wish to fit the function <span class="math inline">\(y=bx\)</span>:</p>
+<div id="tbl-limited-data-09" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-limited-data-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9.1: A small, limited dataset.
+</figcaption>
+<div aria-describedby="tbl-limited-data-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><em>x</em></th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><em>y</em></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>For this example we are forcing the intercept term to equal zero - for most cases you will just fit the linear equation (see <a href="#exr-full-linear" class="quarto-xref">Exercise&nbsp;<span>9.6</span></a> where you will consider the intercept <span class="math inline">\(a\)</span>). <a href="#fig-quick-scatter-09" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> displays a quick scatterplot of these data:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quick-scatter-09" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quick-scatter-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-quick-scatter-09-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quick-scatter-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.1: A scatterplot of a small, limited dataset (<a href="#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a>).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The goal here is to work to determine the value of <span class="math inline">\(b\)</span> that is most <em>likely</em> - or consistent - with the data. However, before we tackle this further we need to understand how to quantify most <em>likely</em> in a mathematical sense. In order to do this, we need to take a quick excursion into continuous probability distributions.</p>
+</section>
+<section id="continuous-probability-density-functions" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="continuous-probability-density-functions"><span class="header-section-number">9.2</span> Continuous probability density functions</h2>
+<p>Consider <a href="#fig-normal-shaded-09" class="quarto-xref">Figure&nbsp;<span>9.2</span></a>, which may be familiar to you as the normal distribution or the bell curve:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-normal-shaded-09" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-normal-shaded-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-normal-shaded-09-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-normal-shaded-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.2: The standard normal distribution, with a shaded area between <span class="math inline">\(x=\pm 1\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We tend to think of the plot and the associated function <span class="math inline">\(f(x)\)</span> as something with input and output (such as <span class="math inline">\(f(0)=\)</span> 0.3989). However because it is a probability density function, the <em>area</em> between two points yields the probability of an event to fall within two values as shown in <a href="#fig-normal-shaded-09" class="quarto-xref">Figure&nbsp;<span>9.2</span></a>.</p>
+<p>In this case, the numerical value of the shaded area would represent the probability that our measurement is in the interval <span class="math inline">\(-1 \leq x \leq 1\)</span>. The value of the area, or the probability, is 0.68269. Perhaps when you studied calculus the area was expressed as a definite integral: <span class="math inline">\(\displaystyle \int_{-1}^{1} f(x) \; dx=\)</span> 0.68269, where <span class="math inline">\(f(x)\)</span> is the formula for the probability density function for the normal distribution. Here, the formula for the normal distribution <span class="math inline">\(f(x)\)</span> is given by <a href="#eq-normal-09" class="quarto-xref">Equation&nbsp;<span>9.1</span></a>, where <span class="math inline">\(\mu\)</span> is the mean and <span class="math inline">\(\sigma\)</span> is the standard deviation.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><span id="eq-normal-09"><span class="math display">\[
+f(x)=\frac{1}{\sqrt{2 \pi} \sigma } e^{-(x-\mu)^{2}/(2 \sigma^{2})}
+\tag{9.1}\]</span></span></p>
+<p>With this intuition we can summarize key facts about probability density functions:</p>
+<ul>
+<li><span class="math inline">\(f(x) \geq 0\)</span> (this means that probability density functions are positive values)</li>
+<li>Area integrates to one (in probability, this means we have accounted for all of our outcomes)</li>
+</ul>
+</section>
+<section id="connecting-probabilities-to-linear-regression" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="connecting-probabilities-to-linear-regression"><span class="header-section-number">9.3</span> Connecting probabilities to linear regression</h2>
+<p>Now that we have made that small excursion into probability, let’s return to the parameter estimation problem. Another way to phrase this problem is to examine the probability distribution of the model-data residual for each measurement <span class="math inline">\(\epsilon_{i}\)</span> (<a href="#eq-model-data-resid-09" class="quarto-xref">Equation&nbsp;<span>9.2</span></a>):</p>
+<p><span id="eq-model-data-resid-09"><span class="math display">\[
+\epsilon_{i} = y_{i} - f(x_{i},\vec{\alpha} ).
+\tag{9.2}\]</span></span></p>
+<p>The approach with likelihood functions assumes a particular probability distribution on each residual. One common assumption is that the model-data residual is normally distributed. In most applications the mean of this distribution is zero (<span class="math inline">\(\mu=0\)</span>) and the standard deviation <span class="math inline">\(\sigma\)</span> (which could be specified as measurement error, etc.). We formalize this assumption with a likelihood function <span class="math inline">\(L\)</span> in <a href="#eq-likelihood-resid-09" class="quarto-xref">Equation&nbsp;<span>9.3</span></a>.</p>
+<p><span id="eq-likelihood-resid-09"><span class="math display">\[
+L(\epsilon_{i}) = \frac{1}{\sqrt{2 \pi} \sigma} e^{-\epsilon_{i}^{2} / 2 \sigma^{2} }
+\tag{9.3}\]</span></span></p>
+<p>To extend this further across all measurements, we use the idea of <em>independent, identically distributed</em> measurements so the joint likelihood of <strong>all</strong> the residuals (each <span class="math inline">\(\epsilon_{i}\)</span>) is the product of the individual likelihoods (<a href="#eq-likelihood-prod-09" class="quarto-xref">Equation&nbsp;<span>9.4</span></a>. The assumption of independent, identically distributed is a common one. As a note of caution you should always evaluate if this is a valid assumption for more advanced applications.</p>
+<p><span id="eq-likelihood-prod-09"><span class="math display">\[
+L(\vec{\epsilon}) = \prod_{i=1}^{N} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\epsilon_{i}^{2} / 2 \sigma^{2} }
+\tag{9.4}\]</span></span></p>
+<p>We are making progress here; however to fully characterize the solution we need to specify the parameters <span class="math inline">\(\vec{\alpha}\)</span>. A simple redefining of the likelihood function where we specify the measurements (<span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>) and parameters (<span class="math inline">\(\vec{\alpha}\)</span>) is all we need (<a href="#eq-likelihood-prod-param-09" class="quarto-xref">Equation&nbsp;<span>9.5</span></a>).</p>
+<p><span id="eq-likelihood-prod-param-09"><span class="math display">\[
+L(\vec{\alpha} | \vec{x},\vec{y} )= \prod_{i=1}^{N}  \frac{1}{\sqrt{2 \pi} \sigma} \exp(-(y_{i} - f(x_{i},\vec{\alpha} ))^{2} / 2 \sigma^{2} )
+\tag{9.5}\]</span></span></p>
+<p>Now with <a href="#eq-likelihood-prod-param-09" class="quarto-xref">Equation&nbsp;<span>9.5</span></a> we have a function where the best parameter estimate is the one that optimizes the likelihood.</p>
+<p>Returning to our original linear regression problem (<a href="#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a> and <a href="#fig-quick-scatter-09" class="quarto-xref">Figure&nbsp;<span>9.1</span></a>), we want to determine the <span class="math inline">\(b\)</span> for the function <span class="math inline">\(y=bx\)</span>. <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a> then characterizes the likelihood of <span class="math inline">\(b\)</span>, given the data <span class="math inline">\(\vec{x}\)</span> and <span class="math inline">\(\vec{y}\)</span>:</p>
+<p><span id="eq-small-data-likely"><span class="math display">\[
+L(b | \vec{x},\vec{y} ) = \left( \frac{1}{\sqrt{2 \pi} \sigma}\right)^{4} e^{-\frac{(3-b)^{2}}{2\sigma^{2}}} \cdot e^{-\frac{(5-2b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(4-4b)^{2}}{2\sigma^{2}}}  \cdot e^{-\frac{(10-4b)^{2}}{2\sigma^{2}}}
+\tag{9.6}\]</span></span></p>
+<p>For the purposes of our argument here, we will assume <span class="math inline">\(\sigma=1\)</span>. <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> shows a plot of the likelihood function <span class="math inline">\(L(b | \vec{x},\vec{y} )\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-small-likelihood-plot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-small-likelihood-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-small-likelihood-plot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-small-likelihood-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.3: The likelihood function (<a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a>) for the small dataset (<a href="#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a>), with the value of the maximum likelihood at <span class="math inline">\(b=1.865\)</span> marked with a vertical line.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note that in <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> the values of <span class="math inline">\(L(b | \vec{x},\vec{y} )\)</span> on the vertical axis are really small. (This typically may be the case; see Exercise @ref(exr:show-small-likely).) An alternative to the small numbers in <span class="math inline">\(L(b)\)</span> is to use the log-likelihood (<a href="#eq-loglikely" class="quarto-xref">Equation&nbsp;<span>9.7</span></a>):</p>
+<p><span id="eq-loglikely"><span class="math display">\[
+\begin{split}
+\ln(L(\vec{\alpha} | \vec{x},\vec{y} )) &amp;=  N \ln \left( \frac{1}{\sqrt{2 \pi} \sigma} \right) - \sum_{i=1}^{N} \frac{ (y_{i} - f(x_{i},\vec{\alpha} )^{2}}{ 2 \sigma^{2}} \\
+&amp; = - \frac{N}{2} \ln (2) - \frac{N}{2} \ln(\pi) - N \ln( \sigma) - \sum_{i=1}^{N} \frac{ (y_{i} - f(x_{i},\vec{\alpha} )^{2}}{ 2 \sigma^{2}}
+\end{split}
+\tag{9.7}\]</span></span></p>
+<p>In <a href="#exr-small-data-optimize" class="quarto-xref">Exercise&nbsp;<span>9.5</span></a>) you will be working on how to transform the likelihood function <span class="math inline">\(L(b)\)</span> to the log-likelihood <span class="math inline">\(\ln(L(b))\)</span> and showing that <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a> is maximized at <span class="math inline">\(b=1.865\)</span>. The data with the fitted line is shown in <a href="#fig-quick-scatter-fit-09" class="quarto-xref">Figure&nbsp;<span>9.4</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quick-scatter-fit-09" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quick-scatter-fit-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-quick-scatter-fit-09-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quick-scatter-fit-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.4: A scatterplot of a small dataset (<a href="#tbl-limited-data-09" class="quarto-xref">Table&nbsp;<span>9.1</span></a>) with fitted line <span class="math inline">\(y=1.865x\)</span> from optimizing <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualizing-likelihood-surfaces" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="visualizing-likelihood-surfaces"><span class="header-section-number">9.4</span> Visualizing likelihood surfaces</h2>
+<p>Next we are going to examine a second example from <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> which modeled the growing of yeast in solution. This classic paper examines the biological principal of <em>competitive exclusion</em>, how one species can out-compete another one for resources. Some of the data from <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> is encoded in the data frame <code>yeast</code> in the <code>demodelr</code> package. For this example we are going to examine a model for one species growing without competition. <a href="#fig-yeast-quick-09" class="quarto-xref">Figure&nbsp;<span>9.5</span></a> shows a scatterplot of the <code>yeast</code> data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Make a quick ggplot of the data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> yeast,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> volume),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time"</span>, <span class="at">y =</span> <span class="st">"Volume"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-yeast-quick-09" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-yeast-quick-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-yeast-quick-09-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yeast-quick-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.5: Scatterplot of <em>Sacchromyces</em> volume growing by itself in a container.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We are going to assume the population of yeast (represented with the measurement of volume) over time changes according to the differential equation <span class="math inline">\(\displaystyle \frac{dy}{dt} = -by \frac{(K-y)}{K}\)</span>, where <span class="math inline">\(y\)</span> is the population of the yeast, and <span class="math inline">\(b\)</span> represents the growth rate, and <span class="math inline">\(K\)</span> is the carrying capacity of the population.</p>
+<p><a href="#eq-gause-09" class="quarto-xref">Equation&nbsp;<span>9.8</span></a> shows the solution to this differential equation, where the additional parameter <span class="math inline">\(a\)</span> can be found through application of the initial condition <span class="math inline">\(y_{0}\)</span>.</p>
+<p><span id="eq-gause-09"><span class="math display">\[
+y = \frac{K}{1+e^{a-bt}}
+\tag{9.8}\]</span></span></p>
+<p>In <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> the value of <span class="math inline">\(a\)</span> was determined by solving the initial value problem <span class="math inline">\(y(0)=0.45\)</span>. In Exercise @ref(exr:solve-gause) you will show that <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>. <a href="#eq-gause-09" class="quarto-xref">Equation&nbsp;<span>9.8</span></a> then has two parameters: <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> using a function in the <code>demodelr</code> package called <code>compute_likelihood</code>. Inputs to the <code>compute_likelihood</code> function are the following:</p>
+<ul>
+<li>A function <span class="math inline">\(y=f(x,\vec{\alpha})\)</span></li>
+<li>A dataset <span class="math inline">\((\vec{x},\vec{y})\)</span></li>
+<li>Ranges of your parameters <span class="math inline">\(\vec{\alpha}\)</span>.</li>
+</ul>
+<p>The <code>compute_likelihood</code> function also has an optional input <code>logLikely</code> that allows you to specify if you want to compute the likelihood or the log-likelihood. The default is that <code>logLikely</code> is <code>FALSE</code>, meaning that the normal likelihoods are plotted.</p>
+<p>First we will define the equation used to compute our model in the likelihood. As with the functions <code>euler</code> or <code>systems</code> in <a href="04-eulersmethod.html" class="quarto-xref"><span>Chapter 4</span></a> we need to define this function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(demodelr)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the solution to the differential equation with</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters K and bGause model equation</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>gause_model <span class="ot">&lt;-</span> volume <span class="sc">~</span> K <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="fu">log</span>(K <span class="sc">/</span> <span class="fl">0.45</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span> b <span class="sc">*</span> time))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the ranges of the parameters that we wish to investigate</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>kParam <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bParam <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Allow for all the possible combinations of parameters</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>gause_parameters <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">K =</span> kParam, <span class="at">b =</span> bParam)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Now compute the likelihood</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>gause_likelihood <span class="ot">&lt;-</span> <span class="fu">compute_likelihood</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> gause_model,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> yeast,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> gause_parameters,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">logLikely =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ok, let’s break this code down step by step:</p>
+<ul>
+<li>The line <code>gause_model &lt;- volume ~ K/(1+exp(log(k/0.45-1)-b*time))</code> identifies the formula that relates the variables <code>time</code> to <code>volume</code> in the dataset <code>yeast</code>.</li>
+<li>We define the ranges (minimum and maximum values) for our parameters by defining a sequence. Because we want to look at <em>all possible combinations</em> of these parameters we use the command <code>expand.grid</code>.</li>
+<li>The input <code>logLikely = FALSE</code> to <code>compute_likelihood</code> reports back likelihood values.</li>
+</ul>
+<p>Some care is needed in defining the number of points (<code>length.out = 100</code>) in the sequence that we want to evaluate - we will have <span class="math inline">\(100^{2}\)</span> different combinations of <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> on our grid, which does take time to evaluate.</p>
+<p>The output to <code>compute_likelihood</code> is a list, which is a flexible data structure in <code>R</code>. You can think of this as a collection of items - which could be data frames of different sizes. In this case, what gets returned are two data frames: <code>likelihood</code>, which is a data frame of likelihood values for each of the parameters and <code>opt_value</code>, which reports back the values of the parameters that optimize the likelihood function. Note that the optimum value is <em>an approximation</em>, as it is just the optimum from the input values of <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> provided on our grid. Let’s take a look at the reported optimum values, which we can do with the syntax <code>LIST_NAME$VARIABLE_NAME</code>, where the dollar sign ($) helps identify which variable from the list you are investigating.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gause_likelihood<span class="sc">$</span>opt_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+      K     b   l_hood log_lik
+  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;  
+1  12.7 0.242 0.000348 FALSE  </code></pre>
+</div>
+</div>
+<p>It is also important to visualize this likelihood function. For this dataset we have the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>, so the likelihood function will be a <em>likelihood surface</em>, rather than a two-dimensional plot. To visualize this in <code>R</code> we can use a contour diagram. <a href="#fig-gause-likely-plot" class="quarto-xref">Figure&nbsp;<span>9.6</span></a> displays this countour plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the likelihood values</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>my_likelihood <span class="ot">&lt;-</span> gause_likelihood<span class="sc">$</span>likelihood</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a contour plot</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> my_likelihood) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">x =</span> K, <span class="at">y =</span> b, <span class="at">fill =</span> l_hood)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_contour</span>(<span class="fu">aes</span>(<span class="at">x =</span> K, <span class="at">y =</span> b, <span class="at">z =</span> l_hood))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-gause-likely-plot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gause-likely-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-gause-likely-plot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gause-likely-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.6: Likelihood surface and contour lines for the <code>yeast</code> dataset.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Similar to before, let’s take this step by step:</p>
+<ul>
+<li>The command <code>my_likelihood</code> just puts the likelihood values in a data frame.</li>
+<li>The <code>ggplot</code> command is similar to that used before.</li>
+<li>We use <code>geom_tile</code> to visualize the likelihood surface. There are three required inputs from the <code>my_likelihood</code> data frame: the <code>x</code> and <code>y</code> axis data values and the <code>fill</code> value, which represents the height of the likelihood function.</li>
+<li>The command <code>stat_contour</code> draws the contour lines, or places where the likelihood function has the same value. Notice how we used <code>z = l_hood</code> rather than <code>fill</code> here. This function helps “smooth” out any jaggedness in the contours.</li>
+</ul>
+<p>In <a href="#fig-gause-likely-plot" class="quarto-xref">Figure&nbsp;<span>9.6</span></a> there appears to be a large region where the likelihood has the same value. (Admittedly I chose some broad parameter ranges for <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>). We can refine that by producing a second contour plot that focuses in on parameters closer to the calculated optimum value at <span class="math inline">\(K=13\)</span> and <span class="math inline">\(b=0.07\)</span> (<a href="#fig-revised-gause-likelihood" class="quarto-xref">Figure&nbsp;<span>9.7</span></a>):</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+      K     b   l_hood log_lik
+  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;  
+1  12.8 0.241 0.000349 FALSE  </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-revised-gause-likelihood" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-revised-gause-likelihood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-revised-gause-likelihood-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-revised-gause-likelihood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.7: Zoomed in likelihood surface. for the <code>yeast</code> dataset. The computed location of the optimum value is shown as a red point.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The reported values for <span class="math inline">\(K\)</span> (12.8) and <span class="math inline">\(b\)</span> (0.241) may be close to what was reported from <a href="#fig-gause-likely-plot" class="quarto-xref">Figure&nbsp;<span>9.6</span></a>. Notice that in <a href="#fig-revised-gause-likelihood" class="quarto-xref">Figure&nbsp;<span>9.7</span></a> I also added in the location of the optimum point with <code>geom_point()</code>.</p>
+<p>As a final step, once you have settled on the value that optimizes the likelihood function, is to compare the optimized parameters against the data (<a href="#fig-gause-model-data-09" class="quarto-xref">Figure&nbsp;<span>9.8</span></a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the parameters and the times to evaluate:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>my_params <span class="ot">&lt;-</span> gause_likelihood_rev<span class="sc">$</span>opt_value</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">60</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the right hand side of your equations</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>new_eq <span class="ot">&lt;-</span> gause_model <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  formula.tools<span class="sc">::</span><span class="fu">rhs</span>()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># This collects the parameters and data into a list</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>in_list <span class="ot">&lt;-</span> <span class="fu">c</span>(my_params, time) <span class="sc">|&gt;</span> <span class="fu">as.list</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># The eval command evaluates your model</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>out_model <span class="ot">&lt;-</span> <span class="fu">eval</span>(new_eq, <span class="at">envir =</span> in_list)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Now collect everything into a data frame:</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>my_prediction <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">time =</span> time, <span class="at">volume =</span> out_model)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> yeast,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> volume),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> my_prediction,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> volume)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time"</span>, <span class="at">y =</span> <span class="st">"Volume"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-gause-model-data-09" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gause-model-data-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="09-likelihood_files/figure-html/fig-gause-model-data-09-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gause-model-data-09-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.8: Model and data comparison of the <code>yeast</code> dataset from maximum likelihood estimation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>All right, this code block has some new commands and techniques that need explaining. Once we have the parameter estimates we need to compute the modeled values.</p>
+<ul>
+<li>First we define the <code>params</code> and the <code>time</code> we wish to evaluate with our model.</li>
+<li>We need to evaluate the right hand side of <span class="math inline">\(\displaystyle y = \frac{K}{1+e^{a+bt}}\)</span>, so the definition of <code>new_eq</code> helps to do that, using the package <code>formula.tools</code>.</li>
+<li>The <code>|&gt;</code> is the <code>tidyverse</code> <a href="https://r4ds.had.co.nz/pipes.html#pipes">pipe</a>. This is a very useful command to help make code more readable!</li>
+<li><code>in_list &lt;- c(params,my_time) |&gt; as.list()</code> collects the parameters and input times in one list to evaluate the model with <code>out_model &lt;- eval(new_eq,envir=in_list)</code></li>
+<li>We make a data frame called <code>my_prediction</code> so we can then plot.</li>
+</ul>
+<p>And the rest of the plotting commands you should be used to. This activity focused on the likelihood function - Exercise @ref(exr:log-likelihood-yeast) has you repeat this analysis with the log-likelihood function.</p>
+</section>
+<section id="looking-back-and-forward" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="looking-back-and-forward"><span class="header-section-number">9.5</span> Looking back and forward</h2>
+<p>This chapter covered a lot of ground - from probability and likelihood functions to computing and visualizing these. A good strategy for a likelihood function is to visualize the function and then explore to find values that optimize the likelihood or log-likelihood function. This approach is one example of <em>successive approximations</em> or using an iterative method to determine a solution. While this chapter focused on optimizing a likelihood function with one or two parameters, the successive approximation method does generalize to more parameters. However searching for parameters becomes tricky (read: tedious and slow) in high-dimensional spaces. In later chapters we will explore numerical methods to accelerate convergence to an optimum value.</p>
+</section>
+<section id="exercises" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">9.6</span> Exercises</h2>
+<div id="exr-solve-gause" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.1</strong></span> Algebraically solve the equation <span class="math inline">\(\displaystyle 0.45 = \frac{K}{1+e^{a}}\)</span> for <span class="math inline">\(a\)</span>.</p>
+</div>
+<div id="exr-show-small-likely" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.2</strong></span> Compute the values of <span class="math inline">\(L(b|\vec{x},\vec{y})\)</span> and <span class="math inline">\(\ln(L(b|\vec{x},\vec{y}))\)</span> for each of the data points in <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a> when <span class="math inline">\(b=1.865\)</span> and <span class="math inline">\(\sigma=1\)</span>. (This means that these 4 values would be multiplied or added when you compute the full likelihood function.) Explain if the likelihood or log-likelihood would be easier to calculate in instances when the number of observations is large.</p>
+</div>
+<div id="exr-log-likelihood-yeast" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.3</strong></span> Visualize the likelihood function for the <code>yeast</code> dataset, but in this case report out and visualize the log-likelihood. (This means that you are setting the option <code>logLikely = TRUE</code> in the <code>compute_likelihood</code> function.) Compare the log-likelihood surface to <a href="#fig-revised-gause-likelihood" class="quarto-xref">Figure&nbsp;<span>9.7</span></a>.</p>
+</div>
+<div id="exr-small-data-invest" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.4</strong></span> When we generated our plot of the likelihood function in <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> we assumed that <span class="math inline">\(\sigma=1\)</span> in Equation (9.6). For this exercise you will explore what happens in Equation (9.6) as <span class="math inline">\(\sigma\)</span> increases or decreases.</p>
+<ol type="a">
+<li>Use <a href="www.desmos.com/calculator">desmos</a> or <code>R</code> to generate a plot of <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a>. What happens to the shape of the likelihood function as <span class="math inline">\(\sigma\)</span> increases?</li>
+<li>How does the estimate of <span class="math inline">\(b\)</span> change as <span class="math inline">\(\sigma\)</span> changes?</li>
+<li>The spread of the distribution (in terms of it being more peaked or less peaked) is a measure of uncertainty of a parameter estimate. How does the resulting parameter uncertainty change as <span class="math inline">\(\sigma\)</span> changes?</li>
+</ol>
+</div>
+<div id="exr-small-data-optimize" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.5</strong></span> Using <a href="#eq-small-data-likely" class="quarto-xref">Equation&nbsp;<span>9.6</span></a> with <span class="math inline">\(\sigma = 1\)</span>:</p>
+<ol type="a">
+<li><p>Apply the natural logarithm to both sides of this expression. Using properties of logarithms, show that the log-likelihood function is <span class="math inline">\(\displaystyle \ln(L(b)) =-2 \ln(2) - 2 \ln (\pi) -\frac{(3-b)^{2}}{2}-\frac{(5-2b)^{2}}{2}-\frac{(4-4b)^{2}}{2}-\frac{(10-4b)^{2}}{2}\)</span>.</p></li>
+<li><p>Make a plot of the log-likelihood function (in desmos or <code>R</code>).</p></li>
+<li><p>At what values of <span class="math inline">\(b\)</span> Where is this function optimized? Does your graph indicate that it is a maximum or a minimum value?</p></li>
+<li><p>Compare this likelihood estimate for <span class="math inline">\(b\)</span> to what was found in <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a>.</p></li>
+</ol>
+</div>
+<div id="exr-full-linear" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.6</strong></span> Consider the linear model <span class="math inline">\(y=a+bx\)</span> for the following dataset:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><em>x</em></th>
+<th style="text-align: center;"><em>y</em></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>With the function <code>compute_likelihood</code>, generate a contour plot of both the likelihood and log-likelihood functions. You may assume <span class="math inline">\(0 \leq a \leq 5\)</span> and <span class="math inline">\(0 \leq b \leq 5\)</span>.</li>
+<li>Make a scatterplot of these data with the equation <span class="math inline">\(y=a+bx\)</span> with your maximum likelihood parameter estimates.</li>
+<li>Earlier when we fit <span class="math inline">\(y=bx\)</span> we found <span class="math inline">\(b=1.865\)</span>. How does adding <span class="math inline">\(a\)</span> as a model parameter affect your estimate of <span class="math inline">\(b\)</span>?</li>
+</ol>
+</div>
+<div id="exr-det-a-09" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.7</strong></span> For the function <span class="math inline">\(\displaystyle P(t)=\frac{K}{1+e^{a+bt}}\)</span>, with <span class="math inline">\(P(0)=P_{0}\)</span>, determine an expression for the parameter <span class="math inline">\(a\)</span> in terms of <span class="math inline">\(K\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(P_{0}\)</span>.</p>
+</div>
+<div id="exr-gause-ml-09" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.8</strong></span> The values returned by the maximum likelihood estimate for <a href="#eq-gause-09" class="quarto-xref">Equation&nbsp;<span>9.8</span></a> were a little different from those reported in <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>:</p>
+<table class="table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 31%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Parameter</strong></th>
+<th style="text-align: center;"><strong>Maximum Likelihood Estimate</strong></th>
+<th style="text-align: center;"><strong><span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(K\)</span></td>
+<td style="text-align: center;">12.7</td>
+<td style="text-align: center;">13.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(b\)</span></td>
+<td style="text-align: center;">0.24242</td>
+<td style="text-align: center;">0.21827</td>
+</tr>
+</tbody>
+</table>
+<p>Using the <code>yeast</code> dataset, plot the function <span class="math inline">\(\displaystyle y = \frac{K}{1+e^{a-bt}}\)</span> (setting <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>) using both sets of parameters. Which approach (the Maximum Likelihood estimate or <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span>) does a better job representing the data?</p>
+</div>
+<div id="exr-nutrient-09" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.9</strong></span> An equation that relates a consumer’s nutrient content (denoted as <span class="math inline">\(y\)</span>) to the nutrient content of food (denoted as <span class="math inline">\(x\)</span>) is given by: <span class="math inline">\(\displaystyle y = c x^{1/\theta}\)</span>, where <span class="math inline">\(\theta \geq 1\)</span> and <span class="math inline">\(c&gt;0\)</span> are both constants.</p>
+<ol type="a">
+<li>Use the dataset <code>phosphorous</code> to make a scatterplot with the variable <code>algae</code> on the horizontal axis, <code>daphnia</code> on the vertical axis.</li>
+<li>Generate a contour plot for the likelihood function for these data. You may assume <span class="math inline">\(0 \leq c \leq 5\)</span> and <span class="math inline">\(1 \leq \theta \leq 20\)</span>. What are the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(\theta\)</span> that optimize the likelihood? <em>Hint:</em> for the dataset <code>phosphorous</code> be sure to use the variables <span class="math inline">\(x=\)</span><code>algae</code> and <span class="math inline">\(y=\)</span><code>daphnia</code>.</li>
+<li>Add the fitted curve to your scatterplot and evaluate your fitted results.</li>
+</ol>
+</div>
+<div id="exr-wilson-log-09" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.10</strong></span> A dog’s weight <span class="math inline">\(W\)</span> (pounds) changes over <span class="math inline">\(D\)</span> days according to the following function:</p>
+<p><span class="math display">\[
+W =f(D,p_{1},p_{2})= \frac{p_{1}}{1+e^{2.462-p_{2}D}},
+\]</span></p>
+<p>where <span class="math inline">\(p_{1}\)</span> and <span class="math inline">\(p_{2}\)</span> are parameters.</p>
+<ol type="a">
+<li>This function can be used to describe the data <code>wilson</code>. Make a scatterplot with the <code>wilson</code> data. What is the long term weight of the dog?</li>
+<li>Generate a contour plot for the likelihood function for these data. What are the values of <span class="math inline">\(p_{1}\)</span> and <span class="math inline">\(p_{2}\)</span> that optimize the likelihood? <em>You may assume that <span class="math inline">\(p_{1}\)</span> and <span class="math inline">\(p_{2}\)</span> are both positive.</em></li>
+<li>With your values of <span class="math inline">\(p_{1}\)</span> and <span class="math inline">\(p_{2}\)</span> add the function <span class="math inline">\(W\)</span> to your scatterplot and compare the fitted curve to the data.</li>
+</ol>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-devore_modern_2021" class="csl-entry" role="listitem">
+Devore, Jay L., Kenneth N. Berk, and Matthew A. Carlton. 2021. <em>Modern <span>Mathematical Statistics</span> with <span>Applications</span></em>. 3rd ed. Springer <span>Texts</span> in <span>Statistics</span>. Cham, Switzerland: <span>Springer International Publishing</span>. <a href="https://doi.org/10.1007/978-3-030-55156-8">https://doi.org/10.1007/978-3-030-55156-8</a>.
+</div>
+<div id="ref-gause_experimental_1932" class="csl-entry" role="listitem">
+Gause, G. F. 1932. <span>“Experimental <span>Studies</span> on the <span>Struggle</span> for <span>Existence</span>: <span>I</span>. <span>Mixed Population</span> of <span>Two Species</span> of <span>Yeast</span>.”</span> <em>Journal of Experimental Biology</em> 9 (4): 389–402.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>See <span class="citation" data-cites="devore_modern_2021">Devore, Berk, and Carlton (<a href="#ref-devore_modern_2021" role="doc-biblioref">2021</a>)</span> for a more refined definition of probability.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Were you ever asked to find the antiderivative of <span class="math inline">\(\displaystyle \int e^{-x^{2}} \; dx\)</span>? You may recall that there is easy antiderivative - and to find values of definite integrals you need to approximate numerically. Thankfully <code>R</code> does that work using sophisticated numerical integration techniques!<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08-linearRegression.html" class="pagination-link" aria-label="Linear Regression and Curve Fitting">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Linear Regression and Curve Fitting</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10-costFunctions.html" class="pagination-link" aria-label="Cost Functions and Bayes' Rule">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cost Functions and Bayes’ Rule</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
