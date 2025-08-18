@@ -149,14 +149,14 @@ ggplot(data = logistic_out) +
 
 Let's break the code down to generate @fig-log-sde step by step:
 
-- We identify the deterministic and stochastic parts to our differential equation with the variables `deterministic_logistic` and `stochastic_logistic`. The same structure is used for Euler's method from Chapter \@ref(euler-04).
+- We identify the deterministic and stochastic parts to our differential equation with the variables `deterministic_logistic` and `stochastic_logistic`. The same structure is used for Euler's method from @sec-euler-04.
 - Similar to Euler's method we need to identify the initial conditions (`init_logistic`), parameters (`logistic_parameters`), $\Delta t$ (`deltaT_logistic`), and number of timesteps (`timesteps_logistic`).
 - The diffusion coefficient for the stochastic process ($D$) is represented with `D_logistic`.
 - The command `euler_stochastic` does one realization of the Euler-Maruyama method.
 
 
 ### Do several times
-@fig-log-sde shows one sample trajectory of our solution, but there is benefit to running several simulations and then plotting out all the solution trajectories together. The code presented below accomplishes that task and makes a plot of all the solution trajectories (@fig-spaghetti). This code is similar to code presented in Chapter \@ref(stoch-sim-22). As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.  Notice the use of `labs(caption = "D = 1")` to add a small caption in the lower right hand corner of the plot to indicate the value of the diffusion coefficient used for the simulations.
+@fig-log-sde shows one sample trajectory of our solution, but there is benefit to running several simulations and then plotting out all the solution trajectories together. The code presented below accomplishes that task and makes a plot of all the solution trajectories (@fig-spaghetti). This code is similar to code presented in @sec-stoch-sim-22. As you may recall, the main engine of the code is contained in the `map( ~ euler_stochastic ... )` which re-runs the codes for the number of times specified in `n_sims`.  Notice the use of `labs(caption = "D = 1")` to add a small caption in the lower right hand corner of the plot to indicate the value of the diffusion coefficient used for the simulations.
 
 ```{r eval = FALSE}
 # Many solutions
@@ -358,8 +358,13 @@ logistic_run_r <- map(1:n_sims, ~ list()) |>
 
 
 ### Summarize and Visualize 
-Now after running several different simulations we can plot the ensemble average, shown in @fig-ensemble-r:
+Now after running several different simulations we can plot the ensemble average, shown in @fig-ensemble-r, where we also use the `rk4` method to plot the numerical solution to the deterministic part of the SDE as well^[{{< fa burst >}} The deterministic solution was added in the 2025 update.]:
 ```{r eval = FALSE}
+
+# Apply the rk4 method to numerically solve the deterministic solution:
+log_soln_DE = rk4(deterministic_logistic_r, init = init_logistic, param = logistic_parameters,
+	deltaT =deltaT_logistic, n_steps = timesteps_logistic)
+
   
 # Compute Quantiles and summarize
 quantile_vals <- c(0.025, 0.5, 0.975)
@@ -376,16 +381,20 @@ summarized_logistic <- logistic_run |>
   pivot_wider(names_from = "q_name", values_from = "q_val", 
               names_glue = "q{q_name}")
 
-# Make the plot
+# Make the plot, including the solution to the deterministic SDE
 ggplot(data = summarized_logistic) +
   geom_line(aes(x = t, y = q0.5)) +
   geom_ribbon(aes(x=t,ymin=q0.025,ymax=q0.975),alpha=0.2) +
+  geom_line(data = log_soln_DE,aes(x=t,y=x),color='blue') +
   ggtitle("Ensemble average plot for the logistic SDE") +
-  labs(caption = "D = 0.1")
+  labs(caption = "D = 0.1",
+       subtitle = "Deterministic numerical solution in blue")
 ```
 
 ```{r,fig.cap="Ensemble average plot for @eq-logistic-de-25-r.",warning=FALSE,echo=FALSE,message=FALSE}
 #| label: fig-ensemble-r
+
+
 
 # Identify the deterministic and stochastic parts of the DE:
 deterministic_logistic_r <- c(dx ~ r*x*(1-x/K))
@@ -404,6 +413,9 @@ D_logistic <- .1
 
 # Many solutions
 n_sims <- 100  # The number of simulations
+
+log_soln_DE = rk4(deterministic_logistic_r, init = init_logistic, param = logistic_parameters,
+	deltaT =deltaT_logistic, n_steps = timesteps_logistic)
 
 # Compute solutions
 logistic_run_r <- map(1:n_sims, ~ list()) |>
@@ -439,10 +451,11 @@ summarized_logistic <- logistic_run_r |>
 ### Make the plot
 ggplot(data = summarized_logistic) +
   geom_line(aes(x = t, y = q0.5),
-    color = "red", size = 1, inherit.aes = FALSE
+    color = "red", linewidth = 1, inherit.aes = FALSE
   ) +
   geom_ribbon(aes(x = t, ymin = q0.025, ymax = q0.975),
     alpha = 0.2, fill = "red") +
+  geom_line(data = log_soln_DE,aes(x=t,y=x),color='blue') +
   ggtitle("Ensemble average plot for the logistic SDE") +
   theme_bw() +
   theme(
@@ -453,7 +466,8 @@ ggplot(data = summarized_logistic) +
     axis.text.y = element_text(size = 10),
     axis.title.y = element_text(size = 14)
   ) + ylab("x")  +
-  labs(caption = "D = 0.1")
+    labs(caption = "D = 0.1",
+       subtitle = "Deterministic numerical solution in blue")
   
 
 ```
