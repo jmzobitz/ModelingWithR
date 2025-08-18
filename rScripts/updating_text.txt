@@ -1,0 +1,75 @@
+FIX ALL EXERCISES - ARE THEY tagging correctly?
+Ch 20, 24 multiple ones Chapters
+Multi labels: Equations @ref(eq-aic) and @ref(eq-bic)
+
+[Exercises @exr-yeast-v1-13] and [-@exr-yeast-v2-13] OR
+Exercises [-@exr-yeast-v1-13] and [-@exr-yeast-v2-13]
+
+geom_line --> replace size with linewidth
+namespace scale_color_colorblind
+change %>% to |>
+use label tags (see chapter 1) for figures
+R script figures - do as #| label, otherwise chunk label: 
+inside chunk, no line break!
+
+{{< fa burst >}}
+
+Exercises -- but them in a fence
+comments need to not have any indent / spaces
+label
+
+Put sec in front of chapter labels
+
+Equations are inline $$ and $$ -- split does work in these.
+
+Find and replace: 
+Chapter\s+\\@ref\(([^)]+)\)   --> @sec-\1
+Figure\s+\\@ref\(fig:([^)]+)\) --> @fig-\1
+Equation\s+\\@ref\(eq:([^)]+)\) --> @eq-\1
+Example\s+\\@ref\(exm:([^)]+)\) --> @exm-\1
+Table\s+\\@ref\(tab:([^)]+)\) --> @tbl-\1
+Exercise\s+\\@ref\(exr:([^)]+)\) --> @exr-\1
+
+
+\(#eq:([^)]+)\) --> @eq-\1   --> DOESN'T SEEM TO WORK
+
+
+
+```{exercise}  --> ::: {#exr-
+
+```{example} --> ::: {#exm-
+
+```{solution} --> ::: {#sol-}
+
+
+Put tags on all equations
+
+kable table works like a regular figure
+
+#| label: fig-temp-table
+
+Need a line between comments and exercise fence
+
+Make sure we have the R prereqs for each section
+
+::: {.callout-note}
+This chapter uses following libraries: `ggplot2`, and `tibble` (all part of the `tidyverse`) and `demodelr`. See @sec-packages-02 on how to install packages.  Prior to running any code in this section, include `library(tidyverse)` and `library(demodelr)`. 
+:::
+
+Kable tables:
+```{r, echo = FALSE, message=FALSE, results='asis'}
+#| label: tbl-model-table
+
+::: {#tbl-logistic-table-05}
+
+**Test point** | **Sign of $N'$**  | **Tendency of solution**
+-------------| ------------- | -------------
+    $N=-1$ | Negative | Decreasing
+    $N=0$ |  Zero | Equilibrium solution
+    $N=0.5$ | Positive | Increasing
+    $N=1$ |  Zero | Equilibrium solution
+    $N=2$ |  Negative | Decreasing
+
+Evaluation of the stability of the equilibrium solutions for @eq-logistic-05.
+
+:::
