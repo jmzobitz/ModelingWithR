@@ -583,7 +583,7 @@ Figure&nbsp;9.3: The likelihood function (<a href="#eq-small-data-likely" class=
 </div>
 </div>
 </div>
-<p>Note that in <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> the values of <span class="math inline">\(L(b | \vec{x},\vec{y} )\)</span> on the vertical axis are really small. (This typically may be the case; see Exercise @ref(exr:show-small-likely).) An alternative to the small numbers in <span class="math inline">\(L(b)\)</span> is to use the log-likelihood (<a href="#eq-loglikely" class="quarto-xref">Equation&nbsp;<span>9.7</span></a>):</p>
+<p>Note that in <a href="#fig-small-likelihood-plot" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> the values of <span class="math inline">\(L(b | \vec{x},\vec{y} )\)</span> on the vertical axis are really small. (This typically may be the case; see <a href="#exr-show-small-likely" class="quarto-xref">Exercise&nbsp;<span>9.2</span></a>.) An alternative to the small numbers in <span class="math inline">\(L(b)\)</span> is to use the log-likelihood (<a href="#eq-loglikely" class="quarto-xref">Equation&nbsp;<span>9.7</span></a>):</p>
 <p><span id="eq-loglikely"><span class="math display">\[
 \begin{split}
 \ln(L(\vec{\alpha} | \vec{x},\vec{y} )) &amp;=  N \ln \left( \frac{1}{\sqrt{2 \pi} \sigma} \right) - \sum_{i=1}^{N} \frac{ (y_{i} - f(x_{i},\vec{\alpha} )^{2}}{ 2 \sigma^{2}} \\
@@ -640,7 +640,7 @@ Figure&nbsp;9.5: Scatterplot of <em>Sacchromyces</em> volume growing by itself i
 <p><span id="eq-gause-09"><span class="math display">\[
 y = \frac{K}{1+e^{a-bt}}
 \tag{9.8}\]</span></span></p>
-<p>In <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> the value of <span class="math inline">\(a\)</span> was determined by solving the initial value problem <span class="math inline">\(y(0)=0.45\)</span>. In Exercise @ref(exr:solve-gause) you will show that <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>. <a href="#eq-gause-09" class="quarto-xref">Equation&nbsp;<span>9.8</span></a> then has two parameters: <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> using a function in the <code>demodelr</code> package called <code>compute_likelihood</code>. Inputs to the <code>compute_likelihood</code> function are the following:</p>
+<p>In <span class="citation" data-cites="gause_experimental_1932">Gause (<a href="#ref-gause_experimental_1932" role="doc-biblioref">1932</a>)</span> the value of <span class="math inline">\(a\)</span> was determined by solving the initial value problem <span class="math inline">\(y(0)=0.45\)</span>. In <a href="#exr-solve-gause" class="quarto-xref">Exercise&nbsp;<span>9.1</span></a> you will show that <span class="math inline">\(\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)\)</span>. <a href="#eq-gause-09" class="quarto-xref">Equation&nbsp;<span>9.8</span></a> then has two parameters: <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span>. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters <span class="math inline">\(K\)</span> and <span class="math inline">\(b\)</span> using a function in the <code>demodelr</code> package called <code>compute_likelihood</code>. Inputs to the <code>compute_likelihood</code> function are the following:</p>
 <ul>
 <li>A function <span class="math inline">\(y=f(x,\vec{\alpha})\)</span></li>
 <li>A dataset <span class="math inline">\((\vec{x},\vec{y})\)</span></li>
@@ -796,7 +796,7 @@ Figure&nbsp;9.8: Model and data comparison of the <code>yeast</code> dataset fro
 <li><code>in_list &lt;- c(params,my_time) |&gt; as.list()</code> collects the parameters and input times in one list to evaluate the model with <code>out_model &lt;- eval(new_eq,envir=in_list)</code></li>
 <li>We make a data frame called <code>my_prediction</code> so we can then plot.</li>
 </ul>
-<p>And the rest of the plotting commands you should be used to. This activity focused on the likelihood function - Exercise @ref(exr:log-likelihood-yeast) has you repeat this analysis with the log-likelihood function.</p>
+<p>And the rest of the plotting commands you should be used to. This activity focused on the likelihood function - <a href="#exr-log-likelihood-yeast" class="quarto-xref">Exercise&nbsp;<span>9.3</span></a> has you repeat this analysis with the log-likelihood function.</p>
 </section>
 <section id="looking-back-and-forward" class="level2" data-number="9.5">
 <h2 data-number="9.5" class="anchored" data-anchor-id="looking-back-and-forward"><span class="header-section-number">9.5</span> Looking back and forward</h2>

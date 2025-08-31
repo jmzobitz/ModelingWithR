@@ -19,7 +19,7 @@ $$ {#eq-yeast-comp-17}
 
 While @eq-yeast-comp-17 is a tricky model to consider, the terms $2N$ and $.4Y$ represent the effect that $Y$ and $N$ have on each other since they are competing for the same resource. If these terms weren't present, both $Y$ and $N$ would follow a logistic growth (verify this on your own).
 
-@eq-yeast-comp-17 has 4 equilibrium solutions: $(Y,N)=(0,0)$, $(Y,N)=(13,0)$, $(Y,N)=(0,6)$, and $(Y,N)=(5,4)$ (Exercise \@ref(exr:yeast-ss-17)). @fig-yeast-orig-17 shows the phase plane for this system along with the equilibrium solutions.^[I encourage you to use the `phaseplane` command to re-create @fig-yeast-orig-17. If you do, be sure to use the options `x_window` and `y_window` to set things correctly.]
+@eq-yeast-comp-17 has 4 equilibrium solutions: $(Y,N)=(0,0)$, $(Y,N)=(13,0)$, $(Y,N)=(0,6)$, and $(Y,N)=(5,4)$ (@exr-yeast-ss-17). @fig-yeast-orig-17 shows the phase plane for this system along with the equilibrium solutions.^[I encourage you to use the `phaseplane` command to re-create @fig-yeast-orig-17. If you do, be sure to use the options `x_window` and `y_window` to set things correctly.]
 
 ```{r,fig.cap="Phase plane for @eq-yeast-comp-17, with equilibrium solutions shown as red points.",echo=FALSE}
 #| label: fig-yeast-orig-17
@@ -264,7 +264,7 @@ eval(fY_sub)
 
 Notice how the evaluation step defines a list of inputs, and then uses the functions `do.call` and `substitute` to evaluate the expression.  The output `fY_sub` is still an evaluated expression.  Step 3 applies the function `eval` to numerically compute the result.  This last step only works if all parameters and variables are defined.
 
-The downside to symbolic differentiation with `R` is that while sometimes the resulting expression may be correct - it isn't algebraically simplified. Consider for example $\displaystyle f(x,y)=y + \frac{5x^2}{4+x^{2}}$. The value of  $\displaystyle \frac{\partial f}{\partial x}$ is $\displaystyle \frac{40x}{(4+x^{2})^{2}}$ after algebraic simplification with the quotient rule. Exercise \@ref(exr:quotient-17) will have you explore this further.
+The downside to symbolic differentiation with `R` is that while sometimes the resulting expression may be correct - it isn't algebraically simplified. Consider for example $\displaystyle f(x,y)=y + \frac{5x^2}{4+x^{2}}$. The value of  $\displaystyle \frac{\partial f}{\partial x}$ is $\displaystyle \frac{40x}{(4+x^{2})^{2}}$ after algebraic simplification with the quotient rule. @exr-quotient-17 will have you explore this further.
 
 
 Other programs that can do symbolic manipulation include:

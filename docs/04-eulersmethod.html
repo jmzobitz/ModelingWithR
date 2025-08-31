@@ -809,7 +809,7 @@ Figure&nbsp;4.4: Euler’s method solution for Lynx-Hare system (<a href="#eq-ly
 </section>
 <section id="eulers-method-and-beyond" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="eulers-method-and-beyond"><span class="header-section-number">4.4</span> Euler’s method and beyond</h2>
-<p>Sometimes when working with Euler’s method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see Exercise @ref(exr:flu-quarantine-01) in <a href="01-intro.html" class="quarto-xref"><span>Chapter 1</span></a>):</p>
+<p>Sometimes when working with Euler’s method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see <a href="01-intro.html#exr-flu-quarantine-01" class="quarto-xref">Exercise&nbsp;<span>1.10</span></a> in <a href="01-intro.html" class="quarto-xref"><span>Chapter 1</span></a>):</p>
 <p><span id="eq-flu-quarantine-04"><span class="math display">\[
 \begin{split}
 \frac{dS}{dt} &amp;= -kSI \\
@@ -883,7 +883,7 @@ Figure&nbsp;4.6: Runge-Kutta solution for <a href="#eq-flu-quarantine-04" class=
 </div>
 </div>
 </div>
-<p>Another benefit to the <code>rk4</code> method is the numerical error when computing the solution. The numerical error is quantified as the difference between the actual solution and the numerical solution. Euler’s method has an error on the order of the stepsize <span class="math inline">\(\Delta t\)</span>, whereas the Runge-Kutta method has an error of <span class="math inline">\((\Delta t)^4\)</span>. For this example, <span class="math inline">\(\Delta t = 0.1\)</span>, whereas for the Runge-Kutta method the numerical error is on the order of 0.0001 (<span class="math inline">\((\Delta t)^{4} =.0001\)</span>) - noticeably different! We can improve Euler’s method by taking a smaller timestep - BUT that means we need a larger number of steps <span class="math inline">\(N\)</span> - which may take more computational time (see Exercise @ref(exr:rk4-euler)). Does this discussion of numerical error sounds familiar? In calculus you may have examined the numerical error when using Riemann sums (left, right, trapezoid, midpoint sums) to approximate the area underneath a curve. While the context is different, Riemann sums and numerical differential equation solvers are closely related.</p>
+<p>Another benefit to the <code>rk4</code> method is the numerical error when computing the solution. The numerical error is quantified as the difference between the actual solution and the numerical solution. Euler’s method has an error on the order of the stepsize <span class="math inline">\(\Delta t\)</span>, whereas the Runge-Kutta method has an error of <span class="math inline">\((\Delta t)^4\)</span>. For this example, <span class="math inline">\(\Delta t = 0.1\)</span>, whereas for the Runge-Kutta method the numerical error is on the order of 0.0001 (<span class="math inline">\((\Delta t)^{4} =.0001\)</span>) - noticeably different! We can improve Euler’s method by taking a smaller timestep - BUT that means we need a larger number of steps <span class="math inline">\(N\)</span> - which may take more computational time (see <a href="#exr-rk4-euler" class="quarto-xref">Exercise&nbsp;<span>4.15</span></a>). Does this discussion of numerical error sounds familiar? In calculus you may have examined the numerical error when using Riemann sums (left, right, trapezoid, midpoint sums) to approximate the area underneath a curve. While the context is different, Riemann sums and numerical differential equation solvers are closely related.</p>
 <p>In summary, the most general form of a differential equation is:</p>
 <p><span id="eq-de-general-04"><span class="math display">\[
 \displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t),
@@ -926,7 +926,7 @@ Figure&nbsp;4.6: Runge-Kutta solution for <a href="#eq-flu-quarantine-04" class=
 </ol>
 </div>
 <div id="exr-step-de-04" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 4.7</strong></span> For each of the following differential equations, apply the Runge-Kutta method to generate a numerical solution to the differential equation and plot your solution. The stepsize (<span class="math inline">\(\Delta t\)</span>) and number of iterations (<span class="math inline">\(N\)</span>) are listed. Contrast your answers with Exercise @ref(exr:euler-solve).</p>
+<p><span class="theorem-title"><strong>Exercise 4.7</strong></span> For each of the following differential equations, apply the Runge-Kutta method to generate a numerical solution to the differential equation and plot your solution. The stepsize (<span class="math inline">\(\Delta t\)</span>) and number of iterations (<span class="math inline">\(N\)</span>) are listed. Contrast your answers with <a href="#exr-euler-solve" class="quarto-xref">Exercise&nbsp;<span>4.6</span></a>.</p>
 <ol type="a">
 <li>Differential equation: <span class="math inline">\(\displaystyle \frac{dS}{dt} =3-S\)</span>. Set <span class="math inline">\(\Delta t = 0.1\)</span>, <span class="math inline">\(N = 50\)</span>. Initial conditions: <span class="math inline">\(S(0) = 0.5\)</span>, <span class="math inline">\(S(0) = 5\)</span>.</li>
 <li>Differential equation: <span class="math inline">\(\displaystyle \frac{dS}{dt} =\frac{1}{1-S}\)</span>. Set <span class="math inline">\(\Delta t = 0.01\)</span>, <span class="math inline">\(N = 30\)</span>. Initial conditions: <span class="math inline">\(S(0) = 0.5\)</span>, <span class="math inline">\(S(0) = 2\)</span>.</li>
@@ -1011,7 +1011,7 @@ Figure&nbsp;4.6: Runge-Kutta solution for <a href="#eq-flu-quarantine-04" class=
 </ol>
 </div>
 <div id="exr-rk4-euler" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 4.15</strong></span> Building on Exercise @ref(exr:euler-rk4), let’s say for a particular differential equation we have <span class="math inline">\(N\)</span> steps from <span class="math inline">\(0 \leq t \leq b\)</span>. An error of <span class="math inline">\(\epsilon\)</span> is desired.</p>
+<p><span class="theorem-title"><strong>Exercise 4.15</strong></span> Building on <a href="#exr-euler-rk4" class="quarto-xref">Exercise&nbsp;<span>4.5</span></a>, let’s say for a particular differential equation we have <span class="math inline">\(N\)</span> steps from <span class="math inline">\(0 \leq t \leq b\)</span>. An error of <span class="math inline">\(\epsilon\)</span> is desired.</p>
 <ol type="a">
 <li>What is the ratio <span class="math inline">\(\displaystyle \frac{N_{E}}{N_{RK4}}\)</span>, where <span class="math inline">\(N_{RK4}\)</span> represents the number of steps needed for the Runge-Kutta method, and <span class="math inline">\(N_{E}\)</span> the number of steps for Euler’s method?</li>
 <li>Make a plot of the ratio <span class="math inline">\(\displaystyle \frac{N_{E}}{N_{RK4}}\)</span> for <span class="math inline">\(0 \leq \epsilon \leq 1\)</span>. How many more steps does Euler’s method need to do to achieve the same level of error, compared to the Runge-Kutta method?</li>
@@ -1020,7 +1020,7 @@ Figure&nbsp;4.6: Runge-Kutta solution for <a href="#eq-flu-quarantine-04" class=
 <div id="exr-advert-euler-04" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercise 4.16</strong></span> <i class="fa-solid fa-burst" aria-label="burst"></i> Another example of an advertising model is <span class="math inline">\(\displaystyle \frac{dS}{dt} = \frac{rU}{M}(M-S) - \lambda S\)</span>, where <span class="math inline">\(S\)</span> is the product’s share of the market (scaled between 0 and 1), <span class="math inline">\(r\)</span> is the response to advertising, <span class="math inline">\(U\)</span> is the advertising expenditure, <span class="math inline">\(M\)</span> is the fixed market potential of the product <span class="math inline">\(S\)</span>, and <span class="math inline">\(\lambda\)</span> is the decay rate for market share.</p>
 <ol type="a">
-<li>Either from a previous assignment or by directly solving here, what is the steady state value?</li>
+<li>What is this model’s is the steady state value?</li>
 <li>Apply the <code>rk4</code> method to determine solutions when <span class="math inline">\(S(0)=0.2\)</span> and <span class="math inline">\(S(0)=0.8\)</span> (two separate solutions) when <span class="math inline">\(U = 1\)</span>, <span class="math inline">\(r=0.1\)</span>, <span class="math inline">\(M=0.7\)</span>, and <span class="math inline">\(\lambda = 0.05\)</span>.</li>
 <li>Once that is complete, plot (with <code>ggplot</code>) your solutions with the initial conditions on the same plot. Be sure to label your axes!</li>
 <li>How do your solutions compare to the steady-state value you determined?</li>

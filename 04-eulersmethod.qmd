@@ -441,7 +441,7 @@ This example is structured similarly when we used Euler's method to solve a sing
 
 
 ## Euler's method and beyond
-Sometimes when working with Euler's method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see Exercise \@ref(exr:flu-quarantine-01) in @sec-intro-01):
+Sometimes when working with Euler's method you encounter a differential equation that produces some nonsensible results. For example, consider a model that represents infection with quarantine (see @exr-flu-quarantine-01 in @sec-intro-01):
 
 $$
 \begin{split}
@@ -600,7 +600,7 @@ out_solution |> pivot_longer(cols=c(-"t")) |>
 ```
 
 
-Another benefit to the `rk4` method is the numerical error when computing the solution. The numerical error is quantified as the difference between the actual solution and the numerical solution. Euler's method has an error on the order of the stepsize $\Delta t$, whereas the Runge-Kutta method has an error of $(\Delta t)^4$. For this example, $\Delta t = 0.1$, whereas for the Runge-Kutta method the numerical error is on the order of 0.0001 ($(\Delta t)^{4} =.0001$) - noticeably different!  We can improve Euler's method by taking a smaller timestep - BUT that means we need a larger number of steps $N$ - which may take more computational time (see Exercise \@ref(exr:rk4-euler)). Does this discussion of numerical error sounds familiar?  In calculus you may have examined the numerical error when using Riemann sums (left, right, trapezoid, midpoint sums) to approximate the area underneath a curve. While the context is different, Riemann sums and numerical differential equation solvers are closely related.
+Another benefit to the `rk4` method is the numerical error when computing the solution. The numerical error is quantified as the difference between the actual solution and the numerical solution. Euler's method has an error on the order of the stepsize $\Delta t$, whereas the Runge-Kutta method has an error of $(\Delta t)^4$. For this example, $\Delta t = 0.1$, whereas for the Runge-Kutta method the numerical error is on the order of 0.0001 ($(\Delta t)^{4} =.0001$) - noticeably different!  We can improve Euler's method by taking a smaller timestep - BUT that means we need a larger number of steps $N$ - which may take more computational time (see @exr-rk4-euler). Does this discussion of numerical error sounds familiar?  In calculus you may have examined the numerical error when using Riemann sums (left, right, trapezoid, midpoint sums) to approximate the area underneath a curve. While the context is different, Riemann sums and numerical differential equation solvers are closely related.
 
 In summary, the most general form of a differential equation is: 
 
@@ -659,7 +659,7 @@ c. Differential equation: $\displaystyle \frac{dS}{dt} = 0.8 \cdot S \cdot (10-S
 :::
 
 ::: {#exr-step-de-04}
-For each of the following differential equations, apply the Runge-Kutta method to generate a numerical solution to the differential equation and plot your solution. The stepsize ($\Delta t$) and number of iterations ($N$) are listed. Contrast your answers with Exercise \@ref(exr:euler-solve).
+For each of the following differential equations, apply the Runge-Kutta method to generate a numerical solution to the differential equation and plot your solution. The stepsize ($\Delta t$) and number of iterations ($N$) are listed. Contrast your answers with @exr-euler-solve.
 
 
 a. Differential equation: $\displaystyle \frac{dS}{dt} =3-S$. Set $\Delta t = 0.1$, $N = 50$. Initial conditions:  $S(0) = 0.5$, $S(0) = 5$.
@@ -760,7 +760,7 @@ c. Explain how you could come to the same conclusion as the previous two problem
 
 
 ::: {#exr-rk4-euler}
-Building on Exercise \@ref(exr:euler-rk4), let's say for a particular differential equation we have $N$ steps from $0 \leq t \leq b$. An error of $\epsilon$ is desired. 
+Building on @exr-euler-rk4, let's say for a particular differential equation we have $N$ steps from $0 \leq t \leq b$. An error of $\epsilon$ is desired. 
 
 a. What is the ratio $\displaystyle \frac{N_{E}}{N_{RK4}}$, where $N_{RK4}$ represents the number of steps needed for the Runge-Kutta method, and $N_{E}$ the number of steps for Euler's method?
 b. Make a plot of the ratio $\displaystyle \frac{N_{E}}{N_{RK4}}$ for $0 \leq \epsilon \leq 1$. How many more steps does Euler's method need to do to achieve the same level of error, compared to the Runge-Kutta method?
@@ -771,7 +771,7 @@ b. Make a plot of the ratio $\displaystyle \frac{N_{E}}{N_{RK4}}$ for $0 \leq \e
 
 {{< fa burst >}} Another example of an advertising model is $\displaystyle \frac{dS}{dt} = \frac{rU}{M}(M-S) - \lambda S$, where $S$ is the product's share of the market (scaled between 0 and 1), $r$ is the response to advertising, $U$ is the advertising expenditure, $M$ is the fixed market potential of the product $S$, and $\lambda$ is the decay rate for market share.
 
-a.  Either from a previous assignment or by directly solving here, what is the steady state value?
+a.  What is this model's is the steady state value?
 b.  Apply the `rk4` method to determine solutions when $S(0)=0.2$ and $S(0)=0.8$ (two separate solutions) when $U = 1$, $r=0.1$, $M=0.7$, and $\lambda = 0.05$.
 c.  Once that is complete, plot (with `ggplot`) your solutions with the initial conditions on the same plot. Be sure to label your axes!
 d.  How do your solutions compare to the steady-state value you determined?

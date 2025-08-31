@@ -151,7 +151,7 @@ data.frame(b, lb) |>
 ```
 
 
-Note that in @fig-small-likelihood-plot the values of $L(b | \vec{x},\vec{y} )$ on the vertical axis are really small. (This typically may be the case; see Exercise \@ref(exr:show-small-likely).) An alternative to the small numbers in $L(b)$ is to use the log-likelihood (@eq-loglikely):
+Note that in @fig-small-likelihood-plot the values of $L(b | \vec{x},\vec{y} )$ on the vertical axis are really small. (This typically may be the case; see @exr-show-small-likely.) An alternative to the small numbers in $L(b)$ is to use the log-likelihood (@eq-loglikely):
 
 $$
 \begin{split}
@@ -233,7 +233,7 @@ $$
 y = \frac{K}{1+e^{a-bt}}
 $$ {#eq-gause-09}
 
-In @gause_experimental_1932 the value of $a$ was determined by solving the initial value problem $y(0)=0.45$. In Exercise \@ref(exr:solve-gause) you will show that $\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)$. @eq-gause-09 then has two parameters: $K$ and $b$. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters $K$ and $b$ using a function in the `demodelr` package called `compute_likelihood`. Inputs to the `compute_likelihood` function are the following:
+In @gause_experimental_1932 the value of $a$ was determined by solving the initial value problem $y(0)=0.45$. In @exr-solve-gause you will show that $\displaystyle a = \ln \left( \frac{K}{0.45} - 1 \right)$. @eq-gause-09 then has two parameters: $K$ and $b$. Here we are going to explore the likelihood function to try to determine the best set of values for the two parameters $K$ and $b$ using a function in the `demodelr` package called `compute_likelihood`. Inputs to the `compute_likelihood` function are the following:
 
 - A function $y=f(x,\vec{\alpha})$
 - A dataset $(\vec{x},\vec{y})$
@@ -421,7 +421,7 @@ All right, this code block has some new commands and techniques that need explai
 - `in_list <- c(params,my_time) |> as.list()` collects the parameters and input times in one list to evaluate the model with `out_model <- eval(new_eq,envir=in_list)`
 - We make a data frame called `my_prediction` so we can then plot.
 
-And the rest of the plotting commands you should be used to. This activity focused on the likelihood function - Exercise \@ref(exr:log-likelihood-yeast) has you repeat this analysis with the log-likelihood function.
+And the rest of the plotting commands you should be used to. This activity focused on the likelihood function - @exr-log-likelihood-yeast has you repeat this analysis with the log-likelihood function.
 
 ## Looking back and forward
 This chapter covered a lot of ground - from probability and likelihood functions to computing and visualizing these. A good strategy for a likelihood function is to visualize the function and then explore to find values that optimize the likelihood or log-likelihood function. This approach is one example of *successive approximations* or using an iterative method to determine a solution.\index{successive approximations} While this chapter focused on optimizing a likelihood function with one or two parameters, the successive approximation method does generalize to more parameters. However searching for parameters becomes tricky (read: tedious and slow) in high-dimensional spaces. In later chapters we will explore numerical methods to accelerate convergence to an optimum value. 

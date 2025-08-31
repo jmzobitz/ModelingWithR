@@ -34,7 +34,7 @@ S(b)=(3-b)^2+(5-2b)^2+(4-4b)^2+(10-4b)^2
 $$  {#eq-sb-10}
 
 
-@eq-sb-10 is a function of one variable ($b$). @fig-quadsb shows a graph of $S(b)$. Notice how the plot of $S(b)$ is a nice quadratic function, with a minimum at $b=1.865$. Did you notice that this value for $b$ is the same value for the minimum that we found from  @eq-small-data-likely in @sec-likelihood-09?  In Exercise \@ref(exr:cost-min-10) you will use calculus to determine the optimum value of $S(b)$.
+@eq-sb-10 is a function of one variable ($b$). @fig-quadsb shows a graph of $S(b)$. Notice how the plot of $S(b)$ is a nice quadratic function, with a minimum at $b=1.865$. Did you notice that this value for $b$ is the same value for the minimum that we found from  @eq-small-data-likely in @sec-likelihood-09?  In @exr-cost-min-10 you will use calculus to determine the optimum value of $S(b)$.
 
 ```{r,echo=FALSE,fig.cap='Plot of @eq-sb-10. The vertical line denotes the minimum value at $b=1.865$.'}
 #| label: fig-quadsb
@@ -148,7 +148,7 @@ data.frame(b, lb, lb_orig) |>
 
 ```
 
-Aha!  @fig-prior-cost shows how the revised cost function $\tilde{S}(b)$ changes the optimum value. Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In Exercise \@ref(exr:cost-min-10) you will verify this new minimum value and compare the results to the fitted value of $b=1.86$.
+Aha!  @fig-prior-cost shows how the revised cost function $\tilde{S}(b)$ changes the optimum value. Numerically this works out to be $\tilde{b}=$ `r b[which.min(lb)]`. In @exr-cost-min-10 you will verify this new minimum value and compare the results to the fitted value of $b=1.86$.
 
 Adding this prior information seems like an effective approach. Many times a study wants to build upon the existing body of literature and to take that into account. This approach of including prior information into the cost function can also be considered a *Bayesian* approach.\index{Bayes!approach}
 
@@ -231,7 +231,7 @@ $$ {#eq-bayes-rule-data-10}
 While @eq-bayes-rule-data-10 seems pretty conceptual, here are some key highlights:
 
 - In practice, the term $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ in @eq-bayes-rule-data-10 is the likelihood function (@eq-likelihood-prod-param-09).
-- The term $\mbox{Pr}( \mbox{ parameters })$ is the probability distribution of the *prior information* on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ (typically normally distributed), prior information has a multiplicative effect on the likelihood function ($\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$). (Or an additive effect on the log-likelihood function.) *This is good news!* When we added that additional term for prior information into $\tilde{S}(b)$ in @eq-priorcost-10, we accounted for the prior information correctly. In Exercise \@ref(exr:log-cost-verify) you will explore how the log-likelihood is related to the cost function. 
+- The term $\mbox{Pr}( \mbox{ parameters })$ is the probability distribution of the *prior information* on the parameters, specifying the probability distribution functions for the given context. When this distribution is the same as $\mbox{Pr}( \mbox{ data } | \mbox{ parameters })$ (typically normally distributed), prior information has a multiplicative effect on the likelihood function ($\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$). (Or an additive effect on the log-likelihood function.) *This is good news!* When we added that additional term for prior information into $\tilde{S}(b)$ in @eq-priorcost-10, we accounted for the prior information correctly. In @exr-log-cost-verify you will explore how the log-likelihood is related to the cost function. 
 -  The expression $\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$ is the start of a framework for a probability density function, which should integrate to unity. (You will explore this more if you study probability theory.) This denominator term is called a [normalizing constant](https://stats.stackexchange.com/questions/12112/normalizing-constant-in-bayes-theorem). Since our overall goal is to select parameters that optimize $\mbox{Pr}( \mbox{ parameters } | \mbox{ data })$, the expression in the denominator ($\mbox{Pr}(\mbox{ data })$ ) does not change the *location* of the optimum values. 
 
 
